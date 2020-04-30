@@ -31,7 +31,7 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 * four-directional push encorder - up, down, left, right and push for enter/accept
 
 ## Known Issues
-* leds don't change on play, record, stop, and loop as expected - working on it in upcomming version
+* leds don't change on play, record, stop, and loop as expected - working on it in upcoming version
 * eight knobs currently can only be assigned by user -  working on volume and pan features in upcoming version
 * OLED doesn't change status at all - working on it in upcomming version
 
