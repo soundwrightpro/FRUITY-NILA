@@ -13,7 +13,7 @@ folder under the following location:
 
 ... Documents\Image-Line\FL Studio\Settings\Hardware\Native Instruments
 
-Create a **'Native Instruments' folder if one doesn't exsist.**
+Create a **'Native Instruments' folder if one doesn't exist.**
 
 2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User).
 
@@ -30,12 +30,12 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 * tempo - tap to set tempo
 * undo/redo - works as expected, hold shift to redo
 * quantize - toggles global snap on and off, hold shift to activate
-* four-directional push encorder - up, down, left, right and push for enter/accept
+* four-directional push encoder - up, down, left, right and push for enter/accept
 
 ## Known Issues
-* leds don't change on play, record, stop, and loop as expected - working on it in upcoming version
+* leds don't change on play, record, stop, and loop as expected - working on it in an upcoming version
 * eight knobs currently can only be assigned by the user -  working on volume and pan features in upcoming version
-* OLED doesn't change status at all - working on it in upcomming version
+* OLED doesn't change status at all - working on it in an upcoming version
 
 <div style="page-break-after: always; visibility: hidden"> 
 
