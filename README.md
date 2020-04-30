@@ -18,6 +18,8 @@ Create a **'Native Instruments' folder if one doesn't exsist.**
 
 Enjoy
 
+My thanks to Hobyst and their documentation and coding help. You have been the GOAT!
+
 ## Features
 
 * transport works as expected (play, record, stop)
