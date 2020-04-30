@@ -1,6 +1,7 @@
 # Native Instruments Komplete Kontrol M32 V2.5.0
 
-Providing upport for Native Instruments Komplete Kontrol M32, which use the NI Host Integration protocol instead of the limited MIDI Mode NI provides, much like Ableton and Logic Pro X intergration.
+Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X.
+
 
 ## Installation
 
@@ -23,6 +24,7 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 ## Features
 
 * transport works as expected (play, record, stop)
+* count-in - toggles countdown before recording
 * loop - toggles between pattern and loop mode
 * metro - toggles metro off and on
 * tempo - tap to set tempo
@@ -32,7 +34,7 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 
 ## Known Issues
 * leds don't change on play, record, stop, and loop as expected - working on it in upcoming version
-* eight knobs currently can only be assigned by user -  working on volume and pan features in upcoming version
+* eight knobs currently can only be assigned by the user -  working on volume and pan features in upcoming version
 * OLED doesn't change status at all - working on it in upcomming version
 
 <div style="page-break-after: always; visibility: hidden"> 
