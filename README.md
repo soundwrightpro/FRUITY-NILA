@@ -1,6 +1,6 @@
 # Native Instruments Komplete Kontrol M32 V2.5.0
 
-Support for Native Instruments Komplete Kontrol M32, which use the NI Host Integration protocol instead of the limited MIDI Mode NI provides. The native mode is trash.
+Providing upport for Native Instruments Komplete Kontrol M32, which use the NI Host Integration protocol instead of the limited MIDI Mode NI provides, much like Ableton and Logic Pro X intergration.
 
 ## Installation
 
