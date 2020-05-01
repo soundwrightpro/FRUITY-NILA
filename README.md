@@ -30,7 +30,7 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 * tempo - tap to set tempo
 * undo/redo - works as expected, hold shift to redo
 * quantize - toggles global snap on and off, hold shift to activate
-* four-directional push encoder - up, down, left, right and push for enter/accept
+* four-directional push encoder - up, down, left, right and push for enter/accept (works on channel rack, mixer, browser and others)
 
 ## Known Issues
 * leds don't change on play, record, stop, and loop as expected - working on it in an upcoming version
