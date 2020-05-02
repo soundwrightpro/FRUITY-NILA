@@ -22,8 +22,8 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 
 ## Known Issues
 * **stop** light will not dim - todo
-* eight knobs currently can only be assigned by the user - todo
 * OLED doesn't change status at all - todo
+* *mute* and *solo* buttons not active - todo
 
 
 
