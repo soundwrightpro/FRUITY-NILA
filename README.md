@@ -1,4 +1,5 @@
 # Native Instruments Komplete Kontrol M32 V2.7.1
+Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X.
 
@@ -21,10 +22,9 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * four-directional push encoder - up, down, left, right and push for enter/accept (works on channel rack, mixer, browser and others)
 
 ## Known Issues
-* stop light will not dim - working on it an upcoming version
-* eight knobs currently can only be assigned by the user -  working on volume and pan features in upcoming version
-* OLED doesn't change status at all - working on it in an upcoming version
-
+* stop light will not dim - todo
+* eight knobs currently can only be assigned by the user - todo
+* OLED doesn't change status at all - todo
 
 
 
