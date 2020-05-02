@@ -7,7 +7,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 
 * **play** flashes in sync with the tempo of the project
 * **play**, **rec**, **loop**, **metro** light up when engaged from FL Studio or controller
-* **quantize** turns off snap, auto (aka **shift + quantize**) cycles through global snap options
+* **quantize** turns off snap, auto (**shift + quantize**) cycles through global snap options
 * **clear** (**shift + stop**) closes all windows)
 
 ## Key Features
