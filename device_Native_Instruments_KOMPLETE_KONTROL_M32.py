@@ -80,18 +80,16 @@ def KompleteDataOut(data11, data12):
       """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
           it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
             the STATUS of the message to BF as expected.""" 
-      device.midiOutSysex(bytes([0xF0, 0xBF, data11, data12, 0x14, 0x0C, 1, 0xF7]))
+      device.midiOutSysex(bytes([0xF0, 0xBF, data11, data12, 0x00, 0x0C, 1, 0xF7]))
  
 
 class TKompleteBase():
 
      def OnInit(self):
-         KompleteDataOut(0x14, 0x00) #stop light off
          KompleteDataOut(0x15, 0x01) #clear light on
          KompleteDataOut(0x20, 0x01) #undo light on
-         KompleteDataOut(0x21, 0x01) #undo light on
-         
-         print("Komplete Kontrol M32 Script - V2.9.2")
+         KompleteDataOut(0x21, 0x01) #undo light on         
+         print("Komplete Kontrol M32 Script - V2.9.3")
          
 
      def OnMidiIn(self, event):
@@ -513,8 +511,6 @@ class TKompleteBase():
 
               elif f != 1: #quantize on
                   KompleteDataOut(0x22, 0x01)
-
-
 
 
      def OnRefresh(self, flags):
