@@ -25,7 +25,6 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 
 ## Known Issues
 * **clear** (**shift + stop**) closes all window has a bug when plugins are openned. temp disabled - todo
-* **stop** light will not dim - todo
 * OLED doesn't change status at all - todo
 * **mute** and **solo** buttons do not light up and have to hold shift to use them
 
