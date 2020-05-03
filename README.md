@@ -6,6 +6,11 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 # What's new in 2.9.3
 * **quantize** light turns off when snap status is none.
 * bug fixes
+* if the Komplete Control Plugin is active, to switch between modes do the following:
+  * press **TRACK Instance** and return knobs to FL Studio
+  * if FL Studio is active (**Scale** & **Arp** buttons are are not lit) press in this order, 
+    **Instance (Shift+Track)**, **PLUG-IN MIDI**
+  
 
 ## Key Features
 * **transport** works as expected (play, record, stop)
