@@ -86,9 +86,13 @@ def KompleteDataOut(data11, data12):
 class TKompleteBase():
 
      def OnInit(self):
-         KompleteDataOut(0x22, 0x01) #quantize light on
+         KompleteDataOut(0x14, 0x00) #stop light off
          KompleteDataOut(0x15, 0x01) #clear light on
-         KompleteDataOut(0x14, 0x00)
+         KompleteDataOut(0x20, 0x01) #undo light on
+         KompleteDataOut(0x21, 0x01) #undo light on
+         KompleteDataOut(0x22, 0x01) #quantize light on
+         KompleteDataOut(0x23, 0x01) #auto light on
+         
          print("Komplete Kontrol M32 Script - V2.9.2")
          
 
