@@ -93,7 +93,7 @@ class TKompleteBase():
          KompleteDataOut(0x22, 0x01) #quantize light on
          KompleteDataOut(0x23, 0x01) #auto light on
          
-         print("Komplete Kontrol M32 Script - V2.9.2")
+         print("Komplete Kontrol M32 Script - V2.9.3")
          
 
      def OnMidiIn(self, event):
