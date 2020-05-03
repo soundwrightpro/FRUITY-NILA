@@ -129,8 +129,8 @@ class TKompleteBase():
          if (event.data1 == srecb):
             transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recordin
 
-         if (event.data1 == sstopb):
-            transport.globalTransport(midi.FPT_F12, 71) #clear all windows
+         #if (event.data1 == sstopb):
+         #   transport.globalTransport(midi.FPT_F12, 71) #clear all windows
 
          if (event.data1 == undob):
             general.undoUp() #undo
