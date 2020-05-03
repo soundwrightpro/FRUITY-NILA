@@ -1,17 +1,15 @@
-# Native Instruments Komplete Kontrol M32 V2.7.1
+# Native Instruments Komplete Kontrol M32 V2.9.2
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X.
 
 # What's new in 2.7.1
+* **knobs** All 8 knobs controls volume in channel rack or mixer, depending on what windows is active
+* **knobs + shift** controls pan in channel rack or mixer, depending on what windows is active
+* **mute and solo** buttons work on selected track in channel rack or mixer when shift is held down, depending on what windows is active
 
-* **play** flashes in sync with the tempo of the project
-* **play**, **rec**, **loop**, **metro** light up when engaged from FL Studio or controller
-* **quantize** turns off snap, auto (**shift + quantize**) cycles through global snap options
-* **clear** (**shift + stop**) closes all windows)
 
 ## Key Features
-
 * **transport** works as expected (play, record, stop)
 * **count-in** - toggles countdown before recording
 * **loop** - toggles between pattern and loop mode
@@ -19,12 +17,15 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * **tempo** - tap to set tempo
 * **undo/redo** - works as expected, hold shift to redo
 * **four-directional push encoder** - up, down, left, right and push for enter/accept (works on channel rack, mixer, browser and others)
+* **play** flashes in sync with the tempo of the project
+* **play**, **rec**, **loop**, **metro** light up when engaged from FL Studio or controller
+* **quantize** turns off snap, auto (**shift + quantize**) cycles through global snap options
+* **clear** (**shift + stop**) closes all windows)
 
 ## Known Issues
 * **stop** light will not dim - todo
 * OLED doesn't change status at all - todo
-* **mute** and **solo** buttons not active - todo
-
+* **mute** and **solo** buttons do not light up and have to hold shift to use them
 
 
 ## Installation
