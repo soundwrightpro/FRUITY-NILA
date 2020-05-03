@@ -16,7 +16,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * **undo/redo** - works as expected, hold shift to redo
 * **four-directional push encoder** - up, down, left, right and push for enter/accept (works on channel rack, mixer, browser and others)
 * **play** flashes in sync with the tempo of the project
-* **play**, **rec**, **loop**, **metro** light up when engaged from FL Studio or controller
+* **play**, **rec**, **stop**, **loop**, **metro** light up when engaged from FL Studio or controller
 * **quantize** turns off snap, auto (**shift + quantize**) cycles through global snap options
 
 * **knobs** All 8 knobs controls volume in channel rack or mixer, depending on what windows is active
