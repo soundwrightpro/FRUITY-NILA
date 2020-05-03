@@ -90,10 +90,8 @@ class TKompleteBase():
          KompleteDataOut(0x15, 0x01) #clear light on
          KompleteDataOut(0x20, 0x01) #undo light on
          KompleteDataOut(0x21, 0x01) #undo light on
-         KompleteDataOut(0x22, 0x01) #quantize light on
-         KompleteDataOut(0x23, 0x01) #auto light on
          
-         print("Komplete Kontrol M32 Script - V2.9.3")
+         print("Komplete Kontrol M32 Script - V2.9.2")
          
 
      def OnMidiIn(self, event):
@@ -142,6 +140,7 @@ class TKompleteBase():
 
          if (event.data1 == squantizeb):
             transport.globalTransport(midi.FPT_SnapMode, 49, event.pmeFlags) #snap toggle
+            self.UpdateLEDs()
 
          if (event.data1 == tempob):
             transport.globalTransport(midi.FPT_TapTempo, 106) #tap tempo
@@ -471,6 +470,7 @@ class TKompleteBase():
             loopstatus = [transport.getLoopMode()]
             metrostatus = [ui.isMetronomeEnabled()]
             prestatus = [ui.isPrecountEnabled()]
+            quanstatus = [ui.getSnapMode()]
 
             for a in playstatus:
               if a == 0: #not playing
@@ -502,10 +502,19 @@ class TKompleteBase():
 
             for e in prestatus:
               if e == 0: #pre count on
-                  KompleteDataOut(0x13, 0x00) #precount off
+                  KompleteDataOut(0x13, 0x00) 
 
               elif e == 1: #pre count off
-                  KompleteDataOut(0x13, 0x01) #precount on
+                  KompleteDataOut(0x13, 0x01) 
+
+            for f in quanstatus:
+              if f == 3: #quantize off
+                  KompleteDataOut(0x22, 0x00)
+
+              elif f != 1: #quantize on
+                  KompleteDataOut(0x22, 0x01)
+
+
 
 
      def OnRefresh(self, flags):
