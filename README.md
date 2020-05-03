@@ -3,7 +3,7 @@ Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X.
 
-# What's new in 2.7.1
+# What's new in 2.9.2
 * **knobs** All 8 knobs controls volume in channel rack or mixer, depending on what windows is active
 * **knobs + shift** controls pan in channel rack or mixer, depending on what windows is active
 * **mute and solo** buttons work on selected track in channel rack or mixer when shift is held down, depending on what windows is active
