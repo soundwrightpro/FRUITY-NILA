@@ -54,10 +54,10 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 
 Did you make it all the way to the bottom? Good work. I'll share my road map with you.
 
-2.9.9 - will have the LED screen working - major progress has been made in this area.
-3.0.0 - will be full-featured
-3.5.0 - bugs and refinements - I'm new to python, I'm learning as I go. There are so many things I've learned that I need to apply to older things I've done in this progress.
-4.0.0 - Final - There's only so much I can do. If you have any suggestions leave them here in the FL Studio forum: https://forum.image-line.com/viewtopic.php?f=1994&t=225473
+* 2.9.9 - will have the LED screen working - major progress has been made in this area.
+* 3.0.0 - will be full-featured
+* 3.5.0 - bugs and refinements - I'm new to python, I'm learning as I go. There are so many things I've learned that I need           to apply to older things I've done in this progress.
+* 4.0.0 - Final - There's only so much I can do. If you have any suggestions leave them here in the FL Studio forum:                   https://forum.image-line.com/viewtopic.php?f=1994&t=225473
 
 <div style="page-break-after: always; visibility: hidden"> 
 
