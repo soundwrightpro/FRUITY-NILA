@@ -81,7 +81,8 @@ def KompleteDataOut(data11, data12):
           it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
             the STATUS of the message to BF as expected.""" 
       device.midiOutSysex(bytes([0xF0, 0xBF, data11, data12, 0x00, 0x0C, 1, 0xF7]))
- 
+      device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
+     
 
 class TKompleteBase():
 
@@ -89,7 +90,7 @@ class TKompleteBase():
          KompleteDataOut(0x15, 0x01) #clear light on
          KompleteDataOut(0x20, 0x01) #undo light on
          KompleteDataOut(0x21, 0x01) #undo light on         
-         print("Komplete Kontrol M32 Script - V2.9.3")
+         print("Komplete Kontrol M32 Script - V2.9.4")
          
 
      def OnMidiIn(self, event):
