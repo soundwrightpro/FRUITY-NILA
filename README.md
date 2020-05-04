@@ -56,9 +56,7 @@ Did you make it all the way to the bottom? Good work. I'll share my road map wit
 
 * 2.9.9 - will have the LED screen working - major progress has been made in this area.
 * 3.0.0 - will be full-featured
-* 3.5.0 - bugs and refinements - I'm new to python, I'm learning as I go. There are so many things I've learned that I need           to apply to older things I've done in this progress.
+* 3.5.0 - bugs and refinements - I'm new to python, so I'm learning as I go. There are so many techniques I've learned that           I need to apply to older things I've done.
 * 4.0.0 - Final - There's only so much I can do. If you have any suggestions leave them here in the FL Studio forum:                   https://forum.image-line.com/viewtopic.php?f=1994&t=225473
 
-<div style="page-break-after: always; visibility: hidden"> 
 
-</div>
