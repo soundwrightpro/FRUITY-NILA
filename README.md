@@ -1,16 +1,10 @@
-# Native Instruments Komplete Kontrol M32 V2.9.3
+# Native Instruments Komplete Kontrol M32 V2.9.4
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X.
 
-# What's new in 2.9.3
-* **quantize** light turns off when snap status is none.
+# What's new in 2.9.4
 * bug fixes
-* if the Komplete Control Plugin is active, to switch between modes do the following:
-  * press **TRACK Instance** and that returns all knobs to FL Studio
-  * if FL Studio is active (you can tell if **Scale** & **Arp** buttons are not lit) press in this order, 
-    **Instance (Shift+Track)**, **PLUG-IN MIDI**. Knob function has now returned to the Komplete Kontrol Plugin.
-  
 
 ## Key Features
 * **transport** works as expected (play, record, stop)
@@ -23,15 +17,18 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * **play** flashes in sync with the tempo of the project
 * **play**, **rec**, **stop**, **loop**, **metro** light up when engaged from FL Studio or controller
 * **quantize** turns off snap, auto (**shift + quantize**) cycles through global snap options
-
 * **knobs** All 8 knobs controls volume in channel rack or mixer, depending on what windows is active
 * **knobs + shift** controls pan in channel rack or mixer, depending on what windows is active
 * **mute and solo** buttons work on selected track in channel rack or mixer when shift is held down, depending on what windows is active
+* **quantize** light turns off when snap status is none.
+* if the Komplete Control Plugin is active, to switch between modes do the following:
+  * press **TRACK Instance** and that returns all knobs to FL Studio
+  * if FL Studio is active (you can tell if **Scale** & **Arp** buttons are not lit) press in this order, 
+    **Instance (Shift+Track)**, **PLUG-IN MIDI**. Knob function has now returned to the Komplete Kontrol Plugin.
 
 ## Known Issues
 * **clear** (**shift + stop**) closes all window has a bug when plugins are openned. temp disabled - todo
 * OLED doesn't change status at all - todo
-* **mute** and **solo** buttons do not light up and have to hold shift to use them - todo
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 
 
