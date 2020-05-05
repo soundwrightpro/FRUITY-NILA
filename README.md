@@ -30,7 +30,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * **clear** (**shift + stop**) closes all window has a bug when plugins are openned. temp disabled - todo
 * OLED doesn't change status at all - todo
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
-* **volume** displayed on OLED screen isn't correct
+* **volume** displayed on OLED screen isn't correct - temp disabled - todo
 
 
 ## Installation
