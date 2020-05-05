@@ -1,9 +1,11 @@
-# Native Instruments Komplete Kontrol M32 V2.9.4
+# Native Instruments Komplete Kontrol M32 V2.9.8
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have must have  Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**.
 
 # What's new in 2.9.4
+* OLED - shows what module window is open, Mixer, Playlist, Piano Roll, Browser, Channel Rack
+* OLED - **Mute** & **Solo** light up for Channel Rack 
 * bug fixes
 
 ## Key Features
@@ -31,6 +33,8 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * OLED doesn't change status at all - todo
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 * **volume** displayed on OLED screen isn't correct - temp disabled - todo
+* **mute** and **solo** can engaged at the same time - todo
+* Active window on OLED can't go from Mixer to Playlist, then Channel Rack and vice versa. Something is wrong with script     Image-Line is aware, awaiting response - todo
 
 
 ## Installation
