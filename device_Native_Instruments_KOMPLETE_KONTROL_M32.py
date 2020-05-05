@@ -156,8 +156,9 @@ class TKompleteBase():
                self.UpdateOLED()
 
             elif ui.getFocused(0) == 0: # channel rack
-               channels.muteChannel(channels.channelNumber()) 
-               self.UpdateOLED()
+               if channels.channelCount() >= 2: 
+                  channels.muteChannel(channels.channelNumber()) 
+                  self.UpdateOLED()
                
             elif ui.getFocused(0) == 2: # playlist
                #playlist.muteTrack() disabled, doesn't work as expected
@@ -169,8 +170,9 @@ class TKompleteBase():
                self.UpdateOLED()
 
             elif ui.getFocused(0) == 0: # channel rack
-               channels.soloChannel(channels.channelNumber()) 
-               self.UpdateOLED()
+               if channels.channelCount() >= 2: 
+                  channels.soloChannel(channels.channelNumber()) 
+                  self.UpdateOLED()
                
             elif ui.getFocused(0) == 2: # playlist
                #playlist.soloTrack() need a way to track what playlist tracks
@@ -646,7 +648,7 @@ class TKompleteBase():
 
 
      def OnRefresh(self, flags):
-        self.UpdateLEDs(),self.UpdateOLED
+        self.UpdateLEDs(),self.UpdateOLED()
 
 
      def OnUpdateBeatIndicator(Self, Value):
@@ -666,8 +668,8 @@ def OnInit():
    # command to initialize the protocol handshake
    KompleteDataOut(0x01, 0x01), KompleteBase.OnInit()
 
-def OnRefresh(Flags):
-   KompleteBase.OnRefresh(Flags)
+#def OnRefresh(Flags):
+#   KompleteBase.OnRefresh(Flags)
 
 def OnUpdateBeatIndicator(Value):
 	KompleteBase.OnUpdateBeatIndicator(Value)
