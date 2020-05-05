@@ -155,9 +155,9 @@ class TKompleteBase():
                mixer.enableTrack(mixer.trackNumber()) #mute 
                self.UpdateOLED()
 
-            elif ui.getFocused(0) == 0: # channel rack
+            elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 2: 
-                  channels.muteChannel(channels.channelNumber()) 
+                  channels.muteChannel(channels.channelNumber()-1) 
                   self.UpdateOLED()
                
             elif ui.getFocused(0) == 2: # playlist
@@ -169,9 +169,9 @@ class TKompleteBase():
                mixer.soloTrack(mixer.trackNumber()) #solo
                self.UpdateOLED()
 
-            elif ui.getFocused(0) == 0: # channel rack
+            elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 2: 
-                  channels.soloChannel(channels.channelNumber()) 
+                  channels.soloChannel(channels.channelNumber()-1) 
                   self.UpdateOLED()
                
             elif ui.getFocused(0) == 2: # playlist
