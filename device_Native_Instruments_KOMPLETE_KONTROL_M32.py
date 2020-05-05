@@ -646,7 +646,7 @@ class TKompleteBase():
 
 
      def OnRefresh(self, flags):
-        self.UpdateLEDs(),self.UpdateOLED()
+        self.UpdateLEDs(),self.UpdateOLED
 
 
      def OnUpdateBeatIndicator(Self, Value):
