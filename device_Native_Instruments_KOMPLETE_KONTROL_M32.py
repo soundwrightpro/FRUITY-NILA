@@ -461,7 +461,7 @@ class TKompleteBase():
                   channels.setChannelPan(channels.channelNumber() + 7 ,channels.getChannelPan(channels.channelNumber() + 7 ) + volinc) # volume values go up
 
 
-     def UpdateLEDs(sef):
+     def UpdateLEDs(self):
 
         if device.isAssigned():
             playstatus = [transport.isPlaying()]
