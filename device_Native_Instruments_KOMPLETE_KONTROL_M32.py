@@ -157,7 +157,7 @@ class TKompleteBase():
 
             elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 2: 
-                  channels.muteChannel(channels.channelNumber()-1) 
+                  channels.muteChannel(channels.channelNumber()) 
                   self.UpdateOLED()
                
             elif ui.getFocused(0) == 2: # playlist
@@ -171,7 +171,7 @@ class TKompleteBase():
 
             elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 2: 
-                  channels.soloChannel(channels.channelNumber()-1) 
+                  channels.soloChannel(channels.channelNumber()) 
                   self.UpdateOLED()
                
             elif ui.getFocused(0) == 2: # playlist
@@ -647,11 +647,11 @@ class TKompleteBase():
 
 
 
-     def OnRefresh(self, flags):
+     def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         self.UpdateLEDs(),self.UpdateOLED()
 
 
-     def OnUpdateBeatIndicator(Self, Value):
+     def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of project
          if Value == 1:
             KompleteDataOut(0x10, 0x01) #play light bright
          elif Value == 2:
