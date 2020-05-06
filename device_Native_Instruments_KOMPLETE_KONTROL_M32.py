@@ -668,8 +668,8 @@ def OnInit():
    # command to initialize the protocol handshake
    KompleteDataOut(0x01, 0x01), KompleteBase.OnInit()
 
-#def OnRefresh(Flags):
-#   KompleteBase.OnRefresh(Flags)
+def OnRefresh(Flags):
+   KompleteBase.OnRefresh(Flags)
 
 def OnUpdateBeatIndicator(Value):
 	KompleteBase.OnUpdateBeatIndicator(Value)
