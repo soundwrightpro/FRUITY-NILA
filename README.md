@@ -27,6 +27,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
   * press **TRACK Instance** and that returns all knobs to FL Studio
   * if FL Studio is active (you can tell if **Scale** & **Arp** buttons are not lit) press in this order, 
     **Instance (Shift+Track)**, **PLUG-IN MIDI**. Knob function has now returned to the Komplete Kontrol Plugin.
+  * if you wnat to assign the eight knobs yourself, go to **MIDI Mode**. To do this hold shift and press **MIDI**. Assign       the knobs as you wish. You have four pages of knobs to do so. To return to full control mode, Press **TRACK**
 
 ## Known Issues
 * **clear** (**shift + stop**) closes all window has a bug when plugins are openned. temp disabled - todo
