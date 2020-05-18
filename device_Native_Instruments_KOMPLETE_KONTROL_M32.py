@@ -66,13 +66,17 @@ sknob8 = 95
 knobsp = 52 # knob spin left 127 and spint right = 1
 knoblr = 50 # knob left data 2 = 127 and right data 2 = 1
 knobud = 48 # knob up data 2 = 127 and down data 2 = 1
-knobe = 96 # knob enter
+knobp = 96 # knob push
+sknobp = 97 # knob shift+push
 
 #data2 right left values
 right = 1
 up = 127
 left = 127
 down = 1
+
+#knob increment value
+knobinc = 0.01
 
 #function to make talking to the keyboard less annoying
 def KompleteDataOut(data11, data12):
@@ -82,7 +86,11 @@ def KompleteDataOut(data11, data12):
             the STATUS of the message to BF as expected.""" 
       device.midiOutSysex(bytes([0xF0, 0xBF, data11, data12, 0xF7]))
 
-     
+def KompleteScreenOut(track, let1, let2, let3, let4, let5, let6, let7, let8, let9):
+      """ Funtion that makes commmuication with the OLED screen easier. By just entering the data 20 of the Hex conversion of text, 
+          it composes the full message in forther to satisfy the syntax required by the midiOut functions. data20 is the track 
+          number and what follows is the word to print on the screen""" 
+      device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, track, let1, let2, let3, let4, let5, let6, let7, let8, let9]))
 
 
 class TKompleteBase():
@@ -94,9 +102,10 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0xBF, 0x23, 0x00, 0x00, 0x0C, 1, 0xF7])) # auto button light fix
          device.midiOutSysex(bytes([0xBF, 0x22, 0x01])) #quantize light fix
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix         
-         print("Komplete Kontrol M32 Script - V2.9.8")
+         print("Komplete Kontrol M32 Script - V2.9.8.1")
+
          
-         
+   
      def OnMidiIn(self, event):
 
          #tbuttons
@@ -148,6 +157,11 @@ class TKompleteBase():
          if (event.data1 == tempob):
             transport.globalTransport(midi.FPT_TapTempo, 106) #tap tempo
 
+         if (event.data1 == knobp):
+            ui.enter()
+
+         if (event.data1 == sknobp):
+            ui.nextWindow()
 
          #mute and solo for playlist, mixer and channel rack
          if (event.data1 == muteb):
@@ -181,18 +195,13 @@ class TKompleteBase():
 
 
          #4D controller
-         if (event.data1 == knobe):
-            transport.globalTransport(midi.FPT_Enter, 80) #enter
-         
          if (event.data1 == knobsp) & (event.data2 == right): #4d encoder spin right 
             ui.jog(1)
-            
          elif (event.data1 == knobsp) & (event.data2 == left): #4d encoder spin left
             ui.jog(-1)
          
          if (event.data1 == knoblr) & (event.data2 == right): #4d encoder push right
             transport.globalTransport(midi.FPT_Right, 1)
-            
          elif (event.data1 == knoblr) & (event.data2 == left): #4d encoder push left
             transport.globalTransport(midi.FPT_Left, 1)
 
@@ -204,282 +213,430 @@ class TKompleteBase():
          #8 volume knobs for mixer & channel rack, 8 tracks at a time
 
 
-
-         volinc = .005 #volume increments
-         paninc = .01 # pan increments  
-
          if ui.getFocused(0) == 1: #mixer volume control
 
             # VOLUME CONTROL
 
             #knob 1
             if (event.data1 == knob1):
-             if event.data2 == 127: 
-                mixer.setTrackVolume(mixer.trackNumber() + 0 ,mixer.getTrackVolume(mixer.trackNumber()) + 0 - volinc) # volume values go down
-
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+                
              elif event.data2 == 1:
-                mixer.setTrackVolume(mixer.trackNumber() + 0 ,mixer.getTrackVolume(mixer.trackNumber()) + 0 + volinc) # volume values go up
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
+
 
             #knob 2
             if (event.data1 == knob2):
-               if event.data2 == 127: 
-                mixer.setTrackVolume(mixer.trackNumber() + 1 ,mixer.getTrackVolume(mixer.trackNumber() + 1 ) - volinc) # volume values go down
-
-               elif event.data2 == 1:
-                mixer.setTrackVolume(mixer.trackNumber() + 1 ,mixer.getTrackVolume(mixer.trackNumber() + 1 ) + volinc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
 
             #knob 3
             if (event.data1 == knob3):
-               if event.data2 == 127: 
-                  mixer.setTrackVolume(mixer.trackNumber() + 2 ,mixer.getTrackVolume(mixer.trackNumber() + 2 ) - volinc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackVolume(mixer.trackNumber() + 2 ,mixer.getTrackVolume(mixer.trackNumber() + 2 ) + volinc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 2), x - knobinc ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 2), x + knobinc ) # volume values go up
 
             #knob 4
             if (event.data1 == knob4):
-               if event.data2 == 127: 
-                  mixer.setTrackVolume(mixer.trackNumber() + 3 ,mixer.getTrackVolume(mixer.trackNumber() + 3 ) - volinc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackVolume(mixer.trackNumber() + 3 ,mixer.getTrackVolume(mixer.trackNumber() + 3 ) + volinc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 3), x - knobinc ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 3), x + knobinc ) # volume values go up
 
             #knob5
             if (event.data1 == knob5):
-               if event.data2 == 127: 
-                  mixer.setTrackVolume(mixer.trackNumber() + 4 ,mixer.getTrackVolume(mixer.trackNumber() + 4 ) - volinc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackVolume(mixer.trackNumber() + 4 ,mixer.getTrackVolume(mixer.trackNumber() + 4 ) + volinc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 4), x - knobinc ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 4), x + knobinc ) # volume values go up
 
             #knob 6
             if (event.data1 == knob6):
-               if event.data2 == 127: 
-                  mixer.setTrackVolume(mixer.trackNumber() + 5 ,mixer.getTrackVolume(mixer.trackNumber() + 5 ) - volinc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackVolume(mixer.trackNumber() + 5 ,mixer.getTrackVolume(mixer.trackNumber() + 5 ) + volinc) # volume values go up
-
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 5), x - knobinc ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 5), x + knobinc ) # volume values go up
+                
             #knob 7
             if (event.data1 == knob7):
-               if event.data2 == 127: 
-                  mixer.setTrackVolume(mixer.trackNumber() + 6 ,mixer.getTrackVolume(mixer.trackNumber() + 6 ) - volinc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackVolume(mixer.trackNumber() + 6 ,mixer.getTrackVolume(mixer.trackNumber() + 6 ) + volinc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 6), x - knobinc ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 6), x + knobinc ) # volume values go up
 
             #knob 8
             if (event.data1 == knob8):
-               if event.data2 == 127: 
-                  mixer.setTrackVolume(mixer.trackNumber() + 7 ,mixer.getTrackVolume(mixer.trackNumber() + 7 ) - volinc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackVolume(mixer.trackNumber() + 7 ,mixer.getTrackVolume(mixer.trackNumber() + 7 ) + volinc) # volume values go up
-            
+             if event.data2 == 127:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 7), x - knobinc ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
+                round(x,2)
+                mixer.setTrackVolume((mixer.trackNumber() + 7), x + knobinc ) # volume values go up
 
 
             # PAN CONTROL
 
             #sknob 1
             if (event.data1 == sknob1):
-             if event.data2 == 127: 
-                mixer.setTrackPan(mixer.trackNumber() + 0 ,mixer.getTrackPan(mixer.trackNumber()) + 0 - paninc) # volume values go down
-
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 0))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+                
              elif event.data2 == 1:
-                mixer.setTrackPan(mixer.trackNumber() + 0 ,mixer.getTrackPan(mixer.trackNumber()) + 0 + paninc) # volume values go up
+                x = (mixer.getTrackPan(mixer.trackNumber() + 0))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
 
             #sknob 2
             if (event.data1 == sknob2):
-               if event.data2 == 127: 
-                mixer.setTrackPan(mixer.trackNumber() + 1 ,mixer.getTrackPan(mixer.trackNumber() + 1 ) - paninc) # volume values go down
-
-               elif event.data2 == 1:
-                mixer.setTrackPan(mixer.trackNumber() + 1 ,mixer.getTrackPan(mixer.trackNumber() + 1 ) + paninc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 1))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 1))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
 
             #sknob 3
             if (event.data1 == sknob3):
-               if event.data2 == 127: 
-                  mixer.setTrackPan(mixer.trackNumber() + 2 ,mixer.getTrackPan(mixer.trackNumber() + 2 ) - paninc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackPan(mixer.trackNumber() + 2 ,mixer.getTrackPan(mixer.trackNumber() + 2 ) + paninc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 2))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 2))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
 
             #sknob 4
             if (event.data1 == sknob4):
-               if event.data2 == 127: 
-                  mixer.setTrackPan(mixer.trackNumber() + 3 ,mixer.getTrackPan(mixer.trackNumber() + 3 ) - paninc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackPan(mixer.trackNumber() + 3 ,mixer.getTrackPan(mixer.trackNumber() + 3 ) + paninc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 3))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 3))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
 
             #sknob5
             if (event.data1 == sknob5):
-               if event.data2 == 127: 
-                  mixer.setTrackPan(mixer.trackNumber() + 4 ,mixer.getTrackPan(mixer.trackNumber() + 4 ) - paninc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackPan(mixer.trackNumber() + 4 ,mixer.getTrackPan(mixer.trackNumber() + 4 ) + paninc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 4))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 4))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
 
             #sknob 6
             if (event.data1 == sknob6):
-               if event.data2 == 127: 
-                  mixer.setTrackPan(mixer.trackNumber() + 5 ,mixer.getTrackPan(mixer.trackNumber() + 5 ) - paninc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackPan(mixer.trackNumber() + 5 ,mixer.getTrackPan(mixer.trackNumber() + 5 ) + paninc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 5))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 5))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
 
             #sknob 7
             if (event.data1 == sknob7):
-               if event.data2 == 127: 
-                  mixer.setTrackPan(mixer.trackNumber() + 6 ,mixer.getTrackPan(mixer.trackNumber() + 6 ) - paninc) # volume values go down
-
-               elif event.data2 == 1:
-                  mixer.setTrackPan(mixer.trackNumber() + 6 ,mixer.getTrackPan(mixer.trackNumber() + 6 ) + paninc) # volume values go up
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 6))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 6))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
 
             #sknob 8
             if (event.data1 == sknob8):
-               if event.data2 == 127: 
-                  mixer.setTrackPan(mixer.trackNumber() + 7 ,mixer.getTrackPan(mixer.trackNumber() + 7 ) - paninc) # volume values go down
+             if event.data2 == 127:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 7))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (mixer.getTrackPan(mixer.trackNumber() + 7))
+                round(x,2)
+                mixer.setTrackPan((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
 
-               elif event.data2 == 1:
-                  mixer.setTrackPan(mixer.trackNumber() + 7 ,mixer.getTrackPan(mixer.trackNumber() + 7 ) + paninc) # volume values go up
+
 
          elif ui.getFocused(0) == 0: # channel rack
+
+
 
             # VOLUME CONTROL
 
             #knob 1
             if (event.data1 == knob1):
-               if event.data2 == 127: 
-                  channels.setChannelVolume(channels.channelNumber() + 0 ,channels.getChannelVolume(channels.channelNumber() + 0 ) - volinc) # volume values go down
-               
-               elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 0 ,channels.getChannelVolume(channels.channelNumber() + 0 ) + volinc) # volume values go up
-            
+             if event.data2 == 127:
+                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                y = round(x,2)
+                if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
+                  channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
+                
+             elif event.data2 == 1:
+                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                y = round(x,2)
+                channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
+
+   
             #knob 2
             if (event.data1 == knob2):
-               if event.data2 == 127: 
-
-                  channels.setChannelVolume(channels.channelNumber() + 1 ,channels.getChannelVolume(channels.channelNumber() + 1 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelVolume(channels.channelNumber() + 1))
+                  y = round(x,2)
+                  if channels.getChannelVolume(channels.channelNumber() + 1) != 0 :
+                     channels.setChannelVolume((channels.channelNumber() + 1), (y - knobinc) ) # volume values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 1 ,channels.getChannelVolume(channels.channelNumber() + 1 ) + volinc) # volume values go up
+                  x = (channels.getChannelVolume(channels.channelNumber() + 1))
+                  y = round(x,2)
+                  channels.setChannelVolume((channels.channelNumber() + 1), (y + knobinc) ) # volume values go up
 
             #knob 3
             if (event.data1 == knob3):
-               if event.data2 == 127: 
-                  channels.setChannelVolume(channels.channelNumber() + 2 ,channels.getChannelVolume(channels.channelNumber() + 2 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelVolume(channels.channelNumber() + 2))
+                  y = round(x,2)
+                  if channels.getChannelVolume(channels.channelNumber() + 2) != 0 :
+                     channels.setChannelVolume((channels.channelNumber() + 2), (y - knobinc) ) # volume values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 2 ,channels.getChannelVolume(channels.channelNumber() + 2 ) + volinc) # volume values go up
+                  x = (channels.getChannelVolume(channels.channelNumber() + 2))
+                  y = round(x,2)
+                  channels.setChannelVolume((channels.channelNumber() + 2), (y + knobinc) ) # volume values go up
 
             #knob 4
             if (event.data1 == knob4):
-               if event.data2 == 127: 
-                  channels.setChannelVolume(channels.channelNumber() + 3 ,channels.getChannelVolume(channels.channelNumber() + 3 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelVolume(channels.channelNumber() + 3))
+                  y = round(x,2)
+                  if channels.getChannelVolume(channels.channelNumber() + 3) != 0 :
+                     channels.setChannelVolume((channels.channelNumber() + 3), (y - knobinc) ) # volume values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 3 ,channels.getChannelVolume(channels.channelNumber() + 3 ) + volinc) # volume values go up
+                  x = (channels.getChannelVolume(channels.channelNumber() + 3))
+                  y = round(x,2)
+                  channels.setChannelVolume((channels.channelNumber() + 3), (y + knobinc) ) # volume values go up
 
             #knob 5
             if (event.data1 == knob5):
-               if event.data2 == 127: 
-                  channels.setChannelVolume(channels.channelNumber() + 4 ,channels.getChannelVolume(channels.channelNumber() + 4 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelVolume(channels.channelNumber() + 4))
+                  y = round(x,2)
+                  if channels.getChannelVolume(channels.channelNumber() + 4) != 0 :
+                     channels.setChannelVolume((channels.channelNumber() + 4), (y - knobinc) ) # volume values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 4 ,channels.getChannelVolume(channels.channelNumber() + 4 ) + volinc) # volume values go up
+                  x = (channels.getChannelVolume(channels.channelNumber() + 4))
+                  y = round(x,2)
+                  channels.setChannelVolume((channels.channelNumber() + 4), (y + knobinc) ) # volume values go up
 
             #knob 6
             if (event.data1 == knob6):
-               if event.data2 == 127: 
-                  channels.setChannelVolume(channels.channelNumber() + 5 ,channels.getChannelVolume(channels.channelNumber() + 5 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelVolume(channels.channelNumber() + 5))
+                  y = round(x,2)
+                  if channels.getChannelVolume(channels.channelNumber() + 5) != 0 :
+                     channels.setChannelVolume((channels.channelNumber() + 5), (y - knobinc) ) # volume values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 5 ,channels.getChannelVolume(channels.channelNumber() + 5 ) + volinc) # volume values go up
+                  x = (channels.getChannelVolume(channels.channelNumber() + 5))
+                  y = round(x,2)
+                  channels.setChannelVolume((channels.channelNumber() + 5), (y + knobinc) ) # volume values go up
 
             #knob 7
             if (event.data1 == knob7):
-               if event.data2 == 127: 
-                  channels.setChannelVolume(channels.channelNumber() + 6 ,channels.getChannelVolume(channels.channelNumber() + 6 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelVolume(channels.channelNumber() + 6))
+                  y = round(x,2)
+                  if channels.getChannelVolume(channels.channelNumber() + 6) != 0 :
+                     channels.setChannelVolume((channels.channelNumber() + 6), (y - knobinc) ) # volume values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 6 ,channels.getChannelVolume(channels.channelNumber() + 6 ) + volinc) # volume values go up
+                  x = (channels.getChannelVolume(channels.channelNumber() + 6))
+                  y = round(x,2)
+                  channels.setChannelVolume((channels.channelNumber() + 6), (y + knobinc) ) # volume values go up
 
             #knob 8
             if (event.data1 == knob8):
-               if event.data2 == 127: 
-                  channels.setChannelVolume(channels.channelNumber() + 7 ,channels.getChannelVolume(channels.channelNumber() + 7 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelVolume(channels.channelNumber() + 7))
+                  y = round(x,2)
+                  if channels.getChannelVolume(channels.channelNumber() + 7) != 0 :
+                     channels.setChannelVolume((channels.channelNumber() + 7), (y - knobinc) ) # volume values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelVolume(channels.channelNumber() + 7 ,channels.getChannelVolume(channels.channelNumber() + 7 ) + volinc) # volume values go up
+                  x = (channels.getChannelVolume(channels.channelNumber() + 7))
+                  y = round(x,2)
+                  channels.setChannelVolume((channels.channelNumber() + 7), (y + knobinc) ) # volume values go up
 
             # PAN CONTROL
 
             #sknob 1
             if (event.data1 == sknob1):
-               if event.data2 == 127: 
-                  channels.setChannelPan(channels.channelNumber() + 0 ,channels.getChannelPan(channels.channelNumber() + 0 ) - volinc) # volume values go down
-               
-               elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 0 ,channels.getChannelPan(channels.channelNumber() + 0 ) + volinc) # volume values go up
-            
+             if event.data2 == 127:
+                x = (channels.getChannelPan(channels.channelNumber() + 0))
+                #round(x,2)
+                channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
+                
+             elif event.data2 == 1:
+                x = (channels.getChannelPan(channels.channelNumber() + 0))
+                #round(x,2)
+                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up     
 
             #sknob 2
             if (event.data1 == sknob2):
-               if event.data2 == 127: 
-
-                  channels.setChannelPan(channels.channelNumber() + 1 ,channels.getChannelPan(channels.channelNumber() + 1 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelPan(channels.channelNumber() + 1))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 1), (x - knobinc) ) # pan values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 1 ,channels.getChannelPan(channels.channelNumber() + 1 ) + volinc) # volume values go up
+                  x = (channels.getChannelPan(channels.channelNumber() + 1))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 1), (x + knobinc) ) # pan values go up     
 
             #sknob 3
             if (event.data1 == sknob3):
-               if event.data2 == 127: 
-                  channels.setChannelPan(channels.channelNumber() + 2 ,channels.getChannelPan(channels.channelNumber() + 2 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelPan(channels.channelNumber() + 2))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 2), (x - knobinc) ) # pan values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 2 ,channels.getChannelPan(channels.channelNumber() + 2 ) + volinc) # volume values go up
+                  x = (channels.getChannelPan(channels.channelNumber() + 2))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 2), (x + knobinc) ) # pan values go up     
 
             #sknob 4
             if (event.data1 == sknob4):
-               if event.data2 == 127: 
-                  channels.setChannelPan(channels.channelNumber() + 3 ,channels.getChannelPan(channels.channelNumber() + 3 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelPan(channels.channelNumber() + 3))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 3), (x - knobinc) ) # pan values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 3 ,channels.getChannelPan(channels.channelNumber() + 3 ) + volinc) # volume values go up
+                  x = (channels.getChannelPan(channels.channelNumber() + 3))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 3), (x + knobinc) ) # pan values go up     
 
             #sknob 5
             if (event.data1 == sknob5):
-               if event.data2 == 127: 
-                  channels.setChannelPan(channels.channelNumber() + 4 ,channels.getChannelPan(channels.channelNumber() + 4 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelPan(channels.channelNumber() + 4))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 4), (x - knobinc) ) # pan values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 4 ,channels.getChannelPan(channels.channelNumber() + 4 ) + volinc) # volume values go up
+                  x = (channels.getChannelPan(channels.channelNumber() + 4))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 4), (x + knobinc) ) # pan values go up     
 
             #sknob 6
             if (event.data1 == sknob6):
-               if event.data2 == 127: 
-                  channels.setChannelPan(channels.channelNumber() + 5 ,channels.getChannelPan(channels.channelNumber() + 5 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :  
+               if event.data2 == 127:
+                   x = (channels.getChannelPan(channels.channelNumber() + 5))
+                  #round(x,2)
+                   channels.setChannelPan((channels.channelNumber() + 5), (x - knobinc) ) # pan values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 5 ,channels.getChannelPan(channels.channelNumber() + 5 ) + volinc) # volume values go up
+                  x = (channels.getChannelPan(channels.channelNumber() + 5))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 5), (x + knobinc) ) # pan values go up     
 
             #sknob 7
             if (event.data1 == sknob7):
-               if event.data2 == 127: 
-                  channels.setChannelPan(channels.channelNumber() + 6 ,channels.getChannelPan(channels.channelNumber() + 6 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelPan(channels.channelNumber() + 6))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 6), (x - knobinc) ) # pan values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 6 ,channels.getChannelPan(channels.channelNumber() + 6 ) + volinc) # volume values go up
+                  x = (channels.getChannelPan(channels.channelNumber() + 6))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 6), (x + knobinc) ) # pan values go up     
 
             #sknob 8
             if (event.data1 == sknob8):
-               if event.data2 == 127: 
-                  channels.setChannelPan(channels.channelNumber() + 7 ,channels.getChannelPan(channels.channelNumber() + 7 ) - volinc) # volume values go down
-
+             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :  
+               if event.data2 == 127:
+                  x = (channels.getChannelPan(channels.channelNumber() + 7))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 7), (x - knobinc) ) # pan values go down
+                
                elif event.data2 == 1:
-                  channels.setChannelPan(channels.channelNumber() + 7 ,channels.getChannelPan(channels.channelNumber() + 7 ) + volinc) # volume values go up
+                  x = (channels.getChannelPan(channels.channelNumber() + 7))
+                  #round(x,2)
+                  channels.setChannelPan((channels.channelNumber() + 7), (x + knobinc) ) # pan values go up     
 
 
      def UpdateLEDs(self):
@@ -539,20 +696,21 @@ class TKompleteBase():
                   KompleteDataOut(0x22, 0x01)
 
 
-
-
      def UpdateOLED(self):
 
-        if (ui.getFocused(0) == 1) == True: #mixer volume control
+        if ui.getFocused(0) == 1: #mixer volume control
             #spells out 'Mixer' on tracks 1 through 8 on OLED
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x00, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x01, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x02, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x03, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x04, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x05, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x06, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
-            device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x07, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7]))
+            KompleteScreenOut(0x00, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00) 
+            KompleteScreenOut(0x01, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+            KompleteScreenOut(0x02, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+            KompleteScreenOut(0x03, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+
+            KompleteScreenOut(0x04, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+            KompleteScreenOut(0x05, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+            KompleteScreenOut(0x06, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+            KompleteScreenOut(0x07, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+
+            
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
                device.midiOutSysex(bytes([0x00, 0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x00, 0x00, 0xF7]))
@@ -561,11 +719,6 @@ class TKompleteBase():
             elif mixer.isTrackEnabled(mixer.trackNumber()) == 0: #mute light on
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x01, 0x00, 0xF7]))
                KompleteDataOut(0x66, 0x01)
-            
-            #if (mixer.isTrackSolo(mixer.trackNumber()) == 1) == True: trying to figure out how to turn off solo when mute turns on the same track
-            #   if mixer.isTrackEnabled(mixer.trackNumber()) == False: 
-            #      device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
-            #      KompleteDataOut(0x69, 0x01)
 
             if (mixer.isTrackSolo(mixer.trackNumber()) == 0) == True: #solo light off
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x00, 0x00, 0xF7]))
@@ -576,7 +729,7 @@ class TKompleteBase():
                KompleteDataOut(0x69, 0x01)
 
 
-        if (ui.getFocused(1) == 1) == True: # channel rack
+        if ui.getFocused(1) == 1: # channel rack
             #spells out 'Ch. Rack' on tracks 1 through 8 on OLED
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x00, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x01, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7]))
@@ -595,10 +748,6 @@ class TKompleteBase():
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x01, 0x00, 0xF7]))
                KompleteDataOut(0x66, 0x01)
             
-            #if (mixer.isTrackSolo(mixer.trackNumber()) == 1) == True: trying to figure out how to turn off solo when mute turns on the same track
-            #   if mixer.isTrackEnabled(mixer.trackNumber()) == False: 
-            #      device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
-            #      KompleteDataOut(0x69, 0x01)
             if channels.channelCount() >= 2: 
                if (channels.isChannelSolo(channels.channelNumber()) == 0) == True: #solo light off
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x00, 0x00, 0xF7]))
@@ -608,9 +757,7 @@ class TKompleteBase():
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
                   KompleteDataOut(0x69, 0x01)
                   
-
-
-        if (ui.getFocused(2) == 1) == True: # playlist
+        if ui.getFocused(2) == 1: # playlist
             #spells out 'Playlist' on tracks 1 through 8 on OLED
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x00, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x01, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
@@ -621,7 +768,7 @@ class TKompleteBase():
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x06, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x07, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
 
-        if (ui.getFocused(3) == 11) == True: # piano roll #disabled
+        if ui.getFocused(3) == 11: # piano roll #disabled
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x00, 0x50, 0x69, 0x61, 0x6E, 0x6F, 0x20, 0x52, 0x6F, 0x6C, 0x6C, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x01, 0x50, 0x69, 0x61, 0x6E, 0x6F, 0x20, 0x52, 0x6F, 0x6C, 0x6C, 0xF7]))
@@ -632,7 +779,7 @@ class TKompleteBase():
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x06, 0x50, 0x69, 0x61, 0x6E, 0x6F, 0x20, 0x52, 0x6F, 0x6C, 0x6C, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x07, 0x50, 0x69, 0x61, 0x6E, 0x6F, 0x20, 0x52, 0x6F, 0x6C, 0x6C, 0xF7]))
 
-        if (ui.getFocused(4) == 11) == True: # piano roll # disabled 
+        if ui.getFocused(4) == 11: # piano roll # disabled 
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x00, 0x42, 0x72, 0x6F, 0x77, 0x73, 0x65, 0x72, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x01, 0x42, 0x72, 0x6F, 0x77, 0x73, 0x65, 0x72, 0xF7]))
@@ -644,11 +791,8 @@ class TKompleteBase():
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x07, 0x42, 0x72, 0x6F, 0x77, 0x73, 0x65, 0x72, 0xF7]))
 
 
-
-
-
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
-        self.UpdateLEDs(),self.UpdateOLED()
+        self.UpdateLEDs(), self.UpdateOLED()
 
 
      def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of project
