@@ -1,4 +1,4 @@
-# Native Instruments Komplete Kontrol M32 V2.9.8.1
+# Native Instruments Komplete Kontrol M32 V2.9.8.2
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**.
@@ -9,6 +9,8 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * bug fixes
 * pushing down on 4D encoder is enter, useful for plugins like Flex when you want to choose a new sound after scrolling       through using 4D encoder
 * shift + pushing down on 4D encoder toggles between open windows.
+* **clear** (**shift + stop**) functions as the escape key
+* **restart** (**shift + play**) jumps between playlist markers when playlist markers are active
 
 ## Key Features
 * **transport** works as expected (play, record, stop)
