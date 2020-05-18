@@ -85,6 +85,7 @@ def KDataOut(data11, data12):
           it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
             the STATUS of the message to BF as expected.""" 
       device.midiOutSysex(bytes([0xF0, 0xBF, data11, data12, 0xF7]))
+
       
 
 def KPrntScrn(track, let1, let2, let3, let4, let5, let6, let7, let8, let9):
@@ -673,10 +674,10 @@ class TKompleteBase():
 
             for c in loopstatus:
                if c == 0: #loop mood
-                  KDataOut(0x16, 0x00)
+                  KDataOut(0x16, 0x01)
 
                elif c == 1: #playlist mode
-                  KDataOut(0x16, 0x01)
+                  KDataOut(0x16, 0x00)
 
             for d in metrostatus:
                if d == 0: #metro off
