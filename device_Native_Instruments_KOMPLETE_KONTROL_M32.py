@@ -85,6 +85,7 @@ def KompleteDataOut(data11, data12):
           it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
             the STATUS of the message to BF as expected.""" 
       device.midiOutSysex(bytes([0xF0, 0xBF, data11, data12, 0xF7]))
+      
 
 def KompleteScreenOut(track, let1, let2, let3, let4, let5, let6, let7, let8, let9):
       """ Funtion that makes commmuication with the OLED screen easier. By just entering the data 20 of the Hex conversion of text, 
@@ -102,16 +103,21 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0xBF, 0x23, 0x00, 0x00, 0x0C, 1, 0xF7])) # auto button light fix
          device.midiOutSysex(bytes([0xBF, 0x22, 0x01])) #quantize light fix
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix         
-         print("Komplete Kontrol M32 Script - V2.9.8.1")
+         print("Komplete Kontrol M32 Script - V2.9.8.2")
+
 
          
    
      def OnMidiIn(self, event):
 
+
          #tbuttons
          if (event.data1 == playb):
             transport.start() #play
             self.UpdateLEDs()
+
+         if (event.data1 == splayb):
+            transport.markerJumpJog(1)
              
          if (event.data1 == recb):
             transport.record() #record
@@ -141,8 +147,8 @@ class TKompleteBase():
          if (event.data1 == srecb):
             transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recordin
 
-         #if (event.data1 == sstopb):
-         #   transport.globalTransport(midi.FPT_F12, 71) #clear all windows
+         if (event.data1 == sstopb):
+            ui.escape() #escape key
 
          if (event.data1 == undob):
             general.undoUp() #undo
@@ -695,6 +701,8 @@ class TKompleteBase():
               elif f != 1: #quantize on
                   KompleteDataOut(0x22, 0x01)
 
+        
+
 
      def UpdateOLED(self):
 
@@ -709,8 +717,6 @@ class TKompleteBase():
             KompleteScreenOut(0x05, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
             KompleteScreenOut(0x06, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
             KompleteScreenOut(0x07, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
-
-            
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
                device.midiOutSysex(bytes([0x00, 0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x00, 0x00, 0xF7]))
@@ -756,7 +762,9 @@ class TKompleteBase():
                elif (channels.isChannelSolo(channels.channelNumber()) == 1) == True: #solo light on
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
                   KompleteDataOut(0x69, 0x01)
-                  
+
+
+
         if ui.getFocused(2) == 1: # playlist
             #spells out 'Playlist' on tracks 1 through 8 on OLED
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x00, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
@@ -767,6 +775,8 @@ class TKompleteBase():
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x05, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x06, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
             device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, 0x07, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7]))
+
+
 
         if ui.getFocused(3) == 11: # piano roll #disabled
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
@@ -803,6 +813,9 @@ class TKompleteBase():
          elif Value == 0:
             KompleteDataOut(0x10, 0x00) #play light dim
 
+     def OnIdle():
+         self.UpdateLEDs(), self.UpdateOLED()
+
 
 
 
@@ -815,6 +828,9 @@ def OnInit():
 def OnRefresh(Flags):
    KompleteBase.OnRefresh(Flags)
 
+def OnIdle():
+   KompleteBase.OnIdle
+
 def OnUpdateBeatIndicator(Value):
 	KompleteBase.OnUpdateBeatIndicator(Value)
 
@@ -822,6 +838,6 @@ def OnMidiIn(event):
 	KompleteBase.OnMidiIn(event)
 
 def OnDeInit():
-      if ui.isClosing():
-                  # Command to stop the protocol
-                  KompleteDataOut(0x02, 0x01), KompleteBase.OnDeInit()	
+   if ui.isClosing():
+      # Command to stop the protocol
+      KompleteDataOut(0x02, 0x01), KompleteBase.OnDeInit()	
