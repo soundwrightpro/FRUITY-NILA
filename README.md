@@ -10,7 +10,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * pushing down on 4D encoder is enter, useful for plugins like Flex when you want to choose a new sound after scrolling       through using 4D encoder
 * shift + pushing down on 4D encoder toggles between open windows.
 * **clear** (**shift + stop**) functions as the escape key
-* **restart** (**shift + play**) jumps between playlist markers when playlist markers are active
+* **restart** (**shift + play**) save!
 
 ## Key Features
 * **transport** works as expected (play, record, stop)
