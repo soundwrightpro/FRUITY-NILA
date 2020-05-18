@@ -1,4 +1,4 @@
-# Native Instruments Komplete Kontrol M32 V2.9.8
+# Native Instruments Komplete Kontrol M32 V2.9.8.1
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**.
