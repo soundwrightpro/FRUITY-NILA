@@ -133,7 +133,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
          print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
-         print("Komplete Kontrol M32 Script - V2.9.8.5 BETA by Duwayne 'Sound' Wright.")
+         print("Komplete Kontrol M32 Script - V2.9.9 by Duwayne 'Sound' Wright.")
 
 
      def OnMidiIn(self, event):
