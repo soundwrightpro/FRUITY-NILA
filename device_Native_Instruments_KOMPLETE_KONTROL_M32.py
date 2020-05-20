@@ -133,7 +133,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
          print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
-         print("Komplete Kontrol M32 Script - V2.9.9 by Duwayne 'Sound' Wright.")
+         print("Komplete Kontrol M32 Script - V2.9.8.5 BETA by Duwayne 'Sound' Wright.")
 
 
      def OnMidiIn(self, event):
@@ -803,32 +803,32 @@ class TKompleteBase():
             else:
                KPrntScrn(1, " ")
 
-            if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-1) :
+            if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
                KPrntScrn(2, "C: " + channels.getChannelName(channels.channelNumber() + 2))
             else:
                KPrntScrn(2, " ")
 
-            if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-1) :
+            if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
                KPrntScrn(3, "C: " + channels.getChannelName(channels.channelNumber() + 3))
             else:
                KPrntScrn(3, " ")
                
-            if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-1) :
+            if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
                KPrntScrn(4, "C: " + channels.getChannelName(channels.channelNumber() + 4))
             else:
                KPrntScrn(4, " ")
                
-            if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-1) :
+            if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
                KPrntScrn(5, "C: " + channels.getChannelName(channels.channelNumber() + 5))
             else:
                KPrntScrn(5, " ")
                
-            if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-1) :
+            if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
                KPrntScrn(6, "C: " + channels.getChannelName(channels.channelNumber() + 6))
             else:
                KPrntScrn(6, " ")
                
-            if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-1) :
+            if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
                KPrntScrn(7, "C: " + channels.getChannelName(channels.channelNumber() + 7))
             else:
                KPrntScrn(7, " ")
