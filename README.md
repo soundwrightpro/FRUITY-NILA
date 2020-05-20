@@ -1,16 +1,11 @@
-# Native Instruments Komplete Kontrol M32 V2.9.8.2
+# Native Instruments Komplete Kontrol M32 V2.9.9
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**.
 
-# What's new since 2.9.4
-* OLED - shows what module window is open, **Mixer**, **Playlist**, **Piano Roll**, **Browser**, **Channel Rack**
-* OLED - **Mute** & **Solo** light up for Channel Rack 
-* bug fixes
-* pushing down on 4D encoder is enter, useful for plugins like Flex when you want to choose a new sound after scrolling       through using 4D encoder
-* shift + pushing down on 4D encoder toggles between open windows.
-* **clear** (**shift + stop**) functions as the escape key
-* **restart** (**shift + play**) save!
+# What's new since 2.9.8.2
+* **Channel and Mixer track names** on the OLED. For Mixer, all track names start with "M: " and for the Channel Rack all track names start with "C: "
+
 
 ## Key Features
 * **transport** works as expected (play, record, stop)
@@ -32,10 +27,15 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
   * if FL Studio is active (you can tell if **Scale** & **Arp** buttons are not lit) press in this order, 
     **Instance (Shift+Track)**, **PLUG-IN MIDI**. Knob function has now returned to the Komplete Kontrol Plugin.
   * if you want to assign the eight knobs yourself, go to **MIDI Mode**. To do this hold shift and press **MIDI**. Assign the knobs as you wish. You have four pages of knobs to do so. To return to full control mode, Press **TRACK**
+* OLED - shows what module window is open with  **Playlist**, **Piano Roll**, **Browser**, **Channel Rack**
+* OLED - **Mute** & **Solo** light up for Channel Rack 
+* pushing down on 4D encoder is enter, useful for plugins like Flex when you want to choose a new sound after scrolling       through using 4D encoder
+* shift + pushing down on 4D encoder toggles between open windows.
+* **clear** (**shift + stop**) functions as the escape key
+* **restart** (**shift + play**) save!  
 
 ## Known Issues
 * **clear** (**shift + stop**) closes all windows has a bug when plugins are opened. temp disabled - todo
-* OLED doesn't change status at all - todo
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 * **volume** displayed on OLED screen isn't correct - temp disabled - todo
 * **mute** and **solo** can be engaged at the same time - todo
