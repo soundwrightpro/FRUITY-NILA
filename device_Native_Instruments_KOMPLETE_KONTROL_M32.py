@@ -10,7 +10,6 @@
 
 
 #custom fl script modules
-
 import patterns
 import channels
 import mixer
@@ -26,6 +25,7 @@ import midi
 import utils
 import time
 import sys
+import binascii
 
 #button values
 playb = 16 # play button 
@@ -78,37 +78,65 @@ down = 1
 #knob increment value
 knobinc = 0.01
 
+#on/off values
+on = 1
+off = 0
+
+
+
 #function to make talking to the keyboard less annoying
 def KDataOut(data11, data12):
    
       """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
           it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
             the STATUS of the message to BF as expected.""" 
-      device.midiOutSysex(bytes([0xF0, 0xBF, data11, data12, 0xF7]))
-
+      convertmsg = [240, 191, data11, data12]
+      msgtom32 = bytearray(convertmsg)
+      device.midiOutSysex(bytes(msgtom32))
       
 
-def KPrntScrn(track, let1, let2, let3, let4, let5, let6, let7, let8, let9):
-      """ Funtion that makes commmuication with the OLED screen easier. By just entering the data 20 of the Hex conversion of text, 
-          it composes the full message in forther to satisfy the syntax required by the midiOut functions. data20 is the track 
-          number and what follows is the word to print on the screen""" 
-      device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x48, 0x00, track, let1, let2, let3, let4, let5, let6, let7, let8, let9]))
+def KPrntScrn(trkn, word):
+      """ funtion that makes sendinig track titles to the OLED screen easter"""
+      if word == "Current": #FL Studio has a hidden current Channel at track 126; I've hidden it to eliminate confusion.
+         word = " "
 
+      lettersh = [] 
+      header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 72, 0] #required header in message to tell m32 where to place track title
+      n = 0
+      m = 0
+      letters = list(word) #convert word into letters in array
+
+      while n < len(letters): #convert letters in array to integer representing the Unicode character
+         lettersh.append(ord(letters[n]))
+         n += 1
+         
+      header.append(trkn) #adding track number to header at the end 
+
+      while m < len(lettersh): #combining header array and unicode value array together; just makes it easier to send to device
+         header.append(lettersh[m])
+         m += 1 
+
+      header.append(247) #tells m32, that's it that's the whole word
+      
+      device.midiOutSysex(bytes(header)) #send unicode values as bytes to OLED screen
+      
 
 class TKompleteBase():
 
      def OnInit(self):
-         KDataOut(0x15, 0x01) #clear light on
-         KDataOut(0x20, 0x01) #undo light on
-         KDataOut(0x21, 0x01) #undo light on
+         KDataOut(21, 1) #clear light on
+         KDataOut(31, 1) #undo light on
+         KDataOut(33, 1) #redo light on
+
          device.midiOutSysex(bytes([0xF0, 0xBF, 0x23, 0x00, 0x00, 0x0C, 1, 0xF7])) # auto button light fix
          device.midiOutSysex(bytes([0xBF, 0x22, 0x01])) #quantize light fix
-         device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix         
-         print("Komplete Kontrol M32 Script - V2.9.8.2")
+         device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
-   
+         print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
+         print("Komplete Kontrol M32 Script - V2.9.9 by Duwayne 'Sound' Wright.")
+
+
      def OnMidiIn(self, event):
-
 
          #tbuttons
          if (event.data1 == playb):
@@ -223,103 +251,125 @@ class TKompleteBase():
             # VOLUME CONTROL
 
             #knob 1
-            if (event.data1 == knob1):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 126:
+               if (event.data1 == knob1):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
 
 
             #knob 2
-            if (event.data1 == knob2):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 125:
+               if (event.data1 == knob2):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrn(2, ' ')
 
             #knob 3
-            if (event.data1 == knob3):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 2), x - knobinc ) # volume values go down
+            if mixer.trackNumber() <= 124:
+               if (event.data1 == knob3):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 2), x + knobinc ) # volume values go up
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrn(3, ' ')
 
             #knob 4
-            if (event.data1 == knob4):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 3), x - knobinc ) # volume values go down
+            if mixer.trackNumber() <= 123:
+               if (event.data1 == knob4):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 3), x + knobinc ) # volume values go up
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrn(4, ' ')
 
             #knob5
-            if (event.data1 == knob5):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 4), x - knobinc ) # volume values go down
+            if mixer.trackNumber() <= 122:
+               if (event.data1 == knob5):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 4), x + knobinc ) # volume values go up
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrn(5, ' ')
 
             #knob 6
-            if (event.data1 == knob6):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 5), x - knobinc ) # volume values go down
+            if mixer.trackNumber() <= 121:
+               if (event.data1 == knob6):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 5), x + knobinc ) # volume values go up
-                
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrn(6, ' ')     
+
             #knob 7
-            if (event.data1 == knob7):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 6), x - knobinc ) # volume values go down
+            if mixer.trackNumber() <= 120:
+               if (event.data1 == knob7):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 6), x + knobinc ) # volume values go up
-
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrn(7, ' ')     
+                          
             #knob 8
-            if (event.data1 == knob8):
-             if event.data2 == 127:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 7), x - knobinc ) # volume values go down
+            if mixer.trackNumber() <= 119:
+               if (event.data1 == knob8):
+                if event.data2 == 127:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
-                round(x,2)
-                mixer.setTrackVolume((mixer.trackNumber() + 7), x + knobinc ) # volume values go up
-
-
+                elif event.data2 == 1:
+                   x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
+                   round(x,2)
+                   mixer.setTrackVolume((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrn(8, ' ')     
+                          
+               
             # PAN CONTROL
 
             #sknob 1
@@ -421,8 +471,6 @@ class TKompleteBase():
 
 
          elif ui.getFocused(0) == 0: # channel rack
-
-
 
             # VOLUME CONTROL
 
@@ -660,118 +708,162 @@ class TKompleteBase():
 
             for a in playstatus:
               if a == 0: #not playing
-                  KDataOut(0x14, 0x01) #stop on
+                  KDataOut(stopb, on) #stop on
 
               elif a == 1: #playing
-                  KDataOut(0x14, 0x00) #stop off
+                  KDataOut(stopb, off) #stop off
 
             for b in recstatus:
                if b == 0: #not recording
-                  KDataOut(0x12, 0x00)
+                  KDataOut(recb, off)
 
                elif b == 1: #recording
-                  KDataOut(0x12, 0x01)
+                  KDataOut(recb, on)
 
             for c in loopstatus:
                if c == 0: #loop mood
-                  KDataOut(0x16, 0x01)
+                  KDataOut(loopb, on)
 
                elif c == 1: #playlist mode
-                  KDataOut(0x16, 0x00)
+                  KDataOut(loopb, off)
 
             for d in metrostatus:
                if d == 0: #metro off
-                  KDataOut(0x17, 0x00)
+                  KDataOut(metrob, off)
 
                elif d == 1: #metro on
-                  KDataOut(0x17, 0x01)
+                  KDataOut(metrob, on)
 
             for e in prestatus:
               if e == 0: #pre count on
-                  KDataOut(0x13, 0x00) 
+                  KDataOut(srecb, off) 
 
               elif e == 1: #pre count off
-                  KDataOut(0x13, 0x01) 
+                  KDataOut(srecb, on) 
 
             for f in quanstatus:
               if f == 3: #quantize off
-                  KDataOut(0x22, 0x00)
+                  KDataOut(quantizeb, off)
 
               elif f != 1: #quantize on
-                  KDataOut(0x22, 0x01)
+                  KDataOut(quantizeb, on)
 
 
      def UpdateOLED(self):
 
         if ui.getFocused(0) == 1: #mixer volume control
-            #spells out 'Mixer' on tracks 1 through 8 on OLED
-            KPrntScrn(0x00, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00) 
-            KPrntScrn(0x01, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
-            KPrntScrn(0x02, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
-            KPrntScrn(0x03, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+            if mixer.trackNumber() <= 126:
+               KPrntScrn(0, "M: " + mixer.getTrackName(mixer.trackNumber() + 0))
 
-            KPrntScrn(0x04, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
-            KPrntScrn(0x05, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
-            KPrntScrn(0x06, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
-            KPrntScrn(0x07, 0x4D, 0x69, 0x78, 0x65, 0x72, 0xF7, 0x00, 0x00, 0x00)
+            if mixer.trackNumber() <= 125:
+               KPrntScrn(1, "M: " + mixer.getTrackName(mixer.trackNumber() + 1))
+
+            if mixer.trackNumber() <= 124:
+               KPrntScrn(2, "M: " + mixer.getTrackName(mixer.trackNumber() + 2))
+
+            if mixer.trackNumber() <= 123:
+               KPrntScrn(3, "M: " + mixer.getTrackName(mixer.trackNumber() + 3))
+
+            if mixer.trackNumber() <= 122:
+               KPrntScrn(4, "M: " + mixer.getTrackName(mixer.trackNumber() + 4))
+
+            if mixer.trackNumber() <= 121:
+               KPrntScrn(5, "M: " + mixer.getTrackName(mixer.trackNumber() + 5))
+
+            if mixer.trackNumber() <= 120:
+               KPrntScrn(6, "M: " + mixer.getTrackName(mixer.trackNumber() + 6))
+
+            if mixer.trackNumber() <= 119:
+               KPrntScrn(7, "M: " + mixer.getTrackName(mixer.trackNumber() + 7))
+               
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
                device.midiOutSysex(bytes([0x00, 0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x00, 0x00, 0xF7]))
-               KDataOut(0x66, 0x00)
+               KDataOut(102, off)
                
             elif mixer.isTrackEnabled(mixer.trackNumber()) == 0: #mute light on
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x01, 0x00, 0xF7]))
-               KDataOut(0x66, 0x01)
+               KDataOut(102, on)
 
             if (mixer.isTrackSolo(mixer.trackNumber()) == 0) == True: #solo light off
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x00, 0x00, 0xF7]))
-               KDataOut(0x69, 0x00)
+               KDataOut(105, off)
 
             elif (mixer.isTrackSolo(mixer.trackNumber()) == 1) == True: #solo light on
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
-               KDataOut(0x69, 0x01)
+               KDataOut(105, on)
 
 
         if ui.getFocused(1) == 1: # channel rack
-            #spells out 'Ch. Rack' on tracks 1 through 8 on OLED
-            KPrntScrn(0x00, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
-            KPrntScrn(0x01, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
-            KPrntScrn(0x02, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
-            KPrntScrn(0x03, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
-            KPrntScrn(0x04, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
-            KPrntScrn(0x05, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
-            KPrntScrn(0x06, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
-            KPrntScrn(0x07, 0x43, 0x68, 0x2E, 0x20, 0x52, 0x61, 0x63, 0x6B, 0xF7)
+
+            KPrntScrn(0, "C: " + channels.getChannelName(channels.channelNumber() + 0))
+
+            if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(1, "C: " + channels.getChannelName(channels.channelNumber() + 1))
+            else:
+               KPrntScrn(1, " ")
+
+            if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(2, "C: " + channels.getChannelName(channels.channelNumber() + 2))
+            else:
+               KPrntScrn(2, " ")
+
+            if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(3, "C: " + channels.getChannelName(channels.channelNumber() + 3))
+            else:
+               KPrntScrn(3, " ")
+               
+            if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(4, "C: " + channels.getChannelName(channels.channelNumber() + 4))
+            else:
+               KPrntScrn(4, " ")
+               
+            if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(5, "C: " + channels.getChannelName(channels.channelNumber() + 5))
+            else:
+               KPrntScrn(5, " ")
+               
+            if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(6, "C: " + channels.getChannelName(channels.channelNumber() + 6))
+            else:
+               KPrntScrn(6, " ")
+               
+            if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(7, "C: " + channels.getChannelName(channels.channelNumber() + 7))
+            else:
+               KPrntScrn(7, " ")
+
 
             if channels.isChannelMuted(channels.channelNumber()) == 1: #mute light off
                device.midiOutSysex(bytes([0x00, 0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x00, 0x00, 0xF7]))
-               KDataOut(0x66, 0x00)
+               KDataOut(102, off)
                
             elif channels.isChannelMuted(channels.channelNumber()) == 0: #mute light on
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x01, 0x00, 0xF7]))
-               KDataOut(0x66, 0x01)
+               KDataOut(102, on)
             
             if channels.channelCount() >= 2: 
                if (channels.isChannelSolo(channels.channelNumber()) == 0) == True: #solo light off
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x00, 0x00, 0xF7]))
-                  KDataOut(0x69, 0x00)
+                  KDataOut(105, off)
 
                elif (channels.isChannelSolo(channels.channelNumber()) == 1) == True: #solo light on
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
-                  KDataOut(0x69, 0x01)
+                  KDataOut(105, on)
 
 
 
         if ui.getFocused(2) == 1: # playlist
             #spells out 'Playlist' on tracks 1 through 8 on OLED
-            KPrntScrn(0x00, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
-            KPrntScrn(0x01, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
-            KPrntScrn(0x02, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
-            KPrntScrn(0x03, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
-            KPrntScrn(0x04, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
-            KPrntScrn(0x05, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
-            KPrntScrn(0x06, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
-            KPrntScrn(0x07, 0x50, 0x6C, 0x61, 0x79, 0x6C, 0x69, 0x73, 0x74, 0xF7)
+            KPrntScrn(0, "Playlist")
+            KPrntScrn(1, "Playlist")
+            KPrntScrn(2, "Playlist")
+            KPrntScrn(3, "Playlist")
+            KPrntScrn(4, "Playlist")
+            KPrntScrn(5, "Playlist")
+            KPrntScrn(6, "Playlist")
+            KPrntScrn(7, "Playlist")
+
 
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
@@ -780,15 +872,17 @@ class TKompleteBase():
 
      def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of project
          if Value == 1:
-            KDataOut(0x10, 0x01) #play light bright
+            KDataOut(playb, on) #play light bright
          elif Value == 2:
-            KDataOut(0x10, 0x01) #play light bright
+            KDataOut(playb, on) #play light bright
          elif Value == 0:
-            KDataOut(0x10, 0x00) #play light dim
+            KDataOut(playb, off) #play light dim
 
 
      def OnIdle():
          self.UpdateLEDs(), self.UpdateOLED()
+
+      
 
 
 
@@ -797,7 +891,7 @@ KompleteBase = TKompleteBase()
 
 def OnInit():
    # command to initialize the protocol handshake
-   KDataOut(0x01, 0x01), KompleteBase.OnInit()
+   KDataOut(1, 1), KompleteBase.OnInit()
 
 def OnRefresh(Flags):
    KompleteBase.OnRefresh(Flags)
@@ -814,4 +908,4 @@ def OnMidiIn(event):
 def OnDeInit():
    if ui.isClosing():
       # Command to stop the protocol
-      KDataOut(0x02, 0x01), KompleteBase.OnDeInit()	
+      KDataOut(2, 1), KompleteBase.OnDeInit()	
