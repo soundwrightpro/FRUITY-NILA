@@ -6,7 +6,6 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 # What's new since 2.9.8.2
 * **Channel and Mixer track names** on the OLED. For Mixer, all track names start with "M: " and for the Channel Rack all track names start with "C: "
 
-
 ## Key Features
 * **transport** works as expected (play, record, stop)
 * **count-in** - toggles countdown before recording
@@ -40,6 +39,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * **volume** displayed on OLED screen isn't correct - temp disabled - todo
 * **mute** and **solo** can be engaged at the same time - todo
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa. Something is wrong with, script Image-Line is aware of the problem. Currently awaiting response - todo
+* When a track/channel name is longer than 8 characters on the mixer/channel, an automatic shortening is applied to the name. The colon and/or space for "M:" or "C:" may disappear. This is unavoidable.
 
 
 ## Installation
