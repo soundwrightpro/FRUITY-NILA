@@ -110,12 +110,12 @@ def KPrntScrn(trkn, word):
 
       letters = list(word) #convert word into letters in array
 
-      if len(letters) <= 12:
+      if len(letters) <= 10:
          while n < len(letters): #convert letters in array to integer representing the Unicode character
             lettersh.append(ord(letters[n]))
             n += 1
       else:
-         while n < 13: #convert letters in array to integer representing the Unicode character
+         while n < 11: #convert letters in array to integer representing the Unicode character
             lettersh.append(ord(letters[n]))
             n += 1
          
@@ -144,7 +144,7 @@ def KPrntScrnVol(trkn, vol):
       m = 0
 
       if vol == 0:
-         volk = "- inf dB"
+         volk = "- oo dB"
          letters = list(volk) 
 
          while n < len(volk):
@@ -258,7 +258,7 @@ class TKompleteBase():
          if (event.data1 == playb):
             transport.start() #play
             self.UpdateLEDs()
-            ui.setHintMsg("Play")
+            ui.setHintMsg("Play/Pause")
 
          if (event.data1 == splayb):
             transport.globalTransport(midi.FPT_Save, 92)
@@ -267,6 +267,7 @@ class TKompleteBase():
          if (event.data1 == recb):
             transport.record() #record
             self.UpdateLEDs()
+            ui.setHintMsg("Record")
 
          if (event.data1 == stopb):
             transport.stop() #stop
@@ -276,23 +277,28 @@ class TKompleteBase():
          if (event.data1 == loopb):
             transport.setLoopMode() #loop/pattern mode
             self.UpdateLEDs()
+            ui.setHintMsg("Song / pattern mode")
             
 
          if (event.data1 == metrob): # metronome/button
             transport.globalTransport(midi.FPT_Metronome, 110)
             self.UpdateLEDs()
+            ui.setHintMsg("Metronome")
             
          if (event.data1 == tempob):
             transport.stop() #tap tempo
 
          if (event.data1 == quantizeb):
             transport.globalTransport(midi.FPT_Snap, 48) #snap toggle
+            ui.setHintMsg("Quantize")
 
          if (event.data1 == squantizeb):
-            ui.snapMode(1) #snap toggle     
+            ui.snapMode(1) #snap toggle
+            ui.setHintMsg("Snap Type")  
 
          if (event.data1 == srecb):
-            transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recordin
+            transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recording
+            ui.setHintMsg("Countdown before recording") 
 
          if (event.data1 == sstopb):
             ui.escape() #escape key
@@ -326,11 +332,13 @@ class TKompleteBase():
             if ui.getFocused(0) == 1: #mixer volume control
                mixer.enableTrack(mixer.trackNumber()) #mute 
                self.UpdateOLED()
+               ui.setHintMsg("Mute")
 
             elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 2: 
                   channels.muteChannel(channels.channelNumber()) 
                   self.UpdateOLED()
+                  ui.setHintMsg("Mute")
                
             elif ui.getFocused(0) == 2: # playlist
                #playlist.muteTrack() disabled, doesn't work as expected
@@ -340,11 +348,13 @@ class TKompleteBase():
             if ui.getFocused(0) == 1: #mixer volume control
                mixer.soloTrack(mixer.trackNumber()) #solo
                self.UpdateOLED()
+               ui.setHintMsg("Solo")
 
             elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 2: 
                   channels.soloChannel(channels.channelNumber()) 
                   self.UpdateOLED()
+                  ui.setHintMsg("Solo")
                
             elif ui.getFocused(0) == 2: # playlist
                #playlist.soloTrack() need a way to track what playlist tracks
