@@ -102,13 +102,12 @@ def KPrntScrn(trkn, word):
 
       """ funtion that makes sendinig track titles to the OLED screen easier"""
 
-      if word == "M: Current": #FL Studio has a hidden current Channel at track 126; I've hidden it to eliminate confusion.
-         word = " "
-
       lettersh = [] 
       header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 72, 0] #required header in message to tell m32 where to place track title
+
       n = 0
       m = 0
+
       letters = list(word) #convert word into letters in array
 
       while n < len(letters): #convert letters in array to integer representing the Unicode character
@@ -147,7 +146,7 @@ def KPrntScrnVol(trkn, vol):
             lettersh.append(ord(letters[n]))
             n += 1
  
-      elif vol >= 0.01:
+      elif vol >= 0.01 and vol <= 2.00: 
          
          volk = u'%d%%' % round((vol*100),2)
          letters = list(volk) 
@@ -155,6 +154,14 @@ def KPrntScrnVol(trkn, vol):
          while n < len(volk):
             lettersh.append(ord(letters[n]))
             n += 1
+
+      elif vol >= 103:
+         volk = "N/A"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1   
 
       header.append(trkn)
       
@@ -198,7 +205,7 @@ def KPrntScrnPan(trkn, pan):
             lettersh.append(ord(letters[n]))
             n += 1
 
-      elif pan > 0:
+      elif pan > 0 and pan < 101:
          
          volk = u'%d%% Right' % round((pan),2)
          letters = list(volk) 
@@ -206,6 +213,14 @@ def KPrntScrnPan(trkn, pan):
          while n < len(volk):
             lettersh.append(ord(letters[n]))
             n += 1 
+
+      elif pan >= 103:
+         volk = "N/A"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1        
 
       while m < len(lettersh):
          header.append(lettersh[m])
@@ -379,9 +394,6 @@ class TKompleteBase():
                    mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
                    KPrntScrnVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
 
-            elif mixer.trackNumber() <= 127:    
-               KPrntScrn(2, ' ')
-               KPrntScrnVol(2, 0)
 
             #knob 3
             if mixer.trackNumber() <= 124:
@@ -400,7 +412,7 @@ class TKompleteBase():
 
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(3, ' ')
-               KPrntScrnVol(3, 0)
+               KPrntScrnVol(3, 104)
 
             #knob 4
             if mixer.trackNumber() <= 123:
@@ -419,7 +431,7 @@ class TKompleteBase():
 
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(4, ' ')
-               KPrntScrnVol(4, 0)
+               KPrntScrnVol(4, 104)
 
             #knob5
             if mixer.trackNumber() <= 122:
@@ -438,7 +450,7 @@ class TKompleteBase():
 
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(5, ' ')
-               KPrntScrnVol(5, 0)
+               KPrntScrnVol(5, 104)
 
             #knob 6
             if mixer.trackNumber() <= 121:
@@ -457,7 +469,7 @@ class TKompleteBase():
 
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(6, ' ')
-               KPrntScrnVol(6, 0)     
+               KPrntScrnVol(6, 104)     
 
             #knob 7
             if mixer.trackNumber() <= 120:
@@ -476,7 +488,7 @@ class TKompleteBase():
 
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(7, ' ')
-               KPrntScrnVol(7, 0)     
+               KPrntScrnVol(7, 104)     
                           
             #knob 8
             if mixer.trackNumber() <= 119:
@@ -515,7 +527,7 @@ class TKompleteBase():
                      KPrntScrnPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(0, 0)
+               KPrntScrnVol(0, 104)
 
             #sknob 2
             if mixer.trackNumber() <= 125:
@@ -533,7 +545,11 @@ class TKompleteBase():
                      KPrntScrnPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(1, 0)
+               KPrntScrnVol(1, 104)
+
+            elif mixer.trackNumber() + 1 == mixer.trackNumber(126):
+               mixer.setTrackVolume(126, 1)
+               mixer.setTrackPan(126, 0)
 
             #sknob 3
             if mixer.trackNumber() <= 124:
@@ -551,7 +567,7 @@ class TKompleteBase():
                      KPrntScrnPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(2, 0)
+               KPrntScrnVol(2, 104)
 
             #sknob 4
             if mixer.trackNumber() <= 123:
@@ -569,7 +585,7 @@ class TKompleteBase():
                      KPrntScrnPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(3, 0)
+               KPrntScrnVol(3, 104)
 
             #sknob 5
             if mixer.trackNumber() <= 122:
@@ -587,7 +603,7 @@ class TKompleteBase():
                      KPrntScrnPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(4, 0)
+               KPrntScrnVol(4, 104)
 
             #sknob 6
             if mixer.trackNumber() <= 121:
@@ -605,7 +621,7 @@ class TKompleteBase():
                      KPrntScrnPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(5, 0)
+               KPrntScrnVol(5, 104)
 
             #sknob 7
             if mixer.trackNumber() <= 120:
@@ -623,7 +639,7 @@ class TKompleteBase():
                      KPrntScrnPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(6, 0)
+               KPrntScrnVol(6, 104)
 
             #sknob 8
             if mixer.trackNumber() <= 119:
@@ -641,7 +657,11 @@ class TKompleteBase():
                      KPrntScrnPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
 
             elif mixer.trackNumber() <= 127:    
-               KPrntScrnVol(7, 0)
+               KPrntScrnVol(7, 104)
+
+
+
+
 
 
          elif ui.getFocused(0) == 0: # channel rack
@@ -1034,8 +1054,8 @@ class TKompleteBase():
                KPrntScrnPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
             else:
                KPrntScrn(1, " ")
-               KPrntScrnVol(0, 0)
-               KPrntScrnPan(0, 0)
+               KPrntScrnVol(0, 104)
+               KPrntScrnPan(0, 104)
 
             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
                KPrntScrn(1, "C: " + channels.getChannelName(channels.channelNumber() + 1))
@@ -1043,8 +1063,8 @@ class TKompleteBase():
                KPrntScrnPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
             else:
                KPrntScrn(1, " ")
-               KPrntScrnVol(1, 0)
-               KPrntScrnPan(1, 0)
+               KPrntScrnVol(1, 104)
+               KPrntScrnPan(1, 104)
 
             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
                KPrntScrn(2, "C: " + channels.getChannelName(channels.channelNumber() + 2))
@@ -1052,8 +1072,8 @@ class TKompleteBase():
                KPrntScrnPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
             else:
                KPrntScrn(2, " ")
-               KPrntScrnVol(2, 0)
-               KPrntScrnPan(2, 0)
+               KPrntScrnVol(2, 104)
+               KPrntScrnPan(2, 104)
                
             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
                KPrntScrn(3, "C: " + channels.getChannelName(channels.channelNumber() + 3))
@@ -1061,8 +1081,8 @@ class TKompleteBase():
                KPrntScrnPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
             else:
                KPrntScrn(3, " ")
-               KPrntScrnVol(3, 0)
-               KPrntScrnPan(3, 0)
+               KPrntScrnVol(3, 104)
+               KPrntScrnPan(3, 104)
                
             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
                KPrntScrn(4, "C: " + channels.getChannelName(channels.channelNumber() + 4))
@@ -1070,8 +1090,8 @@ class TKompleteBase():
                KPrntScrnPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
             else:
                KPrntScrn(4, " ")
-               KPrntScrnVol(4, 0)
-               KPrntScrnPan(4, 0)
+               KPrntScrnVol(4, 104)
+               KPrntScrnPan(4, 104)
                
             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
                KPrntScrn(5, "C: " + channels.getChannelName(channels.channelNumber() + 5))
@@ -1079,8 +1099,8 @@ class TKompleteBase():
                KPrntScrnPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
             else:
                KPrntScrn(5, " ")
-               KPrntScrnVol(5, 0)
-               KPrntScrnPan(5, 0)
+               KPrntScrnVol(5, 104)
+               KPrntScrnPan(5, 104)
                
             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
                KPrntScrn(6, "C: " + channels.getChannelName(channels.channelNumber() + 6))
@@ -1088,8 +1108,8 @@ class TKompleteBase():
                KPrntScrnPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
             else:
                KPrntScrn(6, " ")
-               KPrntScrnVol(6, 0)
-               KPrntScrnPan(6, 0)
+               KPrntScrnVol(6, 104)
+               KPrntScrnPan(6, 104)
                
             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
                KPrntScrn(7, "C: " + channels.getChannelName(channels.channelNumber() + 7))
@@ -1097,8 +1117,8 @@ class TKompleteBase():
                KPrntScrnPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
             else:
                KPrntScrn(7, " ")
-               KPrntScrnVol(7, 0)
-               KPrntScrnPan(7, 0)
+               KPrntScrnVol(7, 104)
+               KPrntScrnPan(7, 104)
 
 
             if channels.isChannelMuted(channels.channelNumber()) == 1: #mute light off
@@ -1128,6 +1148,8 @@ class TKompleteBase():
             KPrntScrn(5, "Playlist")
             KPrntScrn(6, "Playlist")
             KPrntScrn(7, "Playlist")
+            KPrntScrnVol(0, 104)
+            KPrntScrnPan(0, 104)
 
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
