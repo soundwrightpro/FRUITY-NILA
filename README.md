@@ -1,4 +1,4 @@
-# Native Instruments Komplete Kontrol M32 V3.0.0
+# Native Instruments Komplete Kontrol M32 V3.0.1
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**.
@@ -6,6 +6,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 # What's new since 2.9.9
 * **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
 * interact with something on the keyboard, it displays what it is in the hint bar 
+* don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
 * bug fixes 
 
 ## Key Features
