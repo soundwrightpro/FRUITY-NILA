@@ -253,9 +253,11 @@ class TKompleteBase():
          if (event.data1 == playb):
             transport.start() #play
             self.UpdateLEDs()
+            ui.setHintMsg("Play")
 
          if (event.data1 == splayb):
             transport.globalTransport(midi.FPT_Save, 92)
+            ui.setHintMsg("Save")
              
          if (event.data1 == recb):
             transport.record() #record
@@ -264,10 +266,12 @@ class TKompleteBase():
          if (event.data1 == stopb):
             transport.stop() #stop
             self.UpdateLEDs()
+            ui.setHintMsg("Stop")
 
          if (event.data1 == loopb):
             transport.setLoopMode() #loop/pattern mode
             self.UpdateLEDs()
+            
 
          if (event.data1 == metrob): # metronome/button
             transport.globalTransport(midi.FPT_Metronome, 110)
@@ -287,12 +291,15 @@ class TKompleteBase():
 
          if (event.data1 == sstopb):
             ui.escape() #escape key
+            ui.setHintMsg("esc")
 
          if (event.data1 == undob):
-            general.undoUp() #undo
+            general.undoUp() #undo 
+            ui.setHintMsg(ui.getHintMsg())
 
          if (event.data1 == sundob):
             general.undo() #redo
+            ui.setHintMsg(ui.getHintMsg())
 
          if (event.data1 == squantizeb):
             transport.globalTransport(midi.FPT_SnapMode, 49, event.pmeFlags) #snap toggle
@@ -303,9 +310,11 @@ class TKompleteBase():
 
          if (event.data1 == knobp):
             ui.enter()
+            ui.setHintMsg("enter")
 
          if (event.data1 == sknobp):
             ui.nextWindow()
+            ui.setHintMsg("Next Window")
 
          #mute and solo for playlist, mixer and channel rack
          if (event.data1 == muteb):
