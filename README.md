@@ -5,6 +5,7 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 
 # What's new since 2.9.9
 * **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
+* interact with something on the keyboard, it displays what it is in the hint bar 
 * bug fixes 
 
 ## Key Features
