@@ -1,10 +1,10 @@
-# Native Instruments Komplete Kontrol M32 V2.9.9
+# Native Instruments Komplete Kontrol M32 V3.0.0
 Written by Duwayne 'Sound' Wright
 
 Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**.
 
-# What's new since 2.9.8.2
-* **channel and mixer track names** on the OLED. For the Mixer all track names start with "M: " and for the Channel Rack all track names start with "C: ". Tap on a knob to see the name of what it controls.
+# What's new since 2.9.9
+* **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
 * bug fixes 
 
 ## Key Features
@@ -32,15 +32,17 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 * pushing down on 4D encoder is enter, useful for plugins like Flex when you want to choose a new sound after scrolling       through using 4D encoder
 * shift + pushing down on 4D encoder toggles between open windows.
 * **clear** (**shift + stop**) functions as the escape key
-* **restart** (**shift + play**) save!  
+* **restart** (**shift + play**) save!
+* **channel and mixer track names** on the OLED. For the Mixer all track names start with "M: " and for the Channel Rack all track names start with "C: ". Tap on a knob to see the name of what it controls.
 
 ## Known Issues
 * **clear** (**shift + stop**) closes all windows has a bug when plugins are opened. temp disabled - todo
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
-* **volume** displayed on OLED screen isn't correct - temp disabled - todo
+* **volume** dB displayed on OLED screen isn't correct - switched to % scale for the time being 
 * **mute** and **solo** can be engaged at the same time - todo
-* Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa. Something is wrong with, script Image-Line is aware of the problem. Currently awaiting response - todo
+* Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
 * When a track/channel name is longer than 8 characters on the mixer/channel, an automatic shortening is applied to the name. The colon and/or space for "M:" or "C:" may disappear. This is unavoidable.
+* **channel rack** doesn't update volume or pan in real-time. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
 
 
 ## Installation
@@ -63,8 +65,6 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 
 Did you make it all the way to the bottom? Good work. I'll share my road map with you.
 
-* 2.9.9 - will have the LED screen working - major progress has been made in this area.
-* 3.0.0 - will be full-featured
 * 3.5.0 - bugs and refinements - I'm new to python, so I'm learning as I go. There are so many techniques I've learned that           I need to apply to the older things I've done.
 * 4.0.0 - Final - There's only so much I can do. If you have any suggestions leave them here in the FL Studio forum:                   https://forum.image-line.com/viewtopic.php?f=1994&t=225473
 
