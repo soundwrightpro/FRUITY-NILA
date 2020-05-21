@@ -110,9 +110,14 @@ def KPrntScrn(trkn, word):
 
       letters = list(word) #convert word into letters in array
 
-      while n < len(letters): #convert letters in array to integer representing the Unicode character
-         lettersh.append(ord(letters[n]))
-         n += 1
+      if len(letters) <= 12:
+         while n < len(letters): #convert letters in array to integer representing the Unicode character
+            lettersh.append(ord(letters[n]))
+            n += 1
+      else:
+         while n < 13: #convert letters in array to integer representing the Unicode character
+            lettersh.append(ord(letters[n]))
+            n += 1
          
       header.append(trkn) #adding track number to header at the end 
 
@@ -244,7 +249,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
          print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
-         print("Komplete Kontrol M32 Script - V3.0.0  by Duwayne 'Sound' Wright.")
+         print("Komplete Kontrol M32 Script - V3.0.1  by Duwayne 'Sound' Wright.")
 
 
      def OnMidiIn(self, event):
