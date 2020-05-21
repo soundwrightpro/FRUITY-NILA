@@ -57,7 +57,9 @@ folder under the following location:
 
 Create a **'Native Instruments' folder if one doesn't exist.**
 
-2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User).
+2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User). See image.
+
+![](/images/FL%20Studio%20Install.png)
 
 Enjoy
 
