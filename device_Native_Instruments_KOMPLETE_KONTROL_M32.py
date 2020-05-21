@@ -26,6 +26,8 @@ import utils
 import time
 import sys
 import binascii
+import math
+
 
 #button values
 playb = 16 # play button 
@@ -90,14 +92,17 @@ def KDataOut(data11, data12):
       """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
           it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
             the STATUS of the message to BF as expected.""" 
+
       convertmsg = [240, 191, data11, data12]
       msgtom32 = bytearray(convertmsg)
       device.midiOutSysex(bytes(msgtom32))
       
 
 def KPrntScrn(trkn, word):
-      """ funtion that makes sendinig track titles to the OLED screen easter"""
-      if word == "Current": #FL Studio has a hidden current Channel at track 126; I've hidden it to eliminate confusion.
+
+      """ funtion that makes sendinig track titles to the OLED screen easier"""
+
+      if word == "M: Current": #FL Studio has a hidden current Channel at track 126; I've hidden it to eliminate confusion.
          word = " "
 
       lettersh = [] 
@@ -119,11 +124,102 @@ def KPrntScrn(trkn, word):
       header.append(247) #tells m32, that's it that's the whole word
       
       device.midiOutSysex(bytes(header)) #send unicode values as bytes to OLED screen
+
+
+def KPrntScrnVol(trkn, vol):
+
+      """ funtion that makes sendinig vol to the OLED screen easier"""
+       
+      volk = ""
+
+      lettersh = [] 
+      header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 70, 0,] 
+
+      p = 0
+      n = 0
+      m = 0
+
+      if vol == 0:
+         volk = "- inf dB"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1
+ 
+      elif vol >= 0.01:
+         
+         volk = u'%d%%' % round((vol*100),2)
+         letters = list(volk) 
+         
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1
+
+      header.append(trkn)
       
+      while m < len(lettersh):
+         header.append(lettersh[m])
+         m += 1
+
+      header.append(247)
+
+      device.midiOutSysex(bytes(header))
+
+
+def KPrntScrnPan(trkn, pan): 
+
+      volk = ""
+
+      lettersh = [] 
+      header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 71, 0,]
+
+      p = 0
+      n = 0
+      m = 0
+
+      header.append(trkn)
+      
+
+      if pan == 0:
+         volk = "Centered"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1 
+
+      elif pan < 0:
+         
+         volk = u'%d%% Left' % round((pan),2)
+         letters = list(volk) 
+         
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1
+
+      elif pan > 0:
+         
+         volk = u'%d%% Right' % round((pan),2)
+         letters = list(volk) 
+         
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1 
+
+      while m < len(lettersh):
+         header.append(lettersh[m])
+         m += 1
+
+      header.append(247)
+
+      device.midiOutSysex(bytes(header))
+
 
 class TKompleteBase():
 
      def OnInit(self):
+
          KDataOut(21, 1) #clear light on
          KDataOut(31, 1) #undo light on
          KDataOut(33, 1) #redo light on
@@ -133,7 +229,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
          print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
-         print("Komplete Kontrol M32 Script - V2.9.9 by Duwayne 'Sound' Wright.")
+         print("Komplete Kontrol M32 Script - V3.0.0  by Duwayne 'Sound' Wright.")
 
 
      def OnMidiIn(self, event):
@@ -250,6 +346,8 @@ class TKompleteBase():
 
             # VOLUME CONTROL
 
+            xy = 1.25
+
             #knob 1
             if mixer.trackNumber() <= 126:
                if (event.data1 == knob1):
@@ -257,11 +355,13 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
 
 
             #knob 2
@@ -271,13 +371,17 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(2, ' ')
+               KPrntScrnVol(2, 0)
 
             #knob 3
             if mixer.trackNumber() <= 124:
@@ -286,13 +390,17 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(3, ' ')
+               KPrntScrnVol(3, 0)
 
             #knob 4
             if mixer.trackNumber() <= 123:
@@ -301,13 +409,17 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(4, ' ')
+               KPrntScrnVol(4, 0)
 
             #knob5
             if mixer.trackNumber() <= 122:
@@ -316,13 +428,17 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(5, ' ')
+               KPrntScrnVol(5, 0)
 
             #knob 6
             if mixer.trackNumber() <= 121:
@@ -331,13 +447,17 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+
             elif mixer.trackNumber() <= 127:    
-               KPrntScrn(6, ' ')     
+               KPrntScrn(6, ' ')
+               KPrntScrnVol(6, 0)     
 
             #knob 7
             if mixer.trackNumber() <= 120:
@@ -346,13 +466,17 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+
             elif mixer.trackNumber() <= 127:    
-               KPrntScrn(7, ' ')     
+               KPrntScrn(7, ' ')
+               KPrntScrnVol(7, 0)     
                           
             #knob 8
             if mixer.trackNumber() <= 119:
@@ -361,118 +485,170 @@ class TKompleteBase():
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
+                   KPrntScrnVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
                 
                 elif event.data2 == 1:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
+                   KPrntScrnVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(8, ' ')     
                           
                
-            # PAN CONTROL
+            # MIXER PAN CONTROL 
 
             #sknob 1
-            if (event.data1 == sknob1):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 0))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 126:
+               if (event.data1 == sknob1):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 0))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 0))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 0))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
+
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(0, 0)
 
             #sknob 2
-            if (event.data1 == sknob2):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 1))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 125:
+               if (event.data1 == sknob2):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 1))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 1))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 1))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
+
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(1, 0)
 
             #sknob 3
-            if (event.data1 == sknob3):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 2))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 124:
+               if (event.data1 == sknob3):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 2))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 2))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 2))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
+
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(2, 0)
 
             #sknob 4
-            if (event.data1 == sknob4):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 3))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 123:
+               if (event.data1 == sknob4):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 3))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 3))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 3))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
-            #sknob5
-            if (event.data1 == sknob5):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 4))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(3, 0)
+
+            #sknob 5
+            if mixer.trackNumber() <= 122:
+               if (event.data1 == sknob5):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 4))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 4))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 4))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
+
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(4, 0)
 
             #sknob 6
-            if (event.data1 == sknob6):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 5))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 121:
+               if (event.data1 == sknob6):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 5))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 5))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 5))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
+
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(5, 0)
 
             #sknob 7
-            if (event.data1 == sknob7):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 6))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 120:
+               if (event.data1 == sknob7):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 6))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 6))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 6))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
+
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(6, 0)
 
             #sknob 8
-            if (event.data1 == sknob8):
-             if event.data2 == 127:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 7))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
+            if mixer.trackNumber() <= 119:
+               if (event.data1 == sknob8):
+                  if event.data2 == 127:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 7))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
+                     KPrntScrnPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
                 
-             elif event.data2 == 1:
-                x = (mixer.getTrackPan(mixer.trackNumber() + 7))
-                round(x,2)
-                mixer.setTrackPan((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
+                  elif event.data2 == 1:
+                     x = (mixer.getTrackPan(mixer.trackNumber() + 7))
+                     round(x,2)
+                     mixer.setTrackPan((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
+                     KPrntScrnPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
 
+            elif mixer.trackNumber() <= 127:    
+               KPrntScrnVol(7, 0)
 
 
          elif ui.getFocused(0) == 0: # channel rack
 
             # VOLUME CONTROL
+
+            xy = 1.28
 
             #knob 1
             if (event.data1 == knob1):
@@ -481,11 +657,13 @@ class TKompleteBase():
                 y = round(x,2)
                 if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
                   channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
-                
+                  KPrntScrnVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) / xy ,2)))
+       
              elif event.data2 == 1:
                 x = (channels.getChannelVolume(channels.channelNumber() + 0))
                 y = round(x,2)
                 channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
+                KPrntScrnVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) / xy ,2)))
 
    
             #knob 2
@@ -496,11 +674,13 @@ class TKompleteBase():
                   y = round(x,2)
                   if channels.getChannelVolume(channels.channelNumber() + 1) != 0 :
                      channels.setChannelVolume((channels.channelNumber() + 1), (y - knobinc) ) # volume values go down
+                     KPrntScrnVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) / xy ,2)))
                 
                elif event.data2 == 1:
                   x = (channels.getChannelVolume(channels.channelNumber() + 1))
                   y = round(x,2)
                   channels.setChannelVolume((channels.channelNumber() + 1), (y + knobinc) ) # volume values go up
+                  KPrntScrnVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) / xy ,2)))
 
             #knob 3
             if (event.data1 == knob3):
@@ -510,11 +690,13 @@ class TKompleteBase():
                   y = round(x,2)
                   if channels.getChannelVolume(channels.channelNumber() + 2) != 0 :
                      channels.setChannelVolume((channels.channelNumber() + 2), (y - knobinc) ) # volume values go down
+                     KPrntScrnVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) / xy ,2)))
                 
                elif event.data2 == 1:
                   x = (channels.getChannelVolume(channels.channelNumber() + 2))
                   y = round(x,2)
                   channels.setChannelVolume((channels.channelNumber() + 2), (y + knobinc) ) # volume values go up
+                  KPrntScrnVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) / xy ,2)))
 
             #knob 4
             if (event.data1 == knob4):
@@ -524,11 +706,13 @@ class TKompleteBase():
                   y = round(x,2)
                   if channels.getChannelVolume(channels.channelNumber() + 3) != 0 :
                      channels.setChannelVolume((channels.channelNumber() + 3), (y - knobinc) ) # volume values go down
+                     KPrntScrnVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) / xy ,2)))
                 
                elif event.data2 == 1:
                   x = (channels.getChannelVolume(channels.channelNumber() + 3))
                   y = round(x,2)
                   channels.setChannelVolume((channels.channelNumber() + 3), (y + knobinc) ) # volume values go up
+                  KPrntScrnVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) / xy ,2)))
 
             #knob 5
             if (event.data1 == knob5):
@@ -538,11 +722,13 @@ class TKompleteBase():
                   y = round(x,2)
                   if channels.getChannelVolume(channels.channelNumber() + 4) != 0 :
                      channels.setChannelVolume((channels.channelNumber() + 4), (y - knobinc) ) # volume values go down
+                     KPrntScrnVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) / xy ,2)))
                 
                elif event.data2 == 1:
                   x = (channels.getChannelVolume(channels.channelNumber() + 4))
                   y = round(x,2)
                   channels.setChannelVolume((channels.channelNumber() + 4), (y + knobinc) ) # volume values go up
+                  KPrntScrnVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) / xy ,2)))
 
             #knob 6
             if (event.data1 == knob6):
@@ -552,11 +738,13 @@ class TKompleteBase():
                   y = round(x,2)
                   if channels.getChannelVolume(channels.channelNumber() + 5) != 0 :
                      channels.setChannelVolume((channels.channelNumber() + 5), (y - knobinc) ) # volume values go down
+                     KPrntScrnVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) / xy ,2)))
                 
                elif event.data2 == 1:
                   x = (channels.getChannelVolume(channels.channelNumber() + 5))
                   y = round(x,2)
                   channels.setChannelVolume((channels.channelNumber() + 5), (y + knobinc) ) # volume values go up
+                  KPrntScrnVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) / xy ,2)))
 
             #knob 7
             if (event.data1 == knob7):
@@ -566,11 +754,13 @@ class TKompleteBase():
                   y = round(x,2)
                   if channels.getChannelVolume(channels.channelNumber() + 6) != 0 :
                      channels.setChannelVolume((channels.channelNumber() + 6), (y - knobinc) ) # volume values go down
+                     KPrntScrnVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) / xy ,2)))
                 
                elif event.data2 == 1:
                   x = (channels.getChannelVolume(channels.channelNumber() + 6))
                   y = round(x,2)
                   channels.setChannelVolume((channels.channelNumber() + 6), (y + knobinc) ) # volume values go up
+                  KPrntScrnVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) / xy ,2)))
 
             #knob 8
             if (event.data1 == knob8):
@@ -580,11 +770,13 @@ class TKompleteBase():
                   y = round(x,2)
                   if channels.getChannelVolume(channels.channelNumber() + 7) != 0 :
                      channels.setChannelVolume((channels.channelNumber() + 7), (y - knobinc) ) # volume values go down
+                     KPrntScrnVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) / xy ,2)))
                 
                elif event.data2 == 1:
                   x = (channels.getChannelVolume(channels.channelNumber() + 7))
                   y = round(x,2)
                   channels.setChannelVolume((channels.channelNumber() + 7), (y + knobinc) ) # volume values go up
+                  KPrntScrnVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) / xy ,2)))
 
             # PAN CONTROL
 
@@ -594,11 +786,13 @@ class TKompleteBase():
                 x = (channels.getChannelPan(channels.channelNumber() + 0))
                 #round(x,2)
                 channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
-                
+                KPrntScrnPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+  
              elif event.data2 == 1:
                 x = (channels.getChannelPan(channels.channelNumber() + 0))
                 #round(x,2)
-                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up     
+                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
+                KPrntScrnPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)     
 
             #sknob 2
             if (event.data1 == sknob2):
@@ -607,11 +801,13 @@ class TKompleteBase():
                   x = (channels.getChannelPan(channels.channelNumber() + 1))
                   #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 1), (x - knobinc) ) # pan values go down
+                  KPrntScrnPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
                 
                elif event.data2 == 1:
                   x = (channels.getChannelPan(channels.channelNumber() + 1))
                   #round(x,2)
-                  channels.setChannelPan((channels.channelNumber() + 1), (x + knobinc) ) # pan values go up     
+                  channels.setChannelPan((channels.channelNumber() + 1), (x + knobinc) ) # pan values go up
+                  KPrntScrnPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)     
 
             #sknob 3
             if (event.data1 == sknob3):
@@ -620,11 +816,13 @@ class TKompleteBase():
                   x = (channels.getChannelPan(channels.channelNumber() + 2))
                   #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 2), (x - knobinc) ) # pan values go down
+                  KPrntScrnPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
                 
                elif event.data2 == 1:
                   x = (channels.getChannelPan(channels.channelNumber() + 2))
                   #round(x,2)
-                  channels.setChannelPan((channels.channelNumber() + 2), (x + knobinc) ) # pan values go up     
+                  channels.setChannelPan((channels.channelNumber() + 2), (x + knobinc) ) # pan values go up
+                  KPrntScrnPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)     
 
             #sknob 4
             if (event.data1 == sknob4):
@@ -633,11 +831,13 @@ class TKompleteBase():
                   x = (channels.getChannelPan(channels.channelNumber() + 3))
                   #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 3), (x - knobinc) ) # pan values go down
+                  KPrntScrnPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
                 
                elif event.data2 == 1:
                   x = (channels.getChannelPan(channels.channelNumber() + 3))
                   #round(x,2)
-                  channels.setChannelPan((channels.channelNumber() + 3), (x + knobinc) ) # pan values go up     
+                  channels.setChannelPan((channels.channelNumber() + 3), (x + knobinc) ) # pan values go up
+                  KPrntScrnPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)     
 
             #sknob 5
             if (event.data1 == sknob5):
@@ -646,11 +846,13 @@ class TKompleteBase():
                   x = (channels.getChannelPan(channels.channelNumber() + 4))
                   #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 4), (x - knobinc) ) # pan values go down
+                  KPrntScrnPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
                 
                elif event.data2 == 1:
                   x = (channels.getChannelPan(channels.channelNumber() + 4))
                   #round(x,2)
-                  channels.setChannelPan((channels.channelNumber() + 4), (x + knobinc) ) # pan values go up     
+                  channels.setChannelPan((channels.channelNumber() + 4), (x + knobinc) ) # pan values go up
+                  KPrntScrnPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)     
 
             #sknob 6
             if (event.data1 == sknob6):
@@ -659,11 +861,13 @@ class TKompleteBase():
                    x = (channels.getChannelPan(channels.channelNumber() + 5))
                   #round(x,2)
                    channels.setChannelPan((channels.channelNumber() + 5), (x - knobinc) ) # pan values go down
+                   KPrntScrnPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
                 
                elif event.data2 == 1:
                   x = (channels.getChannelPan(channels.channelNumber() + 5))
                   #round(x,2)
-                  channels.setChannelPan((channels.channelNumber() + 5), (x + knobinc) ) # pan values go up     
+                  channels.setChannelPan((channels.channelNumber() + 5), (x + knobinc) ) # pan values go up
+                  KPrntScrnPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)    
 
             #sknob 7
             if (event.data1 == sknob7):
@@ -672,11 +876,13 @@ class TKompleteBase():
                   x = (channels.getChannelPan(channels.channelNumber() + 6))
                   #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 6), (x - knobinc) ) # pan values go down
+                  KPrntScrnPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
                 
                elif event.data2 == 1:
                   x = (channels.getChannelPan(channels.channelNumber() + 6))
                   #round(x,2)
-                  channels.setChannelPan((channels.channelNumber() + 6), (x + knobinc) ) # pan values go up     
+                  channels.setChannelPan((channels.channelNumber() + 6), (x + knobinc) ) # pan values go up
+                  KPrntScrnPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)    
 
             #sknob 8
             if (event.data1 == sknob8):
@@ -685,11 +891,13 @@ class TKompleteBase():
                   x = (channels.getChannelPan(channels.channelNumber() + 7))
                   #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 7), (x - knobinc) ) # pan values go down
+                  KPrntScrnPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
                 
                elif event.data2 == 1:
                   x = (channels.getChannelPan(channels.channelNumber() + 7))
                   #round(x,2)
-                  channels.setChannelPan((channels.channelNumber() + 7), (x + knobinc) ) # pan values go up     
+                  channels.setChannelPan((channels.channelNumber() + 7), (x + knobinc) ) # pan values go up
+                  KPrntScrnPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)     
 
 
      def UpdateLEDs(self):
@@ -752,29 +960,49 @@ class TKompleteBase():
      def UpdateOLED(self):
 
         if ui.getFocused(0) == 1: #mixer volume control
+
+            xy = 1.25
+
             if mixer.trackNumber() <= 126:
                KPrntScrn(0, "M: " + mixer.getTrackName(mixer.trackNumber() + 0))
+               KPrntScrnVol(channels.channelNumber() + 0, (round(channels.getChannelVolume(channels.channelNumber() + 0) / xy ,2)))
+               KPrntScrnVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
+               KPrntScrnPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
             if mixer.trackNumber() <= 125:
                KPrntScrn(1, "M: " + mixer.getTrackName(mixer.trackNumber() + 1))
+               KPrntScrnVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+               KPrntScrnPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
 
             if mixer.trackNumber() <= 124:
                KPrntScrn(2, "M: " + mixer.getTrackName(mixer.trackNumber() + 2))
+               KPrntScrnVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+               KPrntScrnPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
             if mixer.trackNumber() <= 123:
                KPrntScrn(3, "M: " + mixer.getTrackName(mixer.trackNumber() + 3))
+               KPrntScrnVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+               KPrntScrnPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
             if mixer.trackNumber() <= 122:
                KPrntScrn(4, "M: " + mixer.getTrackName(mixer.trackNumber() + 4))
+               KPrntScrnVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+               KPrntScrnPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
             if mixer.trackNumber() <= 121:
                KPrntScrn(5, "M: " + mixer.getTrackName(mixer.trackNumber() + 5))
+               KPrntScrnVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+               KPrntScrnPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
             if mixer.trackNumber() <= 120:
                KPrntScrn(6, "M: " + mixer.getTrackName(mixer.trackNumber() + 6))
+               KPrntScrnVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+               KPrntScrnPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
             if mixer.trackNumber() <= 119:
                KPrntScrn(7, "M: " + mixer.getTrackName(mixer.trackNumber() + 7))
+               KPrntScrnVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+               KPrntScrnPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
                
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
@@ -796,42 +1024,81 @@ class TKompleteBase():
 
         if ui.getFocused(1) == 1: # channel rack
 
+            xy = 1.28
+
             KPrntScrn(0, "C: " + channels.getChannelName(channels.channelNumber() + 0))
+
+            if channels.channelCount() > 0 and channels.channelNumber() < (channels.channelCount()-0) :
+               KPrntScrn(1, "C: " + channels.getChannelName(channels.channelNumber() + 0))
+               KPrntScrnVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) / xy ,2)))
+               KPrntScrnPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+            else:
+               KPrntScrn(1, " ")
+               KPrntScrnVol(0, 0)
+               KPrntScrnPan(0, 0)
 
             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
                KPrntScrn(1, "C: " + channels.getChannelName(channels.channelNumber() + 1))
+               KPrntScrnVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) / xy ,2)))
+               KPrntScrnPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
             else:
                KPrntScrn(1, " ")
+               KPrntScrnVol(1, 0)
+               KPrntScrnPan(1, 0)
 
             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
                KPrntScrn(2, "C: " + channels.getChannelName(channels.channelNumber() + 2))
+               KPrntScrnVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) / xy ,2)))
+               KPrntScrnPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
             else:
                KPrntScrn(2, " ")
-
+               KPrntScrnVol(2, 0)
+               KPrntScrnPan(2, 0)
+               
             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
                KPrntScrn(3, "C: " + channels.getChannelName(channels.channelNumber() + 3))
+               KPrntScrnVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) / xy ,2)))
+               KPrntScrnPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
             else:
                KPrntScrn(3, " ")
+               KPrntScrnVol(3, 0)
+               KPrntScrnPan(3, 0)
                
             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
                KPrntScrn(4, "C: " + channels.getChannelName(channels.channelNumber() + 4))
+               KPrntScrnVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) / xy ,2)))
+               KPrntScrnPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
             else:
                KPrntScrn(4, " ")
+               KPrntScrnVol(4, 0)
+               KPrntScrnPan(4, 0)
                
             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
                KPrntScrn(5, "C: " + channels.getChannelName(channels.channelNumber() + 5))
+               KPrntScrnVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) / xy ,2)))
+               KPrntScrnPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
             else:
                KPrntScrn(5, " ")
+               KPrntScrnVol(5, 0)
+               KPrntScrnPan(5, 0)
                
             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
                KPrntScrn(6, "C: " + channels.getChannelName(channels.channelNumber() + 6))
+               KPrntScrnVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) / xy ,2)))
+               KPrntScrnPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
             else:
                KPrntScrn(6, " ")
+               KPrntScrnVol(6, 0)
+               KPrntScrnPan(6, 0)
                
             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
                KPrntScrn(7, "C: " + channels.getChannelName(channels.channelNumber() + 7))
+               KPrntScrnVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) / xy ,2)))
+               KPrntScrnPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
             else:
                KPrntScrn(7, " ")
+               KPrntScrnVol(7, 0)
+               KPrntScrnPan(7, 0)
 
 
             if channels.isChannelMuted(channels.channelNumber()) == 1: #mute light off
@@ -851,8 +1118,6 @@ class TKompleteBase():
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
                   KDataOut(105, on)
 
-
-
         if ui.getFocused(2) == 1: # playlist
             #spells out 'Playlist' on tracks 1 through 8 on OLED
             KPrntScrn(0, "Playlist")
@@ -863,7 +1128,6 @@ class TKompleteBase():
             KPrntScrn(5, "Playlist")
             KPrntScrn(6, "Playlist")
             KPrntScrn(7, "Playlist")
-
 
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
@@ -881,8 +1145,6 @@ class TKompleteBase():
 
      def OnIdle():
          self.UpdateLEDs(), self.UpdateOLED()
-
-      
 
 
 
