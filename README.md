@@ -57,9 +57,9 @@ folder under the following location:
 
 Create a **'Native Instruments' folder if one doesn't exist.**
 
-2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User). See image.
+2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User) in Input, also set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
-![](/images/FL%20Studio%20Install.png)
+![Installlation image](/images/FL%20Studio%20Install.png)
 
 Enjoy
 
