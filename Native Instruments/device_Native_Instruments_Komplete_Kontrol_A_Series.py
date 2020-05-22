@@ -1,5 +1,5 @@
 # name=Native Instruments KOMPLETE KONTROL A-Series
-# url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
+# url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
 
 # github for this script
 # url=https://github.com/soundwrightpro/FLIN 
