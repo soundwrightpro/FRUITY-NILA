@@ -241,7 +241,7 @@ class TKompleteBase():
      def OnInit(self):
 
          KDataOut(21, 1) #clear light on
-         KDataOut(31, 1) #undo light on
+         KDataOut(32, 1) #undo light on
          KDataOut(33, 1) #redo light on
 
          device.midiOutSysex(bytes([0xF0, 0xBF, 0x23, 0x00, 0x00, 0x0C, 1, 0xF7])) # auto button light fix
