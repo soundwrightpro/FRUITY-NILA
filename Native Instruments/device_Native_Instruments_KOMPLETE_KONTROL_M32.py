@@ -1,4 +1,4 @@
-# name=Native Instruments KOMPLETE KONTROL A-Series
+# name=Native Instruments KOMPLETE KONTROL M32
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
 
 # github for this script
@@ -159,11 +159,8 @@ def KPrntScrnVol(trkn, vol):
  
       elif vol >= 0.01 and vol <= 2.00:
          
-         
-         
-        volk == '%d%%' % round((vol*100),2))
+         volk = u'%d%%' % round((vol*100),2)
 
-         
          #vol =  math.log(vol/1)
          #print("step A: ", vol)
 
@@ -174,7 +171,7 @@ def KPrntScrnVol(trkn, vol):
          #print("final: ", vol)
 
          letters = list(volk)
-         print(letters)
+         #print(letters)
 
          
          while n < len(volk):
@@ -272,7 +269,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
          print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
-         print("Komplete Kontrol A-Series Script - V3.0.5  by Duwayne 'Sound' Wright.")
+         print("Komplete Kontrol M32 Script - V3.0.5  by Duwayne 'Sound' Wright.")
 
 
      def OnMidiIn(self, event):
