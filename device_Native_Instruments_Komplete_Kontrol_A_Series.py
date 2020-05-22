@@ -161,17 +161,17 @@ def KPrntScrnVol(trkn, vol):
          
          
          
-         print(u'%d%%' % round((vol*100),2))
+         volk == '%d%%' % round((vol*100),2))
 
          
-         vol =  math.log(vol/1)
-         print("step A: ", vol)
+         #vol =  math.log(vol/1)
+         #print("step A: ", vol)
 
-         vol = vol*20
-         print("step B: ", vol)
+         #vol = vol*20
+         #print("step B: ", vol)
 
-         volk = '%s dB' % round(vol,1)
-         print("final: ", vol)
+         #volk = '%s dB' % round(vol,1)
+         #print("final: ", vol)
 
          letters = list(volk)
          print(letters)
