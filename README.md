@@ -55,14 +55,12 @@ Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host 
 Native Instruments Host Integration service must be installed and running. It is automatically the case
 if you installed Komplete Kontrol on your machine.
 
-1. Download **device_Native_Instruments_KOMPLETE_KONTROL_M32.py** and place int to the FL Studio User data 
+1. Download **the zip** and unzip. Place the 'Native Instruments' to the FL Studio User data 
 folder under the following location:
 
-... Documents\Image-Line\FL Studio\Settings\Hardware\Native Instruments
+... Documents\Image-Line\FL Studio\Settings\Hardware\
 
-Create a **'Native Instruments' folder if one doesn't exist.**
-
-2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User) in Input, also set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
+2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User) or Native Instruments Komplete Kontrol A-Series (User) in Input, depending on what you own. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
 ![Installlation image](/images/FL%20Studio%20Install.png)
 
