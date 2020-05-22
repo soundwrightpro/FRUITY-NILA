@@ -1,4 +1,4 @@
-# name=Native Instruments KOMPLETE KONTROL M32
+# name=Native Instruments KOMPLETE KONTROL A-Series
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
 
 # github for this script
@@ -27,6 +27,7 @@ import time
 import sys
 import binascii
 import math
+
 
 
 #button values
@@ -93,9 +94,11 @@ def KDataOut(data11, data12):
           it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
             the STATUS of the message to BF as expected.""" 
 
-      convertmsg = [240, 191, data11, data12]
+      convertmsg = [240, 191, data11, data12] 
       msgtom32 = bytearray(convertmsg)
       device.midiOutSysex(bytes(msgtom32))
+      device.midiOutSysex(bytes([240, 191, 31, 1]))
+      
       
 
 def KPrntScrn(trkn, word):
@@ -110,12 +113,12 @@ def KPrntScrn(trkn, word):
 
       letters = list(word) #convert word into letters in array
 
-      if len(letters) <= 10:
+      if len(letters) <= 11:
          while n < len(letters): #convert letters in array to integer representing the Unicode character
             lettersh.append(ord(letters[n]))
             n += 1
       else:
-         while n < 11: #convert letters in array to integer representing the Unicode character
+         while n < 12: #convert letters in array to integer representing the Unicode character
             lettersh.append(ord(letters[n]))
             n += 1
          
@@ -135,6 +138,7 @@ def KPrntScrnVol(trkn, vol):
       """ funtion that makes sendinig vol to the OLED screen easier"""
        
       volk = ""
+      
 
       lettersh = [] 
       header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 70, 0,] 
@@ -142,6 +146,8 @@ def KPrntScrnVol(trkn, vol):
       p = 0
       n = 0
       m = 0
+
+      vol==(float(vol))
 
       if vol == 0:
          volk = "- oo dB"
@@ -151,10 +157,25 @@ def KPrntScrnVol(trkn, vol):
             lettersh.append(ord(letters[n]))
             n += 1
  
-      elif vol >= 0.01 and vol <= 2.00: 
+      elif vol >= 0.01 and vol <= 2.00:
          
-         volk = u'%d%%' % round((vol*100),2)
-         letters = list(volk) 
+         
+         
+        volk == '%d%%' % round((vol*100),2))
+
+         
+         #vol =  math.log(vol/1)
+         #print("step A: ", vol)
+
+         #vol = vol*20
+         #print("step B: ", vol)
+
+         #volk = '%s dB' % round(vol,1)
+         #print("final: ", vol)
+
+         letters = list(volk)
+         print(letters)
+
          
          while n < len(volk):
             lettersh.append(ord(letters[n]))
@@ -180,6 +201,8 @@ def KPrntScrnVol(trkn, vol):
 
 
 def KPrntScrnPan(trkn, pan): 
+
+      pan = round(pan,0)
 
       volk = ""
 
@@ -249,7 +272,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
          print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
-         print("Komplete Kontrol M32 Script - V3.0.1  by Duwayne 'Sound' Wright.")
+         print("Komplete Kontrol A-Series Script - V3.0.5  by Duwayne 'Sound' Wright.")
 
 
      def OnMidiIn(self, event):
@@ -692,7 +715,7 @@ class TKompleteBase():
 
             # VOLUME CONTROL
 
-            xy = 1.28
+            xy = 1
 
             #knob 1
             if (event.data1 == knob1):
@@ -836,7 +859,7 @@ class TKompleteBase():
                 x = (channels.getChannelPan(channels.channelNumber() + 0))
                 #round(x,2)
                 channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
-                KPrntScrnPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)     
+                KPrntScrnPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
 
             #sknob 2
             if (event.data1 == sknob2):
@@ -1068,7 +1091,7 @@ class TKompleteBase():
 
         if ui.getFocused(1) == 1: # channel rack
 
-            xy = 1.28
+            xy = 1
 
             KPrntScrn(0, "C: " + channels.getChannelName(channels.channelNumber() + 0))
 
@@ -1145,11 +1168,11 @@ class TKompleteBase():
                KPrntScrnPan(7, 104)
 
 
-            if channels.isChannelMuted(channels.channelNumber()) == 1: #mute light off
+            if (channels.isChannelMuted(channels.channelNumber()) == 0) == True: #mute light off
                device.midiOutSysex(bytes([0x00, 0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x00, 0x00, 0xF7]))
                KDataOut(102, off)
                
-            elif channels.isChannelMuted(channels.channelNumber()) == 0: #mute light on
+            else: #mute light on
                device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x01, 0x00, 0xF7]))
                KDataOut(102, on)
             
@@ -1158,7 +1181,7 @@ class TKompleteBase():
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x00, 0x00, 0xF7]))
                   KDataOut(105, off)
 
-               elif (channels.isChannelSolo(channels.channelNumber()) == 1) == True: #solo light on
+               else: #solo light on
                   device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
                   KDataOut(105, on)
 
@@ -1179,6 +1202,8 @@ class TKompleteBase():
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         self.UpdateLEDs(), self.UpdateOLED()
 
+     def OnDoFullRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
+        self.UpdateLEDs(), self.UpdateOLED()
 
      def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of project
          if Value == 1:
@@ -1187,7 +1212,6 @@ class TKompleteBase():
             KDataOut(playb, on) #play light bright
          elif Value == 0:
             KDataOut(playb, off) #play light dim
-
 
      def OnIdle():
          self.UpdateLEDs(), self.UpdateOLED()
@@ -1203,6 +1227,9 @@ def OnInit():
 
 def OnRefresh(Flags):
    KompleteBase.OnRefresh(Flags)
+
+def OnDoFullRefresh(Flags):
+   KompleteBase.OnDoFullRefresh(Flags)
 
 def OnIdle():
    KompleteBase.OnIdle
