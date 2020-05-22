@@ -159,11 +159,8 @@ def KPrntScrnVol(trkn, vol):
  
       elif vol >= 0.01 and vol <= 2.00:
          
-         
-         
-         volk == '%d%%' % round((vol*100),2))
+         volk = u'%d%%' % round((vol*100),2)
 
-         
          #vol =  math.log(vol/1)
          #print("step A: ", vol)
 
@@ -174,7 +171,7 @@ def KPrntScrnVol(trkn, vol):
          #print("final: ", vol)
 
          letters = list(volk)
-         print(letters)
+         #print(letters)
 
          
          while n < len(volk):
