@@ -1,4 +1,4 @@
-# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.0.1
+# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.0.5
 
 Written by Duwayne 'Sound' Wright
 
