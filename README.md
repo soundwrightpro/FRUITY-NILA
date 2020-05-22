@@ -2,9 +2,8 @@
 
 Written by Duwayne 'Sound' Wright
 
-Providing support for Native Instruments Komplete Kontrol M32. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**. 
+Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 installed**. 
 
-**DEVELOPEMNT OF THIS SCRIPT TAKES PLACE ON A M32**
 
 # What's new since 2.9.9
 * **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
@@ -66,7 +65,9 @@ folder under the following location:
 
 Enjoy
 
-My thanks to Hobyst and their documentation and coding help. You have been the GOAT!
+My thanks to Hobyst and their documentation and coding help. You have been the GOAT! 
+
+**DEVELOPEMNT OF THIS SCRIPT TAKES PLACE ON A M32**
 
 Did you make it all the way to the bottom? Good work. I'll share my road map with you.
 
