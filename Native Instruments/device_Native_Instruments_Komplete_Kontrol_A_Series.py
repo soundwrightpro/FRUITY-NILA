@@ -85,8 +85,6 @@ knobinc = 0.01
 on = 1
 off = 0
 
-
-
 #function to make talking to the keyboard less annoying
 def KDataOut(data11, data12):
    
@@ -161,19 +159,10 @@ def KPrntScrnVol(trkn, vol):
          
          volk = u'%d%%' % round((vol*100),2)
 
-         #vol =  math.log(vol/1)
-         #print("step A: ", vol)
-
-         #vol = vol*20
-         #print("step B: ", vol)
-
-         #volk = '%s dB' % round(vol,1)
-         #print("final: ", vol)
+         volk = '%s dB' % round(vol,3)
 
          letters = list(volk)
-         #print(letters)
 
-         
          while n < len(volk):
             lettersh.append(ord(letters[n]))
             n += 1
@@ -269,7 +258,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
 
          print("Join the DISCORD https://discord.gg/GeTTWBV to report issues in the bug channel")    
-         print("Komplete Kontrol A-Series Script - V3.0.5  by Duwayne 'Sound' Wright.")
+         print("Komplete Kontrol M32 Script - V3.0.6  by Duwayne 'Sound' Wright.")
 
 
      def OnMidiIn(self, event):
@@ -1020,6 +1009,16 @@ class TKompleteBase():
               elif f != 1: #quantize on
                   KDataOut(quantizeb, on)
 
+            for g in playstatus:
+              if transport.isRecording() == 0 & transport.isPlaying() == 1: 
+                  if g == 0: #play off
+                     KDataOut(playb, off)
+                  elif g != 1: #play on
+                     KDataOut(playb, on)
+              elif g == 0: #play off: 
+                  KDataOut(playb, off)
+   
+
 
      def UpdateOLED(self):
 
@@ -1202,13 +1201,23 @@ class TKompleteBase():
      def OnDoFullRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         self.UpdateLEDs(), self.UpdateOLED()
 
-     def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of project
-         if Value == 1:
-            KDataOut(playb, on) #play light bright
-         elif Value == 2:
-            KDataOut(playb, on) #play light bright
-         elif Value == 0:
-            KDataOut(playb, off) #play light dim
+     def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of the project
+       if transport.isRecording() == 0:
+      	 if Value == 1:
+      	    KDataOut(playb, on) #play light bright
+      	 elif Value == 2:
+      	    KDataOut(playb, on) #play light bright
+      	 elif Value == 0:
+      	    KDataOut(playb, off) #play light dim
+       else:
+      	 if Value == 1:
+      	    KDataOut(recb, on) #play light bright
+      	    KDataOut(playb, on) #play light bright
+      	 elif Value == 2:
+      	    KDataOut(recb, on) #play light bright
+      	 elif Value == 0:
+      	    KDataOut(recb, off) #play light dim  
+
 
      def OnIdle():
          self.UpdateLEDs(), self.UpdateOLED()
