@@ -7,6 +7,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 # What's new since 2.9.9
 * A-Series support
+* Scroll through FLEX settings with the 4-D controller (up, down, left, right; click on the list in FLEX then use controls)
 * **play** button flashes to tempo, **record** button flashes to tempo when recording is engaged and **play** button light is engaged 
 * **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
 * interact with something on the keyboard, it displays what it is in the hint bar 
