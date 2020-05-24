@@ -159,8 +159,6 @@ def KPrntScrnVol(trkn, vol):
          
          volk = u'%d%%' % round((vol*100),2)
 
-         volk = '%s dB' % round(vol,3)
-
          letters = list(volk)
 
          while n < len(volk):
