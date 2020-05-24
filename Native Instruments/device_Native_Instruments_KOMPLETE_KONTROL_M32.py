@@ -272,7 +272,9 @@ class TKompleteBase():
 
          if (event.data1 == splayb):
             event.handled = True
-            transport.globalTransport(midi.FPT_Save, 92)
+            #transport.globalTransport(midi.FPT_Save, 92)
+            transport.stop() #stop
+            transport.start() #restart play at beginning
             ui.setHintMsg("Save")
              
          if (event.data1 == recb):
