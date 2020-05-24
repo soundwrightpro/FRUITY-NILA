@@ -48,6 +48,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
 * When a track/channel name is longer than 8 characters on the mixer/channel, an automatic shortening is applied to the name. The colon and/or space for "M:" or "C:" may disappear. This is unavoidable.
 * **channel rack** doesn't update volume or pan in real-time. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
+* if group in **channel rack** is not set to all, the script will crash - todo
 
 
 ## Installation
