@@ -1,12 +1,13 @@
-# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.0.5
+# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.0.6
 
 Written by Duwayne 'Sound' Wright
 
-Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.4.4 for the M32 installed**. 
+Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series and 0.4.4 for the M32 installed**. 
 
 
 # What's new since 2.9.9
 * A-Series support
+* **play** button flashes to tempo, **record** button flashes to tempo when recording is engaged and **play** button light is engaged 
 * **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
 * interact with something on the keyboard, it displays what it is in the hint bar 
 * don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
