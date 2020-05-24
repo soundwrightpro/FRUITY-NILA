@@ -42,7 +42,6 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **channel and mixer track names** on the OLED. For the Mixer all track names start with "M: " and for the Channel Rack all track names start with "C: ". Tap on a knob to see the name of what it controls.
 
 ## Known Issues
-* **clear** (**shift + stop**) closes all windows has a bug when plugins are opened. temp disabled - todo
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 * **volume** dB displayed on OLED screen isn't correct - switched to % scale for the time being 
 * **mute** and **solo** can be engaged at the same time - todo
