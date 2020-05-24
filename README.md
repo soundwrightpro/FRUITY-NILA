@@ -7,6 +7,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 # What's new since 2.9.9
 * A-Series support
+* **restart** (**shift + play**)
 * Scroll through FLEX settings with the 4-D controller (up, down, left, right; click on the list in FLEX then use controls)
 * **play** button flashes to tempo, **record** button flashes to tempo when recording is engaged and **play** button light is engaged 
 * **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
@@ -38,7 +39,6 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * pushing down on 4D encoder is enter, useful for plugins like Flex when you want to choose a new sound after scrolling       through using 4D encoder
 * shift + pushing down on 4D encoder toggles between open windows.
 * **clear** (**shift + stop**) functions as the escape key
-* **restart** (**shift + play**) save!
 * **channel and mixer track names** on the OLED. For the Mixer all track names start with "M: " and for the Channel Rack all track names start with "C: ". Tap on a knob to see the name of what it controls.
 
 ## Known Issues
