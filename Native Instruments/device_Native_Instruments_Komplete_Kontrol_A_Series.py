@@ -342,7 +342,7 @@ class TKompleteBase():
                ui.setHintMsg("Mute")
 
             elif (ui.getFocused(0) == 0) == True: # channel rack
-               if channels.channelCount() >= 2: 
+               if channels.channelCount() >= 1: 
                   channels.muteChannel(channels.channelNumber()) 
                   self.UpdateOLED()
                   ui.setHintMsg("Mute")
