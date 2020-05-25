@@ -7,6 +7,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 # What's new since v3.0.6
 * **volume** displayed in dB on the OLED (my thanks to Image-Line for the assist)
+* **Piano Roll** shown as "PR: " with track name and **Browser** when selected show on OLED
 * bug fixes
 
 
