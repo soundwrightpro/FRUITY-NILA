@@ -13,7 +13,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 ## Key Features
 * **transport** works as expected (play, record, stop)
 * **count-in** - toggles countdown before recording
-* **loop** - toggles between pattern and loop mode
+* **loop** - toggles between pattern and song mode
 * **metro** - toggles metro off and on
 * **tempo** - tap to set tempo
 * **undo/redo** - works as expected, hold shift to redo
