@@ -1,19 +1,14 @@
-# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.0.6
+# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.1.0
 
 Written by Duwayne 'Sound' Wright
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
 
-# What's new since 2.9.9
-* A-Series support
-* **restart** (**shift + play**)
-* Scroll through FLEX settings with the 4-D controller (up, down, left, right; click on the list in FLEX then use controls)
-* **play** button flashes to tempo, **record** button flashes to tempo when recording is engaged and **play** button light is engaged 
-* **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
-* interact with something on the keyboard, it displays what it is in the hint bar 
-* don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
-* bug fixes (undo light)
+# What's new since v3.0.6
+* **volume** displayed in dB on the OLED (my thanks to Image-Line for the assist)
+* bug fixes
+
 
 ## Key Features
 * **transport** works as expected (play, record, stop)
@@ -40,10 +35,17 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * shift + pushing down on 4D encoder toggles between open windows.
 * **clear** (**shift + stop**) functions as the escape key
 * **channel and mixer track names** on the OLED. For the Mixer all track names start with "M: " and for the Channel Rack all track names start with "C: ". Tap on a knob to see the name of what it controls.
+* A-Series support
+* **restart** (**shift + play**)
+* Scroll through FLEX settings with the 4-D controller (up, down, left, right; click on the list in FLEX then use controls)
+* **play** button flashes to tempo, **record** button flashes to tempo when recording is engaged and **play** button light is engaged 
+* **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
+* interact with something on the keyboard, it displays what it is in the hint bar 
+* don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
+* bug fixes (undo light)
 
 ## Known Issues
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
-* **volume** dB displayed on OLED screen isn't correct - switched to % scale for the time being 
 * **mute** and **solo** can be engaged at the same time - todo
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
 * When a track/channel name is longer than 8 characters on the mixer/channel, an automatic shortening is applied to the name. The colon and/or space for "M:" or "C:" may disappear. This is unavoidable.
