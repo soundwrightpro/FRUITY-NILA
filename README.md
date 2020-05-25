@@ -4,7 +4,6 @@ Written by Duwayne 'Sound' Wright
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
-
 # What's new since v3.0.6
 * **volume** displayed in dB on the OLED (my thanks to Image-Line for the assist)
 * **Piano Roll** shown as "PR: " with track name and **Browser** when selected show on OLED
