@@ -1271,6 +1271,33 @@ class TKompleteBase():
             KPrntScrnVol(0, 104)
             KPrntScrnPan(0, 104)
 
+        if ui.getFocused(3) == 1: # Piano Roll
+            #spells out 'Piano Roll' on tracks 1 through 8 on OLED
+            KPrntScrn(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
+            KPrntScrn(1, " ")
+            KPrntScrn(1, " ")
+            KPrntScrn(2, " ")
+            KPrntScrn(3, " ")
+            KPrntScrn(4, " ")
+            KPrntScrn(5, " ")
+            KPrntScrn(6, " ")
+            KPrntScrn(7, " ")
+            KPrntScrnVol(0, 104)
+            KPrntScrnPan(0, 104)      
+
+        if ui.getFocused(4) == 1: # Browser
+            #spells out 'Piano Roll' on tracks 1 through 8 on OLED
+            KPrntScrn(0, "Browser")
+            KPrntScrn(1, "Browser")
+            KPrntScrn(2, "Browser")
+            KPrntScrn(3, "Browser")
+            KPrntScrn(4, "Browser")
+            KPrntScrn(5, "Browser")
+            KPrntScrn(6, "Browser")
+            KPrntScrn(7, "Browser")
+            KPrntScrnVol(0, 104)
+            KPrntScrnPan(0, 104)     
+
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         self.UpdateLEDs(), self.UpdateOLED()
