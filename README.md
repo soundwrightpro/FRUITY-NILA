@@ -71,7 +71,7 @@ Enjoy
 
 My thanks to Hobyst and their documentation and coding help. You have been the GOAT! 
 
-**DEVELOPEMNT OF THIS SCRIPT TAKES PLACE ON A M32**
+**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
 
 Did you make it all the way to the bottom? Good work. I'll share my road map with you.
 
