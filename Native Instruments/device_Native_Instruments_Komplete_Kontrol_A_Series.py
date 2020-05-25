@@ -97,7 +97,9 @@ def KDataOut(data11, data12):
       device.midiOutSysex(bytes(msgtom32))
       device.midiOutSysex(bytes([240, 191, 31, 1]))
       
-      
+  
+
+
 
 def KPrntScrn(trkn, word):
 
@@ -131,13 +133,21 @@ def KPrntScrn(trkn, word):
       device.midiOutSysex(bytes(header)) #send unicode values as bytes to OLED screen
 
 
+def TranslateVolume(Value):
+	return (math.exp(Value * math.log(11)) - 1) * 0.1   
+
+
+def VolTodB(Value):
+	Value = TranslateVolume(Value)
+	return round(math.log10(Value) * 20, 1)
+
+
 def KPrntScrnVol(trkn, vol):
 
       """ funtion that makes sendinig vol to the OLED screen easier"""
        
       volk = ""
       
-
       lettersh = [] 
       header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 70, 0,] 
 
@@ -157,16 +167,18 @@ def KPrntScrnVol(trkn, vol):
  
       elif vol >= 0.01 and vol <= 2.00:
          
-         volk = u'%d%%' % round((vol*100),2)
+         #volj = u'%d%%  ' % round((vol*100),2) # returns volume display to percentage
+         #lettersj = list(volj)
+         #while m < len(volj):
+         #   lettersh.append(ord(lettersj[m]))
+         #   m += 1 #end of volume in percentage 
 
-         #volk = '%s dB' % round(vol,3)
-
+         volk = '%s dB' % VolTodB(vol) # volume displayed in dB from here
          letters = list(volk)
-
          while n < len(volk):
             lettersh.append(ord(letters[n]))
-            n += 1
-
+            n += 1 # end of volume in dB
+         
       elif vol >= 103:
          volk = "N/A"
          letters = list(volk) 
@@ -256,6 +268,7 @@ class TKompleteBase():
          device.midiOutSysex(bytes([0xF0, 0xBF, 0x23, 0x00, 0x00, 0x0C, 1, 0xF7])) # auto button light fix
          device.midiOutSysex(bytes([0xBF, 0x22, 0x01])) #quantize light fix
          device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
+         print ("v3.1.0 by DUWAYNE 'SOUND' WRIGHT")
 
      def OnMidiIn(self, event):
 
@@ -271,7 +284,7 @@ class TKompleteBase():
             #transport.globalTransport(midi.FPT_Save, 92)
             transport.stop() #stop
             transport.start() #restart play at beginning
-            ui.setHintMsg("Save")
+            ui.setHintMsg("Restart")
              
          if (event.data1 == recb):
             event.handled = True
@@ -351,7 +364,7 @@ class TKompleteBase():
             ui.nextWindow()
             ui.setHintMsg("Next Window")
 
-         #mute and solo for playlist, mixer and channel rack
+         #mute and solo for mixer and channel rack
          if (event.data1 == muteb):
             if ui.getFocused(0) == 1: #mixer volume control
                event.handled = True
@@ -366,9 +379,6 @@ class TKompleteBase():
                   self.UpdateOLED()
                   ui.setHintMsg("Mute")
                
-            elif ui.getFocused(0) == 2: # playlist
-               #playlist.muteTrack() disabled, doesn't work as expected
-               self.UpdateOLED()
 
          if (event.data1 == solob): 
             if ui.getFocused(0) == 1: #mixer volume control
@@ -384,9 +394,6 @@ class TKompleteBase():
                   self.UpdateOLED()
                   ui.setHintMsg("Solo")
                
-            elif ui.getFocused(0) == 2: # playlist
-               #playlist.soloTrack() need a way to track what playlist tracks
-               self.UpdateOLED()
 
 
 
@@ -1158,7 +1165,7 @@ class TKompleteBase():
         if ui.getFocused(1) == 1: # channel rack
 
             xy = 1
-
+            
             KPrntScrn(0, "C: " + channels.getChannelName(channels.channelNumber() + 0))
 
             if channels.channelCount() > 0 and channels.channelNumber() < (channels.channelCount()-0) :
