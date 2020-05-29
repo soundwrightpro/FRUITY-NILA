@@ -24,7 +24,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **knobs + shift** controls pan in channel rack or mixer, depending on what windows is active
 * **mute and solo** buttons work on selected track in channel rack or mixer when shift is held down, depending on what windows is active
 * **quantize** light turns off when snap status is none.
-* if the Komplete Control Plugin is active, to switch between modes do the following:
+* if the Komplete Control Plugin (not to be confused with the Application) is active, to switch between modes do the following:
   * press **TRACK Instance** and that returns all knobs to FL Studio
   * if FL Studio is active (you can tell if **Scale** & **Arp** buttons are not lit) press in this order, 
     **Instance (Shift+Track)**, **PLUG-IN MIDI**. Knob function has now returned to the Komplete Kontrol Plugin.
