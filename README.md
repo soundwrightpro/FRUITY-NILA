@@ -45,6 +45,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * bug fixes (undo light)
 
 ## Known Issues
+* **scale, arp** and **ideas** lights are exclusive to the Komplete Kontrol and Machine (the ideas button). 
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 * **mute** and **solo** can be engaged at the same time - todo
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
