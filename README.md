@@ -1,10 +1,11 @@
-# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.3.5
+# Native Instruments Komplete Kontrol DAW FL Studio Script for M32 & A-Series V3.3.5
 
 Written by Duwayne 'Sound' Wright
 
-Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
+Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7 or higher, Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
 # What's new since v3.1.0
+* consolidated into one file for easier updates
 * status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
 * bug fixes
 * code refinement 
@@ -63,7 +64,7 @@ folder under the following location:
 
 ... Documents\Image-Line\FL Studio\Settings\Hardware\
 
-2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User) or Native Instruments Komplete Kontrol A-Series (User) in Input, depending on what you own. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
+2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Komplete Kontrol DAW in Input, for your M32 or A-Series. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
 ![Installlation image](/images/FL%20Studio%20Install%20Screenshot.png)
 
