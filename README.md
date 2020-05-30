@@ -1,13 +1,12 @@
-# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.1.0
+# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.3.2
 
 Written by Duwayne 'Sound' Wright
 
-Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. **You must have Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
+Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
-# What's new since v3.0.6
-* **volume** displayed in dB on the OLED (my thanks to Image-Line for the assist)
-* **Piano Roll** shown as "PR: " with track name and **Browser** when selected show on OLED
-* bug fixes
+# What's new since v3.1.0
+* status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
+* bug fixes, code refinement 
 
 
 ## Key Features
@@ -42,7 +41,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
 * interact with something on the keyboard, it displays what it is in the hint bar 
 * don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
-* bug fixes (undo light)
+* **volume** displayed in dB on the OLED (my thanks to Image-Line for the assist)
+* **Piano Roll** shown as "PR: " with track name and **Browser** when selected show on OLED
 
 ## Known Issues
 * **scale, arp** and **ideas** lights are exclusive to the Komplete Kontrol and Machine (the ideas button). 
@@ -73,6 +73,8 @@ Enjoy
 My thanks to Hobyst and their documentation and coding help. You have been the GOAT! 
 
 **DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
+
+
 
 Did you make it all the way to the bottom? Good work. I'll share my road map with you.
 
