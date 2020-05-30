@@ -9,6 +9,30 @@
 # script by Duwayne "Sound" Wright www.soundwrightpro.com and additional code from Hobyst
 
 
+# MIT License
+
+# Copyright (c) Duwayne Wright
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+
 #custom fl script modules
 import patterns
 import channels
@@ -27,7 +51,6 @@ import time
 import sys
 import binascii
 import math
-
 
 
 #button values
@@ -85,7 +108,10 @@ knobinc = 0.01
 on = 1
 off = 0
 
-#function to make talking to the keyboard less annoying
+#time delay for messages on screen
+timedelay = 0.5
+
+
 def KDataOut(data11, data12):
    
       """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
@@ -95,10 +121,6 @@ def KDataOut(data11, data12):
       convertmsg = [240, 191, data11, data12] 
       msgtom32 = bytearray(convertmsg)
       device.midiOutSysex(bytes(msgtom32))
-      device.midiOutSysex(bytes([240, 191, 31, 1]))
-      
-  
-
 
 
 def KPrntScrn(trkn, word):
@@ -113,12 +135,12 @@ def KPrntScrn(trkn, word):
 
       letters = list(word) #convert word into letters in array
 
-      if len(letters) <= 11:
+      if len(letters) <= 10:
          while n < len(letters): #convert letters in array to integer representing the Unicode character
             lettersh.append(ord(letters[n]))
             n += 1
       else:
-         while n < 12: #convert letters in array to integer representing the Unicode character
+         while n < 11: #convert letters in array to integer representing the Unicode character
             lettersh.append(ord(letters[n]))
             n += 1
          
@@ -256,6 +278,28 @@ def KPrntScrnPan(trkn, pan):
 
       device.midiOutSysex(bytes(header))
 
+def K_MS_OLED(lighttype, state): 
+
+   header = [0, 240, 0, 33, 9, 0, 0, 68, 67, 1, 0]
+
+   omute = [lighttype, state, 0]
+   osolo = [lighttype, state, 0]
+
+   n = 0
+
+   if lighttype == muteb:
+      while n < len(omute):
+         header.append(omute[n])
+         n += 1
+
+   elif lighttype == solob:
+      while n < len(osolo):
+         header.append(osolo[n])
+         n += 1
+
+   header.append(247)
+   device.midiOutSysex(bytes(header))
+
 
 class TKompleteBase():
 
@@ -265,10 +309,11 @@ class TKompleteBase():
          KDataOut(32, 1) #undo light on
          KDataOut(33, 1) #redo light on
 
-         device.midiOutSysex(bytes([0xF0, 0xBF, 0x23, 0x00, 0x00, 0x0C, 1, 0xF7])) # auto button light fix
-         device.midiOutSysex(bytes([0xBF, 0x22, 0x01])) #quantize light fix
-         device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x40, 0x01, 0x00, 0xF7])) # mute and solo light bug fix
-         print ("v3.1.0 by DUWAYNE 'SOUND' WRIGHT")
+         device.midiOutSysex(bytes([240, 191, 35, 0, 0, 12, 1, 247])) # turn on 'auto' button light
+         device.midiOutSysex(bytes([191, 34, 1])) #turn on 'quantize' button light
+         device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # turn on 'mute' and 'solo' button light 
+
+         print ("v3.3.2 by DUWAYNE 'SOUND' WRIGHT")
 
      def OnMidiIn(self, event):
 
@@ -303,6 +348,14 @@ class TKompleteBase():
             transport.setLoopMode() #loop/pattern mode
             self.UpdateLEDs()
             ui.setHintMsg("Song / pattern mode")
+
+            if transport.getLoopMode() == 0:
+               KPrntScrn(0, "Pat. Mode")
+               time.sleep(timedelay)
+
+            elif transport.getLoopMode() == 1:
+               KPrntScrn(0, "Song Mode")
+               time.sleep(timedelay)
             
 
          if (event.data1 == metrob): # metronome/button
@@ -310,25 +363,110 @@ class TKompleteBase():
             transport.globalTransport(midi.FPT_Metronome, 110)
             self.UpdateLEDs()
             ui.setHintMsg("Metronome")
+
+            if ui.isMetronomeEnabled() == 0: 
+              KPrntScrn(0, "Metro Off")
+              time.sleep(timedelay)
+
+            elif ui.isMetronomeEnabled() == 1: 
+              KPrntScrn(0, "Metro On")
+              time.sleep(timedelay)
             
          if (event.data1 == tempob):
             event.handled = True
             transport.stop() #tap tempo
+            #BPMv = str(round(mixer.getCurrentTempo()*0.001))+ " BPM"
+            #KPrntScrn(0, BPMv)
 
          if (event.data1 == quantizeb):
             event.handled = True
             transport.globalTransport(midi.FPT_Snap, 48) #snap toggle
-            ui.setHintMsg("Quantize")
+            self.UpdateLEDs()
+            ui.setHintMsg("Snap")
+
+            if ui.getSnapMode() == 3: # none
+               KPrntScrn(0, "Snap Off")
+               time.sleep(timedelay)
+
+            else:
+               KPrntScrn(0, "Snap On")
+               time.sleep(timedelay)
+
 
          if (event.data1 == squantizeb):
             event.handled = True
             ui.snapMode(1) #snap toggle
-            ui.setHintMsg("Snap Type")  
+            ui.setHintMsg("Snap Type")
+            self.UpdateLEDs()
+
+            if ui.getSnapMode() == 0: # line
+              KPrntScrn(0, "Snap: Line")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 1: # cell
+              KPrntScrn(0, "Snap: Cell")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 3: # none
+              KPrntScrn(0, "Snap: None")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 4: # 1/6 step
+              KPrntScrn(0, "S: 1/6 Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 5: # 1/4 step
+              KPrntScrn(0, "S: 1/4 Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 6: # 1/3 step
+              KPrntScrn(0, "S: 1/3 Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 7: # 1/2 step
+              KPrntScrn(0, "S: 1/2 Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 8: # step
+              KPrntScrn(0, "Snap: Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 9: # 1/6 beat
+              KPrntScrn(0, "S: 1/6 Beat")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 10: # 1/4 beat
+              KPrntScrn(0, "S: 1/4 Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 11: # 1/3 beat
+              KPrntScrn(0, "S: 1/3 Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 12: # 1/2 beat
+              KPrntScrn(0, "S: 1/2 Step")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 13: # beat
+              KPrntScrn(0, "Snap: Beat")
+              time.sleep(timedelay)
+
+            elif ui.getSnapMode() == 14: # bar
+              KPrntScrn(0, "Snap: Bar")
+              time.sleep(timedelay)
+
 
          if (event.data1 == srecb):
             event.handled = True
             transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recording
-            ui.setHintMsg("Countdown before recording") 
+            ui.setHintMsg("Countdown before recording")
+            
+            if ui.isPrecountEnabled() == True: 
+               KPrntScrn(0, "Cnt-in On")
+               time.sleep(timedelay)
+            else:
+               KPrntScrn(0, "Cnt-in Off")
+               time.sleep(timedelay)
 
          if (event.data1 == sstopb):
             event.handled = True
@@ -344,11 +482,6 @@ class TKompleteBase():
             event.handled = True
             general.undo() #redo
             ui.setHintMsg(ui.getHintMsg())
-
-         if (event.data1 == squantizeb):
-            event.handled = True
-            transport.globalTransport(midi.FPT_SnapMode, 49, event.pmeFlags) #snap toggle
-            self.UpdateLEDs()
 
          if (event.data1 == tempob):
             event.handled = True
@@ -371,6 +504,7 @@ class TKompleteBase():
                mixer.enableTrack(mixer.trackNumber()) #mute 
                self.UpdateOLED()
                ui.setHintMsg("Mute")
+               
 
             elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 1: 
@@ -378,6 +512,7 @@ class TKompleteBase():
                   channels.muteChannel(channels.channelNumber()) 
                   self.UpdateOLED()
                   ui.setHintMsg("Mute")
+                  
                
 
          if (event.data1 == solob): 
@@ -1032,17 +1167,14 @@ class TKompleteBase():
 
      def UpdateLEDs(self):
 
-        if device.isAssigned():
-            playstatus = [transport.isPlaying()]
-            recstatus = [transport.isRecording()]
-            loopstatus = [transport.getLoopMode()]
-            metrostatus = [ui.isMetronomeEnabled()]
-            prestatus = [ui.isPrecountEnabled()]
-            quanstatus = [ui.getSnapMode()]
-            mutestatusc = [channels.isChannelMuted(0)]
-            solostatusc = [channels.isChannelSolo(0)]
-            mutestatusm = [mixer.isTrackEnabled(mixer.trackNumber())]
-            solostatusm = [mixer.isTrackSolo(mixer.trackNumber())]
+         playstatus = [transport.isPlaying()]
+         recstatus = [transport.isRecording()]
+         loopstatus = [transport.getLoopMode()]
+         metrostatus = [ui.isMetronomeEnabled()]
+         prestatus = [ui.isPrecountEnabled()]
+         quanstatus = [ui.getSnapMode()]
+
+         if device.isAssigned():
 
             for a in playstatus:
               if a == 0: #not playing
@@ -1074,7 +1206,7 @@ class TKompleteBase():
 
             for e in prestatus:
               if e == 0: #pre count on
-                  KDataOut(srecb, off) 
+                  KDataOut(srecb, off)
 
               elif e == 1: #pre count off
                   KDataOut(srecb, on) 
@@ -1094,10 +1226,11 @@ class TKompleteBase():
                      KDataOut(playb, on)
               elif g == 0: #play off: 
                   KDataOut(playb, off)
-   
 
 
      def UpdateOLED(self):
+
+
 
         if ui.getFocused(0) == 1: #mixer volume control
 
@@ -1146,21 +1279,20 @@ class TKompleteBase():
                
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
-               device.midiOutSysex(bytes([0x00, 0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x00, 0x00, 0xF7]))
+               K_MS_OLED(muteb, off)
                KDataOut(102, off)
                
             elif mixer.isTrackEnabled(mixer.trackNumber()) == 0: #mute light on
-               device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x01, 0x00, 0xF7]))
+               K_MS_OLED(muteb, on)
                KDataOut(102, on)
 
             if (mixer.isTrackSolo(mixer.trackNumber()) == 0) == True: #solo light off
-               device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x00, 0x00, 0xF7]))
+               K_MS_OLED(solob, off)
                KDataOut(105, off)
 
             elif (mixer.isTrackSolo(mixer.trackNumber()) == 1) == True: #solo light on
-               device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
+               K_MS_OLED(solob, on)
                KDataOut(105, on)
-
 
         if ui.getFocused(1) == 1: # channel rack
 
@@ -1242,21 +1374,24 @@ class TKompleteBase():
 
 
             if (channels.isChannelMuted(channels.channelNumber()) == 0) == True: #mute light off
-               device.midiOutSysex(bytes([0x00, 0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x00, 0x00, 0xF7]))
+               K_MS_OLED(muteb, off)
                KDataOut(102, off)
-               
+                
             else: #mute light on
-               device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x43, 0x01, 0x00, 0xF7]))
+               K_MS_OLED(muteb, on)
                KDataOut(102, on)
-            
+               K_MS_OLED(solob, off)
+               KDataOut(105, off)
+               
             if channels.channelCount() >= 2: 
                if (channels.isChannelSolo(channels.channelNumber()) == 0) == True: #solo light off
-                  device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x00, 0x00, 0xF7]))
+                  K_MS_OLED(solob, off)
                   KDataOut(105, off)
-
+                  
                else: #solo light on
-                  device.midiOutSysex(bytes([0xF0, 0x00, 0x21, 0x09, 0x00, 0x00, 0x44, 0x43, 0x01, 0x00, 0x44, 0x01, 0x00, 0xF7]))
+                  K_MS_OLED(solob, on)
                   KDataOut(105, on)
+                  
 
         if ui.getFocused(2) == 1: # playlist
             #spells out 'Playlist' on tracks 1 through 8 on OLED
@@ -1273,18 +1408,82 @@ class TKompleteBase():
 
         if ui.getFocused(3) == 1: # Piano Roll
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
-            KPrntScrn(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
-            KPrntScrn(1, " ")
-            KPrntScrn(1, " ")
-            KPrntScrn(2, " ")
-            KPrntScrn(3, " ")
-            KPrntScrn(4, " ")
-            KPrntScrn(5, " ")
-            KPrntScrn(6, " ")
-            KPrntScrn(7, " ")
-            KPrntScrnVol(0, 104)
-            KPrntScrnPan(0, 104)      
 
+            xy = 1
+            
+            KPrntScrn(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
+
+            if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
+               KPrntScrn(1, "C: " + channels.getChannelName(channels.channelNumber() + 1))
+               KPrntScrnVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) / xy ,2)))
+               KPrntScrnPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
+            else:
+               KPrntScrn(1, " ")
+               KPrntScrnVol(1, 104)
+               KPrntScrnPan(1, 104)
+
+            if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
+               KPrntScrn(2, "C: " + channels.getChannelName(channels.channelNumber() + 2))
+               KPrntScrnVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) / xy ,2)))
+               KPrntScrnPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
+            else:
+               KPrntScrn(2, " ")
+               KPrntScrnVol(2, 104)
+               KPrntScrnPan(2, 104)
+               
+            if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
+               KPrntScrn(3, "C: " + channels.getChannelName(channels.channelNumber() + 3))
+               KPrntScrnVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) / xy ,2)))
+               KPrntScrnPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
+            else:
+               KPrntScrn(3, " ")
+               KPrntScrnVol(3, 104)
+               KPrntScrnPan(3, 104)
+               
+            if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
+               KPrntScrn(4, "C: " + channels.getChannelName(channels.channelNumber() + 4))
+               KPrntScrnVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) / xy ,2)))
+               KPrntScrnPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
+            else:
+               KPrntScrn(4, " ")
+               KPrntScrnVol(4, 104)
+               KPrntScrnPan(4, 104)
+               
+            if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
+               KPrntScrn(5, "C: " + channels.getChannelName(channels.channelNumber() + 5))
+               KPrntScrnVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) / xy ,2)))
+               KPrntScrnPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
+            else:
+               KPrntScrn(5, " ")
+               KPrntScrnVol(5, 104)
+               KPrntScrnPan(5, 104)
+               
+            if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
+               KPrntScrn(6, "C: " + channels.getChannelName(channels.channelNumber() + 6))
+               KPrntScrnVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) / xy ,2)))
+               KPrntScrnPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
+            else:
+               KPrntScrn(6, " ")
+               KPrntScrnVol(6, 104)
+               KPrntScrnPan(6, 104)
+               
+            if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
+               KPrntScrn(7, "C: " + channels.getChannelName(channels.channelNumber() + 7))
+               KPrntScrnVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) / xy ,2)))
+               KPrntScrnPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+            else:
+               KPrntScrn(7, " ")
+               KPrntScrnVol(7, 104)
+               KPrntScrnPan(7, 104)
+
+            if channels.getChannelName(channels.channelNumber()) != channels.getChannelName(0):
+               KPrntScrnVol(0, 104)
+               KPrntScrnPan(0, 104)
+
+            else:
+               KPrntScrnVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) / xy ,2)))
+               KPrntScrnPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+     
         if ui.getFocused(4) == 1: # Browser
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
             KPrntScrn(0, "Browser")
@@ -1297,7 +1496,6 @@ class TKompleteBase():
             KPrntScrn(7, "Browser")
             KPrntScrnVol(0, 104)
             KPrntScrnPan(0, 104)     
-
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         self.UpdateLEDs(), self.UpdateOLED()
@@ -1313,14 +1511,16 @@ class TKompleteBase():
       	    KDataOut(playb, on) #play light bright
       	 elif Value == 0:
       	    KDataOut(playb, off) #play light dim
-       else:
-      	 if Value == 1:
-      	    KDataOut(recb, on) #play light bright
-      	    KDataOut(playb, on) #play light bright
-      	 elif Value == 2:
-      	    KDataOut(recb, on) #play light bright
-      	 elif Value == 0:
-      	    KDataOut(recb, off) #play light dim  
+
+       elif transport.isRecording() == 1:
+            KDataOut(playb, on)
+            if Value == 1:
+               KDataOut(recb, on) #play light bright
+            elif Value == 2:
+               KDataOut(recb, on) #play light bright
+            elif Value == 0:
+               KDataOut(recb, off) #play light dim  
+
 
 
      def OnIdle():
