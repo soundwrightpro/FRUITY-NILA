@@ -1,4 +1,4 @@
-# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.3.2
+# Native Instruments Komplete Kontrol FL Studio Script for M32 & A-Series V3.3.5
 
 Written by Duwayne 'Sound' Wright
 
@@ -6,7 +6,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 # What's new since v3.1.0
 * status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
-* bug fixes, code refinement 
+* bug fixes
+* code refinement 
 
 
 ## Key Features
@@ -64,7 +65,7 @@ folder under the following location:
 
 2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Native Instruments Komplete Kontrol M32 (User) or Native Instruments Komplete Kontrol A-Series (User) in Input, depending on what you own. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
-![Installlation image](/images/FL%20Studio%20Install.png)
+![Installlation image](/images/FL%20Studio%20Install%20Screenshot.png)
 
 Enjoy
 
