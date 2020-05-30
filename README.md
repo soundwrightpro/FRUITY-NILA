@@ -49,8 +49,6 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 * **mute** and **solo** can be engaged at the same time - todo
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
-* When a track/channel name is longer than 8 characters on the mixer/channel, an automatic shortening is applied to the name. The colon and/or space for "M:" or "C:" may disappear. This is unavoidable.
-* **channel rack** doesn't update volume or pan in real-time. Something is wrong with FL Studio, Image-Line is aware of the problem. - awaiting fix
 * if group in **channel rack** is not set to "All", the script will crash - todo
 
 
