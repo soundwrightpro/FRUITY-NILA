@@ -1,12 +1,12 @@
-# Komplete Kontrol DAW - FL Studio Script - v3.3.5
+# Komplete Kontrol DAW - FL Studio Script - v3.4.0
 
 *Written by Duwayne 'Sound' Wright*
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7 or higher, Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
-# What's new since v3.1.0
-* consolidated into one file for easier updates
-* status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
+# What's new since v3.3.5
+* **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want load
+* imporments with track names on OLED
 * bug fixes
 * code refinement 
 
@@ -45,6 +45,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
 * **volume** displayed in dB on the OLED (my thanks to Image-Line for the assist)
 * **Piano Roll** shown as "PR: " with track name and **Browser** when selected show on OLED
+* consolidated into one file for easier updates
+* status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
 
 ## Known Issues
 * **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
@@ -52,6 +54,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **mute** and **solo** can be engaged at the same time on the channel rack. - Something is missing with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * if group in **channel rack** is not set to "All", the script will crash - Something is missing with FL Studio, Image-Line is aware of the problem. Awaiting fix
+* 4D plugin picker insert odd characters in the search feild on macOS. Image-Line is aware of the problem. Awaiting fix
 
 
 ## Installation
@@ -78,5 +81,6 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 
 Did you make it all the way to the bottom? Good work. I'll share my road map with you.
 
-* 3.5.0 - bugs and refinements - I'm new to python, so I'm learning as I go. There are so many techniques I've learned that           I need to apply to the older things I've done.
+* 3.5.0 - bugs and refinements - I'm new to python, so I'm learning as I go. There are so many techniques I've learned that           I need to apply to the older things I've done. Adding the NI Host Integration Agent API for FL Studio
+          (https://github.com/hobyst/flmidi-nihia) to the plugin. 
 * 4.0.0 - Final - There's only so much I can do. If you have any suggestions leave them here in the FL Studio forum:                   https://forum.image-line.com/viewtopic.php?f=1994&t=225473
