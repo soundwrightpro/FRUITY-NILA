@@ -311,7 +311,7 @@ class TKompleteBase():
       device.midiOutSysex(bytes([191, 34, 1])) # 'quantize' light on
       device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' light on
 
-      print ("Komplete Kontrol DAW v3.3.7 by DUWAYNE 'SOUND' WRIGHT")
+      print ("Komplete Kontrol DAW v3.4.0 by DUWAYNE 'SOUND' WRIGHT")
 
      def OnMidiMsg(self, event): #listens for button or knob activity
 
