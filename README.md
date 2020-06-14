@@ -2,11 +2,11 @@
 
 *Written by Duwayne 'Sound' Wright*
 
-Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7 or higher, Komplete Kontrol v2.3.0 and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
+Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
 # What's new since v3.3.5
-* **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want load
-* imporments with track names on OLED
+* **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want to load (macOS, see known issues)
+* improvements with track names on OLED
 * bug fixes
 * code refinement 
 
@@ -54,7 +54,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **mute** and **solo** can be engaged at the same time on the channel rack. - Something is missing with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * if group in **channel rack** is not set to "All", the script will crash - Something is missing with FL Studio, Image-Line is aware of the problem. Awaiting fix
-* 4D plugin picker insert odd characters in the search feild on macOS. Image-Line is aware of the problem. Awaiting fix
+* 4D plugin picker insert odd characters in the search feild on macOS; have to press delete each time an odd character or spacing occurs. Image-Line is aware of the problem. Awaiting fix
 
 
 ## Installation
