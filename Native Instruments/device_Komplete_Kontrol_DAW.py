@@ -3,7 +3,7 @@
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
 
 # github for this script
-# url=https://github.com/soundwrightpro/FLIN 
+# url=https://github.com/soundwrightpro/FLNI_KK
 
 # FL Studio Forum
 # https://forum.image-line.com/viewtopic.php?f=1994&t=225473
@@ -38,9 +38,7 @@ import channels
 import mixer
 import device
 import transport
-import arrangement
 import general
-import launchMapPages
 import playlist
 import ui
 import screen
@@ -105,7 +103,6 @@ knobinc = 0.01
 on = 1
 off = 0
 
-
 #time delay for messages on screen
 timedelay = 0.5
 
@@ -132,14 +129,20 @@ def KPrntScrn(trkn, word):
 
       letters = list(word) #convert word into letters in array
 
-      if len(letters) <= 10:
+      if len(letters) <= 13:
          while n < len(letters): #convert letters in array to integer representing the Unicode character
-            lettersh.append(ord(letters[n]))
-            n += 1
+            if ord(letters[n]) > 256:
+               n +=1
+            else:
+               lettersh.append(ord(letters[n]))
+               n += 1
       else:
-         while n < 11: #convert letters in array to integer representing the Unicode character
-            lettersh.append(ord(letters[n]))
-            n += 1
+         while n < 14: #convert letters in array to integer representing the Unicode character
+            if ord(letters[n]) > 256:
+               n += 1
+            else:   
+               lettersh.append(ord(letters[n]))
+               n += 1
          
       header.append(trkn) #adding track number to header at the end 
 
@@ -310,7 +313,7 @@ class TKompleteBase():
 
       print ("Komplete Kontrol DAW v3.3.7 by DUWAYNE 'SOUND' WRIGHT")
 
-     def OnMidiIn(self, event): #listens for button or knob activity
+     def OnMidiMsg(self, event): #listens for button or knob activity
 
          #tbuttons
          if (event.data1 == playb):
@@ -469,6 +472,9 @@ class TKompleteBase():
             event.handled = True
             ui.escape() #escape key
             ui.setHintMsg("esc")
+            KPrntScrn(0, "esc")
+            time.sleep(timedelay)
+
 
          if (event.data1 == undob):
             event.handled = True
@@ -491,8 +497,9 @@ class TKompleteBase():
 
          if (event.data1 == sknobp):
             event.handled = True
-            ui.nextWindow()
-            ui.setHintMsg("Next Window")
+            #ui.nextWindow()
+            transport.globalTransport(midi.FPT_F8, 67)
+            ui.setHintMsg("Plugin Picker")
 
          #mute and solo for mixer and channel rack
          if (event.data1 == muteb):
@@ -502,7 +509,6 @@ class TKompleteBase():
                self.UpdateOLED()
                ui.setHintMsg("Mute")
                
-
             elif (ui.getFocused(0) == 0) == True: # channel rack
                if channels.channelCount() >= 1: 
                   event.handled = True
@@ -510,8 +516,6 @@ class TKompleteBase():
                   self.UpdateOLED()
                   ui.setHintMsg("Mute")
                   
-               
-
          if (event.data1 == solob): 
             if ui.getFocused(0) == 1: #mixer volume control
                event.handled = True
@@ -526,9 +530,6 @@ class TKompleteBase():
                   self.UpdateOLED()
                   ui.setHintMsg("Solo")
                
-
-
-
          #4D controller
          if (event.data1 == knobsp) & (event.data2 == right): #4d encoder spin right 
             event.handled = True
@@ -539,20 +540,21 @@ class TKompleteBase():
          
          if (event.data1 == knoblr) & (event.data2 == right): #4d encoder push right
             event.handled = True
-            transport.globalTransport(midi.FPT_Right, 1)
+            ui.right()
+
          elif (event.data1 == knoblr) & (event.data2 == left): #4d encoder push left
             event.handled = True
-            transport.globalTransport(midi.FPT_Left, 1)
+            ui.left()
 
          if (event.data1 == knobud) & (event.data2 == up): #4d encoder push up
             event.handled = True
-            transport.globalTransport(midi.FPT_Up, 1)
+            ui.up()
+            
          elif (event.data1 == knobud) & (event.data2 == down): #4d encoder push down
             event.handled = True
-            transport.globalTransport(midi.FPT_Down, 1)
+            ui.down()
 
          #8 volume knobs for mixer & channel rack, 8 tracks at a time
-
 
          if ui.getFocused(0) == 1: #mixer volume control
 
@@ -576,7 +578,6 @@ class TKompleteBase():
                    mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
                    KPrntScrnVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
 
-
             #knob 2
             if mixer.trackNumber() <= 125:
                if (event.data1 == knob2):
@@ -592,7 +593,6 @@ class TKompleteBase():
                    round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
                    KPrntScrnVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
-
 
             #knob 3
             if mixer.trackNumber() <= 124:
@@ -614,7 +614,6 @@ class TKompleteBase():
                KPrntScrn(3, ' ')
                KPrntScrnVol(3, 104)
                
-
             #knob 4
             if mixer.trackNumber() <= 123:
                if (event.data1 == knob4):
@@ -719,8 +718,7 @@ class TKompleteBase():
 
             elif mixer.trackNumber() <= 127:    
                KPrntScrn(8, ' ')     
-                          
-               
+
             # MIXER PAN CONTROL 
 
             #sknob 1
@@ -1383,13 +1381,13 @@ class TKompleteBase():
         if ui.getFocused(2) == 1: # playlist
             #spells out 'Playlist' on tracks 1 through 8 on OLED
             KPrntScrn(0, "Playlist")
-            KPrntScrn(1, "Playlist")
-            KPrntScrn(2, "Playlist")
-            KPrntScrn(3, "Playlist")
-            KPrntScrn(4, "Playlist")
-            KPrntScrn(5, "Playlist")
-            KPrntScrn(6, "Playlist")
-            KPrntScrn(7, "Playlist")
+            KPrntScrn(1, " ")
+            KPrntScrn(2, " ")
+            KPrntScrn(3, " ")
+            KPrntScrn(4, " ")
+            KPrntScrn(5, " ")
+            KPrntScrn(6, " ")
+            KPrntScrn(7, " ")
             KPrntScrnVol(0, 104)
             KPrntScrnPan(0, 104)
 
@@ -1474,13 +1472,26 @@ class TKompleteBase():
         if ui.getFocused(4) == 1: # Browser
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
             KPrntScrn(0, "Browser")
-            KPrntScrn(1, "Browser")
-            KPrntScrn(2, "Browser")
-            KPrntScrn(3, "Browser")
-            KPrntScrn(4, "Browser")
-            KPrntScrn(5, "Browser")
-            KPrntScrn(6, "Browser")
-            KPrntScrn(7, "Browser")
+            KPrntScrn(1, " ")
+            KPrntScrn(2, " ")
+            KPrntScrn(3, " ")
+            KPrntScrn(4, " ")
+            KPrntScrn(5, " ")
+            KPrntScrn(6, " ")
+            KPrntScrn(7, " ")
+            KPrntScrnVol(0, 104)
+            KPrntScrnPan(0, 104)     
+
+        if ui.getFocused(5) == 1: # Plugin
+            #spells out 'Plugin' on tracks 1 through 8 on OLED
+            KPrntScrn(0, ui.getFocusedFormCaption())
+            KPrntScrn(1, " ")
+            KPrntScrn(2, " ")
+            KPrntScrn(3, " ")
+            KPrntScrn(4, " ")
+            KPrntScrn(5, " ")
+            KPrntScrn(6, " ")
+            KPrntScrn(7, " ")
             KPrntScrnVol(0, 104)
             KPrntScrnPan(0, 104)     
 
@@ -1520,8 +1531,8 @@ def OnRefresh(Flags):
 def OnUpdateBeatIndicator(Value):
 	KompleteBase.OnUpdateBeatIndicator(Value)
 
-def OnMidiIn(event):
-	KompleteBase.OnMidiIn(event)
+def OnMidiMsg(event):
+	KompleteBase.OnMidiMsg(event)
 
 def OnDeInit():
    if ui.isClosing():
