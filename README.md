@@ -1,4 +1,4 @@
-# Komplete Kontrol DAW - FL Studio Script - v3.4.0
+# Komplete Kontrol DAW - FL Studio Script - v3.4.1
 
 *Written by Duwayne 'Sound' Wright*
 
@@ -51,7 +51,6 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 ## Known Issues
 * **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
-* **mute** and **solo** can be engaged at the same time on the channel rack. - Something is missing with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * if group in **channel rack** is not set to "All", the script will crash - Something is missing with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * 4D plugin picker insert odd characters in the search feild on macOS; have to press delete each time an odd character or spacing occurs. Image-Line is aware of the problem. Awaiting fix
