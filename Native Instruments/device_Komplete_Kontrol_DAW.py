@@ -509,7 +509,7 @@ class TKompleteBase():
                self.UpdateOLED()
                ui.setHintMsg("Mute")
                
-            elif (ui.getFocused(0) == 0) == True: # channel rack
+            elif ui.getFocused(1) == 1: # channel rack
                if channels.channelCount() >= 1: 
                   event.handled = True
                   channels.muteChannel(channels.channelNumber()) 
@@ -523,7 +523,7 @@ class TKompleteBase():
                self.UpdateOLED()
                ui.setHintMsg("Solo")
 
-            elif (ui.getFocused(0) == 0) == True: # channel rack
+            elif ui.getFocused(1) == 1: # channel rack
                if channels.channelCount() >= 2: 
                   event.handled = True
                   channels.soloChannel(channels.channelNumber()) 
@@ -531,9 +531,11 @@ class TKompleteBase():
                   ui.setHintMsg("Solo")
                
          #4D controller
+         
          if (event.data1 == knobsp) & (event.data2 == right): #4d encoder spin right 
             event.handled = True
             ui.jog(1)
+
          elif (event.data1 == knobsp) & (event.data2 == left): #4d encoder spin left
             event.handled = True
             ui.jog(-1)
@@ -882,7 +884,7 @@ class TKompleteBase():
                KPrntScrnVol(7, 104)
 
 
-         elif ui.getFocused(0) == 0: # channel rack
+         elif ui.getFocused(1) == 1: # channel rack
 
             # VOLUME CONTROL
 
@@ -1272,11 +1274,11 @@ class TKompleteBase():
                K_MS_OLED(muteb, on)
                KDataOut(102, on)
 
-            if (mixer.isTrackSolo(mixer.trackNumber()) == 0) == True: #solo light off
+            if mixer.isTrackSolo(mixer.trackNumber()) == 0: #solo light off
                K_MS_OLED(solob, off)
                KDataOut(105, off)
 
-            elif (mixer.isTrackSolo(mixer.trackNumber()) == 1) == True: #solo light on
+            elif mixer.isTrackSolo(mixer.trackNumber()) == 1: #solo light on
                K_MS_OLED(solob, on)
                KDataOut(105, on)
 
@@ -1359,7 +1361,7 @@ class TKompleteBase():
                KPrntScrnPan(7, 104)
 
 
-            if (channels.isChannelMuted(channels.channelNumber()) == 0) == True: #mute light off
+            if channels.isChannelMuted(channels.channelNumber()) == 0: #mute light off
                K_MS_OLED(muteb, off)
                KDataOut(102, off)
                 
@@ -1374,8 +1376,11 @@ class TKompleteBase():
                   KDataOut(105, off)
                   
                elif channels.isChannelSolo(channels.channelNumber()) == 1: #solo light on
-                  K_MS_OLED(solob, on)
-                  KDataOut(105, on)
+                  if channels.isChannelMuted(channels.channelNumber()) == 0:
+                     K_MS_OLED(solob, on)
+                     KDataOut(105, on)
+                  else:
+                     K_MS_OLED(solob, off)
                   
 
         if ui.getFocused(2) == 1: # playlist
