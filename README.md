@@ -1,12 +1,11 @@
-# Komplete Kontrol DAW - FL Studio Script - v3.4.1
+# Komplete Kontrol DAW - FL Studio Script - v3.4.9
 
 *Written by Duwayne 'Sound' Wright*
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
-# What's new since v3.3.5
-* **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want to load (macOS, see known issues)
-* improvements with track names on OLED
+# What's new since v3.4.1
+* NIHIA.py by Hobyst now part of install
 * bug fixes
 * code refinement 
 
@@ -47,6 +46,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **Piano Roll** shown as "PR: " with track name and **Browser** when selected show on OLED
 * consolidated into one file for easier updates
 * status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
+* **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want to load (macOS, see known issues)
+* improvements with track names on OLED
 
 ## Known Issues
 * **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
