@@ -36,7 +36,6 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * shift + pushing down on 4D encoder toggles between open windows.
 * **clear** (**shift + stop**) functions as the escape key
 * **channel and mixer track names** on the OLED. For the Mixer all track names start with "M: " and for the Channel Rack all track names start with "C: ". Tap on a knob to see the name of what it controls.
-* A-Series support
 * **restart** (**shift + play**)
 * Scroll through FLEX settings with the 4-D controller (up, down, left, right; click on the list in FLEX then use controls)
 * **play** button flashes to tempo, **record** button flashes to tempo when recording is engaged and **play** button light is engaged 
