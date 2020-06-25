@@ -4,15 +4,15 @@
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7.1 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
-## [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI")
+### [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI")
 
 
-### What's new since v3.4.1
+#### What's new since v3.4.1
 * [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia  "NIHIA by Hobyst") for code refinement
 * bug fixes
 
 
-#### Key Features
+##### Key Features
 * **transport** works as expected (play, record, stop)
 * **count-in** - toggles countdown before recording
 * **loop** - toggles between pattern and song mode
@@ -59,7 +59,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * 4D plugin picker insert odd characters in the search feild on macOS; have to press delete each time an odd character or spacing occurs. Image-Line is aware of the problem. Awaiting fix
 
 
-##### Installation
+###### Installation
 
 Native Instruments Host Integration service must be installed and running. It is automatically the case
 if you installed Komplete Kontrol on your machine.
