@@ -8,9 +8,10 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 
 #### What's new since v3.4.1
-* [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia  "NIHIA by Hobyst") for code refinement
+* [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia  "NIHIA by Hobyst") by [Hobyst](ttps://github.com/hobyst  "Hobyst Github")for code refinement
 * bug fixes
 
+h
 
 ##### Key Features
 * **transport** works as expected (play, record, stop)
