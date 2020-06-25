@@ -48,24 +48,8 @@ import time
 import sys
 import binascii
 import math
+import nihia
 
-
-#button values
-playb = 16 # play button 
-splayb = 17 # shift play button
-recb = 18 # record button
-srecb = 19 # shift record button
-stopb = 20 # stop button
-sstopb = 21 # shift stop button
-loopb = 22 # loop button
-metrob = 23 # metronome button
-tempob = 24 # tempo button
-undob = 32 # undo button
-sundob = 33 # shift undo/redo button
-quantizeb = 34 # quantize button
-squantizeb = 35 # shift quantize button
-muteb = 67 # mute button
-solob = 68 # solo button
 
 #knobs, spin to the left 127 and spin to the right 1
 knob1 = 80
@@ -85,12 +69,6 @@ sknob6 = 93
 sknob7 = 94
 sknob8 = 95
 
-#multiknob
-knobud = 48 # knob up data 2 = 127 and down data 2 = 1
-knoblr = 50 # knob left data 2 = 127 and right data 2 = 1
-knobsp = 52 # knob spin left 127 and spint right = 1
-knobp = 96 # knob push
-sknobp = 97 # knob shift+push
 
 #data2 up down right left values
 down = right = 1
@@ -106,16 +84,8 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.5
 
+#count = 0
 
-def KDataOut(data11, data12):
-   
-      """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
-          it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
-            the STATUS of the message to BF as expected.""" 
-
-      convertmsg = [240, 191, data11, data12] 
-      msgtom32 = bytearray(convertmsg)
-      device.midiOutSysex(bytes(msgtom32))
 
 def KPrntScrn(trkn, word):
 
@@ -129,7 +99,7 @@ def KPrntScrn(trkn, word):
 
       letters = list(word) #convert word into letters in array
 
-      if len(letters) <= 13:
+      if len(letters) <= 11:
          while n < len(letters): #convert letters in array to integer representing the Unicode character
             if ord(letters[n]) > 256:
                n +=1
@@ -137,7 +107,7 @@ def KPrntScrn(trkn, word):
                lettersh.append(ord(letters[n]))
                n += 1
       else:
-         while n < 14: #convert letters in array to integer representing the Unicode character
+         while n < 12: #convert letters in array to integer representing the Unicode character
             if ord(letters[n]) > 256:
                n += 1
             else:   
@@ -285,12 +255,12 @@ def K_MS_OLED(lighttype, state):
 
    n = 0
 
-   if lighttype == muteb:
+   if lighttype == nihia.buttons["MUTE"]:
       while n < len(omute):
          header.append(omute[n])
          n += 1
 
-   elif lighttype == solob:
+   elif lighttype == nihia.buttons["SOLO"]:
       while n < len(osolo):
          header.append(osolo[n])
          n += 1
@@ -300,83 +270,86 @@ def K_MS_OLED(lighttype, state):
 
 
 class TKompleteBase():
-
+     
      def OnInit(self): #initializing 
+      nihia.initiate()  
+      nihia.dataOut(nihia.buttons["CLEAR"], on) # 'clear' light on
+      nihia.dataOut(nihia.buttons["UNDO"], on) # 'undo' light on
+      nihia.dataOut(nihia.buttons["REDO"], on) # 'redo' light on
+      nihia.dataOut(nihia.buttons["AUTO"], on) # 'auto' light on
+      nihia.dataOut(nihia.buttons["QUANTIZE"], on)
 
-      KDataOut(21, 1) # 'clear' light on
-      KDataOut(32, 1) # 'undo' light on
-      KDataOut(33, 1) # 'redo' light on
-
-      device.midiOutSysex(bytes([240, 191, 35, 0, 0, 12, 1, 247])) # 'auto' light on
-      device.midiOutSysex(bytes([191, 34, 1])) # 'quantize' light on
       device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' light on
+      #device.midiOutSysex(bytes([240, 191, 35, 0, 0, 12, 1, 247])) # 'auto' light on
+      #device.midiOutSysex(bytes([191, 34, 1])) # 'quantize' light on
+      
+      
 
-      print ("Komplete Kontrol DAW v3.4.1 by DUWAYNE 'SOUND' WRIGHT")
+      print ("Komplete Kontrol DAW v3.4.9 by DUWAYNE 'SOUND' WRIGHT")
 
      def OnMidiMsg(self, event): #listens for button or knob activity
 
          #tbuttons
-         if (event.data1 == playb):
+         if (event.data1 == nihia.buttons["PLAY"]):
             event.handled = True
             transport.start() #play
             self.UpdateLEDs()
             ui.setHintMsg("Play/Pause")
 
-         if (event.data1 == splayb):
+         if (event.data1 == nihia.buttons["RESTART"]):
             event.handled = True
             #transport.globalTransport(midi.FPT_Save, 92)
             transport.stop() #stop
             transport.start() #restart play at beginning
             ui.setHintMsg("Restart")
              
-         if (event.data1 == recb):
+         if (event.data1 == nihia.buttons["REC"]):
             event.handled = True
             transport.record() #record
             self.UpdateLEDs()
             ui.setHintMsg("Record")
 
-         if (event.data1 == stopb):
+         if (event.data1 == nihia.buttons["STOP"]):
             event.handled = True
             transport.stop() #stop
             self.UpdateLEDs()
             ui.setHintMsg("Stop")
 
-         if (event.data1 == loopb):
+         if (event.data1 == nihia.buttons["LOOP"]):
             event.handled = True
             transport.setLoopMode() #loop/pattern mode
             self.UpdateLEDs()
             ui.setHintMsg("Song / pattern mode")
 
-            if transport.getLoopMode() == 0:
+            if transport.getLoopMode() == off:
                KPrntScrn(0, "Pat. Mode")
                time.sleep(timedelay)
 
-            elif transport.getLoopMode() == 1:
+            elif transport.getLoopMode() == on:
                KPrntScrn(0, "Song Mode")
                time.sleep(timedelay)
             
-
-         if (event.data1 == metrob): # metronome/button
+         if (event.data1 == nihia.buttons["METRO"]): # metronome/button
             event.handled = True
             transport.globalTransport(midi.FPT_Metronome, 110)
             self.UpdateLEDs()
             ui.setHintMsg("Metronome")
 
-            if ui.isMetronomeEnabled() == 0: 
+            if ui.isMetronomeEnabled() == off: 
               KPrntScrn(0, "Metro Off")
               time.sleep(timedelay)
 
-            elif ui.isMetronomeEnabled() == 1: 
+            elif ui.isMetronomeEnabled() == on: 
               KPrntScrn(0, "Metro On")
               time.sleep(timedelay)
             
-         if (event.data1 == tempob):
+         if (event.data1 == nihia.buttons["TEMPO"]):
             event.handled = True
             transport.stop() #tap tempo
             #BPMv = str(round(mixer.getCurrentTempo()*0.001))+ " BPM"
             #KPrntScrn(0, BPMv)
 
-         if (event.data1 == quantizeb):
+         if (event.data1 == nihia.buttons["QUANTIZE"]):
             event.handled = True
             transport.globalTransport(midi.FPT_Snap, 48) #snap toggle
             self.UpdateLEDs()
@@ -390,8 +363,7 @@ class TKompleteBase():
                KPrntScrn(0, "Snap On")
                time.sleep(timedelay)
 
-
-         if (event.data1 == squantizeb):
+         if (event.data1 == nihia.buttons["AUTO"]):
             event.handled = True
             ui.snapMode(1) #snap toggle
             ui.setHintMsg("Snap Type")
@@ -456,7 +428,7 @@ class TKompleteBase():
               time.sleep(timedelay)
 
 
-         if (event.data1 == srecb):
+         if (event.data1 == nihia.buttons["COUNT_IN"]):
             event.handled = True
             transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recording
             ui.setHintMsg("Countdown before recording")
@@ -468,7 +440,7 @@ class TKompleteBase():
                KPrntScrn(0, "Cnt-in Off")
                time.sleep(timedelay)
 
-         if (event.data1 == sstopb):
+         if (event.data1 == nihia.buttons["CLEAR"]):
             event.handled = True
             ui.escape() #escape key
             ui.setHintMsg("esc")
@@ -476,33 +448,33 @@ class TKompleteBase():
             time.sleep(timedelay)
 
 
-         if (event.data1 == undob):
+         if (event.data1 == nihia.buttons["UNDO"]):
             event.handled = True
             general.undoUp() #undo 
             ui.setHintMsg(ui.getHintMsg())
 
-         if (event.data1 == sundob):
+         if (event.data1 == nihia.buttons["REDO"]):
             event.handled = True
             general.undo() #redo
             ui.setHintMsg(ui.getHintMsg())
 
-         if (event.data1 == tempob):
+         if (event.data1 == nihia.buttons["TEMPO"]):
             event.handled = True
             transport.globalTransport(midi.FPT_TapTempo, 106) #tap tempo
 
-         if (event.data1 == knobp):
+         if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
             event.handled = True
             ui.enter()
             ui.setHintMsg("enter")
 
-         if (event.data1 == sknobp):
+         if (event.data1 == nihia.buttons["SHIFT+ENCODER_BUTTON"]):
             event.handled = True
             #ui.nextWindow()
             transport.globalTransport(midi.FPT_F8, 67)
             ui.setHintMsg("Plugin Picker")
 
          #mute and solo for mixer and channel rack
-         if (event.data1 == muteb):
+         if (event.data1 == nihia.buttons["MUTE"]):
             if ui.getFocused(0) == 1: #mixer volume control
                event.handled = True
                mixer.enableTrack(mixer.trackNumber()) #mute 
@@ -516,7 +488,7 @@ class TKompleteBase():
                   self.UpdateOLED()
                   ui.setHintMsg("Mute")
                   
-         if (event.data1 == solob): 
+         if (event.data1 ==  nihia.buttons["SOLO"]): 
             if ui.getFocused(0) == 1: #mixer volume control
                event.handled = True
                mixer.soloTrack(mixer.trackNumber()) #solo
@@ -531,30 +503,30 @@ class TKompleteBase():
                   ui.setHintMsg("Solo")
                
          #4D controller
-         
-         if (event.data1 == knobsp) & (event.data2 == right): #4d encoder spin right 
+      
+         if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
             event.handled = True
             ui.jog(1)
 
-         elif (event.data1 == knobsp) & (event.data2 == left): #4d encoder spin left
+         elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left):
             event.handled = True
             ui.jog(-1)
          
-         if (event.data1 == knoblr) & (event.data2 == right): #4d encoder push right
+         if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
             event.handled = True
-            ui.right()
+            ui.right(1)
 
-         elif (event.data1 == knoblr) & (event.data2 == left): #4d encoder push left
+         elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
             event.handled = True
-            ui.left()
+            ui.left(1)
 
-         if (event.data1 == knobud) & (event.data2 == up): #4d encoder push up
+         if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
             event.handled = True
-            ui.up()
+            ui.up(1)
             
-         elif (event.data1 == knobud) & (event.data2 == down): #4d encoder push down
+         elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
             event.handled = True
-            ui.down()
+            ui.down(1)
 
          #8 volume knobs for mixer & channel rack, 8 tracks at a time
 
@@ -1168,119 +1140,122 @@ class TKompleteBase():
          if device.isAssigned():
 
             for a in playstatus:
-              if a == 0: #not playing
-                  KDataOut(stopb, on) #stop on
+              if a == off: #not playing
+                  nihia.dataOut(nihia.buttons["STOP"], on) #stop on
 
-              elif a == 1: #playing
-                  KDataOut(stopb, off) #stop off
+              elif a == on: #playing
+                  nihia.dataOut(nihia.buttons["STOP"], off) #stop off
 
             for b in recstatus:
-               if b == 0: #not recording
-                  KDataOut(recb, off)
+               if b == off: #not recording
+                  nihia.dataOut(nihia.buttons["REC"], off)
 
-               elif b == 1: #recording
-                  KDataOut(recb, on)
+               elif b == on: #recording
+                  nihia.dataOut(nihia.buttons["REC"], on)
 
             for c in loopstatus:
-               if c == 0: #loop mood
-                  KDataOut(loopb, on)
+               if c == off: #loop mood
+                  nihia.dataOut(nihia.buttons["LOOP"], on)
 
-               elif c == 1: #playlist mode
-                  KDataOut(loopb, off)
+               elif c == on: #playlist mode
+                  nihia.dataOut(nihia.buttons["LOOP"], off)
 
             for d in metrostatus:
-               if d == 0: #metro off
-                  KDataOut(metrob, off)
+               if d == off: #metro off
+                  nihia.dataOut(nihia.buttons["METRO"], off)
 
-               elif d == 1: #metro on
-                  KDataOut(metrob, on)
+               elif d == on: #metro on
+                  nihia.dataOut(nihia.buttons["METRO"], on)
 
             for e in prestatus:
-              if e == 0: #pre count on
-                  KDataOut(srecb, off)
+              if e == off: #pre count on
+                  nihia.dataOut(nihia.buttons["COUNT_IN"], off)
 
-              elif e == 1: #pre count off
-                  KDataOut(srecb, on) 
+              elif e == on: #pre count off
+                  nihia.dataOut(nihia.buttons["COUNT_IN"], on) 
 
             for f in quanstatus:
               if f == 3: #quantize off
-                  KDataOut(quantizeb, off)
+                  nihia.dataOut(nihia.buttons["QUANTIZE"], off)
 
               elif f != 1: #quantize on
-                  KDataOut(quantizeb, on)
+                  nihia.dataOut(nihia.buttons["QUANTIZE"], on)
+                  
 
             for g in playstatus:
               if transport.isRecording() == 0 & transport.isPlaying() == 1: 
-                  if g == 0: #play off
-                     KDataOut(playb, off)
-                  elif g != 1: #play on
-                     KDataOut(playb, on)
-              elif g == 0: #play off: 
-                  KDataOut(playb, off)
+                  if g == off: #play off
+                     nihia.dataOut(nihia.buttons["PLAY"], off)
+                  elif g != on: #play on
+                     nihia.dataOut(nihia.buttons["PLAY"], on)
+              elif g == off: #play off: 
+                  nihia.dataOut(nihia.buttons["PLAY"], off)
+
 
      def UpdateOLED(self): #controls OLED screen messages
-
+        ran = True
         if ui.getFocused(0) == 1: #mixer volume control
 
             xy = 1.25
 
             if mixer.trackNumber() <= 126:
-               KPrntScrn(0, "M: " + mixer.getTrackName(mixer.trackNumber() + 0))
+               KPrntScrn(0, mixer.getTrackName(mixer.trackNumber() + 0))
                KPrntScrnVol(channels.channelNumber() + 0, (round(channels.getChannelVolume(channels.channelNumber() + 0) / xy ,2)))
                KPrntScrnVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
                KPrntScrnPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
+               
 
             if mixer.trackNumber() <= 125:
-               KPrntScrn(1, "M: " + mixer.getTrackName(mixer.trackNumber() + 1))
+               KPrntScrn(1, mixer.getTrackName(mixer.trackNumber() + 1))
                KPrntScrnVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
                KPrntScrnPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
 
             if mixer.trackNumber() <= 124:
-               KPrntScrn(2, "M: " + mixer.getTrackName(mixer.trackNumber() + 2))
+               KPrntScrn(2, mixer.getTrackName(mixer.trackNumber() + 2))
                KPrntScrnVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
                KPrntScrnPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
             if mixer.trackNumber() <= 123:
-               KPrntScrn(3, "M: " + mixer.getTrackName(mixer.trackNumber() + 3))
+               KPrntScrn(3, mixer.getTrackName(mixer.trackNumber() + 3))
                KPrntScrnVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
                KPrntScrnPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
             if mixer.trackNumber() <= 122:
-               KPrntScrn(4, "M: " + mixer.getTrackName(mixer.trackNumber() + 4))
+               KPrntScrn(4, mixer.getTrackName(mixer.trackNumber() + 4))
                KPrntScrnVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
                KPrntScrnPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
             if mixer.trackNumber() <= 121:
-               KPrntScrn(5, "M: " + mixer.getTrackName(mixer.trackNumber() + 5))
+               KPrntScrn(5, mixer.getTrackName(mixer.trackNumber() + 5))
                KPrntScrnVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
                KPrntScrnPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
             if mixer.trackNumber() <= 120:
-               KPrntScrn(6, "M: " + mixer.getTrackName(mixer.trackNumber() + 6))
+               KPrntScrn(6, mixer.getTrackName(mixer.trackNumber() + 6))
                KPrntScrnVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
                KPrntScrnPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
             if mixer.trackNumber() <= 119:
-               KPrntScrn(7, "M: " + mixer.getTrackName(mixer.trackNumber() + 7))
+               KPrntScrn(7, mixer.getTrackName(mixer.trackNumber() + 7))
                KPrntScrnVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
                KPrntScrnPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
                
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
-               K_MS_OLED(muteb, off)
-               KDataOut(102, off)
+               K_MS_OLED(nihia.buttons["MUTE"], off)
+               nihia.dataOut(102, off)
                
             elif mixer.isTrackEnabled(mixer.trackNumber()) == 0: #mute light on
-               K_MS_OLED(muteb, on)
-               KDataOut(102, on)
+               K_MS_OLED(nihia.buttons["MUTE"], on)
+               nihia.dataOut(102, on)
 
             if mixer.isTrackSolo(mixer.trackNumber()) == 0: #solo light off
-               K_MS_OLED(solob, off)
-               KDataOut(105, off)
+               K_MS_OLED(nihia.buttons["SOLO"], off)
+               nihia.dataOut(105, off)
 
             elif mixer.isTrackSolo(mixer.trackNumber()) == 1: #solo light on
-               K_MS_OLED(solob, on)
-               KDataOut(105, on)
+               K_MS_OLED(nihia.buttons["SOLO"], on)
+               nihia.dataOut(105, on)
 
         if ui.getFocused(1) == 1: # channel rack
 
@@ -1362,25 +1337,25 @@ class TKompleteBase():
 
 
             if channels.isChannelMuted(channels.channelNumber()) == 0: #mute light off
-               K_MS_OLED(muteb, off)
-               KDataOut(102, off)
+               K_MS_OLED(nihia.buttons["MUTE"], off)
+               nihia.dataOut(102, off)
                 
             else: #mute light on
-               K_MS_OLED(muteb, on)
-               KDataOut(102, on)
+               K_MS_OLED(nihia.buttons["MUTE"], on)
+               nihia.dataOut(102, on)
 
                
             if channels.channelCount() >= 2: 
                if channels.isChannelSolo(channels.channelNumber()) == 0: #solo light off
-                  K_MS_OLED(solob, off)
-                  KDataOut(105, off)
+                  K_MS_OLED(nihia.buttons["SOLO"], off)
+                  nihia.dataOut(105, off)
                   
                elif channels.isChannelSolo(channels.channelNumber()) == 1: #solo light on
                   if channels.isChannelMuted(channels.channelNumber()) == 0:
-                     K_MS_OLED(solob, on)
-                     KDataOut(105, on)
+                     K_MS_OLED(nihia.buttons["SOLO"], on)
+                     nihia.dataOut(105, on)
                   else:
-                     K_MS_OLED(solob, off)
+                     K_MS_OLED(nihia.buttons["SOLO"], off)
                   
 
         if ui.getFocused(2) == 1: # playlist
@@ -1508,27 +1483,26 @@ class TKompleteBase():
 
        if transport.isRecording() == 0:
       	 if Value == 1:
-      	    KDataOut(playb, on) #play light bright
+      	    nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
       	 elif Value == 2:
-      	    KDataOut(playb, on) #play light bright
+      	    nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
       	 elif Value == 0:
-      	    KDataOut(playb, off) #play light dim
+      	    nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim
 
        elif transport.isRecording() == 1:
-            KDataOut(playb, on)
+            nihia.dataOut(nihia.buttons["PLAY"], on)
             if Value == 1:
-               KDataOut(recb, on) #play light bright
+               nihia.dataOut(nihia.buttons["REC"], on) #play light bright
             elif Value == 2:
-               KDataOut(recb, on) #play light bright
+               nihia.dataOut(nihia.buttons["REC"], on) #play light bright
             elif Value == 0:
-               KDataOut(recb, off) #play light dim  
-
+               nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
 
 KompleteBase = TKompleteBase()
 
 def OnInit():
    # command to initialize the protocol handshake
-   KDataOut(1, 1), KompleteBase.OnInit()
+   KompleteBase.OnInit()
 
 def OnRefresh(Flags):
    KompleteBase.OnRefresh(Flags)
@@ -1540,6 +1514,6 @@ def OnMidiMsg(event):
 	KompleteBase.OnMidiMsg(event)
 
 def OnDeInit():
-   if ui.isClosing():
+   if ui.isClosing() == True:
       # Command to stop the protocol
-      KDataOut(2, 1), KompleteBase.OnDeInit()	
+      nihia.terminate(), KompleteBase.OnDeInit()	
