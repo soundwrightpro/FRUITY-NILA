@@ -78,9 +78,3 @@ My thanks to Hobyst and their documentation and coding help. You have been the G
 **DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
 
 
-
-Did you make it all the way to the bottom? Good work. I'll share my road map with you.
-
-* 3.5.0 - bugs and refinements - I'm new to python, so I'm learning as I go. There are so many techniques I've learned that           I need to apply to the older things I've done. Adding the NI Host Integration Agent API for FL Studio
-          (https://github.com/hobyst/flmidi-nihia) to the plugin. 
-* 5.0.0 - Final - There's only so much I can do. 
