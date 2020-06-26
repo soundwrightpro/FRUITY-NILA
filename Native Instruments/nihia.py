@@ -82,6 +82,28 @@ buttons = {
 
 }
 
+knobs = {
+    "KNOB_0A": 80, 
+    "KNOB_1A": 81,
+    "KNOB_2A": 82,
+    "KNOB_3A": 83,
+    "KNOB_4A": 84,
+    "KNOB_5A": 85,
+    "KNOB_6A": 86,
+    "KNOB_7A": 87,
+
+    "KNOB_0B": 88,
+    "KNOB_1B": 89,
+    "KNOB_2B": 90,
+    "KNOB_3B": 91,
+    "KNOB_4B": 92,
+    "KNOB_5B": 93,
+    "KNOB_6B": 94,
+    "KNOB_7B": 95
+
+}
+
+
 
 def dataOut(data1, data2):
     """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
@@ -254,6 +276,28 @@ def printPan(trkn, pan):
       header.append(247)
 
       device.midiOutSysex(bytes(header))
+
+def oled_mute_solo(lighttype, state): 
+
+   header = [0, 240, 0, 33, 9, 0, 0, 68, 67, 1, 0]
+
+   omute = [lighttype, state, 0]
+   osolo = [lighttype, state, 0]
+
+   n = 0
+
+   if lighttype == buttons["MUTE"]:
+      while n < len(omute):
+         header.append(omute[n])
+         n += 1
+
+   elif lighttype == buttons["SOLO"]:
+      while n < len(osolo):
+         header.append(osolo[n])
+         n += 1
+
+   header.append(247)
+   device.midiOutSysex(bytes(header))
 
 # Method to enable the deep integration features on the device
 def initiate():
