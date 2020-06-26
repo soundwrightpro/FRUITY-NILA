@@ -1,4 +1,4 @@
-# Komplete Kontrol DAW - FL Studio Script - v3.4.9
+# Komplete Kontrol DAW - FL Studio Script - v3.4.9.1
 
 *Written by Duwayne 'Sound' Wright*
 
