@@ -33,7 +33,7 @@ import arrangement
 import general
 import launchMapPages
 import playlist
-
+import math
 import midi
 import utils
 
@@ -65,7 +65,6 @@ buttons = {
     # For example, if you want to retrieve the data1 value for ENCODER_PLUS you would do nihia.buttons.get("ENCODER_PLUS")[0]
     "ENCODER_BUTTON": 96,
     "SHIFT+ENCODER_BUTTON": 97,
-
     
     "ENCODER_RIGHT": [50, 1],
     "ENCODER_LEFT": [50, 127],
@@ -94,28 +93,34 @@ def dataOut(data1, data2):
     msgtom32 = bytearray(convertmsg) #converts message array into bytes, 1 turns into 0x01 but in b/01/ format
     device.midiOutSysex(bytes(msgtom32)) #converts to 0x01 format
 
-def KPrntScrn(trkn, word, delaytime):
+def printText(trkn, word):
 
       """ Function for easing the communication with the device OLED easier. The device has 8 slots 
       that correspond to the 8 knobs. Knobs 0 through 7 on the device. Slot 0 (aka Knob 0 aka the
       first knob from the left) is also use to display temporary messages. """
 
-      lettersh = [] #an arrary to store message (broken out by letter in each slot of the array) to screen once it's converted from a string
-      header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 72, 0] #required header in message to tell device where to place track title
+      lettersh = [] #array where message to screen will be broken down by letter and/or spaces, i.e. hello turns into [h,e,l,l,o] **1
+      header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 72, 0] #required header in message to tell m32 where to place track title
 
       n = 0
       m = 0
 
       letters = list(word) #convert word into letters in array
 
-      if len(letters) <= 10: #if the message's letter count is less than 10 it sends as is
+      if len(letters) <= 11: #if the message to screen is less than 11 characters convert to message by letters see -> **1
          while n < len(letters): #convert letters in array to integer representing the Unicode character
-            lettersh.append(ord(letters[n]))
-            n += 1
-      else: #if the message's letter count is more than 10 it cuts off letters.
-         while n < 11: #convert letters in array to integer representing the Unicode character
-            lettersh.append(ord(letters[n]))
-            n += 1
+            if ord(letters[n]) > 256:
+               n +=1
+            else:
+               lettersh.append(ord(letters[n]))
+               n += 1
+      else:
+         while n < 12: #convert letters in array to integer representing the Unicode character
+            if ord(letters[n]) > 256:
+               n += 1
+            else:   
+               lettersh.append(ord(letters[n]))
+               n += 1
          
       header.append(trkn) #adding track number to header at the end 
 
@@ -127,6 +132,128 @@ def KPrntScrn(trkn, word, delaytime):
       
       device.midiOutSysex(bytes(header)) #send unicode values as bytes to OLED screen
     
+def TranslateVolume(Value):
+
+	return (math.exp(Value * math.log(11)) - 1) * 0.1   
+
+def VolTodB(Value):
+
+	Value = TranslateVolume(Value)
+	return round(math.log10(Value) * 20, 1)
+
+def printVol(trkn, vol):
+
+      """ funtion that makes sendinig vol to the OLED screen easier"""
+       
+      volk = ""
+      
+      lettersh = [] 
+      header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 70, 0,] 
+
+      p = 0
+      n = 0
+      m = 0
+
+      vol==(float(vol))
+
+      if vol == 0:
+         volk = "- oo dB"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1
+ 
+      elif vol >= 0.01 and vol <= 2.00:
+         
+         #volj = u'%d%%  ' % round((vol*100),2) # returns volume display to percentage
+         #lettersj = list(volj)
+         #while m < len(volj):
+         #   lettersh.append(ord(lettersj[m]))
+         #   m += 1 #end of volume in percentage 
+
+         volk = '%s dB' % VolTodB(vol) # volume displayed in dB from here
+         letters = list(volk)
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1 # end of volume in dB
+         
+      elif vol >= 103:
+         volk = "N/A"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1   
+
+      header.append(trkn)
+      
+      while m < len(lettersh):
+         header.append(lettersh[m])
+         m += 1
+
+      header.append(247)
+
+      device.midiOutSysex(bytes(header))
+
+
+def printPan(trkn, pan): 
+
+      pan = round(pan,0)
+
+      volk = ""
+
+      lettersh = [] 
+      header = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 71, 0,]
+
+      p = 0
+      n = 0
+      m = 0
+
+      header.append(trkn)
+      
+
+      if pan == 0:
+         volk = "Centered"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1 
+
+      elif pan < 0:
+         
+         volk = u'%d%% Left' % round((pan),2)
+         letters = list(volk) 
+         
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1
+
+      elif pan > 0 and pan < 101:
+         
+         volk = u'%d%% Right' % round((pan),2)
+         letters = list(volk) 
+         
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1 
+
+      elif pan >= 103:
+         volk = "N/A"
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1        
+
+      while m < len(lettersh):
+         header.append(lettersh[m])
+         m += 1
+
+      header.append(247)
+
+      device.midiOutSysex(bytes(header))
 
 # Method to enable the deep integration features on the device
 def initiate():
