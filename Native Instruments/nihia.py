@@ -1,4 +1,5 @@
-# Copyright (c) 2020 Hobyst
+# MIT License
+# Copyright © 2020 Hobyst
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +34,10 @@ import arrangement
 import general
 import launchMapPages
 import playlist
-import math
 import midi
 import utils
 
+import device_Komplete_Kontrol_DAW
 
 # Method to make talking to the device less annoying
 # All the messages the device is expecting have a structure of "BF XX XX"
@@ -62,7 +63,8 @@ buttons = {
     "SOLO": 68,
 
     # The 4D encoder events use the same data1, but different data2
-    # For example, if you want to retrieve the data1 value for ENCODER_PLUS you would do nihia.buttons.get("ENCODER_PLUS")[0]
+    # For example, if you want to retrieve the data1 value for ENCODER_PLUS 
+    # you would do nihia.buttons.get("ENCODER_PLUS")[0]
     "ENCODER_BUTTON": 96,
     "SHIFT+ENCODER_BUTTON": 97,
     
@@ -102,9 +104,7 @@ knobs = {
     "KNOB_7B": 95
 
 }
-
-
-
+ 
 def dataOut(data1, data2):
     """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
     it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
@@ -154,15 +154,6 @@ def printText(trkn, word):
       
       device.midiOutSysex(bytes(header)) #send unicode values as bytes to OLED screen
     
-def TranslateVolume(Value):
-
-	return (math.exp(Value * math.log(11)) - 1) * 0.1   
-
-def VolTodB(Value):
-
-	Value = TranslateVolume(Value)
-	return round(math.log10(Value) * 20, 1)
-
 def printVol(trkn, vol):
 
       """ funtion that makes sendinig vol to the OLED screen easier"""
@@ -194,7 +185,7 @@ def printVol(trkn, vol):
          #   lettersh.append(ord(lettersj[m]))
          #   m += 1 #end of volume in percentage 
 
-         volk = '%s dB' % VolTodB(vol) # volume displayed in dB from here
+         volk = '%s dB' % device_Komplete_Kontrol_DAW.VolTodB(vol) # volume displayed in dB from here
          letters = list(volk)
          while n < len(volk):
             lettersh.append(ord(letters[n]))
@@ -407,5 +398,3 @@ def mixerSendInfo(info_type: str, trackID: int, **kwargs):
         
         # Takes the information and wraps it on how it should be sent and sends the message
         device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, mixerinfo_types.get(info_type), value, trackID, 247]))
-
-

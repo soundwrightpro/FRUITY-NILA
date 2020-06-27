@@ -2,7 +2,7 @@
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
 
-# github for this script
+# GitHub for this script
 # url=https://github.com/soundwrightpro/FLNI_KK
 
 # FL Studio Forum
@@ -10,8 +10,7 @@
 # script by Duwayne "Sound" Wright www.soundwrightpro.com and additional code from Hobyst
 
 # MIT License
-
-# Copyright (c) Duwayne Wright
+# Copyright © Duwayne Wright
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +32,7 @@
 
 
 #custom fl script modules
-import patterns
+
 import channels
 import mixer
 import device
@@ -41,12 +40,13 @@ import transport
 import general
 import playlist
 import ui
-import screen
+
 import midi
 import utils
 import time
 import sys
 import binascii
+import math
 
 import nihia
 
@@ -64,25 +64,40 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.5
 
+def TranslateVolume(Value):
+   """Function that converts values from device into FL Studio comptable values for volume conversion"""
+   return (math.exp(Value * math.log(11)) - 1) * 0.1   
+
+def VolTodB(Value):
+   """Function that converts % valume into db"""
+   
+   Value = TranslateVolume(Value)
+   return round(math.log10(Value) * 20, 1)
+
 
 class TKompleteBase():
      
      def OnInit(self):
+      """ Called when the script has been started.""" 
 
-      nihia.initiate() #initializing NI Host Integration Agent API for FL Studio by Hobyst 
+      #initializing NI Host Integration Agent API for FL Studio by Hobyst 
+      nihia.initiate() 
 
-      nihia.dataOut(nihia.buttons["CLEAR"], on) # 'clear' light on
-      nihia.dataOut(nihia.buttons["UNDO"], on) # 'undo' light on
-      nihia.dataOut(nihia.buttons["REDO"], on) # 'redo' light on
-      nihia.dataOut(nihia.buttons["AUTO"], on) # 'auto' light on
-      nihia.dataOut(nihia.buttons["QUANTIZE"], on) # 'quantize' light on
-
-      device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' light on
-
-      print ("Komplete Kontrol DAW v3.4.9.1 by DUWAYNE 'SOUND' WRIGHT")
+      #turning on group of lights not initialized during the nihia.initiate()
+      nihia.dataOut(nihia.buttons["CLEAR"], on)
+      nihia.dataOut(nihia.buttons["UNDO"], on) 
+      nihia.dataOut(nihia.buttons["REDO"], on) 
+      nihia.dataOut(nihia.buttons["AUTO"], on) 
+      nihia.dataOut(nihia.buttons["QUANTIZE"], on) 
+      device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated
+      print ("Komplete Kontrol DAW v3.4.9.3 by DUWAYNE 'SOUND' WRIGHT")
+      nihia.printText(0, "KK v3.4.9")
+      time.sleep(timedelay)
 
 
      def OnMidiMsg(self, event): #listens for button or knob activity
+         """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
+         (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
 
          #tbuttons
          if (event.data1 == nihia.buttons["PLAY"]):
@@ -306,7 +321,7 @@ class TKompleteBase():
             event.handled = True
             ui.jog(1)
 
-         elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left):
+         elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
             event.handled = True
             ui.jog(-1)
          
@@ -334,51 +349,45 @@ class TKompleteBase():
 
             xy = 1.25
 
-            #knob 1
+            #knob 0
             if mixer.trackNumber() <= 126:
                if (event.data1 == nihia.knobs["KNOB_0A"]):
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
                    nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
                 
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
                    nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
 
-            #knob 2
+            #knob 1
             if mixer.trackNumber() <= 125:
                if (event.data1 == nihia.knobs["KNOB_1A"]):
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
                    nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
                 
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
                    nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
 
-            #knob 3
+            #knob 2
             if mixer.trackNumber() <= 124:
                if (event.data1 == nihia.knobs["KNOB_2A"]):
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
                    nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
                 
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
                    nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
 
@@ -386,19 +395,17 @@ class TKompleteBase():
                nihia.printText(3, ' ')
                nihia.printVol(3, 104)
                
-            #knob 4
+            #knob 3
             if mixer.trackNumber() <= 123:
                if (event.data1 == nihia.knobs["KNOB_3A"]):
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
                    nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
                 
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
                    nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
 
@@ -406,19 +413,17 @@ class TKompleteBase():
                nihia.printText(4, ' ')
                nihia.printVol(4, 104)
 
-            #nihia.knobs["KNOB_4A"]
+            #knob 4
             if mixer.trackNumber() <= 122:
                if (event.data1 == nihia.knobs["KNOB_4A"]):
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
                    nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
                 
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
                    nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
 
@@ -427,20 +432,17 @@ class TKompleteBase():
                nihia.printText(5, ' ')
                nihia.printVol(5, 104)
 
-            #knob 6
+            #knob 5
             if mixer.trackNumber() <= 121:
                if (event.data1 == nihia.knobs["KNOB_5A"]):
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
                    nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
 
-                
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
                    nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
 
@@ -448,20 +450,17 @@ class TKompleteBase():
                nihia.printText(6, ' ')
                nihia.printVol(6, 104)     
 
-            #knob 7
+            #knob 6
             if mixer.trackNumber() <= 120:
                if (event.data1 == nihia.knobs["KNOB_6A"]):
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
                    nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
 
-                
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
                    nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
 
@@ -476,14 +475,11 @@ class TKompleteBase():
                 event.handled = True
                 if event.data2 == left:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
                    nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
 
-                
                 elif event.data2 == right:
                    x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
-                   round(x,2)
                    mixer.setTrackVolume((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
                    nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
 
@@ -499,14 +495,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 0))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
                      nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
-                
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 0))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
                      nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
@@ -520,14 +513,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 1))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
                      nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
 
-                
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 1))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
                      nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
 
@@ -545,13 +535,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 2))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
                      nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
                 
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 2))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
                      nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
@@ -564,13 +552,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 3))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
                      nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
                 
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 3))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
                      nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
@@ -583,13 +569,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 4))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
                      nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
                 
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 4))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
                      nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
@@ -602,13 +586,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 5))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
                      nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
                 
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 5))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
                      nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
@@ -621,13 +603,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 6))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
                      nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
                 
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 6))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
                      nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
@@ -640,13 +620,11 @@ class TKompleteBase():
                   event.handled = True
                   if event.data2 == left:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 7))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
                      nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
                 
                   elif event.data2 == right:
                      x = (mixer.getTrackPan(mixer.trackNumber() + 7))
-                     round(x,2)
                      mixer.setTrackPan((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
                      nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
 
@@ -801,13 +779,11 @@ class TKompleteBase():
              event.handled = True  
              if event.data2 == left:
                 x = (channels.getChannelPan(channels.channelNumber() + 0))
-                #round(x,2)
                 channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
                 nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
   
              elif event.data2 == right:
                 x = (channels.getChannelPan(channels.channelNumber() + 0))
-                #round(x,2)
                 channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
                 nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
 
@@ -817,13 +793,11 @@ class TKompleteBase():
              if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :  
                if event.data2 == left:
                   x = (channels.getChannelPan(channels.channelNumber() + 1))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 1), (x - knobinc) ) # pan values go down
                   nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
       
                elif event.data2 == right:
                   x = (channels.getChannelPan(channels.channelNumber() + 1))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 1), (x + knobinc) ) # pan values go up
                   nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
    
@@ -834,13 +808,11 @@ class TKompleteBase():
              if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :  
                if event.data2 == left:
                   x = (channels.getChannelPan(channels.channelNumber() + 2))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 2), (x - knobinc) ) # pan values go down
                   nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
                 
                elif event.data2 == right:
                   x = (channels.getChannelPan(channels.channelNumber() + 2))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 2), (x + knobinc) ) # pan values go up
                   nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)   
 
@@ -850,13 +822,11 @@ class TKompleteBase():
              if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :  
                if event.data2 == left:
                   x = (channels.getChannelPan(channels.channelNumber() + 3))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 3), (x - knobinc) ) # pan values go down
                   nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
                 
                elif event.data2 == right:
                   x = (channels.getChannelPan(channels.channelNumber() + 3))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 3), (x + knobinc) ) # pan values go up
                   nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)  
 
@@ -866,13 +836,11 @@ class TKompleteBase():
              if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :  
                if event.data2 == left:
                   x = (channels.getChannelPan(channels.channelNumber() + 4))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 4), (x - knobinc) ) # pan values go down
                   nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
                 
                elif event.data2 == right:
                   x = (channels.getChannelPan(channels.channelNumber() + 4))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 4), (x + knobinc) ) # pan values go up
                   nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)  
 
@@ -882,13 +850,11 @@ class TKompleteBase():
              if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :  
                if event.data2 == left:
                    x = (channels.getChannelPan(channels.channelNumber() + 5))
-                  #round(x,2)
                    channels.setChannelPan((channels.channelNumber() + 5), (x - knobinc) ) # pan values go down
                    nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
                 
                elif event.data2 == right:
                   x = (channels.getChannelPan(channels.channelNumber() + 5))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 5), (x + knobinc) ) # pan values go up
                   nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
 
@@ -898,13 +864,11 @@ class TKompleteBase():
              if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :  
                if event.data2 == left:
                   x = (channels.getChannelPan(channels.channelNumber() + 6))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 6), (x - knobinc) ) # pan values go down
                   nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
                 
                elif event.data2 == right:
                   x = (channels.getChannelPan(channels.channelNumber() + 6))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 6), (x + knobinc) ) # pan values go up
                   nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
 
@@ -914,17 +878,16 @@ class TKompleteBase():
              if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :  
                if event.data2 == left:
                   x = (channels.getChannelPan(channels.channelNumber() + 7))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 7), (x - knobinc) ) # pan values go down
                   nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
                 
                elif event.data2 == right:
                   x = (channels.getChannelPan(channels.channelNumber() + 7))
-                  #round(x,2)
                   channels.setChannelPan((channels.channelNumber() + 7), (x + knobinc) ) # pan values go up
                   nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
  
      def UpdateLEDs(self): #controls all nights located within buttons
+         """Function for device light communication (excluding OLED screen)"""
 
          if device.isAssigned():
 
@@ -981,6 +944,7 @@ class TKompleteBase():
 
 
      def UpdateOLED(self): #controls OLED screen messages
+        """Function for OLED control"""
 
         if ui.getFocused(0) == 1: #mixer volume control
 
@@ -988,7 +952,6 @@ class TKompleteBase():
 
             if mixer.trackNumber() <= 126:
                nihia.printText(0, mixer.getTrackName(mixer.trackNumber() + 0))
-               nihia.printVol(channels.channelNumber() + 0, (round(channels.getChannelVolume(channels.channelNumber() + 0) / xy ,2)))
                nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
                nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
                
@@ -1048,8 +1011,6 @@ class TKompleteBase():
                   nihia.dataOut(105, on)
                else:
                   nihia.oled_mute_solo(nihia.buttons["SOLO"], off)
-
-
 
 
         if ui.getFocused(1) == 1: # channel rack
@@ -1152,6 +1113,7 @@ class TKompleteBase():
                   
 
         if ui.getFocused(2) == 1: # playlist
+
             #spells out 'Playlist' on tracks 1 through 8 on OLED
             nihia.printText(0, "Playlist")
             nihia.printText(1, " ")
@@ -1165,6 +1127,7 @@ class TKompleteBase():
             nihia.printPan(0, 104)
 
         if ui.getFocused(3) == 1: # Piano Roll
+
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
             
             nihia.printText(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
@@ -1266,19 +1229,24 @@ class TKompleteBase():
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
 
+
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
+        """Function for when something changed that the script might want to respond to."""
+
 
         self.UpdateLEDs(), self.UpdateOLED()
 
+
      def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of the project
+       """Function that is called when the beat indicator has changed."""
 
        if transport.isRecording() == 0:
-      	 if Value == 1:
-      	    nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
-      	 elif Value == 2:
-      	    nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
-      	 elif Value == 0:
-      	    nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim
+          if Value == 1:
+             nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
+          elif Value == 2:
+             nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
+          elif Value == 0:
+             nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim
 
        elif transport.isRecording() == 1:
             nihia.dataOut(nihia.buttons["PLAY"], on)
@@ -1299,12 +1267,13 @@ def OnRefresh(Flags):
    KompleteBase.OnRefresh(Flags)
 
 def OnUpdateBeatIndicator(Value):
-	KompleteBase.OnUpdateBeatIndicator(Value)
+   KompleteBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiMsg(event):
-	KompleteBase.OnMidiMsg(event)
+   KompleteBase.OnMidiMsg(event)
 
 def OnDeInit():
    if ui.isClosing() == True:
-      # Command to stop the protocol
-      nihia.terminate(), KompleteBase.OnDeInit()	
+      nihia.printText(0, "Goodbye")
+      time.sleep(timedelay)
+      nihia.terminate(), KompleteBase.OnDeInit() # Command to stop the protocol
