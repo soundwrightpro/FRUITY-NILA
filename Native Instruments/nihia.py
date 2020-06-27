@@ -19,7 +19,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 # Library for using the NIHIA protocol on FL Studio's MIDI Scripting API
 
 # This script contains all the functions and methods needed to take advantage of the deep integration
@@ -81,7 +80,6 @@ buttons = {
     "ENCODER_VERTICAL": 48,   
 
     "ENCODER_SPIN": 52
-
 }
 
 knobs = {
@@ -102,11 +100,10 @@ knobs = {
     "KNOB_5B": 93,
     "KNOB_6B": 94,
     "KNOB_7B": 95
-
 }
  
 def dataOut(data1, data2):
-    """ Funtion that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
+    """ Function that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
     it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
     the STATUS of the message to BF as expected.""" 
     
@@ -209,7 +206,6 @@ def printVol(trkn, vol):
 
       device.midiOutSysex(bytes(header))
 
-
 def printPan(trkn, pan): 
 
       pan = round(pan,0)
@@ -301,7 +297,6 @@ def initiate():
 
     # TODO: Waits and reads the handshake confirmation message
    
-
 # Method to deactivate the deep integration mode. Intended to be executed on close.
 def terminate():
     """ Sends the goodbye message to the device and exits it from deep integration mode. 
@@ -309,7 +304,6 @@ def terminate():
 
     # Sends the goodbye message: BF 02 01
     dataOut(2, 1)
-
 
 # Method for restarting the protocol on demand. Intended to be used by the end user in case the keyboard behaves 
 # unexpectedly.
@@ -322,7 +316,6 @@ def restartProtocol():
     # Then activates it again
     initiate()
 
-    
 # Method for controlling the lighting on the buttons (for those who have idle/highlighted two state lights)
 # Examples of this kind of buttons are the PLAY or REC buttons, where the PLAY button alternates between low and high light and so on.
 # SHIFT buttons are also included in this range of buttons, but instead of low/high light they alternate between on/off light states.
@@ -343,7 +336,6 @@ def buttonSetLight(buttonName: str, lightMode: int):
     # Then sends the MIDI message using dataOut
     dataOut(buttons.get(buttonName), lightModes.get(lightMode))
 
-
 # Dictionary that goes between the different kinds of information that can be sent to the device to specify information about the mixer tracks
 # and their corresponding identificative bytes
 mixerinfo_types = {
@@ -360,7 +352,6 @@ mixerinfo_types = {
     "EXIST": 64,
     "SELECTED": 66,
 }
-
 
 # Method for reporting information about the mixer tracks, which is done through Sysex
 # Couldn't make this one as two different functions under the same name since Python doesn't admit function overloading

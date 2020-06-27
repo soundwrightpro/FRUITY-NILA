@@ -9,8 +9,11 @@
 # https://forum.image-line.com/viewtopic.php?f=1994&t=225473
 # script by Duwayne "Sound" Wright www.soundwrightpro.com and additional code from Hobyst
 
+# Have a question? Want to be a beta tester? Have a request? Want to say hi? Join the FL Studio NI on Discord!
+# https://discord.gg/7FYrJEq
+
 # MIT License
-# Copyright © Duwayne Wright
+# Copyright © 2020 Duwayne Wright
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +32,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
-#custom fl script modules
 
 import channels
 import mixer
@@ -62,20 +62,24 @@ on = 1
 off = 0
 
 #time delay for messages on screen
-timedelay = 0.5
+timedelay = 0.45
+
+HELLO_MESSAGE = "KK v3.5.0"
+GOODBYE_MESSAGE = "Goodbye"
+VERSION_NUMBER = "Komplete Kontrol DAW v3.5.0\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
 
 def TranslateVolume(Value):
    """Function that converts values from device into FL Studio comptable values for volume conversion"""
+
    return (math.exp(Value * math.log(11)) - 1) * 0.1   
 
-def VolTodB(Value):
+def VolTodB(Value): #works off of the db scale explained here: https://www.image-line.com/support/flstudio_online_manual/html/mixer_dB.htm
    """Function that converts % valume into db"""
    
    Value = TranslateVolume(Value)
    return round(math.log10(Value) * 20, 1)
 
-
-class TKompleteBase():
+class KeyKompleteKontrolBase():
      
      def OnInit(self):
       """ Called when the script has been started.""" 
@@ -90,10 +94,9 @@ class TKompleteBase():
       nihia.dataOut(nihia.buttons["AUTO"], on) 
       nihia.dataOut(nihia.buttons["QUANTIZE"], on) 
       device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated
-      print ("Komplete Kontrol DAW v3.4.9.3 by DUWAYNE 'SOUND' WRIGHT")
-      nihia.printText(0, "KK v3.4.9")
+      print (VERSION_NUMBER)
+      nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
-
 
      def OnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
@@ -942,7 +945,6 @@ class TKompleteBase():
               elif g == off: #play off: 
                   nihia.dataOut(nihia.buttons["PLAY"], off)
 
-
      def UpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
 
@@ -1126,10 +1128,7 @@ class TKompleteBase():
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)
 
-        if ui.getFocused(3) == 1: # Piano Roll
-
-            #spells out 'Piano Roll' on tracks 1 through 8 on OLED
-            
+        if ui.getFocused(3) == 1: # Piano Roll - spells out 'Piano Roll' on tracks 1 through 8 on OLED
             nihia.printText(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
 
             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
@@ -1229,13 +1228,10 @@ class TKompleteBase():
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
 
-
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
-
         self.UpdateLEDs(), self.UpdateOLED()
-
 
      def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
@@ -1257,23 +1253,23 @@ class TKompleteBase():
             elif Value == 0:
                nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
 
-KompleteBase = TKompleteBase()
+KompleteKontrolBase = KeyKompleteKontrolBase()
 
 def OnInit():
    # command to initialize the protocol handshake
-   KompleteBase.OnInit()
+   KompleteKontrolBase.OnInit()
 
 def OnRefresh(Flags):
-   KompleteBase.OnRefresh(Flags)
+   KompleteKontrolBase.OnRefresh(Flags)
 
 def OnUpdateBeatIndicator(Value):
-   KompleteBase.OnUpdateBeatIndicator(Value)
+   KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiMsg(event):
-   KompleteBase.OnMidiMsg(event)
+   KompleteKontrolBase.OnMidiMsg(event)
 
 def OnDeInit():
    if ui.isClosing() == True:
-      nihia.printText(0, "Goodbye")
+      nihia.printText(0, GOODBYE_MESSAGE)
       time.sleep(timedelay)
-      nihia.terminate(), KompleteBase.OnDeInit() # Command to stop the protocol
+      nihia.terminate(), KompleteKontrolBase.OnDeInit() # Command to stop the protocol
