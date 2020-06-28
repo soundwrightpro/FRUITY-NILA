@@ -1,6 +1,6 @@
 # Komplete Kontrol DAW - FL Studio Script - v3.5.1
 
-*Written by Duwayne 'Sound' Wright*
+#### Written by Duwayne 'Sound' Wright
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7.1 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
@@ -57,7 +57,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * 4D plugin picker insert odd characters in the search feild on macOS; have to press delete each time an odd character or spacing occurs. Image-Line is aware of the problem. Awaiting fix
 
 
-###### Installation
+##### Installation
 
 Native Instruments Host Integration service must be installed and running. It is automatically the case
 if you installed Komplete Kontrol on your machine.
@@ -67,13 +67,13 @@ folder under the following location:
 
 ```... Documents\Image-Line\FL Studio\Settings\Hardware\```
 
-2. In FL Studio 20.7 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Komplete Kontrol DAW in Input, for your M32 or A-Series. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
+2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Komplete Kontrol DAW in Input, for your M32 or A-Series. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
 ![Installlation image](/images/FL%20Studio%20Install%20Screenshot.png)
 
 Enjoy
 
-My thanks to Hobyst and their documentation and coding help. You have been the GOAT! 
+My thanks to Hobyst and their documentation and coding help. You have been the GOAT and the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
 
 **DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
 
