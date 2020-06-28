@@ -1,4 +1,4 @@
-# Komplete Kontrol DAW - FL Studio Script - v3.5.0
+# Komplete Kontrol DAW - FL Studio Script - v3.5.1
 
 *Written by Duwayne 'Sound' Wright*
 
@@ -8,7 +8,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 
 #### What's new since v3.4.1
-* Integrated the [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia  "NIHIA by Hobyst") by [Hobyst](https://github.com/hobyst  "Hobyst Github") for code refinement
+* Integrated the [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia  "NIHIA by Hobyst") by [Hobyst](https://github.com/hobyst  "Hobyst Github")
 * bug fixes
 
 ##### Key Features
