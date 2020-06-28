@@ -65,7 +65,7 @@ if you installed Komplete Kontrol on your machine.
 1. Download **the zip** and unzip. Place the 'Native Instruments' to the FL Studio User data 
 folder under the following location:
 
-```... Documents\Image-Line\FL Studio\Settings\Hardware\```
+   ```... Documents\Image-Line\FL Studio\Settings\Hardware\```  
 
 2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Komplete Kontrol DAW in Input, for your M32 or A-Series. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
@@ -74,7 +74,7 @@ folder under the following location:
 
 Enjoy
 
-My thanks to Hobyst and their documentation and coding help. You have been the GOAT and the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
+My thanks to Hobyst for their documentation and coding help. You have been the GOAT and my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
 
 **DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
 
