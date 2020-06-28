@@ -64,9 +64,10 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45
 
-HELLO_MESSAGE = "KK v3.5.1"
+VERSION_NUMBER = "v3.5.1"
+HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
-VERSION_NUMBER = "Komplete Kontrol DAW v3.5.0\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
+OUTPUT_MESSAGE = "Komplete Kontrol DAW " + VERSION_NUMBER + "\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
 
 def TranslateVolume(Value):
    """Function that converts values from device into FL Studio comptable values for volume conversion"""
@@ -94,7 +95,7 @@ class KeyKompleteKontrolBase():
       nihia.dataOut(nihia.buttons["AUTO"], on) 
       nihia.dataOut(nihia.buttons["QUANTIZE"], on) 
       device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated
-      print (VERSION_NUMBER)
+      print (OUTPUT_MESSAGE)
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
 
