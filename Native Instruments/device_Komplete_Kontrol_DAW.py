@@ -64,7 +64,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45
 
-HELLO_MESSAGE = "KK v3.5.0"
+HELLO_MESSAGE = "KK v3.5.1"
 GOODBYE_MESSAGE = "Goodbye"
 VERSION_NUMBER = "Komplete Kontrol DAW v3.5.0\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
 
