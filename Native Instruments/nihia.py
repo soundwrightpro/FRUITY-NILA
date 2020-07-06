@@ -232,7 +232,7 @@ def printPan(trkn, pan):
 
       elif pan < 0:
          
-         volk = u'%d%% Left' % round((pan),2)
+         volk = u'%d%% Left' % round((pan*-1),2)
          letters = list(volk) 
          
          while n < len(volk):
