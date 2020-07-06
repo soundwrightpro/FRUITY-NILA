@@ -74,7 +74,7 @@ folder under the following location:
 
 Enjoy
 
-My thanks to Hobyst for their documentation and coding help. You have been the GOAT and my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
+My thanks to [Hobyst](https://github.com/hobyst) for their documentation, programs, and coding help and my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
 
 **DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
 
