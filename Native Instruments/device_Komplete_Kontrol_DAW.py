@@ -64,7 +64,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45
 
-VERSION_NUMBER = "v3.5.2"
+VERSION_NUMBER = "v3.5.5"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol DAW " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -249,10 +249,11 @@ class KeyKompleteKontrolBase():
             event.handled = True
             transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recording
             ui.setHintMsg("Countdown before recording")
+            self.UpdateLEDs()
             
             if ui.isPrecountEnabled() == 1: 
                nihia.printText(0, "Cnt-in On")
-               time.sleep(timedelay)
+               time.sleep(timedelay)  
             else:
                nihia.printText(0, "Cnt-in Off")
                time.sleep(timedelay)
