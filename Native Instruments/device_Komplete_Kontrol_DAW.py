@@ -64,7 +64,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45
 
-VERSION_NUMBER = "v3.5.5"
+VERSION_NUMBER = "v4.0.0"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol DAW " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -1261,14 +1261,22 @@ def OnInit():
    # command to initialize the protocol handshake
    KompleteKontrolBase.OnInit()
 
+
 def OnRefresh(Flags):
-   KompleteKontrolBase.OnRefresh(Flags)
+   try:
+      KompleteKontrolBase.OnRefresh(Flags)
+   except:
+      pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
+
 def OnMidiMsg(event):
-   KompleteKontrolBase.OnMidiMsg(event)
+   try:
+      KompleteKontrolBase.OnMidiMsg(event)
+   except:
+      pass
 
 def OnDeInit():
    if ui.isClosing() == True:
