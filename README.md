@@ -51,6 +51,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * 4D plugin picker inserts odd characters in the search field on macOS
 
 
+
 ### Manual Installation (update mannually)
 
 Native Instruments Host Integration service must be installed and running. It is automatically the case
@@ -65,7 +66,7 @@ folder under the following location:
 
 ![Installlation gif](/images/install.gif)
 
-### Automatic Installation (automatic updates) 
+### Automatic Installation (automatic updates) -work in progress
 ##### (Install by Hobyst)
 
 
@@ -89,7 +90,7 @@ folder under the following location:
 
 
 
-My thanks to [Hobyst](https://github.com/hobyst) for their documentation, programs, and coding help and my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
+My thanks to [Hobyst](https://github.com/hobyst) for their documentation, programs, and coding help. Also my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
 
 ### **DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
 
