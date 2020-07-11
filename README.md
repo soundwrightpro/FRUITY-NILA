@@ -8,6 +8,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 
 #### What's new since v3.5.5
+* install method
 * first stable version - all known bugs that result in a crash have been removed
 * Modulation touch strip values now appears in hint bar.
 
@@ -50,7 +51,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * 4D plugin picker inserts odd characters in the search field on macOS
 
 
-### Installation
+### Manual Installation (update mannually)
 
 Native Instruments Host Integration service must be installed and running. It is automatically the case
 if you installed Komplete Kontrol on your machine.
@@ -63,6 +64,10 @@ folder under the following location:
 2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as **Komplete Kontrol DAW** in Input, for your M32 or A-Series and then set Kompolete Kontrol M32 or A-Series to **Komplete Kontrol MIDI**. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. Watch gif for clarification.
 
 ![Installlation gif](/images/install.gif)
+
+### Automatic Installation (automatic updates)
+
+Coming soon.
 
 Enjoy
 
