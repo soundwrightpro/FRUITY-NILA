@@ -101,6 +101,11 @@ knobs = {
     "KNOB_6B": 94,
     "KNOB_7B": 95
 }
+
+touch_strips = {
+   "PITCH": 0,
+   "MOD": 1
+}
  
 def dataOut(data1, data2):
     """ Function that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 

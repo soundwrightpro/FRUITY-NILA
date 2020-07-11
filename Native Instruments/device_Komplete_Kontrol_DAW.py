@@ -50,11 +50,11 @@ import math
 
 import nihia
 
-#data2 up down right left values
+#data2, up down right left values for knobs and 4d controller
 down = right = 1
 up = left = 127
 
-#knob increment value
+#knob increment value; change this if you want a different feel to the knobs. nothing higher than 1.00
 knobinc = 0.01
 
 #on/off values
@@ -64,7 +64,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45
 
-VERSION_NUMBER = "v4.0.0"
+VERSION_NUMBER = "v4.1.0"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol DAW " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -80,7 +80,7 @@ def VolTodB(Value): #works off of the db scale explained here: https://www.image
    Value = TranslateVolume(Value)
    return round(math.log10(Value) * 20, 1)
 
-class KeyKompleteKontrolBase():
+class KeyKompleteKontrolBase(): #used a class to sheild against crashes
      
      def OnInit(self):
       """ Called when the script has been started.""" 
@@ -950,7 +950,7 @@ class KeyKompleteKontrolBase():
      def UpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
 
-        if ui.getFocused(0) == 1: #mixer volume control
+        if ui.getFocused(0) == True: #mixer volume control
 
             xy = 1.25
 
@@ -1017,7 +1017,7 @@ class KeyKompleteKontrolBase():
                   nihia.oled_mute_solo(nihia.buttons["SOLO"], off)
 
 
-        if ui.getFocused(1) == 1: # channel rack
+        if ui.getFocused(1) == True: # channel rack
             
             nihia.printText(0, "C: " + channels.getChannelName(channels.channelNumber() + 0))
 
@@ -1116,7 +1116,7 @@ class KeyKompleteKontrolBase():
                      nihia.oled_mute_solo(nihia.buttons["SOLO"], off)
                   
 
-        if ui.getFocused(2) == 1: # playlist
+        if ui.getFocused(2) == True: # playlist
 
             #spells out 'Playlist' on tracks 1 through 8 on OLED
             nihia.printText(0, "Playlist")
@@ -1130,7 +1130,7 @@ class KeyKompleteKontrolBase():
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)
 
-        if ui.getFocused(3) == 1: # Piano Roll - spells out 'Piano Roll' on tracks 1 through 8 on OLED
+        if ui.getFocused(3) == True: # Piano Roll - spells out 'Piano Roll' on tracks 1 through 8 on OLED
             nihia.printText(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
 
             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
@@ -1204,7 +1204,7 @@ class KeyKompleteKontrolBase():
                nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0), 2)))
                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
      
-        if ui.getFocused(4) == 1: # Browser
+        if ui.getFocused(4) == True: # Browser
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
             nihia.printText(0, "Browser")
             nihia.printText(1, " ")
@@ -1217,9 +1217,9 @@ class KeyKompleteKontrolBase():
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
 
-        if ui.getFocused(5) == 1: # Plugin
+        if ui.getFocused(5) == True: # Plugin
             #spells out 'Plugin' on tracks 1 through 8 on OLED
-            nihia.printText(0, ui.getFocusedFormCaption())
+            nihia.printText(0, ui.getFocusedPluginName())
             nihia.printText(1, " ")
             nihia.printText(2, " ")
             nihia.printText(3, " ")

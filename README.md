@@ -65,9 +65,27 @@ folder under the following location:
 
 ![Installlation gif](/images/install.gif)
 
-### Automatic Installation (automatic updates)
+### Automatic Installation (automatic updates) 
+##### (Install by Hobyst)
 
-###### Coming soon
+
+
+1. Download and install [Git](https://git-scm.com/downloads "download Git")
+
+2. Open a terminal and run line by line:
+
+    Windows:
+
+        cd "%USERPROFILE%\Documents\Image-Line\FL Studio\Settings\Hardware"
+
+        git clone https://https://github.com/soundwrightpro/FLNI_KK.git --recurse-submodules "Native Instruments Komplete Kontrol"
+
+    macOS:
+
+        ```cd "~/Documents/Image-Line/FL Studio/Settings/Hardware"```
+
+          git clone https://https://github.com/soundwrightpro/FLNI_KK.git --recurse-submodules "Native Instruments Komplete Kontrol"
+
 
 
 
