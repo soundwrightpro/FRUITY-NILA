@@ -59,8 +59,7 @@ folder under the following location:
 
    ```... Documents\Image-Line\FL Studio\Settings\Hardware\```  
 
-2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Komplete Kontrol DAW in Input, for your M32 or A-Series. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
-
+2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as **Komplete Kontrol DAW** in Input, for your M32 or A-Series and then set Kompolete Kontrol M32 or A-Series to **Komplete Kontrol MIDI**. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. Watch gif for clarification.
 
 ![Installlation gif](/images/install.gif)
 
