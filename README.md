@@ -52,7 +52,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 
 
-### Manual Installation (update mannually)
+### Installation 
 
 Native Instruments Host Integration service must be installed and running. It is automatically the case
 if you installed Komplete Kontrol on your machine.
@@ -65,29 +65,6 @@ folder under the following location:
 2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as **Komplete Kontrol DAW** in Input, for your M32 or A-Series and then set Kompolete Kontrol M32 or A-Series to **Komplete Kontrol MIDI**. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. Watch gif for clarification.
 
 ![Installlation gif](/images/install.gif)
-
-### Automatic Installation (automatic updates) -work in progress
-##### (Install by Hobyst)
-
-
-
-1. Download and install [Git](https://git-scm.com/downloads "download Git")
-
-2. Open a terminal and run line by line:
-
-    Windows:
-
-        cd "%USERPROFILE%\Documents\Image-Line\FL Studio\Settings\Hardware"
-
-        git clone https://https://github.com/soundwrightpro/FLNI_KK.git --recurse-submodules "Native Instruments Komplete Kontrol"
-
-    macOS:
-
-        ```cd "~/Documents/Image-Line/FL Studio/Settings/Hardware"```
-
-          git clone https://https://github.com/soundwrightpro/FLNI_KK.git --recurse-submodules "Native Instruments Komplete Kontrol"
-
-
 
 
 My thanks to [Hobyst](https://github.com/hobyst) for their documentation, programs, and coding help. Also my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
