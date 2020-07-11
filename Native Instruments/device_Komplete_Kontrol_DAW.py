@@ -64,7 +64,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45
 
-VERSION_NUMBER = "v4.1.0"
+VERSION_NUMBER = "v4.1.5"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol DAW " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -180,7 +180,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          if (event.data1 == nihia.buttons["AUTO"]):
             event.handled = True
             ui.snapMode(1) #snap toggle
-            ui.setHintMsg("Snap Type")
             self.UpdateLEDs()
             
             snapmodevalue = ["Snap: Line", "Snap: Cell", "Snap: None", 
@@ -188,59 +187,73 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             "Snap: Step", "S: 1/6 Beat", "S: 1/4 Beat", "S: 1/3 Beat", 
             "S: 1/2 Beat", "Snap: Beat", "Snap: Bar"]
 
-            if ui.getSnapMode() == 0: # line
+            if ui.getSnapMode() == 0: # Line
+              ui.setHintMsg("Snap: Line")
               nihia.printText(0, snapmodevalue[0])
               time.sleep(timedelay)
 
-            elif ui.getSnapMode() == 1: # cell
+            elif ui.getSnapMode() == 1: # Cell
+              ui.setHintMsg("Snap: Cell") 
               nihia.printText(0, snapmodevalue[1])
               time.sleep(timedelay)
 
-            elif ui.getSnapMode() == 3: # none
+            elif ui.getSnapMode() == 3: # (none)
+              ui.setHintMsg("Snap: (none)")
               nihia.printText(0, snapmodevalue[2])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 4: # 1/6 step
+              ui.setHintMsg("Snap: 1/6 step")
               nihia.printText(0, snapmodevalue[3])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 5: # 1/4 step
+              ui.setHintMsg("Snap: 1/4 step")
               nihia.printText(0, snapmodevalue[4])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 6: # 1/3 step
+              ui.setHintMsg("Snap: 1/3 step")
               nihia.printText(0, snapmodevalue[5])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 7: # 1/2 step
+              ui.setHintMsg("Snap: 1/2 step")
               nihia.printText(0, snapmodevalue[6])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 8: # step
+              ui.setHintMsg("Snap: Step")
               nihia.printText(0, snapmodevalue[7])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 9: # 1/6 beat
+              ui.setHintMsg("Snap: 1/6 beat")
               nihia.printText(0, snapmodevalue[8])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 10: # 1/4 beat
+              ui.setHintMsg("Snap: 1/4 beat")
               nihia.printText(0, snapmodevalue[9])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 11: # 1/3 beat
+              ui.setHintMsg("Snap: 1/3 beat")
               nihia.printText(0, snapmodevalue[10])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 12: # 1/2 beat
+              ui.setHintMsg("Snap: 1/2 beat")
               nihia.printText(0, snapmodevalue[11])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 13: # beat
+              ui.setHintMsg("Snap: Beat")
               nihia.printText(0, snapmodevalue[12])
               time.sleep(timedelay)
 
             elif ui.getSnapMode() == 14: # bar
+              ui.setHintMsg("Snap: Bar")
               nihia.printText(0, snapmodevalue[13])
               time.sleep(timedelay)
 
@@ -934,9 +947,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             for f in [ui.getSnapMode()]:
               if f == 3: #quantize off
                   nihia.dataOut(nihia.buttons["QUANTIZE"], off)
+                  nihia.dataOut(nihia.buttons["AUTO"], off)
 
               elif f != 1: #quantize on
                   nihia.dataOut(nihia.buttons["QUANTIZE"], on)
+                  nihia.dataOut(nihia.buttons["AUTO"], on)
                   
             for g in [transport.isPlaying()]:
               if transport.isRecording() == 0 & transport.isPlaying() == 1: 
