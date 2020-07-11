@@ -1,4 +1,4 @@
-# Komplete Kontrol DAW - FL Studio Script - v4.0.0
+# Komplete Kontrol DAW - FL Studio Script - v4.1.0
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -62,7 +62,7 @@ folder under the following location:
 2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Komplete Kontrol DAW in Input, for your M32 or A-Series. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
 
-![Installlation image](/images/FL%20Studio%20Install%20Screenshot.png)
+![Installlation gif](/images/install.gif)
 
 Enjoy
 
