@@ -57,6 +57,14 @@ class KeyKompleteKontrolMIDI(): #used a class to sheild against crashes
             event.handled = False
             ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
             nihia.printText(1, "TESTING")
+        
+        # quick restart protocol for testing
+        #if (event.data1 == 41):
+        #    nihia.restartProtocol()
+        #    print("restart")
+        #else:
+        #    pass
+
 
 
 KompleteKontrolMIDI = KeyKompleteKontrolMIDI()

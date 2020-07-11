@@ -320,6 +320,7 @@ def restartProtocol():
 
     # Then activates it again
     initiate()
+    
 
 # Method for controlling the lighting on the buttons (for those who have idle/highlighted two state lights)
 # Examples of this kind of buttons are the PLAY or REC buttons, where the PLAY button alternates between low and high light and so on.
