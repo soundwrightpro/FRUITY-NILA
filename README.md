@@ -67,9 +67,9 @@ folder under the following location:
 
 ### Automatic Installation (automatic updates)
 
-Coming soon.
+###### Coming soon
 
-Enjoy
+
 
 My thanks to [Hobyst](https://github.com/hobyst) for their documentation, programs, and coding help and my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
 
