@@ -62,9 +62,9 @@ on = 1
 off = 0
 
 #time delay for messages on screen
-timedelay = 0.45
+timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.1.1"
+VERSION_NUMBER = "v4.1.2"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -88,13 +88,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       #initializing NI Host Integration Agent API for FL Studio by Hobyst 
       nihia.initiate() 
 
-      #turning on group of lights not initialized during the nihia.initiate()
-      nihia.dataOut(nihia.buttons["CLEAR"], on)
-      nihia.dataOut(nihia.buttons["UNDO"], on) 
-      nihia.dataOut(nihia.buttons["REDO"], on) 
-      nihia.dataOut(nihia.buttons["AUTO"], on) 
-      nihia.dataOut(nihia.buttons["QUANTIZE"], on) 
-      device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated
       print (OUTPUT_MESSAGE)
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
@@ -103,7 +96,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
 
-         #tbuttons
+         #buttons
          if (event.data1 == nihia.buttons["PLAY"]):
             event.handled = True
             transport.start() #play
@@ -112,7 +105,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if (event.data1 == nihia.buttons["RESTART"]):
             event.handled = True
-            #transport.globalTransport(midi.FPT_Save, 92)
             transport.stop() #stop
             transport.start() #restart play at beginning
             ui.setHintMsg("Restart")
@@ -298,6 +290,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             ui.enter()
             ui.setHintMsg("enter")
 
+
          if (event.data1 == nihia.buttons["SHIFT+ENCODER_BUTTON"]):
             event.handled = True
             #ui.nextWindow()
@@ -410,7 +403,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                    nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
 
             elif mixer.trackNumber() <= 127:    
-               nihia.printText(3, ' ')
+               nihia.printText(3, nihia.message["EMPTY"])
                nihia.printVol(3, 104)
                
             #knob 3
@@ -428,7 +421,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                    nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
 
             elif mixer.trackNumber() <= 127:    
-               nihia.printText(4, ' ')
+               nihia.printText(4, nihia.message["EMPTY"])
                nihia.printVol(4, 104)
 
             #knob 4
@@ -447,7 +440,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
             elif mixer.trackNumber() <= 127:    
-               nihia.printText(5, ' ')
+               nihia.printText(5, nihia.message["EMPTY"])
                nihia.printVol(5, 104)
 
             #knob 5
@@ -465,7 +458,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                    nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
 
             elif mixer.trackNumber() <= 127:    
-               nihia.printText(6, ' ')
+               nihia.printText(6, nihia.message["EMPTY"])
                nihia.printVol(6, 104)     
 
             #knob 6
@@ -484,7 +477,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
             elif mixer.trackNumber() <= 127:    
-               nihia.printText(7, ' ')
+               nihia.printText(7, nihia.message["EMPTY"])
                nihia.printVol(7, 104)     
                           
             #knob 8
@@ -503,7 +496,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
             elif mixer.trackNumber() <= 127:    
-               nihia.printText(8, ' ')     
+               nihia.printText(8, nihia.message["EMPTY"])     
 
             # MIXER PAN CONTROL 
 
@@ -1034,77 +1027,77 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
         if ui.getFocused(1) == True: # channel rack
             
-            nihia.printText(0, "C: " + channels.getChannelName(channels.channelNumber() + 0))
+            nihia.printText(0, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 0))
 
             if channels.channelCount() > 0 and channels.channelNumber() < (channels.channelCount()-0) :
-               nihia.printText(1, "C: " + channels.getChannelName(channels.channelNumber() + 0))
+               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 0))
                nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0), 2)))
                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
             else:
-               nihia.printText(1, " ")
+               nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(0, 104)
                nihia.printPan(0, 104)
 
             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
-               nihia.printText(1, "C: " + channels.getChannelName(channels.channelNumber() + 1))
+               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 1))
                nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1), 2)))
                nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
             else:
-               nihia.printText(1, " ")
+               nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(1, 104)
                nihia.printPan(1, 104)
 
             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
-               nihia.printText(2, "C: " + channels.getChannelName(channels.channelNumber() + 2))
+               nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 2))
                nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2), 2)))
                nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
             else:
-               nihia.printText(2, " ")
+               nihia.printText(2, nihia.message["EMPTY"])
                nihia.printVol(2, 104)
                nihia.printPan(2, 104)
                
             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
-               nihia.printText(3, "C: " + channels.getChannelName(channels.channelNumber() + 3))
+               nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 3))
                nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3), 2)))
                nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
             else:
-               nihia.printText(3, " ")
+               nihia.printText(3, nihia.message["EMPTY"])
                nihia.printVol(3, 104)
                nihia.printPan(3, 104)
                
             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
-               nihia.printText(4, "C: " + channels.getChannelName(channels.channelNumber() + 4))
+               nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 4))
                nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4), 2)))
                nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
             else:
-               nihia.printText(4, " ")
+               nihia.printText(4, nihia.message["EMPTY"])
                nihia.printVol(4, 104)
                nihia.printPan(4, 104)
                
             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
-               nihia.printText(5, "C: " + channels.getChannelName(channels.channelNumber() + 5))
+               nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 5))
                nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5), 2)))
                nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
             else:
-               nihia.printText(5, " ")
+               nihia.printText(5, nihia.message["EMPTY"])
                nihia.printVol(5, 104)
                nihia.printPan(5, 104)
                
             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
-               nihia.printText(6, "C: " + channels.getChannelName(channels.channelNumber() + 6))
+               nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 6))
                nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6), 2)))
                nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
             else:
-               nihia.printText(6, " ")
+               nihia.printText(6, nihia.message["EMPTY"])
                nihia.printVol(6, 104)
                nihia.printPan(6, 104)
                
             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
-               nihia.printText(7, "C: " + channels.getChannelName(channels.channelNumber() + 7))
+               nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 7))
                nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7), 2)))
                nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
             else:
-               nihia.printText(7, " ")
+               nihia.printText(7, nihia.message["EMPTY"])
                nihia.printVol(7, 104)
                nihia.printPan(7, 104)
 
@@ -1135,13 +1128,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             #spells out 'Playlist' on tracks 1 through 8 on OLED
             nihia.printText(0, "Playlist")
-            nihia.printText(1, " ")
-            nihia.printText(2, " ")
-            nihia.printText(3, " ")
-            nihia.printText(4, " ")
-            nihia.printText(5, " ")
-            nihia.printText(6, " ")
-            nihia.printText(7, " ")
+            nihia.printText(1, nihia.message["EMPTY"])
+            nihia.printText(2, nihia.message["EMPTY"])
+            nihia.printText(3, nihia.message["EMPTY"])
+            nihia.printText(4, nihia.message["EMPTY"])
+            nihia.printText(5, nihia.message["EMPTY"])
+            nihia.printText(6, nihia.message["EMPTY"])
+            nihia.printText(7, nihia.message["EMPTY"])
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)
 
@@ -1149,65 +1142,65 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
 
             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
-               nihia.printText(1, "C: " + channels.getChannelName(channels.channelNumber() + 1))
+               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 1))
                nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1), 2)))
                nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
             else:
-               nihia.printText(1, " ")
+               nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(1, 104)
                nihia.printPan(1, 104)
 
             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
-               nihia.printText(2, "C: " + channels.getChannelName(channels.channelNumber() + 2))
+               nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 2))
                nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2), 2)))
                nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
             else:
-               nihia.printText(2, " ")
+               nihia.printText(2, nihia.message["EMPTY"])
                nihia.printVol(2, 104)
                nihia.printPan(2, 104)
                
             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
-               nihia.printText(3, "C: " + channels.getChannelName(channels.channelNumber() + 3))
+               nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 3))
                nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3), 2)))
                nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
             else:
-               nihia.printText(3, " ")
+               nihia.printText(3, nihia.message["EMPTY"])
                nihia.printVol(3, 104)
                nihia.printPan(3, 104)
                
             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
-               nihia.printText(4, "C: " + channels.getChannelName(channels.channelNumber() + 4))
+               nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 4))
                nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4), 2)))
                nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
             else:
-               nihia.printText(4, " ")
+               nihia.printText(4, nihia.message["EMPTY"])
                nihia.printVol(4, 104)
                nihia.printPan(4, 104)
                
             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
-               nihia.printText(5, "C: " + channels.getChannelName(channels.channelNumber() + 5))
+               nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 5))
                nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5), 2)))
                nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
             else:
-               nihia.printText(5, " ")
+               nihia.printText(5, nihia.message["EMPTY"])
                nihia.printVol(5, 104)
                nihia.printPan(5, 104)
                
             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
-               nihia.printText(6, "C: " + channels.getChannelName(channels.channelNumber() + 6))
+               nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 6))
                nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6), 2)))
                nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
             else:
-               nihia.printText(6, " ")
+               nihia.printText(6, nihia.message["EMPTY"])
                nihia.printVol(6, 104)
                nihia.printPan(6, 104)
                
             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
-               nihia.printText(7, "C: " + channels.getChannelName(channels.channelNumber() + 7))
+               nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 7))
                nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7), 2)))
                nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
             else:
-               nihia.printText(7, " ")
+               nihia.printText(7, nihia.message["EMPTY"])
                nihia.printVol(7, 104)
                nihia.printPan(7, 104)
 
@@ -1222,26 +1215,26 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
         if ui.getFocused(4) == True: # Browser
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
             nihia.printText(0, "Browser")
-            nihia.printText(1, " ")
-            nihia.printText(2, " ")
-            nihia.printText(3, " ")
-            nihia.printText(4, " ")
-            nihia.printText(5, " ")
-            nihia.printText(6, " ")
-            nihia.printText(7, " ")
+            nihia.printText(1, nihia.message["EMPTY"])
+            nihia.printText(2, nihia.message["EMPTY"])
+            nihia.printText(3, nihia.message["EMPTY"])
+            nihia.printText(4, nihia.message["EMPTY"])
+            nihia.printText(5, nihia.message["EMPTY"])
+            nihia.printText(6, nihia.message["EMPTY"])
+            nihia.printText(7, nihia.message["EMPTY"])
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
 
         if ui.getFocused(5) == True: # Plugin
             #spells out 'Plugin' on tracks 1 through 8 on OLED
-            nihia.printText(0, ui.getFocusedPluginName())
-            nihia.printText(1, " ")
-            nihia.printText(2, " ")
-            nihia.printText(3, " ")
-            nihia.printText(4, " ")
-            nihia.printText(5, " ")
-            nihia.printText(6, " ")
-            nihia.printText(7, " ")
+            nihia.printText(0, ui.getFocusedFormCaption())
+            nihia.printText(1, nihia.message["EMPTY"])
+            nihia.printText(2, nihia.message["EMPTY"])
+            nihia.printText(3, nihia.message["EMPTY"])
+            nihia.printText(4, nihia.message["EMPTY"])
+            nihia.printText(5, nihia.message["EMPTY"])
+            nihia.printText(6, nihia.message["EMPTY"])
+            nihia.printText(7, nihia.message["EMPTY"])
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
 
