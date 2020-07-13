@@ -64,7 +64,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.1.2"
+VERSION_NUMBER = "v4.1.5"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -92,7 +92,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
 
-     def OnMidiMsg(self, event): #listens for button or knob activity
+     def OnMidiIn(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
 
@@ -1280,9 +1280,9 @@ def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 
-def OnMidiMsg(event):
+def OnMidiIn(event):
    try:
-      KompleteKontrolBase.OnMidiMsg(event)
+      KompleteKontrolBase.OnMidiIn(event)
    except:
       pass
 
