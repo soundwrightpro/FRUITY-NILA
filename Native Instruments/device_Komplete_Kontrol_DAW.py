@@ -1269,7 +1269,6 @@ def OnInit():
    # command to initialize the protocol handshake
    KompleteKontrolBase.OnInit()
 
-
 def OnRefresh(Flags):
    try:
       KompleteKontrolBase.OnRefresh(Flags)
@@ -1278,7 +1277,6 @@ def OnRefresh(Flags):
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
-
 
 def OnMidiIn(event):
    try:
