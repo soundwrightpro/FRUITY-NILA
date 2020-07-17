@@ -1,4 +1,4 @@
-# Komplete Kontrol DAW - FL Studio Script - v4.1.5
+# Komplete Kontrol DAW - FL Studio Script - v4.2.0
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -11,6 +11,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * install method
 * first stable version - all known bugs that result in a crash have been removed
 * Modulation touch strip values now appears in hint bar.
+* Display channel rack selection in red rectangle when selcted track moves, so you always know what the knobs control.
 
 ##### Key Features
 * full transport controls - **PLAY** with tempo flashing feedback, **Restart**, **REC** (when engaged with tempo flashing feedback), **Count-In** - toggles countdown before recording, and **STOP**; all with button light feedback
