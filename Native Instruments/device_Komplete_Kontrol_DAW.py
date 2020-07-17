@@ -64,7 +64,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.2.0"
+VERSION_NUMBER = "v4.2.5"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -940,32 +940,26 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
-               #playlist.liveDisplayZone(0, 1, 8, 8, 2000)
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                ui.jog(-1)
-               #playlist.liveDisplayZone(0, 1, 8, 8, 2000) #red rectangle
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
                ui.right(1)
-               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                ui.left(1)
-               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                ui.up(1)
-               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                ui.down(1)
-               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
 
          else:
 
@@ -1313,7 +1307,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
      
         if ui.getFocused(4) == True: # Browser
             #spells out 'Piano Roll' on tracks 1 through 8 on OLED
-            nihia.printText(0, "Browser")
+            hintMsg = ui.getHintMsg()
+            nihia.printText(0, "B: " + hintMsg[9:])
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
