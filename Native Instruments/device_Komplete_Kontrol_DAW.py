@@ -64,7 +64,10 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.1.5"
+#testning
+# ui.crDisplayRect(0, 0, 64, 8, 2000) #red rectangle
+
+VERSION_NUMBER = "v4.2.0"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -326,35 +329,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   self.UpdateOLED()
                   ui.setHintMsg("Solo")
                
-         #4D controller
-      
-         if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
-            event.handled = True
-            ui.jog(1)
 
-         elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
-            event.handled = True
-            ui.jog(-1)
-         
-         if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
-            event.handled = True
-            ui.right(1)
-
-         elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
-            event.handled = True
-            ui.left(1)
-
-         if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
-            event.handled = True
-            ui.up(1)
-            
-         elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
-            event.handled = True
-            ui.down(1)
 
          #8 volume knobs for mixer & channel rack, 8 tracks at a time
 
-         if ui.getFocused(0) == 1: #mixer volume control
+         if ui.getFocused(0) == 1: #mixer control
 
             # VOLUME CONTROL
 
@@ -643,6 +622,33 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(7, 104)
 
 
+            #4D controller # for mixer
+      
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.jog(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.jog(-1)
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               ui.right(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               ui.left(1)
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               ui.up(1)
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               ui.down(1)
+
+
          elif ui.getFocused(1) == 1: # channel rack
 
             # VOLUME CONTROL
@@ -896,6 +902,68 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   x = (channels.getChannelPan(channels.channelNumber() + 7))
                   channels.setChannelPan((channels.channelNumber() + 7), (x + knobinc) ) # pan values go up
                   nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+
+
+            #4D controller # for channel rack
+      
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.jog(1)
+               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.jog(-1)
+               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               ui.right(1)
+               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               ui.left(1)
+               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               ui.up(1)
+               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               ui.down(1)
+               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+
+         else:
+
+            #4D controller # for mixer
+      
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.jog(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.jog(-1)
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               ui.right(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               ui.left(1)
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               ui.up(1)
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               ui.down(1)
+
  
      def UpdateLEDs(self): #controls all nights located within buttons
          """Function for device light communication (excluding OLED screen)"""
