@@ -64,9 +64,6 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-#testning
-# ui.crDisplayRect(0, 0, 64, 8, 2000) #red rectangle
-
 VERSION_NUMBER = "v4.2.0"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
@@ -905,7 +902,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
             #4D controller # for channel rack
-      
+
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
@@ -936,9 +933,43 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                ui.down(1)
                ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
 
-         else:
+         elif ui.getFocused(2) == True: # playlist:
 
             #4D controller # for mixer
+      
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.jog(1)
+               #playlist.liveDisplayZone(0, 1, 8, 8, 2000)
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.jog(-1)
+               #playlist.liveDisplayZone(0, 1, 8, 8, 2000) #red rectangle
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               ui.right(1)
+               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               ui.left(1)
+               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               ui.up(1)
+               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               ui.down(1)
+               #playlist.liveDisplayZone(0, 1, 8, 2, 2000) #red rectangle
+
+         else:
+
+            #4D controller # for everything else
       
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
