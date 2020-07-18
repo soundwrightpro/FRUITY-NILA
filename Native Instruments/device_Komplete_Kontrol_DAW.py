@@ -968,12 +968,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
-               fileNameText = ui.navigateBrowserMenu(1,1)
+               fileNameText = ui.navigateBrowserMenu(1,0)
                nihia.printText(0, "B: " + fileNameText)
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
-               fileNameText = ui.navigateBrowserMenu(0,1)
+               fileNameText = ui.navigateBrowserMenu(0,0)
                nihia.printText(0, "B: " + fileNameText)
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
@@ -986,12 +986,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
-               fileNameText = ui.navigateBrowserMenu(0,1)
+               fileNameText = ui.navigateBrowserMenu(0,0)
                nihia.printText(0, "B: " + fileNameText)
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
-               fileNameText = ui.navigateBrowserMenu(1,1)
+               fileNameText = ui.navigateBrowserMenu(1,0)
                nihia.printText(0, "B: " + fileNameText)
 
          else:
@@ -1401,19 +1401,19 @@ def OnInit():
    KompleteKontrolBase.OnInit()
 
 def OnRefresh(Flags):
-   #try:
+   try:
       KompleteKontrolBase.OnRefresh(Flags)
-   #except:
-   #   pass
+   except:
+      pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiIn(event):
-   #try:
+   try:
       KompleteKontrolBase.OnMidiIn(event)
-   #except:
-   #   pass
+   except:
+      pass
 
 def OnDeInit():
    if ui.isClosing() == True:
