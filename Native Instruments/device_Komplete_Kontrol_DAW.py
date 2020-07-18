@@ -50,6 +50,7 @@ import math
 
 import nihia
 
+
 #data2, up down right left values for knobs and 4d controller
 down = right = 1
 up = left = 127
@@ -64,7 +65,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.2.5"
+VERSION_NUMBER = "v4.3.0"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -961,6 +962,38 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                event.handled = True
                ui.down(1)
 
+         elif ui.getFocused(4) == True: # Browser:
+
+            #4D controller # for mixer
+      
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               fileNameText = ui.navigateBrowserMenu(1,1)
+               nihia.printText(0, "B: " + fileNameText)
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               fileNameText = ui.navigateBrowserMenu(0,1)
+               nihia.printText(0, "B: " + fileNameText)
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               ui.right(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               ui.left(1)
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               fileNameText = ui.navigateBrowserMenu(0,1)
+               nihia.printText(0, "B: " + fileNameText)
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               fileNameText = ui.navigateBrowserMenu(1,1)
+               nihia.printText(0, "B: " + fileNameText)
+
          else:
 
             #4D controller # for everything else
@@ -988,6 +1021,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                ui.down(1)
+
 
  
      def UpdateLEDs(self): #controls all nights located within buttons
@@ -1306,9 +1340,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
      
         if ui.getFocused(4) == True: # Browser
-            #spells out 'Piano Roll' on tracks 1 through 8 on OLED
-            hintMsg = ui.getHintMsg()
-            nihia.printText(0, "B: " + hintMsg[9:])
+
+            #hintMsg = ui.navigateBrowserMenu()
+
+
+
+            #nihia.printText(0, "B: " + )
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
@@ -1364,19 +1401,19 @@ def OnInit():
    KompleteKontrolBase.OnInit()
 
 def OnRefresh(Flags):
-   try:
+   #try:
       KompleteKontrolBase.OnRefresh(Flags)
-   except:
-      pass
+   #except:
+   #   pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiIn(event):
-   try:
+   #try:
       KompleteKontrolBase.OnMidiIn(event)
-   except:
-      pass
+   #except:
+   #   pass
 
 def OnDeInit():
    if ui.isClosing() == True:
