@@ -65,7 +65,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.3.2"
+VERSION_NUMBER = "v4.3.5"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -993,6 +993,34 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(1,0)
                nihia.printText(0, "B: " + fileNameText)
+
+         elif ui.getFocused(5) == True: # Plugin Window:
+
+            #4D controller # for everything else
+      
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.down(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.up(1)
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               ui.right(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               ui.left(1)
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               ui.up(1)
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               ui.down(1)
 
          else:
 
