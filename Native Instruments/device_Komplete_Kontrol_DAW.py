@@ -65,7 +65,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.3.1"
+VERSION_NUMBER = "v4.3.2"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
