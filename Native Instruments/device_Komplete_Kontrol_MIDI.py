@@ -51,7 +51,7 @@ class KeyKompleteKontrolMIDI(): #used a class to sheild against crashes
     def OnMidiIn(self, event):
 
         if (event.data1 == nihia.touch_strips["PITCH"]):
-            event.handled = True
+            event.handled = False
 
         if (event.data1 == nihia.touch_strips["MOD"]):
             event.handled = False
