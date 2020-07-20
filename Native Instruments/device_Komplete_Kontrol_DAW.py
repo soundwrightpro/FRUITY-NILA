@@ -1,4 +1,4 @@
-# name=Komplete Kontrol DAW
+#	name=Komplete Kontrol DAW
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
 
@@ -65,7 +65,7 @@ off = 0
 #time delay for messages on screen
 timedelay = 0.45 #seconds 
 
-VERSION_NUMBER = "v4.3.0"
+VERSION_NUMBER = "v4.3.1"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
