@@ -1,4 +1,4 @@
-# Komplete Kontrol DAW - FL Studio Script - v4.3.5
+# Komplete Kontrol DAW - FL Studio Script - v4.9.0
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -7,12 +7,14 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 ### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
 
-#### What's new since v3.5.5
+#### What's new since v4.3.5
+* improved functionality with the 4D encoder and the Plugin Picker
+* double click 4D button for new functionality; temporarily taking the place of a single click. single click currently disabled for future features
 * install method
 * first stable version - all known bugs that result in a crash have been removed
 * Modulation touch strip values now appears in hint bar.
-* Display channel rack selection in red rectangle when selcted track moves, so you always know what the knobs control (Only works in ALL group)
-* as you go through the **Browser** file names & folders are displayed on the OLED
+* Display channel rack selection in red rectangle when selected track moves, so you always know what the knobs control (Only works in ALL group)
+* as you go through the **Browser** file names & folders are displayed on the OLED; along with selecting through the menu
 * better integration with FLEX plugin with 4D encoder 
 
 ##### Key Features
@@ -34,9 +36,9 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * interact with something on the keyboard, it displays what it is in the hint bar on FL Studio
 * don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
 
-* Integrated the [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia  "NIHIA by Hobyst") by [Hobyst](https://github.com/hobyst  "Hobyst Github") for the best possible experience and stablity.
+* Integrated the [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia  "NIHIA by Hobyst") by [Hobyst](https://github.com/hobyst  "Hobyst Github") for the best possible experience and stability.
 
-* #### Easily switch betwen NIHIA mode, Komplete Kontrol Plugin Mode and Midi Mode
+* #### Easily switch between NIHIA mode, Komplete Kontrol Plugin Mode and Midi Mode
 
   if the Komplete Control Plugin (not to be confused with the Application) is active, to switch between modes do the following:
   * press **TRACK Instance** and that returns all knobs to FL Studio
