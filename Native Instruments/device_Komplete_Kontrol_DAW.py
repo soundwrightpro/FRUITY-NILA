@@ -66,7 +66,7 @@ off = 0
 timedelay = 0.45 #seconds
 
 
-VERSION_NUMBER = "v4.9.0"
+VERSION_NUMBER = "v4.9.1"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
@@ -649,16 +649,49 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if doubleclickstatus == True:
                   if ui.isInPopupMenu() == True:
                      ui.enter()
-                     ui.setHintMsg("Open Menu")
+                     ui.setHintMsg("Enter")
                   else:
                      event.handled = True
                      transport.globalTransport(midi.FPT_Menu, 90)
-                     ui.setHintMsg("enter")
+                     ui.setHintMsg("Open Menu")
                else:
-                  pass
+                  pass    
 
+         elif ui.getFocused(5) == True: # Plugin
 
-            
+            # VOLUME CONTROL
+
+            #knob 1
+            if (event.data1 == nihia.knobs["KNOB_0A"]):
+             event.handled = True  
+             if event.data2 == left:
+                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                y = round(x,2)
+                if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
+                  channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
+                  nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+       
+             elif event.data2 == right:
+                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                y = round(x,2)
+                channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
+                nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+
+            # PAN CONTROL
+
+            #sknob 1
+            if (event.data1 == nihia.knobs["KNOB_0B"]):
+             event.handled = True  
+             if event.data2 == left:
+                x = (channels.getChannelPan(channels.channelNumber() + 0))
+                channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
+                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+  
+             elif event.data2 == right:
+                x = (channels.getChannelPan(channels.channelNumber() + 0))
+                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
+                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+
 
          elif ui.getFocused(1) == 1: # channel rack
 
@@ -1468,8 +1501,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(6, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
-            nihia.printVol(0, 104)
-            nihia.printPan(0, 104)     
+            #nihia.printVol(0, 104)
+            #nihia.printPan(0, 104)
+
+            nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber(0)), 2)))
+            nihia.printPan(0, channels.getChannelPan(channels.channelNumber(0)) * 100)     
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
@@ -1503,19 +1539,19 @@ def OnInit():
    KompleteKontrolBase.OnInit()
 
 def OnRefresh(Flags):
-   #try:
+   try:
       KompleteKontrolBase.OnRefresh(Flags)
-   #except:
-   #   pass
+   except:
+      pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiIn(event):
-   #try:
+   try:
       KompleteKontrolBase.OnMidiIn(event)
-   #except:
-   #   pass
+   except:
+      pass
 
 def OnDeInit():
    if ui.isClosing() == True:
