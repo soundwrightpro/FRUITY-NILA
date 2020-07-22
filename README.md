@@ -1,4 +1,4 @@
-# Komplete Kontrol DAW - FL Studio Script - v4.9.0
+# Komplete Kontrol DAW - FL Studio Script - v4.9.1
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -9,6 +9,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 #### What's new since v4.3.5
 * improved functionality with the 4D encoder and the Plugin Picker
+* volume and pan control in Channel Settings Window
 * double click 4D button for new functionality; temporarily taking the place of a single click. single click currently disabled for future features
 * install method
 * first stable version - all known bugs that result in a crash have been removed
