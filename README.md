@@ -1,5 +1,5 @@
 # Komplete Kontrol DAW - FL Studio Script
-## v5.0.0 beta for FL Studio 20.7.2 RC2 or higher
+## v5.0.0 beta for FL Studio 20.7.2 RC or higher
 
 #### Written by Duwayne 'Sound' Wright
 
