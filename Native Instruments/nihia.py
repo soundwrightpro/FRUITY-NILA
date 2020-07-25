@@ -101,6 +101,20 @@ knobs = {
     "KNOB_6B": 94,
     "KNOB_7B": 95
 }
+
+touch_strips = {
+   "PITCH": 0,
+   "MOD": 1
+}
+
+message = {
+   "EMPTY": " ",
+   "CHANNEL_RACK": "C: "
+}
+
+#on/off values
+on = 1
+off = 0
  
 def dataOut(data1, data2):
     """ Function that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
@@ -293,7 +307,15 @@ def initiate():
     was successful and returns True if affirmative."""
 
     # Sends the MIDI message that initiates the handshake: BF 01 01
+
     dataOut(1, 1)
+    #turning on group of lights not initialized during the nihia.initiate()
+    dataOut(buttons["CLEAR"], on)
+    dataOut(buttons["UNDO"], on) 
+    dataOut(buttons["REDO"], on) 
+    dataOut(buttons["AUTO"], on) 
+    dataOut(buttons["QUANTIZE"], on) 
+    device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated
 
     # TODO: Waits and reads the handshake confirmation message
    
@@ -315,6 +337,7 @@ def restartProtocol():
 
     # Then activates it again
     initiate()
+    
 
 # Method for controlling the lighting on the buttons (for those who have idle/highlighted two state lights)
 # Examples of this kind of buttons are the PLAY or REC buttons, where the PLAY button alternates between low and high light and so on.
