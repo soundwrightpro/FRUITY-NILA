@@ -7,9 +7,10 @@
 
 # FL Studio Forum
 # https://forum.image-line.com/viewtopic.php?f=1994&t=225473
-# script by Duwayne "Sound" Wright www.soundwrightpro.com and additional code from Hobyst
+# script by Duwayne "Sound" Wright additional code from Hobyst (absolute legend)
+# find me on the forums as 'soundwrightpro'
 
-# Have a question? Want to be a beta tester? Have a request? Want to say hi? Join the FL Studio NI on Discord!
+# Join the FL Studio NI on Discord if you need help or just want to say hi.
 # https://discord.gg/7FYrJEq
 
 # MIT License
@@ -68,9 +69,25 @@ timedelay = 0.45 #seconds
 
 
 VERSION_NUMBER = "v5.0.0"
+FL_VERSION = "7.2"
+FL_NAME = "FL Studio 20"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
-OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
+OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\n"
+
+def VersionCheck(compatibility):
+
+   if FL_NAME in ui.getProgTitle() and FL_VERSION in ui.getVersion():
+      print("\n" + ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script\n")
+      compatibility = True
+
+   else:
+      print("\n" + ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
+      " will not load on this device. \nPlease update", ui.getProgTitle(), ui.getVersion(), "to", ui.getProgTitle(), FL_VERSION, 
+      "or higher.\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\n")
+      compatibility = False
+      
+   return compatibility
 
 def TranslateVolume(Value):
    """Function that converts values from device into FL Studio comptable values for volume conversion"""
@@ -88,7 +105,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
      def OnInit(self):
       """ Called when the script has been started.""" 
 
-      #initializing NI Host Integration Agent API for FL Studio by Hobyst 
+      #initializing NI Host Integration Agent API for FL Studio by Hobyst
+      
       nihia.initiate() 
 
       print(OUTPUT_MESSAGE)
@@ -291,11 +309,16 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if (event.data1 == nihia.buttons["SHIFT+ENCODER_BUTTON"]):
             event.handled = True
-            #ui.nextWindow()
-            transport.globalTransport(midi.FPT_F8, 67)
-            ui.setHintMsg("Plugin Picker")
-            nihia.printText(0, "Plugin Picker")
-            time.sleep(timedelay)
+
+            doubleclickstatus = device.isDoubleClick(nihia.buttons["SHIFT+ENCODER_BUTTON"])
+            if doubleclickstatus == True:
+               transport.globalTransport(midi.FPT_F8, 67)
+               ui.setHintMsg("Plugin Picker")
+               nihia.printText(0, "Plugin Picker")
+               time.sleep(timedelay)
+            else:
+               ui.nextWindow()
+               ui.setHintMsg("Next Window")
 
          #mute and solo for mixer and channel rack
          if (event.data1 == nihia.buttons["MUTE"]):
@@ -1557,7 +1580,12 @@ KompleteKontrolBase = KeyKompleteKontrolBase()
 
 def OnInit():
    # command to initialize the protocol handshake
-   KompleteKontrolBase.OnInit()
+   compatibility = False
+   compatibility = VersionCheck(compatibility)
+   if compatibility == True:
+      KompleteKontrolBase.OnInit()
+   else:
+      pass
 
 def OnRefresh(Flags):
    try:

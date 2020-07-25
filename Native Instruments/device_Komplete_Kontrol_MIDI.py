@@ -40,13 +40,13 @@ import ui
 import midi
 
 import nihia
-import device_Komplete_Kontrol_DAW
+import device_Komplete_Kontrol_DAW as kk
 
 
 class KeyKompleteKontrolMIDI(): #used a class to sheild against crashes
      
     def OnInit(self):
-        print (device_Komplete_Kontrol_DAW.OUTPUT_MESSAGE)
+        kk.OnInit()
 
     def OnMidiIn(self, event):
 
