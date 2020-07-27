@@ -1,4 +1,4 @@
-#	name=Komplete Kontrol DAW
+# name=Komplete Kontrol DAW
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
 
@@ -34,26 +34,54 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import channels
-import mixer
-import device
-import transport
-import general
-import playlist
-import ui
-import arrangement as arrange
 
-import midi
-import utils
-import time
-import sys
-import binascii
-import math
+# This import section is loading the back-end code required to execute the script. 
+# The following are the custom FL Studio modules not found outside FL Studio's Python enviorment. 
 
-import nihia
+import channels # This module allows you to control FL Studio Channels
+
+import mixer # This module allows you to control FL Studio Mixer. NOTE: Track number 0 is always the Master.
+
+import device # This module will handle MIDI devices connected to the FL Studio MIDI interface. 
+              # You send messages to output interface, retrieve linked control values... etc). 
+              # MIDI scripts, assigned to an input interface, can be mapped (linked) to an Output interface via the Port Number. 
+              # With mapped (linked) output interfaces, scripts can send midi messages to output interfaces by using one of the midiOut*** messages.
+
+import transport # This module handles FL Studio Transport (Play, Stop, Pause & Record)
+
+import general # This module handles general FL Studio functions
+
+import playlist # This module allows you to control FL Studio Playlist
+
+import ui # This module allows you to control FL Studio User interface (eg. scrolling, moving around, zoom)
+
+import arrangement as arrange # This module allows you to control FL Studio Playlist Arrangements. I've changed it to arrange because I didn't want to 
+                              # write out arrangement every time.
+
+# The following are the standard Python modules found outside FL Studio's Python enviorment. 
+
+import midi # This module allows for simple sending and receiving of MIDI messages from your device
+
+import utils # Thie module is a collection of small Python functions and classes which make common patterns shorter and easier
+
+import time # This module provides various time-related functions
+
+import sys # This module provides access to some variables used or maintained by the interpreter and to functions that interact strongly with the interpreter.
+
+import binascii # This module contains a number of methods to convert between binary and various ASCII-encoded binary representations.
+
+import math #  This module provides access to the mathematical functions.
+
+from sys import platform # This module allows access to the OS version being used. 
+                          # As for why it's 'from sys import platform' see https://stackoverflow.com/questions/9439480/from-import-vs-import
+
+# The following is a custom Python modules made for use in FL Studio. Written by Hobyst, modified by Duwayne Wright
+
+import nihia # this module loads the abstraction layer of the Native Instruments' Host Integration Agent API for the FL Studio MIDI Scripting API.
+             # more info on this found here: https://github.com/hobyst/flmidi-nihia
 
 
-#data2, up down right left values for knobs and 4d controller
+# For data2, up down right left values for knobs and 4d controller
 down = right = 1
 up = left = 127
 
@@ -73,21 +101,32 @@ FL_VERSION = "7.2"
 FL_NAME = "FL Studio 20"
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
-OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\n"
+OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n"
 
 def VersionCheck(compatibility):
+   """Called to check user's FL Studio version to see if this script can run."""
+   OS = ""
+   print(OUTPUT_MESSAGE)
 
+   if platform == "darwin":
+      OS = "macOS"
+   elif platform == "win32":
+      OS = "Windows"
+      
    if FL_NAME in ui.getProgTitle() and FL_VERSION in ui.getVersion():
-      print("\n" + ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script\n")
+      print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS)
       compatibility = True
 
    else:
-      print("\n" + ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
+      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
       " will not load on this device. \nPlease update", ui.getProgTitle(), ui.getVersion(), "to", ui.getProgTitle(), FL_VERSION, 
-      "or higher.\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\n")
+      "or higher.\n\n")
       compatibility = False
       
    return compatibility
+
+   nihia.printText(0, HELLO_MESSAGE)
+   time.sleep(timedelay)
 
 def TranslateVolume(Value):
    """Function that converts values from device into FL Studio comptable values for volume conversion"""
@@ -106,12 +145,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       """ Called when the script has been started.""" 
 
       #initializing NI Host Integration Agent API for FL Studio by Hobyst
-      
       nihia.initiate() 
 
-      print(OUTPUT_MESSAGE)
-      nihia.printText(0, HELLO_MESSAGE)
-      time.sleep(timedelay)
 
      def OnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
@@ -349,7 +384,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   self.UpdateOLED()
                   ui.setHintMsg("Solo")
                
-
 
          #8 volume knobs for mixer & channel rack, 8 tracks at a time
 
@@ -1024,21 +1058,25 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                event.handled = True
                ui.jog(1)
                ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Channel Rack selection rectangle")
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                ui.jog(-1)
                ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Channel Rack selection rectangle")
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
                ui.right(1)
                ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Moving to the start of Channel Rack")
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                ui.left(1)
                ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Moving to the end of Channel Rack")
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
@@ -1063,6 +1101,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                else:
                   if ui.isInPopupMenu() == True:
                      ui.enter()
+                     ui.setHintMsg("Enter")
                   else:
                      pass
                      #transport.globalTransport(midi.FPT_WindowJog, 2 ,15)
@@ -1070,7 +1109,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          elif ui.getFocused(2) == True: # playlist:
 
-            #4D controller # for mixer
       
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
@@ -1084,11 +1122,9 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                event.handled = True
                arrange.jumpToMarker(1,0)
 
-
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                arrange.jumpToMarker(-1,0)
-
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
@@ -1103,12 +1139,57 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
                if doubleclickstatus == True:
                   if ui.isInPopupMenu() == False:
-                     transport.globalTransport(midi.FPT_AddMarker, 2 ,15)
-                     ui.setHintMsg("Marker Added")
+                     arrange.addAutoTimeMarker(mixer.getSongTickPos(), "Marker")   
                   else:
                      pass
                else:
                   pass
+
+
+         elif ui.getFocused(3) == True: # Piano Roll:
+            
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.jog(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.jog(-1)
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               ui.right(1)
+               
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               ui.left(1)
+               
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               ui.up(1)
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               ui.down(1)
+
+            if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
+               event.handled = True
+               nodeFileType = ui.getFocusedNodeFileType()
+               doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
+               if doubleclickstatus == True: 
+                  print("test")
+                  if nodeFileType <= -100:
+                     ui.enter()
+                     ui.setHintMsg("Enter")
+                  else:
+                     ui.selectBrowserMenuItem()
+                     ui.setHintMsg("Open menu")
+               else:
+                  if ui.isInPopupMenu() == True:
+                     ui.enter()
+                     ui.setHintMsg("Enter")
+                  else:
+                     pass
 
 
          elif ui.getFocused(4) == True: # Browser:
@@ -1143,7 +1224,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                fileNameText = ui.navigateBrowserMenu(1,0)
                nihia.printText(0, "B: " + fileNameText)
 
-
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
                nodeFileType = ui.getFocusedNodeFileType()
@@ -1167,7 +1247,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             #4D controller # for everything else
 
-      
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.down(1)
@@ -1260,6 +1339,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      nihia.dataOut(nihia.buttons["PLAY"], on)
               elif g == off: #play off: 
                   nihia.dataOut(nihia.buttons["PLAY"], off)
+
 
      def UpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
@@ -1407,7 +1487,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(7, 104)
                nihia.printPan(7, 104)
 
-
             if channels.isChannelMuted(channels.selectedChannel()) == 0: #mute light off
                nihia.oled_mute_solo(nihia.buttons["MUTE"], off)
                nihia.dataOut(102, off)
@@ -1415,7 +1494,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             else: #mute light on
                nihia.oled_mute_solo(nihia.buttons["MUTE"], on)
                nihia.dataOut(102, on)
-
                
             if channels.channelCount() >= 2: 
                if channels.isChannelSolo(channels.selectedChannel()) == 0: #solo light off
@@ -1433,10 +1511,23 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
         if ui.getFocused(2) == True: # playlist
 
             #spells out 'Playlist' on tracks 1 through 8 on OLED
+            currentBar = str(playlist.getVisTimeBar())
+            currentStep = str(playlist.getVisTimeStep())
+            currentTick = str(playlist.getVisTimeTick())
 
+            zeroStr = str(0)
 
+            if int(currentStep) <= 9:
+               currentTime = str(currentBar+":"+zeroStr+currentStep)
+            else:
+               currentTime = str(currentBar+":"+currentStep)
 
-            nihia.printText(0, "Playlist")
+            if ui.getTimeDispMin() == True:
+               timeDisp = "M:S | "
+            else:
+               timeDisp = "B:B | "
+
+            nihia.printText(0, (timeDisp+currentTime))
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
@@ -1447,7 +1538,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)
 
-        if ui.getFocused(3) == True: # Piano Roll - spells out 'Piano Roll' on tracks 1 through 8 on OLED
+        if ui.getFocused(3) == True: # Piano Roll 
             nihia.printText(0, "PR: " + channels.getChannelName(channels.selectedChannel() + 0))
 
             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :
@@ -1520,7 +1611,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             else:
                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0), 2)))
                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
-     
+
+
         if ui.getFocused(4) == True: # Browser
 
             #hintMsg = ui.navigateBrowserMenu()
@@ -1535,6 +1627,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(7, nihia.message["EMPTY"])
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
+
 
         if ui.getFocused(5) == True: # Plugin
             #spells out 'Plugin' on tracks 1 through 8 on OLED
@@ -1556,8 +1649,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
         self.UpdateLEDs(), self.UpdateOLED()
 
+
      def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
+       
+       Self.UpdateOLED()
 
        if transport.isRecording() == 0:
           if Value == 1:
@@ -1576,6 +1672,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
           elif Value == 0:
              nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
 
+             
+
 KompleteKontrolBase = KeyKompleteKontrolBase()
 
 def OnInit():
@@ -1587,20 +1685,24 @@ def OnInit():
    else:
       pass
 
+
 def OnRefresh(Flags):
-   try:
+   #try:
       KompleteKontrolBase.OnRefresh(Flags)
-   except:
-      pass
+   #except:
+   #   pass
+
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
+
 def OnMidiMsg(event):
-   try:
+   #try:
       KompleteKontrolBase.OnMidiMsg(event)
-   except:
-     pass
+   #except:
+   #  pass
+
 
 def OnDeInit():
    if ui.isClosing() == True:
