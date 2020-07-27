@@ -1,3 +1,7 @@
+***coming soon: v5.0.0 for FL Studio 20.7.2 with a ton of new features; v5.0.0 will not work on FL Studio 20.7.1***
+
+
+
 # Komplete Kontrol DAW - FL Studio Script - v4.9.1
 
 #### Written by Duwayne 'Sound' Wright
