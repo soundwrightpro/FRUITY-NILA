@@ -91,6 +91,7 @@ knobinc = 0.01
 #on/off values
 on = 1
 off = 0
+winSwitch = 0
 
 #time delay for messages on screen
 timedelay = 0.45 #seconds
@@ -125,8 +126,6 @@ def VersionCheck(compatibility):
       
    return compatibility
 
-   nihia.printText(0, HELLO_MESSAGE)
-   time.sleep(timedelay)
 
 def TranslateVolume(Value):
    """Function that converts values from device into FL Studio comptable values for volume conversion"""
@@ -146,12 +145,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
       #initializing NI Host Integration Agent API for FL Studio by Hobyst
       nihia.initiate() 
-
+      nihia.printText(0, HELLO_MESSAGE)
+      time.sleep(timedelay)
 
      def OnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
-         
+         global winSwitch
 
          #buttons
          if (event.data1 == nihia.buttons["PLAY"]):
@@ -322,11 +322,19 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if (event.data1 == nihia.buttons["CLEAR"]):
             event.handled = True
-            ui.escape() #escape key
-            ui.setHintMsg("esc")
-            nihia.printText(0, "esc")
-            time.sleep(timedelay)
 
+            doubleclickstatus = device.isDoubleClick(nihia.buttons["CLEAR"])
+
+            if doubleclickstatus == True:
+               transport.globalTransport(midi.FPT_F12, 2, 15)
+               ui.setHintMsg("Clear All Windows")
+               nihia.printText(0, "Clear All")
+               time.sleep(timedelay)
+            else:
+               ui.escape() #escape key
+               ui.setHintMsg("esc")
+               nihia.printText(0, "esc")
+               time.sleep(timedelay)
 
          if (event.data1 == nihia.buttons["UNDO"]):
             event.handled = True
@@ -344,16 +352,35 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if (event.data1 == nihia.buttons["SHIFT+ENCODER_BUTTON"]):
             event.handled = True
-
+            
             doubleclickstatus = device.isDoubleClick(nihia.buttons["SHIFT+ENCODER_BUTTON"])
+
             if doubleclickstatus == True:
                transport.globalTransport(midi.FPT_F8, 67)
                ui.setHintMsg("Plugin Picker")
                nihia.printText(0, "Plugin Picker")
                time.sleep(timedelay)
             else:
-               ui.nextWindow()
-               ui.setHintMsg("Next Window")
+               if winSwitch == 0:
+                  ui.showWindow(1)
+                  winSwitch += 1
+                  ui.setHintMsg("Switch to Channel Rack")
+
+               elif winSwitch == 1:
+                  ui.showWindow(0)
+                  winSwitch += 1
+                  ui.setHintMsg("Switch to Mixer")
+
+               elif winSwitch == 2:
+                  ui.showWindow(2)
+                  winSwitch += 1
+                  ui.setHintMsg("Switch to Playlist")
+
+               elif winSwitch == 3:
+                  ui.showWindow(4)
+                  winSwitch = 0
+                  ui.setHintMsg("Switch to Browser")
+
 
          #mute and solo for mixer and channel rack
          if (event.data1 == nihia.buttons["MUTE"]):
@@ -1104,7 +1131,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      ui.setHintMsg("Enter")
                   else:
                      pass
-                     #transport.globalTransport(midi.FPT_WindowJog, 2 ,15)
 
 
          elif ui.getFocused(2) == True: # playlist:
@@ -1177,7 +1203,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nodeFileType = ui.getFocusedNodeFileType()
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
                if doubleclickstatus == True: 
-                  print("test")
                   if nodeFileType <= -100:
                      ui.enter()
                      ui.setHintMsg("Enter")
@@ -1197,32 +1222,30 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(1,0)
-               nihia.printText(0, "B: " + fileNameText)
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(0,0)
-               nihia.printText(0, "B: " + fileNameText)
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
                ui.right(1)
-               #transport.globalTransport(midi.FPT_Right, 43)
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                ui.left(1)
-               #transport.globalTransport(midi.FPT_Left, 42)
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(0,0)
-               nihia.printText(0, "B: " + fileNameText)
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(1,0)
-               nihia.printText(0, "B: " + fileNameText)
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
@@ -1280,7 +1303,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   ui.enter()
                   ui.setHintMsg("enter")
 
-
+ 
  
      def UpdateLEDs(self): #controls all nights located within buttons
          """Function for device light communication (excluding OLED screen)"""
@@ -1615,9 +1638,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
         if ui.getFocused(4) == True: # Browser
 
-            #hintMsg = ui.navigateBrowserMenu()
-
-            #nihia.printText(0, "B: " + )
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
@@ -1630,16 +1650,18 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
         if ui.getFocused(5) == True: # Plugin
-            #spells out 'Plugin' on tracks 1 through 8 on OLED
-            nihia.printText(0, ui.getFocusedFormCaption())
+            #gets plugin name to display on OLED
+            if "Fruity Wrapper" in ui.getFocusedPluginName():
+               nihia.printText(0, ui.getFocusedFormCaption()) 
+            else:
+               nihia.printText(0, ui.getFocusedPluginName())
+
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
             nihia.printText(4, nihia.message["EMPTY"])
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
-            #nihia.printVol(0, 104)
-            #nihia.printPan(0, 104)
 
             nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
             nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)     
@@ -1685,24 +1707,20 @@ def OnInit():
    else:
       pass
 
-
 def OnRefresh(Flags):
-   #try:
+   try:
       KompleteKontrolBase.OnRefresh(Flags)
-   #except:
-   #   pass
-
+   except:
+      pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
-
 def OnMidiMsg(event):
-   #try:
+   try:
       KompleteKontrolBase.OnMidiMsg(event)
-   #except:
-   #  pass
-
+   except:
+     pass
 
 def OnDeInit():
    if ui.isClosing() == True:

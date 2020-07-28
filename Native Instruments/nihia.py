@@ -109,7 +109,8 @@ touch_strips = {
 
 message = {
    "EMPTY": " ",
-   "CHANNEL_RACK": "C: "
+   "CHANNEL_RACK": "C| ",
+   "BROWSER": "B| "
 }
 
 #on/off values
