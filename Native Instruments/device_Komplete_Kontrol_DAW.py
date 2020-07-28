@@ -1653,6 +1653,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             #gets plugin name to display on OLED
             if "Fruity Wrapper" in ui.getFocusedPluginName():
                nihia.printText(0, ui.getFocusedFormCaption()) 
+            elif '' in ui.getFocusedPluginName():
+               nihia.printText(0, ui.getFocusedFormCaption())
             else:
                nihia.printText(0, ui.getFocusedPluginName())
 
@@ -1663,8 +1665,10 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
 
-            nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
-            nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)     
+
+            #print(REC_Plug_MixLevel
+            #nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
+            #nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)     
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
