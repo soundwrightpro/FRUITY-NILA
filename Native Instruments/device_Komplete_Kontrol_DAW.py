@@ -750,20 +750,22 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             # VOLUME CONTROL
 
             #knob 1
-            if (event.data1 == nihia.knobs["KNOB_0A"]):
-             event.handled = True  
-             if event.data2 == left:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
-                y = round(x,2)
-                if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
-                  channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
-                  nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
-       
-             elif event.data2 == right:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
-                y = round(x,2)
-                channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
-                nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+
+            if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
+               if (event.data1 == nihia.knobs["KNOB_0A"]):
+                  event.handled = True  
+                  if event.data2 == left:
+                     x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                     y = round(x,2)
+                     if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
+                        channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
+                        nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+            
+                  elif event.data2 == right:
+                     x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                     y = round(x,2)
+                     channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
+                     nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
 
             # PAN CONTROL
 
@@ -1120,7 +1122,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
                if doubleclickstatus == True:
                   if ui.isInPopupMenu() == False:
-                     
                      ui.selectBrowserMenuItem()
                      ui.setHintMsg("Channel display filter")
                   else:
@@ -1131,6 +1132,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      ui.setHintMsg("Enter")
                   else:
                      pass
+                     #channels.showCSForm(channels.channelNumber())
 
 
          elif ui.getFocused(2) == True: # playlist:
@@ -1170,7 +1172,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      pass
                else:
                   pass
-
+               
 
          elif ui.getFocused(3) == True: # Piano Roll:
             
@@ -1651,6 +1653,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
         if ui.getFocused(5) == True: # Plugin
             #gets plugin name to display on OLED
+            
             if "Fruity Wrapper" in ui.getFocusedPluginName():
                nihia.printText(0, ui.getFocusedFormCaption()) 
             elif '' in ui.getFocusedPluginName():
@@ -1665,10 +1668,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
 
+            #REC_Mixer_Vol + mixer.getTrackPluginId(mixer.trackNumber(), 0)
 
-            #print(REC_Plug_MixLevel
-            #nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
-            #nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)     
+            if ui.getFocusedPluginName() == channel.getChannelName():
+               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
+               nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)
+            else:
+               pass
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
