@@ -1647,9 +1647,30 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(6, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
+            
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
 
+            nihia.printVol(1, 104)
+            nihia.printPan(1, 104)
+
+            nihia.printVol(2, 104)
+            nihia.printPan(2, 104)
+
+            nihia.printVol(3, 104)
+            nihia.printPan(3, 104)
+
+            nihia.printVol(4, 104)
+            nihia.printPan(4, 104)
+
+            nihia.printVol(5, 104)
+            nihia.printPan(5, 104)
+
+            nihia.printVol(6, 104)
+            nihia.printPan(6, 104)
+
+            nihia.printVol(7, 104)
+            nihia.printPan(7, 104)
 
         if ui.getFocused(5) == True: # Plugin
             #gets plugin name to display on OLED
@@ -1668,13 +1689,34 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
 
-            #REC_Mixer_Vol + mixer.getTrackPluginId(mixer.trackNumber(), 0)
-
-            if ui.getFocusedPluginName() == channel.getChannelName():
+            if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)
             else:
-               pass
+               nihia.printVol(0, 104)
+               nihia.printPan(0, 104)
+
+               nihia.printVol(1, 104)
+               nihia.printPan(1, 104)
+
+               nihia.printVol(2, 104)
+               nihia.printPan(2, 104)
+
+               nihia.printVol(3, 104)
+               nihia.printPan(3, 104)
+
+               nihia.printVol(4, 104)
+               nihia.printPan(4, 104)
+
+               nihia.printVol(5, 104)
+               nihia.printPan(5, 104)
+
+               nihia.printVol(6, 104)
+               nihia.printPan(6, 104)
+
+               nihia.printVol(7, 104)
+               nihia.printPan(7, 104)
+
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
