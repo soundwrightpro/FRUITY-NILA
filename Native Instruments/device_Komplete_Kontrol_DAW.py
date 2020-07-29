@@ -362,6 +362,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printText(0, "Plugin Picker")
                time.sleep(timedelay)
             else:
+
                if winSwitch == 0:
                   ui.showWindow(1)
                   winSwitch += 1
@@ -379,8 +380,17 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
                elif winSwitch == 3:
                   ui.showWindow(4)
-                  winSwitch = 0
                   ui.setHintMsg("Switch to Browser")
+                  if ui.getVisible(3) == True:
+                     winSwitch += 1
+                  else:
+                     winSwitch = 0
+
+               elif winSwitch == 4:
+                     ui.showWindow(3)
+                     ui.setHintMsg("Switch to Piano Roll")
+                     winSwitch = 0
+                     
 
 
          #mute and solo for mixer and channel rack
