@@ -91,6 +91,7 @@ knobinc = 0.01
 #on/off values
 on = 1
 off = 0
+
 winSwitch = 0
 
 #time delay for messages on screen
