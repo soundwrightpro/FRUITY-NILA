@@ -153,6 +153,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
          global winSwitch
 
+
+
          #buttons
          if (event.data1 == nihia.buttons["PLAY"]):
             event.handled = True
@@ -333,8 +335,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             else:
                ui.escape() #escape key
                ui.setHintMsg("esc")
-               nihia.printText(0, "esc")
-               time.sleep(timedelay)
+   
 
          if (event.data1 == nihia.buttons["UNDO"]):
             event.handled = True
@@ -1176,6 +1177,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          elif ui.getFocused(3) == True: # Piano Roll:
             
+            
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
@@ -1205,18 +1207,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nodeFileType = ui.getFocusedNodeFileType()
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
                if doubleclickstatus == True: 
-                  if nodeFileType <= -100:
-                     ui.enter()
-                     ui.setHintMsg("Enter")
-                  else:
-                     ui.selectBrowserMenuItem()
-                     ui.setHintMsg("Open menu")
+                  ui.selectBrowserMenuItem()
                else:
                   if ui.isInPopupMenu() == True:
                      ui.enter()
                      ui.setHintMsg("Enter")
                   else:
                      pass
+
 
 
          elif ui.getFocused(4) == True: # Browser:
