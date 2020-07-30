@@ -93,6 +93,7 @@ on = 1
 off = 0
 
 winSwitch = 0
+jogMove = True
 
 #time delay for messages on screen
 timedelay = 0.45 #seconds
@@ -153,6 +154,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
          global winSwitch
+         global jogMove
 
 
 
@@ -428,9 +430,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if ui.getFocused(0) == 1: #mixer control
 
+
+
             # VOLUME CONTROL
 
             xy = 1.25
+                           
 
             #knob 0
             if mixer.trackNumber() <= 126:
@@ -715,31 +720,39 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(7, 104)
 
 
+
+
             #4D controller # for mixer
       
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
+               jogMove = True
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                ui.jog(-1)
+               jogMove = True
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
                ui.right(1)
+               jogMove = True
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                ui.left(1)
+               jogMove = True
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                ui.up(1)
+               jogMove = True
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                ui.down(1)
+               jogMove = True
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
@@ -755,14 +768,28 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                else:
                      if ui.isInPopupMenu() == True:
                         ui.enter()
-                        ui.setHintMsg("Enter")    
+                        ui.setHintMsg("Enter")   
+
+            if jogMove == True:# mixer highlighting when jog wheel is moved
+               mixer.selectTrack(mixer.trackNumber()+1)
+               mixer.selectTrack(mixer.trackNumber()+2)
+               mixer.selectTrack(mixer.trackNumber()+3)
+               mixer.selectTrack(mixer.trackNumber()+4)
+               mixer.selectTrack(mixer.trackNumber()+5)
+               mixer.selectTrack(mixer.trackNumber()+6)
+               mixer.selectTrack(mixer.trackNumber()+7)
+               jogMove = False #resets jog wheel tracker
+            else:
+               pass
+
+
+
 
          elif ui.getFocused(5) == True: # Plugin
 
             # VOLUME CONTROL
 
             #knob 1
-
             if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
                if (event.data1 == nihia.knobs["KNOB_0A"]):
                   event.handled = True  
@@ -783,16 +810,16 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             #sknob 1
             if (event.data1 == nihia.knobs["KNOB_0B"]):
-             event.handled = True  
-             if event.data2 == left:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
-  
-             elif event.data2 == right:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+               event.handled = True  
+               if event.data2 == left:
+                  x = (channels.getChannelPan(channels.channelNumber() + 0))
+                  channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
+                  nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+   
+               elif event.data2 == right:
+                  x = (channels.getChannelPan(channels.channelNumber() + 0))
+                  channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
+                  nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
 
             if (event.data1 == nihia.knobs["KNOB_1B"] or nihia.knobs["KNOB_2B"] or nihia.knobs["KNOB_3B"] 
             or nihia.knobs["KNOB_4B"] or nihia.knobs["KNOB_5B"] or nihia.knobs["KNOB_6B"] or nihia.knobs["KNOB_7B"] 
@@ -803,7 +830,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.down(1)
-
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
@@ -1686,7 +1712,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             
             if "Fruity Wrapper" in ui.getFocusedPluginName():
                nihia.printText(0, ui.getFocusedFormCaption()) 
-            elif '' in ui.getFocusedPluginName():
+            elif '' == ui.getFocusedPluginName():
                nihia.printText(0, ui.getFocusedFormCaption())
             else:
                nihia.printText(0, ui.getFocusedPluginName())
