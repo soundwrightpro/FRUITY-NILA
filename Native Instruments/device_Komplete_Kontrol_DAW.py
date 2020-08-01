@@ -75,6 +75,7 @@ import math #  This module provides access to the mathematical functions.
 from sys import platform # This module allows access to the OS version being used. 
                           # As for why it's 'from sys import platform' see https://stackoverflow.com/questions/9439480/from-import-vs-import
 
+
 # The following is a custom Python modules made for use in FL Studio. Written by Hobyst, modified by Duwayne Wright
 
 import nihia # this module loads the abstraction layer of the Native Instruments' Host Integration Agent API for the FL Studio MIDI Scripting API.
@@ -1577,15 +1578,19 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             zeroStr = str(0)
 
-            if int(currentStep) <= 9:
+            if int(currentStep) <= 9 and int(currentStep) >= 0:
                currentTime = str(currentBar+":"+zeroStr+currentStep)
-            else:
+            elif int(currentStep) >= 0:
                currentTime = str(currentBar+":"+currentStep)
+            elif int(currentStep) < 0:
+               currentTime = " "
 
-            if ui.getTimeDispMin() == True:
+            if ui.getTimeDispMin() == True and int(currentStep) >= 0:
                timeDisp = "M:S | "
-            else:
+            elif ui.getTimeDispMin() == False and int(currentStep) >= 0:
                timeDisp = "B:B | "
+            elif int(currentStep) < 0:
+               timmeDisp = " "
 
             nihia.printText(0, (timeDisp+currentTime))
             nihia.printText(1, nihia.message["EMPTY"])
