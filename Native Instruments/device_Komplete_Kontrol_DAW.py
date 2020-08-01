@@ -102,7 +102,7 @@ timedelay = 0.45 #seconds
 
 VERSION_NUMBER = "v5.0.0"
 FL_VERSION = "7.2"
-FL_NAME = "FL Studio 20"
+FL_NAME = ui.getProgTitle()
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
 OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n"
@@ -118,15 +118,15 @@ def VersionCheck(compatibility):
       OS = "Windows"
       
    if FL_NAME in ui.getProgTitle() and FL_VERSION in ui.getVersion():
-      print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS)
+      print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n\n")
       compatibility = True
 
    else:
-      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
-      " will not load on this device. \nPlease update", ui.getProgTitle(), ui.getVersion(), "to", ui.getProgTitle(), FL_VERSION, 
+      print(ui.getProgTitle(), ui.getVersion(5), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
+      " will not load on this device. \nPlease update", FL_NAME, ui.getVersion(4), "to", FL_NAME, FL_VERSION, 
       "or higher.\n\n")
       compatibility = False
-      
+
    return compatibility
 
 
