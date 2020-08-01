@@ -157,8 +157,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          global winSwitch
          global jogMove
 
-
-
          #buttons
          if (event.data1 == nihia.buttons["PLAY"]):
             event.handled = True
@@ -728,32 +726,48 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
-               jogMove = True
+               if ui.isInPopupMenu() == True:
+                  pass
+               else:
+                  jogMove = True
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                ui.jog(-1)
-               jogMove = True
+               if ui.isInPopupMenu() == True:
+                  pass
+               else:
+                  jogMove = True
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
-               ui.right(1)
-               jogMove = True
+               if ui.isInPopupMenu() == True:
+                  ui.right(1)
+               else:
+                  ui.down(1)
+                  jogMove = True
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
-               ui.left(1)
-               jogMove = True
+               if ui.isInPopupMenu() == True:
+                  ui.left(1)
+               else:
+                  ui.up(1)
+                  jogMove = True
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
-               ui.up(1)
-               jogMove = True
+               if ui.isInPopupMenu() == True:
+                  ui.up(1)
+               else:
+                  pass
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
-               ui.down(1)
-               jogMove = True
+               if ui.isInPopupMenu() == True:
+                  ui.down(1)
+               else:
+                  pass
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
@@ -763,13 +777,16 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if ui.isInPopupMenu() == True:
                      ui.enter()
                      ui.setHintMsg("Enter")
-                  else:
+                  else:  
                      transport.globalTransport(midi.FPT_Menu, 90)
                      ui.setHintMsg("Open Menu")
+                     mixer.deselectAll()
+                     mixer.selectTrack(mixer.trackNumber())
+
                else:
                      if ui.isInPopupMenu() == True:
                         ui.enter()
-                        ui.setHintMsg("Enter")   
+                        ui.setHintMsg("Enter") 
 
             if jogMove == True:# mixer highlighting when jog wheel is moved
                mixer.selectTrack(mixer.trackNumber()+1)
