@@ -772,7 +772,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
-
                if doubleclickstatus == True:
                   if ui.isInPopupMenu() == True:
                      ui.enter()
@@ -782,12 +781,10 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      ui.setHintMsg("Open Menu")
                      mixer.deselectAll()
                      mixer.selectTrack(mixer.trackNumber())
-
                else:
                      if ui.isInPopupMenu() == True:
                         ui.enter()
                         ui.setHintMsg("Enter") 
-
             if jogMove == True:# mixer highlighting when jog wheel is moved
                mixer.selectTrack(mixer.trackNumber()+1)
                mixer.selectTrack(mixer.trackNumber()+2)
