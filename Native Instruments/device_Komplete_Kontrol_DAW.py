@@ -785,6 +785,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      if ui.isInPopupMenu() == True:
                         ui.enter()
                         ui.setHintMsg("Enter") 
+                        
             if jogMove == True:# mixer highlighting when jog wheel is moved
                mixer.selectTrack(mixer.trackNumber()+1)
                mixer.selectTrack(mixer.trackNumber()+2)
@@ -809,17 +810,17 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_0A"]):
                   event.handled = True  
                   if event.data2 == left:
-                     x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                     x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                      y = round(x,2)
-                     if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
-                        channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
-                        nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+                     if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
+                        channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
+                        nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
             
                   elif event.data2 == right:
-                     x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                     x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                      y = round(x,2)
-                     channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
-                     nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+                     channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
+                     nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
 
             # PAN CONTROL
 
@@ -827,14 +828,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.knobs["KNOB_0B"]):
                event.handled = True  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 0))
-                  channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
-                  nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                  channels.setChannelPan((channels.selectedChannel() + 0), (x - knobinc) ) # pan values go down
+                  nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
    
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 0))
-                  channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
-                  nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                  channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
+                  nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
 
             if (event.data1 == nihia.knobs["KNOB_1B"] or nihia.knobs["KNOB_2B"] or nihia.knobs["KNOB_3B"] 
             or nihia.knobs["KNOB_4B"] or nihia.knobs["KNOB_5B"] or nihia.knobs["KNOB_6B"] or nihia.knobs["KNOB_7B"] 
@@ -887,137 +888,137 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.knobs["KNOB_0A"]):
              event.handled = True  
              if event.data2 == left:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                 y = round(x,2)
-                if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
-                  channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
-                  nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+                if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
+                  channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
+                  nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
        
              elif event.data2 == right:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                 y = round(x,2)
-                channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
-                nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+                channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
+                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
 
    
             #knob 2
             if (event.data1 == nihia.knobs["KNOB_1A"]):
              event.handled = True  
-             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :  
+             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 1))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 1))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 1) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 1), (y - knobinc) ) # volume values go down
-                     nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 1) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 1), (y - knobinc) ) # volume values go down
+                     nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 1))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 1))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 1), (y + knobinc) ) # volume values go up
-                  nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 1), (y + knobinc) ) # volume values go up
+                  nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1) ,2)))
 
             #knob 3
             if (event.data1 == nihia.knobs["KNOB_2A"]):
              event.handled = True  
-             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :  
+             if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 2))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 2))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 2) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 2), (y - knobinc) ) # volume values go down
-                     nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 2) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 2), (y - knobinc) ) # volume values go down
+                     nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 2))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 2))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 2), (y + knobinc) ) # volume values go up
-                  nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 2), (y + knobinc) ) # volume values go up
+                  nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2) ,2)))
 
             #knob 4
             if (event.data1 == nihia.knobs["KNOB_3A"]):
              event.handled = True  
-             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :  
+             if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 3))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 3))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 3) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 3), (y - knobinc) ) # volume values go down
-                     nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 3) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 3), (y - knobinc) ) # volume values go down
+                     nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 3))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 3))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 3), (y + knobinc) ) # volume values go up
-                  nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 3), (y + knobinc) ) # volume values go up
+                  nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3) ,2)))
 
             #knob 5
             if (event.data1 == nihia.knobs["KNOB_4A"]):
              event.handled = True  
-             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :  
+             if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 4))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 4))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 4) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 4), (y - knobinc) ) # volume values go down
-                     nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 4) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 4), (y - knobinc) ) # volume values go down
+                     nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 4))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 4))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 4), (y + knobinc) ) # volume values go up
-                  nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 4), (y + knobinc) ) # volume values go up
+                  nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4) ,2)))
 
             #knob 6
             if (event.data1 == nihia.knobs["KNOB_5A"]):
              event.handled = True  
-             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :  
+             if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 5))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 5))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 5) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 5), (y - knobinc) ) # volume values go down
-                     nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 5) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 5), (y - knobinc) ) # volume values go down
+                     nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 5))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 5))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 5), (y + knobinc) ) # volume values go up
-                  nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 5), (y + knobinc) ) # volume values go up
+                  nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5) ,2)))
 
             #knob 7
             if (event.data1 == nihia.knobs["KNOB_6A"]):
              event.handled = True  
-             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :  
+             if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 6))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 6))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 6) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 6), (y - knobinc) ) # volume values go down
-                     nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 6) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 6), (y - knobinc) ) # volume values go down
+                     nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 6))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 6))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 6), (y + knobinc) ) # volume values go up
-                  nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 6), (y + knobinc) ) # volume values go up
+                  nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6) ,2)))
 
             #knob 8
             if (event.data1 == nihia.knobs["KNOB_7A"]):
              event.handled = True  
-             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :  
+             if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 7))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 7))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 7) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 7), (y - knobinc) ) # volume values go down
-                     nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 7) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 7), (y - knobinc) ) # volume values go down
+                     nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 7))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 7))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 7), (y + knobinc) ) # volume values go up
-                  nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 7), (y + knobinc) ) # volume values go up
+                  nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7) ,2)))
 
             # PAN CONTROL
 
@@ -1025,113 +1026,113 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.knobs["KNOB_0B"]):
              event.handled = True  
              if event.data2 == left:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+                x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                channels.setChannelPan((channels.selectedChannel() + 0), (x - knobinc) ) # pan values go down
+                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
   
              elif event.data2 == right:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+                x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
+                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
 
             #sknob 2
             if (event.data1 == nihia.knobs["KNOB_1B"]):
              event.handled = True  
-             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :  
+             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 1))
-                  channels.setChannelPan((channels.channelNumber() + 1), (x - knobinc) ) # pan values go down
-                  nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 1))
+                  channels.setChannelPan((channels.selectedChannel() + 1), (x - knobinc) ) # pan values go down
+                  nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
       
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 1))
-                  channels.setChannelPan((channels.channelNumber() + 1), (x + knobinc) ) # pan values go up
-                  nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 1))
+                  channels.setChannelPan((channels.selectedChannel() + 1), (x + knobinc) ) # pan values go up
+                  nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
    
 
             #sknob 3
             if (event.data1 == nihia.knobs["KNOB_2B"]):
              event.handled = True  
-             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :  
+             if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 2))
-                  channels.setChannelPan((channels.channelNumber() + 2), (x - knobinc) ) # pan values go down
-                  nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 2))
+                  channels.setChannelPan((channels.selectedChannel() + 2), (x - knobinc) ) # pan values go down
+                  nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 2))
-                  channels.setChannelPan((channels.channelNumber() + 2), (x + knobinc) ) # pan values go up
-                  nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)   
+                  x = (channels.getChannelPan(channels.selectedChannel() + 2))
+                  channels.setChannelPan((channels.selectedChannel() + 2), (x + knobinc) ) # pan values go up
+                  nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)   
 
             #sknob 4
             if (event.data1 == nihia.knobs["KNOB_3B"]):
              event.handled = True  
-             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :  
+             if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 3))
-                  channels.setChannelPan((channels.channelNumber() + 3), (x - knobinc) ) # pan values go down
-                  nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 3))
+                  channels.setChannelPan((channels.selectedChannel() + 3), (x - knobinc) ) # pan values go down
+                  nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 3))
-                  channels.setChannelPan((channels.channelNumber() + 3), (x + knobinc) ) # pan values go up
-                  nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)  
+                  x = (channels.getChannelPan(channels.selectedChannel() + 3))
+                  channels.setChannelPan((channels.selectedChannel() + 3), (x + knobinc) ) # pan values go up
+                  nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)  
 
             #sknob 5
             if (event.data1 == nihia.knobs["KNOB_4B"]):
              event.handled = True  
-             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :  
+             if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 4))
-                  channels.setChannelPan((channels.channelNumber() + 4), (x - knobinc) ) # pan values go down
-                  nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 4))
+                  channels.setChannelPan((channels.selectedChannel() + 4), (x - knobinc) ) # pan values go down
+                  nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 4))
-                  channels.setChannelPan((channels.channelNumber() + 4), (x + knobinc) ) # pan values go up
-                  nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)  
+                  x = (channels.getChannelPan(channels.selectedChannel() + 4))
+                  channels.setChannelPan((channels.selectedChannel() + 4), (x + knobinc) ) # pan values go up
+                  nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)  
 
             #sknob 6
             if (event.data1 == nihia.knobs["KNOB_5B"]):
              event.handled = True  
-             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :  
+             if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :  
                if event.data2 == left:
-                   x = (channels.getChannelPan(channels.channelNumber() + 5))
-                   channels.setChannelPan((channels.channelNumber() + 5), (x - knobinc) ) # pan values go down
-                   nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
+                   x = (channels.getChannelPan(channels.selectedChannel() + 5))
+                   channels.setChannelPan((channels.selectedChannel() + 5), (x - knobinc) ) # pan values go down
+                   nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 5))
-                  channels.setChannelPan((channels.channelNumber() + 5), (x + knobinc) ) # pan values go up
-                  nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 5))
+                  channels.setChannelPan((channels.selectedChannel() + 5), (x + knobinc) ) # pan values go up
+                  nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
 
             #sknob 7
             if (event.data1 == nihia.knobs["KNOB_6B"]):
              event.handled = True  
-             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :  
+             if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 6))
-                  channels.setChannelPan((channels.channelNumber() + 6), (x - knobinc) ) # pan values go down
-                  nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 6))
+                  channels.setChannelPan((channels.selectedChannel() + 6), (x - knobinc) ) # pan values go down
+                  nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 6))
-                  channels.setChannelPan((channels.channelNumber() + 6), (x + knobinc) ) # pan values go up
-                  nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 6))
+                  channels.setChannelPan((channels.selectedChannel() + 6), (x + knobinc) ) # pan values go up
+                  nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
 
             #sknob 8
             if (event.data1 == nihia.knobs["KNOB_7B"]):
              event.handled = True  
-             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :  
+             if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 7))
-                  channels.setChannelPan((channels.channelNumber() + 7), (x - knobinc) ) # pan values go down
-                  nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 7))
+                  channels.setChannelPan((channels.selectedChannel() + 7), (x - knobinc) ) # pan values go down
+                  nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 7))
-                  channels.setChannelPan((channels.channelNumber() + 7), (x + knobinc) ) # pan values go up
-                  nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 7))
+                  channels.setChannelPan((channels.selectedChannel() + 7), (x + knobinc) ) # pan values go up
+                  nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
 
 
             #4D controller # for channel rack
@@ -1185,7 +1186,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      ui.setHintMsg("Enter")
                   else:
                      pass
-                     #channels.showCSForm(channels.channelNumber())
+
 
 
          elif ui.getFocused(2) == True: # playlist:
@@ -1741,6 +1742,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(3, nihia.message["EMPTY"])
             nihia.printText(4, nihia.message["EMPTY"])
             nihia.printText(5, nihia.message["EMPTY"])
+            nihia.printText(6, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
 
             if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
@@ -1770,6 +1772,28 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
                nihia.printVol(7, 104)
                nihia.printPan(7, 104)
+            
+
+            nihia.printVol(1, 104)
+            nihia.printPan(1, 104)
+
+            nihia.printVol(2, 104)
+            nihia.printPan(2, 104)
+
+            nihia.printVol(3, 104)
+            nihia.printPan(3, 104)
+
+            nihia.printVol(4, 104)
+            nihia.printPan(4, 104)
+
+            nihia.printVol(5, 104)
+            nihia.printPan(5, 104)
+
+            nihia.printVol(6, 104)
+            nihia.printPan(6, 104)
+
+            nihia.printVol(7, 104)
+            nihia.printPan(7, 104)
 
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
