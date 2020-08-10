@@ -81,6 +81,14 @@ from sys import platform # This module allows access to the OS version being use
 import nihia # this module loads the abstraction layer of the Native Instruments' Host Integration Agent API for the FL Studio MIDI Scripting API.
              # more info on this found here: https://github.com/hobyst/flmidi-nihia
 
+if sys.platform == "win32":
+    print("Windows OS detected. Imported _thread module.")
+    import _thread
+
+if sys.platform == "darwin":
+    print("macOS detected. Imported _dummy_thread module.")
+    import lib._dummy_thread as _thread
+
 
 # For data2, up down right left values for knobs and 4d controller
 down = right = 1
@@ -797,8 +805,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                jogMove = False #resets jog wheel tracker
             else:
                pass
-
-
 
 
          elif ui.getFocused(5) == True: # Plugin
