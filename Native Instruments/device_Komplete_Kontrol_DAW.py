@@ -82,13 +82,10 @@ import nihia # this module loads the abstraction layer of the Native Instruments
              # more info on this found here: https://github.com/hobyst/flmidi-nihia
 
 if sys.platform == "win32":
-    print("Windows OS detected. Imported _thread module.")
     import _thread
 
 if sys.platform == "darwin":
-    print("macOS detected. Imported _dummy_thread module.")
     import lib._dummy_thread as _thread
-
 
 # For data2, up down right left values for knobs and 4d controller
 down = right = 1
@@ -143,11 +140,14 @@ def TranslateVolume(Value):
 
    return (math.exp(Value * math.log(11)) - 1) * 0.1   
 
+
 def VolTodB(Value): #works off of the db scale explained here: https://www.image-line.com/support/flstudio_online_manual/html/mixer_dB.htm
    """Function that converts % valume into db"""
    
    Value = TranslateVolume(Value)
    return round(math.log10(Value) * 20, 1)
+
+
 
 class KeyKompleteKontrolBase(): #used a class to sheild against crashes
      
@@ -159,7 +159,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
 
-     def OnMidiMsg(self, event): #listens for button or knob activity
+     def TOnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
          global winSwitch
@@ -1364,7 +1364,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
  
  
-     def UpdateLEDs(self): #controls all nights located within buttons
+     def TUpdateLEDs(self): #controls all nights located within buttons
          """Function for device light communication (excluding OLED screen)"""
 
          if device.isAssigned():
@@ -1423,7 +1423,9 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   nihia.dataOut(nihia.buttons["PLAY"], off)
 
 
-     def UpdateOLED(self): #controls OLED screen messages
+
+
+     def TUpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
 
         if ui.getFocused(0) == True: #mixer volume control
@@ -1802,16 +1804,15 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printPan(7, 104)
 
 
-     def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
+     def TOnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
 
-
-     def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of the project
+     def TOnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
        
-       Self.UpdateOLED()
+       self.UpdateOLED()
 
        if transport.isRecording() == 0:
           if Value == 1:
@@ -1830,7 +1831,29 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
           elif Value == 0:
              nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
 
-             
+     def TOnIdle(self):
+        self.UpdateLEDs(), self.UpdateOLED()      
+
+        
+     def OnMidiMsg(self, event):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event))
+
+     def UpdateLEDs(self):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
+
+     def UpdateOLED(self):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
+
+     def OnRefresh(self, flags):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
+
+     def OnUpdateBeatIndicator(self, Value):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
+
+     def OnIdle(self):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TOnIdle, (self,))
+
+
 
 KompleteKontrolBase = KeyKompleteKontrolBase()
 
@@ -1857,6 +1880,12 @@ def OnMidiMsg(event):
       KompleteKontrolBase.OnMidiMsg(event)
    except:
      pass
+
+def OnIdle():
+   try:
+      KompleteKontrolBase.OnIdle()
+   except:
+      pass
 
 def OnDeInit():
    if ui.isClosing() == True:
