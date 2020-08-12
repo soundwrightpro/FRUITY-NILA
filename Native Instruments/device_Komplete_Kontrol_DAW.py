@@ -1376,12 +1376,16 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
               elif a == on: #playing
                   nihia.dataOut(nihia.buttons["STOP"], off) #stop off
 
-            for b in [transport.isRecording()]:
-               if b == off: #not recording
-                  nihia.dataOut(nihia.buttons["REC"], off)
 
-               elif b == on: #recording
-                  nihia.dataOut(nihia.buttons["REC"], on)
+            if transport.isPlaying() == True:
+               pass
+            else:
+               for b in [transport.isRecording()]:
+                  if b == off: #not recording
+                     nihia.dataOut(nihia.buttons["REC"], off)
+
+                  elif b == on: #recording
+                     nihia.dataOut(nihia.buttons["REC"], on)
 
             for c in [transport.getLoopMode()]:
                if c == off: #loop mood
