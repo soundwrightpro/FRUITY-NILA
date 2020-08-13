@@ -81,11 +81,11 @@ from sys import platform # This module allows access to the OS version being use
 import nihia # this module loads the abstraction layer of the Native Instruments' Host Integration Agent API for the FL Studio MIDI Scripting API.
              # more info on this found here: https://github.com/hobyst/flmidi-nihia
 
-#if sys.platform == "win32":
-#    import _thread
+if sys.platform == "win32":
+    import _thread
 
-#if sys.platform == "darwin":
-import lib._dummy_thread as _thread
+if sys.platform == "darwin":
+    import lib._dummy_thread as _thread
 
 # For data2, up down right left values for knobs and 4d controller
 down = right = 1
@@ -159,7 +159,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
 
-     def TOnMidiMsg(self, event): #listens for button or knob activity
+     def OnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
          global winSwitch
@@ -1839,8 +1839,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
         self.UpdateLEDs(), self.UpdateOLED()      
 
 
-     def OnMidiMsg(self, event):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event))
+     #def OnMidiMsg(self, event):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event))
 
      def UpdateLEDs(self):
          _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
