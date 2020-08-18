@@ -87,6 +87,8 @@ if sys.platform == "win32":
 if sys.platform == "darwin":
     import lib._dummy_thread as _thread
 
+
+
 # For data2, up down right left values for knobs and 4d controller
 down = right = 1
 up = left = 127
@@ -1364,7 +1366,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
  
  
-     def TUpdateLEDs(self): #controls all nights located within buttons
+     def UpdateLEDs(self): #controls all nights located within buttons
          """Function for device light communication (excluding OLED screen)"""
 
          if device.isAssigned():
@@ -1429,7 +1431,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
 
-     def TUpdateOLED(self): #controls OLED screen messages
+     def UpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
 
         if ui.getFocused(0) == True: #mixer volume control
@@ -1808,23 +1810,26 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printPan(7, 104)
 
 
-     def TOnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
+     def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
 
-     def TOnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
+     def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
        
-       self.UpdateOLED()
+       #self.UpdateOLED()
 
        if transport.isRecording() == 0:
           if Value == 1:
              nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
+
           elif Value == 2:
              nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
+
           elif Value == 0:
              nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim
+
 
        elif transport.isRecording() == 1:
           nihia.dataOut(nihia.buttons["PLAY"], on)
@@ -1835,27 +1840,27 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
           elif Value == 0:
              nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
 
-     def TOnIdle(self):
+     def OnIdle(self):
         self.UpdateLEDs(), self.UpdateOLED()      
 
 
      #def OnMidiMsg(self, event):
      #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
 
-     def UpdateLEDs(self):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
+     #def UpdateLEDs(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
 
-     def UpdateOLED(self):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
+     #def UpdateOLED(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
 
-     def OnRefresh(self, flags):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
+     #def OnRefresh(self, flags):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
 
-     def OnUpdateBeatIndicator(self, Value):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
+     #def OnUpdateBeatIndicator(self, Value):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
 
-     def OnIdle(self):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TOnIdle, (self,))
+     #def OnIdle(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnIdle, (self,))
 
 
 KompleteKontrolBase = KeyKompleteKontrolBase()
