@@ -36,7 +36,7 @@ import playlist
 import midi
 import utils
 
-import device_Komplete_Kontrol_DAW
+import device_Komplete_Kontrol_DAW as kk
 
 # Method to make talking to the device less annoying
 # All the messages the device is expecting have a structure of "BF XX XX"
@@ -109,7 +109,8 @@ touch_strips = {
 
 message = {
    "EMPTY": " ",
-   "CHANNEL_RACK": "C: "
+   "CHANNEL_RACK": "C| ",
+   "BROWSER": "B| "
 }
 
 #on/off values
@@ -196,7 +197,7 @@ def printVol(trkn, vol):
          #   lettersh.append(ord(lettersj[m]))
          #   m += 1 #end of volume in percentage 
 
-         volk = '%s dB' % device_Komplete_Kontrol_DAW.VolTodB(vol) # volume displayed in dB from here
+         volk = '%s dB' % kk.VolTodB(vol) # volume displayed in dB from here
          letters = list(volk)
          while n < len(volk):
             lettersh.append(ord(letters[n]))

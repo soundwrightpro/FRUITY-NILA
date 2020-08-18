@@ -1,4 +1,4 @@
-#	name=Komplete Kontrol DAW
+# name=Komplete Kontrol DAW
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
 # url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
 
@@ -7,9 +7,10 @@
 
 # FL Studio Forum
 # https://forum.image-line.com/viewtopic.php?f=1994&t=225473
-# script by Duwayne "Sound" Wright www.soundwrightpro.com and additional code from Hobyst
+# script by Duwayne "Sound" Wright additional code from Hobyst (absolute legend)
+# find me on the forums as 'soundwrightpro'
 
-# Have a question? Want to be a beta tester? Have a request? Want to say hi? Join the FL Studio NI on Discord!
+# Join the FL Studio NI on Discord if you need help or just want to say hi.
 # https://discord.gg/7FYrJEq
 
 # MIT License
@@ -33,25 +34,62 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import channels
-import mixer
-import device
-import transport
-import general
-import playlist
-import ui
 
-import midi
-import utils
-import time
-import sys
-import binascii
-import math
+# This import section is loading the back-end code required to execute the script. 
+# The following are the custom FL Studio modules not found outside FL Studio's Python enviorment. 
 
-import nihia
+import channels # This module allows you to control FL Studio Channels
+
+import mixer # This module allows you to control FL Studio Mixer. NOTE: Track number 0 is always the Master.
+
+import device # This module will handle MIDI devices connected to the FL Studio MIDI interface. 
+              # You send messages to output interface, retrieve linked control values... etc). 
+              # MIDI scripts, assigned to an input interface, can be mapped (linked) to an Output interface via the Port Number. 
+              # With mapped (linked) output interfaces, scripts can send midi messages to output interfaces by using one of the midiOut*** messages.
+
+import transport # This module handles FL Studio Transport (Play, Stop, Pause & Record)
+
+import general # This module handles general FL Studio functions
+
+import playlist # This module allows you to control FL Studio Playlist
+
+import ui # This module allows you to control FL Studio User interface (eg. scrolling, moving around, zoom)
+
+import arrangement as arrange # This module allows you to control FL Studio Playlist Arrangements. I've changed it to arrange because I didn't want to 
+                              # write out arrangement every time.
+
+# The following are the standard Python modules found outside FL Studio's Python enviorment. 
+
+import midi # This module allows for simple sending and receiving of MIDI messages from your device
+
+import utils # Thie module is a collection of small Python functions and classes which make common patterns shorter and easier
+
+import time # This module provides various time-related functions
+
+import sys # This module provides access to some variables used or maintained by the interpreter and to functions that interact strongly with the interpreter.
+
+import binascii # This module contains a number of methods to convert between binary and various ASCII-encoded binary representations.
+
+import math #  This module provides access to the mathematical functions.
+
+from sys import platform # This module allows access to the OS version being used. 
+                          # As for why it's 'from sys import platform' see https://stackoverflow.com/questions/9439480/from-import-vs-import
 
 
-#data2, up down right left values for knobs and 4d controller
+# The following is a custom Python modules made for use in FL Studio. Written by Hobyst, modified by Duwayne Wright
+
+import nihia # this module loads the abstraction layer of the Native Instruments' Host Integration Agent API for the FL Studio MIDI Scripting API.
+             # more info on this found here: https://github.com/hobyst/flmidi-nihia
+
+if sys.platform == "win32":
+    import _thread
+
+if sys.platform == "darwin":
+    import lib._dummy_thread as _thread
+
+
+
+# For data2, up down right left values for knobs and 4d controller
 down = right = 1
 up = left = 127
 
@@ -62,19 +100,48 @@ knobinc = 0.01
 on = 1
 off = 0
 
+winSwitch = 0
+jogMove = True
+
 #time delay for messages on screen
 timedelay = 0.45 #seconds
 
 
-VERSION_NUMBER = "v4.9.1"
+VERSION_NUMBER = "v5.0.0"
+FL_VERSION = "7.2"
+FL_NAME = ui.getProgTitle()
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Goodbye"
-OUTPUT_MESSAGE = "Komplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n\nJoin the FL Studio NI on Discord!\nhttps://discord.gg/7FYrJEq"
+OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n"
+
+def VersionCheck(compatibility):
+   """Called to check user's FL Studio version to see if this script can run."""
+   OS = ""
+   print(OUTPUT_MESSAGE)
+
+   if platform == "darwin":
+      OS = "macOS"
+   elif platform == "win32":
+      OS = "Windows"
+      
+   if FL_NAME in ui.getProgTitle() and FL_VERSION in ui.getVersion():
+      print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n\n")
+      compatibility = True
+
+   else:
+      print(ui.getProgTitle(), ui.getVersion(5), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
+      " will not load on this device. \nPlease update", FL_NAME, ui.getVersion(4), "to", FL_NAME, FL_VERSION, 
+      "or higher.\n\n")
+      compatibility = False
+
+   return compatibility
+
 
 def TranslateVolume(Value):
    """Function that converts values from device into FL Studio comptable values for volume conversion"""
 
    return (math.exp(Value * math.log(11)) - 1) * 0.1   
+
 
 def VolTodB(Value): #works off of the db scale explained here: https://www.image-line.com/support/flstudio_online_manual/html/mixer_dB.htm
    """Function that converts % valume into db"""
@@ -82,21 +149,23 @@ def VolTodB(Value): #works off of the db scale explained here: https://www.image
    Value = TranslateVolume(Value)
    return round(math.log10(Value) * 20, 1)
 
+
+
 class KeyKompleteKontrolBase(): #used a class to sheild against crashes
      
      def OnInit(self):
       """ Called when the script has been started.""" 
 
-      #initializing NI Host Integration Agent API for FL Studio by Hobyst 
+      #initializing NI Host Integration Agent API for FL Studio by Hobyst
       nihia.initiate() 
-
-      print (OUTPUT_MESSAGE)
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
 
-     def OnMidiIn(self, event): #listens for button or knob activity
+     def OnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
+         global winSwitch
+         global jogMove
 
          #buttons
          if (event.data1 == nihia.buttons["PLAY"]):
@@ -267,11 +336,18 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if (event.data1 == nihia.buttons["CLEAR"]):
             event.handled = True
-            ui.escape() #escape key
-            ui.setHintMsg("esc")
-            nihia.printText(0, "esc")
-            time.sleep(timedelay)
 
+            doubleclickstatus = device.isDoubleClick(nihia.buttons["CLEAR"])
+
+            if doubleclickstatus == True:
+               transport.globalTransport(midi.FPT_F12, 2, 15)
+               ui.setHintMsg("Clear All Windows")
+               nihia.printText(0, "Clear All")
+               time.sleep(timedelay)
+            else:
+               ui.escape() #escape key
+               ui.setHintMsg("esc")
+   
 
          if (event.data1 == nihia.buttons["UNDO"]):
             event.handled = True
@@ -289,11 +365,45 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if (event.data1 == nihia.buttons["SHIFT+ENCODER_BUTTON"]):
             event.handled = True
-            #ui.nextWindow()
-            transport.globalTransport(midi.FPT_F8, 67)
-            ui.setHintMsg("Plugin Picker")
-            nihia.printText(0, "Plugin Picker")
-            time.sleep(timedelay)
+            
+            doubleclickstatus = device.isDoubleClick(nihia.buttons["SHIFT+ENCODER_BUTTON"])
+
+            if doubleclickstatus == True:
+               transport.globalTransport(midi.FPT_F8, 67)
+               ui.setHintMsg("Plugin Picker")
+               nihia.printText(0, "Plugin Picker")
+               time.sleep(timedelay)
+            else:
+
+               if winSwitch == 0:
+                  ui.showWindow(1)
+                  winSwitch += 1
+                  ui.setHintMsg("Switch to Channel Rack")
+
+               elif winSwitch == 1:
+                  ui.showWindow(0)
+                  winSwitch += 1
+                  ui.setHintMsg("Switch to Mixer")
+
+               elif winSwitch == 2:
+                  ui.showWindow(2)
+                  winSwitch += 1
+                  ui.setHintMsg("Switch to Playlist")
+
+               elif winSwitch == 3:
+                  ui.showWindow(4)
+                  ui.setHintMsg("Switch to Browser")
+                  if ui.getVisible(3) == True:
+                     winSwitch += 1
+                  else:
+                     winSwitch = 0
+
+               elif winSwitch == 4:
+                     ui.showWindow(3)
+                     ui.setHintMsg("Switch to Piano Roll")
+                     winSwitch = 0
+                     
+
 
          #mute and solo for mixer and channel rack
          if (event.data1 == nihia.buttons["MUTE"]):
@@ -325,14 +435,16 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   ui.setHintMsg("Solo")
                
 
-
          #8 volume knobs for mixer & channel rack, 8 tracks at a time
 
          if ui.getFocused(0) == 1: #mixer control
 
+
+
             # VOLUME CONTROL
 
             xy = 1.25
+                           
 
             #knob 0
             if mixer.trackNumber() <= 126:
@@ -617,15 +729,135 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(7, 104)
 
 
+
+
             #4D controller # for mixer
       
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
+               if ui.isInPopupMenu() == True:
+                  pass
+               else:
+                  jogMove = True
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                ui.jog(-1)
+               if ui.isInPopupMenu() == True:
+                  pass
+               else:
+                  jogMove = True
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               if ui.isInPopupMenu() == True:
+                  ui.right(1)
+               else:
+                  ui.down(1)
+                  jogMove = True
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               if ui.isInPopupMenu() == True:
+                  ui.left(1)
+               else:
+                  ui.up(1)
+                  jogMove = True
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               if ui.isInPopupMenu() == True:
+                  ui.up(1)
+               else:
+                  pass
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               if ui.isInPopupMenu() == True:
+                  ui.down(1)
+               else:
+                  pass
+
+            if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
+               event.handled = True
+               doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
+               if doubleclickstatus == True:
+                  if ui.isInPopupMenu() == True:
+                     ui.enter()
+                     ui.setHintMsg("Enter")
+                  else:  
+                     transport.globalTransport(midi.FPT_Menu, 90)
+                     ui.setHintMsg("Open Menu")
+                     mixer.deselectAll()
+                     mixer.selectTrack(mixer.trackNumber())
+               else:
+                     if ui.isInPopupMenu() == True:
+                        ui.enter()
+                        ui.setHintMsg("Enter") 
+                        
+            if jogMove == True:# mixer highlighting when jog wheel is moved
+               mixer.selectTrack(mixer.trackNumber()+1)
+               mixer.selectTrack(mixer.trackNumber()+2)
+               mixer.selectTrack(mixer.trackNumber()+3)
+               mixer.selectTrack(mixer.trackNumber()+4)
+               mixer.selectTrack(mixer.trackNumber()+5)
+               mixer.selectTrack(mixer.trackNumber()+6)
+               mixer.selectTrack(mixer.trackNumber()+7)
+               jogMove = False #resets jog wheel tracker
+            else:
+               pass
+
+
+         elif ui.getFocused(5) == True: # Plugin
+
+            # VOLUME CONTROL
+
+            #knob 1
+            if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
+               if (event.data1 == nihia.knobs["KNOB_0A"]):
+                  event.handled = True  
+                  if event.data2 == left:
+                     x = (channels.getChannelVolume(channels.selectedChannel() + 0))
+                     y = round(x,2)
+                     if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
+                        channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
+                        nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+            
+                  elif event.data2 == right:
+                     x = (channels.getChannelVolume(channels.selectedChannel() + 0))
+                     y = round(x,2)
+                     channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
+                     nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+
+            # PAN CONTROL
+
+            #sknob 1
+            if (event.data1 == nihia.knobs["KNOB_0B"]):
+               event.handled = True  
+               if event.data2 == left:
+                  x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                  channels.setChannelPan((channels.selectedChannel() + 0), (x - knobinc) ) # pan values go down
+                  nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
+   
+               elif event.data2 == right:
+                  x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                  channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
+                  nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
+
+            if (event.data1 == nihia.knobs["KNOB_1B"] or nihia.knobs["KNOB_2B"] or nihia.knobs["KNOB_3B"] 
+            or nihia.knobs["KNOB_4B"] or nihia.knobs["KNOB_5B"] or nihia.knobs["KNOB_6B"] or nihia.knobs["KNOB_7B"] 
+            or nihia.knobs["KNOB_1A"] or nihia.knobs["KNOB_2A"] or nihia.knobs["KNOB_3A"] or nihia.knobs["KNOB_4A"] 
+            or nihia.knobs["KNOB_5A"] or nihia.knobs["KNOB_6A"] or nihia.knobs["KNOB_7A"] ):
+               event.handled = True  
+
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.down(1)
+
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.up(1)
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
@@ -644,53 +876,16 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                ui.down(1)
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
+               event.handled = True
+
+            if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
+               event.handled = True
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
-
                if doubleclickstatus == True:
-                  if ui.isInPopupMenu() == True:
-                     ui.enter()
-                     ui.setHintMsg("Enter")
-                  else:
-                     event.handled = True
-                     transport.globalTransport(midi.FPT_Menu, 90)
-                     ui.setHintMsg("Open Menu")
+                  ui.enter()
+                  ui.setHintMsg("enter")
                else:
-                  pass    
-
-         elif ui.getFocused(5) == True: # Plugin
-
-            # VOLUME CONTROL
-
-            #knob 1
-            if (event.data1 == nihia.knobs["KNOB_0A"]):
-             event.handled = True  
-             if event.data2 == left:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
-                y = round(x,2)
-                if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
-                  channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
-                  nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
-       
-             elif event.data2 == right:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
-                y = round(x,2)
-                channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
-                nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
-
-            # PAN CONTROL
-
-            #sknob 1
-            if (event.data1 == nihia.knobs["KNOB_0B"]):
-             event.handled = True  
-             if event.data2 == left:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
-  
-             elif event.data2 == right:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+                  pass
 
 
          elif ui.getFocused(1) == 1: # channel rack
@@ -701,137 +896,137 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.knobs["KNOB_0A"]):
              event.handled = True  
              if event.data2 == left:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                 y = round(x,2)
-                if channels.getChannelVolume(channels.channelNumber() + 0) != 0 :
-                  channels.setChannelVolume((channels.channelNumber() + 0), (y - knobinc) ) # volume values go down
-                  nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+                if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
+                  channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
+                  nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
        
              elif event.data2 == right:
-                x = (channels.getChannelVolume(channels.channelNumber() + 0))
+                x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                 y = round(x,2)
-                channels.setChannelVolume((channels.channelNumber() + 0), (y + knobinc) ) # volume values go up
-                nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0) ,2)))
+                channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
+                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
 
    
             #knob 2
             if (event.data1 == nihia.knobs["KNOB_1A"]):
              event.handled = True  
-             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :  
+             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 1))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 1))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 1) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 1), (y - knobinc) ) # volume values go down
-                     nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 1) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 1), (y - knobinc) ) # volume values go down
+                     nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 1))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 1))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 1), (y + knobinc) ) # volume values go up
-                  nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 1), (y + knobinc) ) # volume values go up
+                  nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1) ,2)))
 
             #knob 3
             if (event.data1 == nihia.knobs["KNOB_2A"]):
              event.handled = True  
-             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :  
+             if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 2))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 2))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 2) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 2), (y - knobinc) ) # volume values go down
-                     nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 2) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 2), (y - knobinc) ) # volume values go down
+                     nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 2))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 2))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 2), (y + knobinc) ) # volume values go up
-                  nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 2), (y + knobinc) ) # volume values go up
+                  nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2) ,2)))
 
             #knob 4
             if (event.data1 == nihia.knobs["KNOB_3A"]):
              event.handled = True  
-             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :  
+             if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 3))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 3))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 3) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 3), (y - knobinc) ) # volume values go down
-                     nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 3) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 3), (y - knobinc) ) # volume values go down
+                     nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 3))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 3))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 3), (y + knobinc) ) # volume values go up
-                  nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 3), (y + knobinc) ) # volume values go up
+                  nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3) ,2)))
 
             #knob 5
             if (event.data1 == nihia.knobs["KNOB_4A"]):
              event.handled = True  
-             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :  
+             if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 4))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 4))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 4) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 4), (y - knobinc) ) # volume values go down
-                     nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 4) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 4), (y - knobinc) ) # volume values go down
+                     nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 4))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 4))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 4), (y + knobinc) ) # volume values go up
-                  nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 4), (y + knobinc) ) # volume values go up
+                  nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4) ,2)))
 
             #knob 6
             if (event.data1 == nihia.knobs["KNOB_5A"]):
              event.handled = True  
-             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :  
+             if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 5))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 5))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 5) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 5), (y - knobinc) ) # volume values go down
-                     nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 5) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 5), (y - knobinc) ) # volume values go down
+                     nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 5))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 5))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 5), (y + knobinc) ) # volume values go up
-                  nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 5), (y + knobinc) ) # volume values go up
+                  nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5) ,2)))
 
             #knob 7
             if (event.data1 == nihia.knobs["KNOB_6A"]):
              event.handled = True  
-             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :  
+             if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 6))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 6))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 6) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 6), (y - knobinc) ) # volume values go down
-                     nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 6) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 6), (y - knobinc) ) # volume values go down
+                     nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 6))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 6))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 6), (y + knobinc) ) # volume values go up
-                  nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 6), (y + knobinc) ) # volume values go up
+                  nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6) ,2)))
 
             #knob 8
             if (event.data1 == nihia.knobs["KNOB_7A"]):
              event.handled = True  
-             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :  
+             if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :  
                if event.data2 == left:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 7))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 7))
                   y = round(x,2)
-                  if channels.getChannelVolume(channels.channelNumber() + 7) != 0 :
-                     channels.setChannelVolume((channels.channelNumber() + 7), (y - knobinc) ) # volume values go down
-                     nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) ,2)))
+                  if channels.getChannelVolume(channels.selectedChannel() + 7) != 0 :
+                     channels.setChannelVolume((channels.selectedChannel() + 7), (y - knobinc) ) # volume values go down
+                     nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7) ,2)))
                 
                elif event.data2 == right:
-                  x = (channels.getChannelVolume(channels.channelNumber() + 7))
+                  x = (channels.getChannelVolume(channels.selectedChannel() + 7))
                   y = round(x,2)
-                  channels.setChannelVolume((channels.channelNumber() + 7), (y + knobinc) ) # volume values go up
-                  nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7) ,2)))
+                  channels.setChannelVolume((channels.selectedChannel() + 7), (y + knobinc) ) # volume values go up
+                  nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7) ,2)))
 
             # PAN CONTROL
 
@@ -839,113 +1034,113 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.knobs["KNOB_0B"]):
              event.handled = True  
              if event.data2 == left:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x - knobinc) ) # pan values go down
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+                x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                channels.setChannelPan((channels.selectedChannel() + 0), (x - knobinc) ) # pan values go down
+                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
   
              elif event.data2 == right:
-                x = (channels.getChannelPan(channels.channelNumber() + 0))
-                channels.setChannelPan((channels.channelNumber() + 0), (x + knobinc) ) # pan values go up
-                nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+                x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
+                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
 
             #sknob 2
             if (event.data1 == nihia.knobs["KNOB_1B"]):
              event.handled = True  
-             if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :  
+             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 1))
-                  channels.setChannelPan((channels.channelNumber() + 1), (x - knobinc) ) # pan values go down
-                  nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 1))
+                  channels.setChannelPan((channels.selectedChannel() + 1), (x - knobinc) ) # pan values go down
+                  nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
       
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 1))
-                  channels.setChannelPan((channels.channelNumber() + 1), (x + knobinc) ) # pan values go up
-                  nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 1))
+                  channels.setChannelPan((channels.selectedChannel() + 1), (x + knobinc) ) # pan values go up
+                  nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
    
 
             #sknob 3
             if (event.data1 == nihia.knobs["KNOB_2B"]):
              event.handled = True  
-             if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :  
+             if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 2))
-                  channels.setChannelPan((channels.channelNumber() + 2), (x - knobinc) ) # pan values go down
-                  nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 2))
+                  channels.setChannelPan((channels.selectedChannel() + 2), (x - knobinc) ) # pan values go down
+                  nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 2))
-                  channels.setChannelPan((channels.channelNumber() + 2), (x + knobinc) ) # pan values go up
-                  nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)   
+                  x = (channels.getChannelPan(channels.selectedChannel() + 2))
+                  channels.setChannelPan((channels.selectedChannel() + 2), (x + knobinc) ) # pan values go up
+                  nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)   
 
             #sknob 4
             if (event.data1 == nihia.knobs["KNOB_3B"]):
              event.handled = True  
-             if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :  
+             if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 3))
-                  channels.setChannelPan((channels.channelNumber() + 3), (x - knobinc) ) # pan values go down
-                  nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 3))
+                  channels.setChannelPan((channels.selectedChannel() + 3), (x - knobinc) ) # pan values go down
+                  nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 3))
-                  channels.setChannelPan((channels.channelNumber() + 3), (x + knobinc) ) # pan values go up
-                  nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)  
+                  x = (channels.getChannelPan(channels.selectedChannel() + 3))
+                  channels.setChannelPan((channels.selectedChannel() + 3), (x + knobinc) ) # pan values go up
+                  nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)  
 
             #sknob 5
             if (event.data1 == nihia.knobs["KNOB_4B"]):
              event.handled = True  
-             if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :  
+             if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 4))
-                  channels.setChannelPan((channels.channelNumber() + 4), (x - knobinc) ) # pan values go down
-                  nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 4))
+                  channels.setChannelPan((channels.selectedChannel() + 4), (x - knobinc) ) # pan values go down
+                  nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 4))
-                  channels.setChannelPan((channels.channelNumber() + 4), (x + knobinc) ) # pan values go up
-                  nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)  
+                  x = (channels.getChannelPan(channels.selectedChannel() + 4))
+                  channels.setChannelPan((channels.selectedChannel() + 4), (x + knobinc) ) # pan values go up
+                  nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)  
 
             #sknob 6
             if (event.data1 == nihia.knobs["KNOB_5B"]):
              event.handled = True  
-             if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :  
+             if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :  
                if event.data2 == left:
-                   x = (channels.getChannelPan(channels.channelNumber() + 5))
-                   channels.setChannelPan((channels.channelNumber() + 5), (x - knobinc) ) # pan values go down
-                   nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
+                   x = (channels.getChannelPan(channels.selectedChannel() + 5))
+                   channels.setChannelPan((channels.selectedChannel() + 5), (x - knobinc) ) # pan values go down
+                   nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 5))
-                  channels.setChannelPan((channels.channelNumber() + 5), (x + knobinc) ) # pan values go up
-                  nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 5))
+                  channels.setChannelPan((channels.selectedChannel() + 5), (x + knobinc) ) # pan values go up
+                  nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
 
             #sknob 7
             if (event.data1 == nihia.knobs["KNOB_6B"]):
              event.handled = True  
-             if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :  
+             if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 6))
-                  channels.setChannelPan((channels.channelNumber() + 6), (x - knobinc) ) # pan values go down
-                  nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 6))
+                  channels.setChannelPan((channels.selectedChannel() + 6), (x - knobinc) ) # pan values go down
+                  nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 6))
-                  channels.setChannelPan((channels.channelNumber() + 6), (x + knobinc) ) # pan values go up
-                  nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 6))
+                  channels.setChannelPan((channels.selectedChannel() + 6), (x + knobinc) ) # pan values go up
+                  nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
 
             #sknob 8
             if (event.data1 == nihia.knobs["KNOB_7B"]):
              event.handled = True  
-             if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :  
+             if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :  
                if event.data2 == left:
-                  x = (channels.getChannelPan(channels.channelNumber() + 7))
-                  channels.setChannelPan((channels.channelNumber() + 7), (x - knobinc) ) # pan values go down
-                  nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 7))
+                  channels.setChannelPan((channels.selectedChannel() + 7), (x - knobinc) ) # pan values go down
+                  nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
                 
                elif event.data2 == right:
-                  x = (channels.getChannelPan(channels.channelNumber() + 7))
-                  channels.setChannelPan((channels.channelNumber() + 7), (x + knobinc) ) # pan values go up
-                  nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+                  x = (channels.getChannelPan(channels.selectedChannel() + 7))
+                  channels.setChannelPan((channels.selectedChannel() + 7), (x + knobinc) ) # pan values go up
+                  nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
 
 
             #4D controller # for channel rack
@@ -953,50 +1148,97 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
-               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+               ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Channel Rack selection rectangle")
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                ui.jog(-1)
-               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+               ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Channel Rack selection rectangle")
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
                ui.right(1)
-               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+               ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Moving to the start of Channel Rack")
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                ui.left(1)
-               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+               ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               ui.setHintMsg("Moving to the end of Channel Rack")
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                ui.up(1)
-               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+               ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                ui.down(1)
-               ui.crDisplayRect(0, channels.channelNumber(), 256, 8, 2000) #red rectangle
+               ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
-
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
-               
                if doubleclickstatus == True:
-                  ui.enter()
-                  ui.setHintMsg("enter")
+                  if ui.isInPopupMenu() == False:
+                     ui.selectBrowserMenuItem()
+                     ui.setHintMsg("Channel display filter")
+                  else:
+                     pass
                else:
-                  pass
+                  if ui.isInPopupMenu() == True:
+                     ui.enter()
+                     ui.setHintMsg("Enter")
+                  else:
+                     pass
 
-  
+
 
          elif ui.getFocused(2) == True: # playlist:
 
-            #4D controller # for mixer
       
+            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
+               event.handled = True
+               ui.jog(1)
+               
+            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
+               event.handled = True
+               ui.jog(-1)
+         
+            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
+               event.handled = True
+               arrange.jumpToMarker(1,0)
+
+            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
+               event.handled = True
+               arrange.jumpToMarker(-1,0)
+
+            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+               event.handled = True
+               ui.up(1)
+            
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               ui.down(1)
+
+            if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
+               event.handled = True
+               doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
+               if doubleclickstatus == True:
+                  if ui.isInPopupMenu() == False:
+                     arrange.addAutoTimeMarker(mixer.getSongTickPos(), "Marker")   
+                  else:
+                     pass
+               else:
+                  pass
+               
+
+         elif ui.getFocused(3) == True: # Piano Roll:
+            
+            
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.jog(1)
@@ -1008,11 +1250,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
                ui.right(1)
-
+               
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                ui.left(1)
-
+               
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                ui.up(1)
@@ -1020,22 +1262,33 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                ui.down(1)
+
+            if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
+               event.handled = True
+               nodeFileType = ui.getFocusedNodeFileType()
+               doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
+               if doubleclickstatus == True: 
+                  ui.selectBrowserMenuItem()
+               else:
+                  if ui.isInPopupMenu() == True:
+                     ui.enter()
+                     ui.setHintMsg("Enter")
+                  else:
+                     pass
 
 
 
          elif ui.getFocused(4) == True: # Browser:
-
-            #4D controller # for mixer
       
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(1,0)
-               nihia.printText(0, "B: " + fileNameText)
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(0,0)
-               nihia.printText(0, "B: " + fileNameText)
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
@@ -1048,86 +1301,42 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(0,0)
-               nihia.printText(0, "B: " + fileNameText)
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                fileNameText = ui.navigateBrowserMenu(1,0)
-               nihia.printText(0, "B: " + fileNameText)
-
+               nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
-
                nodeFileType = ui.getFocusedNodeFileType()
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
-
                if doubleclickstatus == True: 
                   if nodeFileType <= -100:
                      ui.enter()
-                     ui.setHintMsg("enter")
+                     ui.setHintMsg("Enter")
                   else:
                      ui.selectBrowserMenuItem()
                      ui.setHintMsg("Open menu")
                else:
-                  pass     
+                  if ui.isInPopupMenu() == True:
+                     ui.enter()
+                     ui.setHintMsg("Enter")
+                  else:
+                     pass
 
-
-         elif ui.getFocused(5) == True: # Plugin Window:
-
-            #4D controller # for everything else
-      
-            if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
-               event.handled = True
-               ui.down(1)
-
-            elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
-               event.handled = True
-               ui.up(1)
-         
-            if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
-               event.handled = True
-               ui.right(1)
-
-            elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
-               event.handled = True
-               ui.left(1)
-
-            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
-               event.handled = True
-               ui.up(1)
-            
-            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
-               event.handled = True
-               ui.down(1)
-
-            if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
-               event.handled = True
-
-            if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
-               event.handled = True
-
-               doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
-               
-               if doubleclickstatus == True:
-                  ui.enter()
-                  ui.setHintMsg("enter")
-               else:
-                  pass
 
          else:
 
             #4D controller # for everything else
 
-      
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
-               #ui.jog(1)
                ui.down(1)
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
-               #ui.jog(-1)
                ui.up(1)
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
@@ -1148,16 +1357,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
-
                doubleclickstatus = device.isDoubleClick(nihia.buttons["ENCODER_BUTTON"])
-               
                if doubleclickstatus == True:
+                  pass
+               else:
                   ui.enter()
                   ui.setHintMsg("enter")
-               else:
-                  pass
 
-
+ 
  
      def UpdateLEDs(self): #controls all nights located within buttons
          """Function for device light communication (excluding OLED screen)"""
@@ -1171,12 +1378,16 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
               elif a == on: #playing
                   nihia.dataOut(nihia.buttons["STOP"], off) #stop off
 
-            for b in [transport.isRecording()]:
-               if b == off: #not recording
-                  nihia.dataOut(nihia.buttons["REC"], off)
 
-               elif b == on: #recording
-                  nihia.dataOut(nihia.buttons["REC"], on)
+            if transport.isPlaying() == True:
+               pass
+            else:
+               for b in [transport.isRecording()]:
+                  if b == off: #not recording
+                     nihia.dataOut(nihia.buttons["REC"], off)
+
+                  elif b == on: #recording
+                     nihia.dataOut(nihia.buttons["REC"], on)
 
             for c in [transport.getLoopMode()]:
                if c == off: #loop mood
@@ -1216,6 +1427,9 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      nihia.dataOut(nihia.buttons["PLAY"], on)
               elif g == off: #play off: 
                   nihia.dataOut(nihia.buttons["PLAY"], off)
+
+
+
 
      def UpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
@@ -1289,97 +1503,95 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
         if ui.getFocused(1) == True: # channel rack
             
-            nihia.printText(0, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 0))
+            nihia.printText(0, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 0))
 
-            if channels.channelCount() > 0 and channels.channelNumber() < (channels.channelCount()-0) :
-               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 0))
-               nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0), 2)))
-               nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
+            if channels.channelCount() > 0 and channels.selectedChannel() < (channels.channelCount()-0) :
+               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 0))
+               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0), 2)))
+               nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
             else:
                nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(0, 104)
                nihia.printPan(0, 104)
 
-            if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
-               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 1))
-               nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1), 2)))
-               nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
+            if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :
+               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 1))
+               nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1), 2)))
+               nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
             else:
                nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(1, 104)
                nihia.printPan(1, 104)
 
-            if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
-               nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 2))
-               nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2), 2)))
-               nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
+            if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :
+               nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 2))
+               nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2), 2)))
+               nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)
             else:
                nihia.printText(2, nihia.message["EMPTY"])
                nihia.printVol(2, 104)
                nihia.printPan(2, 104)
                
-            if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
-               nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 3))
-               nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3), 2)))
-               nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
+            if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :
+               nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 3))
+               nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3), 2)))
+               nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)
             else:
                nihia.printText(3, nihia.message["EMPTY"])
                nihia.printVol(3, 104)
                nihia.printPan(3, 104)
                
-            if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
-               nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 4))
-               nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4), 2)))
-               nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
+            if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :
+               nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 4))
+               nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4), 2)))
+               nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)
             else:
                nihia.printText(4, nihia.message["EMPTY"])
                nihia.printVol(4, 104)
                nihia.printPan(4, 104)
                
-            if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
-               nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 5))
-               nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5), 2)))
-               nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
+            if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :
+               nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 5))
+               nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5), 2)))
+               nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
             else:
                nihia.printText(5, nihia.message["EMPTY"])
                nihia.printVol(5, 104)
                nihia.printPan(5, 104)
                
-            if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
-               nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 6))
-               nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6), 2)))
-               nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
+            if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :
+               nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 6))
+               nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6), 2)))
+               nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
             else:
                nihia.printText(6, nihia.message["EMPTY"])
                nihia.printVol(6, 104)
                nihia.printPan(6, 104)
                
-            if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
-               nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 7))
-               nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7), 2)))
-               nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+            if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :
+               nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 7))
+               nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7), 2)))
+               nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
             else:
                nihia.printText(7, nihia.message["EMPTY"])
                nihia.printVol(7, 104)
                nihia.printPan(7, 104)
 
-
-            if channels.isChannelMuted(channels.channelNumber()) == 0: #mute light off
+            if channels.isChannelMuted(channels.selectedChannel()) == 0: #mute light off
                nihia.oled_mute_solo(nihia.buttons["MUTE"], off)
                nihia.dataOut(102, off)
                 
             else: #mute light on
                nihia.oled_mute_solo(nihia.buttons["MUTE"], on)
                nihia.dataOut(102, on)
-
                
             if channels.channelCount() >= 2: 
-               if channels.isChannelSolo(channels.channelNumber()) == 0: #solo light off
+               if channels.isChannelSolo(channels.selectedChannel()) == 0: #solo light off
                   nihia.oled_mute_solo(nihia.buttons["SOLO"], off)
                   nihia.dataOut(105, off)
                   
-               elif channels.isChannelSolo(channels.channelNumber()) == 1: #solo light on
-                  if channels.isChannelMuted(channels.channelNumber()) == 0:
+               elif channels.isChannelSolo(channels.selectedChannel()) == 1: #solo light on
+                  if channels.isChannelMuted(channels.selectedChannel()) == 0:
                      nihia.oled_mute_solo(nihia.buttons["SOLO"], on)
                      nihia.dataOut(105, on)
                   else:
@@ -1389,7 +1601,27 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
         if ui.getFocused(2) == True: # playlist
 
             #spells out 'Playlist' on tracks 1 through 8 on OLED
-            nihia.printText(0, "Playlist")
+            currentBar = str(playlist.getVisTimeBar())
+            currentStep = str(playlist.getVisTimeStep())
+            currentTick = str(playlist.getVisTimeTick())
+
+            zeroStr = str(0)
+
+            if int(currentStep) <= 9 and int(currentStep) >= 0:
+               currentTime = str(currentBar+":"+zeroStr+currentStep)
+            elif int(currentStep) >= 0:
+               currentTime = str(currentBar+":"+currentStep)
+            elif int(currentStep) < 0:
+               currentTime = " "
+
+            if ui.getTimeDispMin() == True and int(currentStep) >= 0:
+               timeDisp = "M:S | "
+            elif ui.getTimeDispMin() == False and int(currentStep) >= 0:
+               timeDisp = "B:B | "
+            elif int(currentStep) < 0:
+               timmeDisp = " "
+
+            nihia.printText(0, (timeDisp+currentTime))
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
@@ -1400,87 +1632,83 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)
 
-        if ui.getFocused(3) == True: # Piano Roll - spells out 'Piano Roll' on tracks 1 through 8 on OLED
-            nihia.printText(0, "PR: " + channels.getChannelName(channels.channelNumber() + 0))
+        if ui.getFocused(3) == True: # Piano Roll 
+            nihia.printText(0, "PR: " + channels.getChannelName(channels.selectedChannel() + 0))
 
-            if channels.channelCount() > 1 and channels.channelNumber() < (channels.channelCount()-1) :
-               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 1))
-               nihia.printVol(1, (round(channels.getChannelVolume(channels.channelNumber() + 1), 2)))
-               nihia.printPan(1, channels.getChannelPan(channels.channelNumber() + 1) * 100)
+            if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :
+               nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 1))
+               nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1), 2)))
+               nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
             else:
                nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(1, 104)
                nihia.printPan(1, 104)
 
-            if channels.channelCount() > 2 and channels.channelNumber() < (channels.channelCount()-2) :
-               nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 2))
-               nihia.printVol(2, (round(channels.getChannelVolume(channels.channelNumber() + 2), 2)))
-               nihia.printPan(2, channels.getChannelPan(channels.channelNumber() + 2) * 100)
+            if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :
+               nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 2))
+               nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2), 2)))
+               nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)
             else:
                nihia.printText(2, nihia.message["EMPTY"])
                nihia.printVol(2, 104)
                nihia.printPan(2, 104)
                
-            if channels.channelCount() > 3 and channels.channelNumber() < (channels.channelCount()-3) :
-               nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 3))
-               nihia.printVol(3, (round(channels.getChannelVolume(channels.channelNumber() + 3), 2)))
-               nihia.printPan(3, channels.getChannelPan(channels.channelNumber() + 3) * 100)
+            if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :
+               nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 3))
+               nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3), 2)))
+               nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)
             else:
                nihia.printText(3, nihia.message["EMPTY"])
                nihia.printVol(3, 104)
                nihia.printPan(3, 104)
                
-            if channels.channelCount() > 4 and channels.channelNumber() < (channels.channelCount()-4) :
-               nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 4))
-               nihia.printVol(4, (round(channels.getChannelVolume(channels.channelNumber() + 4), 2)))
-               nihia.printPan(4, channels.getChannelPan(channels.channelNumber() + 4) * 100)
+            if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :
+               nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 4))
+               nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4), 2)))
+               nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)
             else:
                nihia.printText(4, nihia.message["EMPTY"])
                nihia.printVol(4, 104)
                nihia.printPan(4, 104)
                
-            if channels.channelCount() > 5 and channels.channelNumber() < (channels.channelCount()-5) :
-               nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 5))
-               nihia.printVol(5, (round(channels.getChannelVolume(channels.channelNumber() + 5), 2)))
-               nihia.printPan(5, channels.getChannelPan(channels.channelNumber() + 5) * 100)
+            if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :
+               nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 5))
+               nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5), 2)))
+               nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
             else:
                nihia.printText(5, nihia.message["EMPTY"])
                nihia.printVol(5, 104)
                nihia.printPan(5, 104)
                
-            if channels.channelCount() > 6 and channels.channelNumber() < (channels.channelCount()-6) :
-               nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 6))
-               nihia.printVol(6, (round(channels.getChannelVolume(channels.channelNumber() + 6), 2)))
-               nihia.printPan(6, channels.getChannelPan(channels.channelNumber() + 6) * 100)
+            if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :
+               nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 6))
+               nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6), 2)))
+               nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
             else:
                nihia.printText(6, nihia.message["EMPTY"])
                nihia.printVol(6, 104)
                nihia.printPan(6, 104)
                
-            if channels.channelCount() > 7 and channels.channelNumber() < (channels.channelCount()-7) :
-               nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.channelNumber() + 7))
-               nihia.printVol(7, (round(channels.getChannelVolume(channels.channelNumber() + 7), 2)))
-               nihia.printPan(7, channels.getChannelPan(channels.channelNumber() + 7) * 100)
+            if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :
+               nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 7))
+               nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7), 2)))
+               nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
             else:
                nihia.printText(7, nihia.message["EMPTY"])
                nihia.printVol(7, 104)
                nihia.printPan(7, 104)
 
-            if channels.getChannelName(channels.channelNumber()) != channels.getChannelName(0):
+            if channels.getChannelName(channels.selectedChannel()) != channels.getChannelName(0):
                nihia.printVol(0, 104)
                nihia.printPan(0, 104)
 
             else:
-               nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber() + 0), 2)))
-               nihia.printPan(0, channels.getChannelPan(channels.channelNumber() + 0) * 100)
-     
+               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0), 2)))
+               nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
+
+
         if ui.getFocused(4) == True: # Browser
 
-            #hintMsg = ui.navigateBrowserMenu()
-
-
-
-            #nihia.printText(0, "B: " + )
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
@@ -1488,12 +1716,41 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(6, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
+            
             nihia.printVol(0, 104)
             nihia.printPan(0, 104)     
 
+            nihia.printVol(1, 104)
+            nihia.printPan(1, 104)
+
+            nihia.printVol(2, 104)
+            nihia.printPan(2, 104)
+
+            nihia.printVol(3, 104)
+            nihia.printPan(3, 104)
+
+            nihia.printVol(4, 104)
+            nihia.printPan(4, 104)
+
+            nihia.printVol(5, 104)
+            nihia.printPan(5, 104)
+
+            nihia.printVol(6, 104)
+            nihia.printPan(6, 104)
+
+            nihia.printVol(7, 104)
+            nihia.printPan(7, 104)
+
         if ui.getFocused(5) == True: # Plugin
-            #spells out 'Plugin' on tracks 1 through 8 on OLED
-            nihia.printText(0, ui.getFocusedFormCaption())
+            #gets plugin name to display on OLED
+            
+            if "Fruity Wrapper" in ui.getFocusedPluginName():
+               nihia.printText(0, ui.getFocusedFormCaption()) 
+            elif '' == ui.getFocusedPluginName():
+               nihia.printText(0, ui.getFocusedFormCaption())
+            else:
+               nihia.printText(0, ui.getFocusedPluginName())
+
             nihia.printText(1, nihia.message["EMPTY"])
             nihia.printText(2, nihia.message["EMPTY"])
             nihia.printText(3, nihia.message["EMPTY"])
@@ -1501,18 +1758,64 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(5, nihia.message["EMPTY"])
             nihia.printText(6, nihia.message["EMPTY"])
             nihia.printText(7, nihia.message["EMPTY"])
-            #nihia.printVol(0, 104)
-            #nihia.printPan(0, 104)
 
-            nihia.printVol(0, (round(channels.getChannelVolume(channels.channelNumber(0)), 2)))
-            nihia.printPan(0, channels.getChannelPan(channels.channelNumber(0)) * 100)     
+            if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
+               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
+               nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)
+            else:
+               nihia.printVol(0, 104)
+               nihia.printPan(0, 104)
+
+               nihia.printVol(1, 104)
+               nihia.printPan(1, 104)
+
+               nihia.printVol(2, 104)
+               nihia.printPan(2, 104)
+
+               nihia.printVol(3, 104)
+               nihia.printPan(3, 104)
+
+               nihia.printVol(4, 104)
+               nihia.printPan(4, 104)
+
+               nihia.printVol(5, 104)
+               nihia.printPan(5, 104)
+
+               nihia.printVol(6, 104)
+               nihia.printPan(6, 104)
+
+               nihia.printVol(7, 104)
+               nihia.printPan(7, 104)
+            
+
+            nihia.printVol(1, 104)
+            nihia.printPan(1, 104)
+
+            nihia.printVol(2, 104)
+            nihia.printPan(2, 104)
+
+            nihia.printVol(3, 104)
+            nihia.printPan(3, 104)
+
+            nihia.printVol(4, 104)
+            nihia.printPan(4, 104)
+
+            nihia.printVol(5, 104)
+            nihia.printPan(5, 104)
+
+            nihia.printVol(6, 104)
+            nihia.printPan(6, 104)
+
+            nihia.printVol(7, 104)
+            nihia.printPan(7, 104)
+
 
      def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
 
-     def OnUpdateBeatIndicator(Self, Value): #play light flashes to the tempo of the project
+     def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
 
        if transport.isRecording() == 0:
@@ -1524,19 +1827,47 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
              nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim
 
        elif transport.isRecording() == 1:
-            nihia.dataOut(nihia.buttons["PLAY"], on)
-            if Value == 1:
-               nihia.dataOut(nihia.buttons["REC"], on) #play light bright
-            elif Value == 2:
-               nihia.dataOut(nihia.buttons["REC"], on) #play light bright
-            elif Value == 0:
-               nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
+          nihia.dataOut(nihia.buttons["PLAY"], on)
+          if Value == 1:
+             nihia.dataOut(nihia.buttons["REC"], on) #play light bright
+          elif Value == 2:
+             nihia.dataOut(nihia.buttons["REC"], on) #play light bright
+          elif Value == 0:
+             nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
+
+     def OnIdle(self):
+        self.UpdateLEDs(), self.UpdateOLED()      
+
+
+     #def OnMidiMsg(self, event):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
+
+     #def UpdateLEDs(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
+
+     #def UpdateOLED(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
+
+     #def OnRefresh(self, flags):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
+
+     #def OnUpdateBeatIndicator(self, Value):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
+
+     #def OnIdle(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnIdle, (self,))
+
 
 KompleteKontrolBase = KeyKompleteKontrolBase()
 
 def OnInit():
    # command to initialize the protocol handshake
-   KompleteKontrolBase.OnInit()
+   compatibility = False
+   compatibility = VersionCheck(compatibility)
+   if compatibility == True:
+      KompleteKontrolBase.OnInit()
+   else:
+      pass
 
 def OnRefresh(Flags):
    try:
@@ -1547,9 +1878,15 @@ def OnRefresh(Flags):
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
-def OnMidiIn(event):
+def OnMidiMsg(event):
    try:
-      KompleteKontrolBase.OnMidiIn(event)
+      KompleteKontrolBase.OnMidiMsg(event)
+   except:
+     pass
+
+def OnIdle():
+   try:
+      KompleteKontrolBase.OnIdle()
    except:
       pass
 
