@@ -1,4 +1,4 @@
-# FL Studio - Native Instruments KK 5.0.0 for FL Studio 20.7.2
+# FL NI KK v5.0.0 for FL Studio 20.7.2
 
 #### Written by Duwayne 'Sound' Wright
 
