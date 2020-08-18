@@ -1817,19 +1817,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
      def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
-       
-       #self.UpdateOLED()
 
        if transport.isRecording() == 0:
           if Value == 1:
              nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
-
           elif Value == 2:
              nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
-
           elif Value == 0:
              nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim
-
 
        elif transport.isRecording() == 1:
           nihia.dataOut(nihia.buttons["PLAY"], on)

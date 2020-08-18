@@ -1,11 +1,28 @@
 # Komplete Kontrol DAW - FL Studio Script
-## v5.0.0 beta for FL Studio 20.7.2 RC or higher
+## v5.0.0 for FL Studio 20.7.2
 
 #### Written by Duwayne 'Sound' Wright
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7.1 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 for the A-Series or 0.4.4 for the M32 installed**. 
 
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
+
+#### What's New
+
+* **shift + 4D button** - switching between mixer, browser, channel rack, playlist and piano roll (when visable) 
+* **shift + 4D button** double press opens plugin picker
+* when the mixer is the active window
+  * able to see what the 8 knobs are linked to when you move the 4D jog wheel
+* when playlist is the active window
+  * can add auto markers in playlist (double click to add, double click again at same point to remove)
+  * time/seconds or beats/bars on OLED when playlist is selected (depending on what you have active in FL Studio)
+  * jumping between markers in playlist (left and right on 4d)
+* when broswer is the active window
+  * double press 4D button when plugin or sound is selected. Right click menu will open.
+* when the channel rack is the active window
+  * navigating between groups on the channel rack (double click to open menu)
+* version check before script loads
+
 
 ##### Key Features
 * **transport** play, record, stop control
@@ -49,8 +66,9 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
 * **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
-* if group in **channel rack** is not set to "All", the script will crash - Something is missing with FL Studio, Image-Line is aware of the problem. Awaiting fix
-* 4D plugin picker insert odd characters in the search feild on macOS; have to press delete each time an odd character or spacing occurs. Image-Line is aware of the problem. Awaiting fix
+* tempo light flashing while playing with PLAY and REC button sometimes becomes out of sync.
+* script slows down when machine is taxed. Currently working on threading/multitreading to overcome this issue.
+
 
 
 ##### Installation
