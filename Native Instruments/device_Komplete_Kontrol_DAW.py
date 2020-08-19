@@ -107,7 +107,7 @@ jogMove = True
 timedelay = 0.45 #seconds
 
 
-VERSION_NUMBER = "v5.0.0"
+VERSION_NUMBER = "v5.0.1"
 FL_VERSION = "7.2"
 FL_NAME = ui.getProgTitle()
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
