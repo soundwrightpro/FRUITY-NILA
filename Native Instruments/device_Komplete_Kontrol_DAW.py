@@ -129,8 +129,8 @@ def VersionCheck(compatibility):
       compatibility = True
 
    else:
-      print(ui.getProgTitle(), ui.getVersion(5), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
-      " will not load on this device. \nPlease update", FL_NAME, ui.getVersion(4), "to", FL_NAME, FL_VERSION, 
+      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
+      " will not load on this device. \nPlease update", FL_NAME, ui.getVersion(), "to", FL_NAME, FL_VERSION, 
       "or higher.\n\n")
       compatibility = False
 
