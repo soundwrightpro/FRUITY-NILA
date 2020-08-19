@@ -1,4 +1,4 @@
-# FL NI KK v5.0.1 for FL Studio 20.7.2
+# FL NI KK v5.0.2 for FL Studio 20.7.2
 ### **this version does not work with FL Studio 20.7.1**
 
 #### Written by Duwayne 'Sound' Wright
@@ -22,6 +22,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * when the channel rack is the active window
   * navigating between groups on the channel rack (double click to open menu)
 * version check before script loads
+* bug fixes
 
 
 ##### Key Features
