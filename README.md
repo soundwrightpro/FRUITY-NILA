@@ -1,4 +1,4 @@
-# FL NI KK v5.0.0 for FL Studio 20.7.2
+# FL NI KK v5.0.1 for FL Studio 20.7.2
 ### **this version does not work with FL Studio 20.7.1**
 
 #### Written by Duwayne 'Sound' Wright
@@ -7,7 +7,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
-#### What's New
+#### What's New since v4.9.1
 
 * **shift + 4D button** - switching between mixer, browser, channel rack, playlist and piano roll (when visable) 
 * **shift + 4D button** double press opens plugin picker
