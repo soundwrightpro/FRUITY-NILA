@@ -1820,15 +1820,22 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             nihia.printVol(7, 104)
             nihia.printPan(7, 104)
+         
 
 
-     def OnRefresh(self, HW_Dirty_LEDs): #when something happens in FL Studio, update the keyboard lights & OLED
+     def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
 
      def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
+
        """Function that is called when the beat indicator has changed."""
+
+       if ui.getFocused(2) == True: # playlist
+          self.UpdateOLED()
+       else:
+          pass
 
        if transport.isRecording() == 0:
           if Value == 1:
@@ -1878,9 +1885,9 @@ def OnInit():
    else:
       pass
 
-def OnRefresh(Flags):
+def OnRefresh(flags):
    #try:
-      KompleteKontrolBase.OnRefresh(Flags)
+      KompleteKontrolBase.OnRefresh(flags)
    #except:
    #   pass
 
