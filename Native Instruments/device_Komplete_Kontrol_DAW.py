@@ -107,7 +107,7 @@ jogMove = True
 timedelay = 0.45 #seconds
 
 
-VERSION_NUMBER = "v5.0.1"
+VERSION_NUMBER = "v5.0.2"
 FL_VERSION = "7.2"
 FL_NAME = ui.getProgTitle()
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
@@ -448,284 +448,338 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 126:
                if (event.data1 == nihia.knobs["KNOB_0A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
-                   mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
-                   nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
-                
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
-                   mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
-                   nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
+
+                if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
+                     mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+                     nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
+                  
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
+                     mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
+                     nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
 
             #knob 1
             if mixer.trackNumber() <= 125:
                if (event.data1 == nihia.knobs["KNOB_1A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
-                   mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
-                   nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
-                
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
-                   mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
-                   nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+                if mixer.getTrackName(mixer.trackNumber()+1) == "Current" and mixer.trackNumber()+1 >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
+                     mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+                     nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+                  
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
+                     mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
+                     nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+
+            elif mixer.trackNumber()+1 >= 125: 
+               nihia.printText(1, nihia.message["EMPTY"])
+               nihia.printVol(1, 104) 
 
             #knob 2
             if mixer.trackNumber() <= 124:
                if (event.data1 == nihia.knobs["KNOB_2A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
-                   mixer.setTrackVolume((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
-                   nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
-                
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
-                   mixer.setTrackVolume((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
-                   nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+                if mixer.getTrackName(mixer.trackNumber()+2) == "Current" and mixer.trackNumber()+2 >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
+                     mixer.setTrackVolume((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
+                     nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+                  
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
+                     mixer.setTrackVolume((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
+                     nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
 
-            elif mixer.trackNumber() <= 127:    
-               nihia.printText(3, nihia.message["EMPTY"])
-               nihia.printVol(3, 104)
+            elif mixer.trackNumber()+2 >= 125:    
+               nihia.printText(2, nihia.message["EMPTY"])
+               nihia.printVol(2, 104)
                
             #knob 3
             if mixer.trackNumber() <= 123:
                if (event.data1 == nihia.knobs["KNOB_3A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
-                   mixer.setTrackVolume((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
-                   nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
-                
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
-                   mixer.setTrackVolume((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
-                   nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+                if mixer.getTrackName(mixer.trackNumber()+3) == "Current" and mixer.trackNumber()+3 >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
+                     mixer.setTrackVolume((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
+                     nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+                  
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
+                     mixer.setTrackVolume((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
+                     nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
 
-            elif mixer.trackNumber() <= 127:    
-               nihia.printText(4, nihia.message["EMPTY"])
-               nihia.printVol(4, 104)
+            elif mixer.trackNumber()+3 >= 125:    
+               nihia.printText(3, nihia.message["EMPTY"])
+               nihia.printVol(3, 104)
 
             #knob 4
             if mixer.trackNumber() <= 122:
                if (event.data1 == nihia.knobs["KNOB_4A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
-                   mixer.setTrackVolume((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
-                   nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
-                
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
-                   mixer.setTrackVolume((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
-                   nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+                if mixer.getTrackName(mixer.trackNumber()+4) == "Current" and mixer.trackNumber()+4 >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
+                     mixer.setTrackVolume((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
+                     nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+                  
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
+                     mixer.setTrackVolume((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
+                     nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
 
 
-            elif mixer.trackNumber() <= 127:    
-               nihia.printText(5, nihia.message["EMPTY"])
-               nihia.printVol(5, 104)
+            elif mixer.trackNumber()+4 >= 125:    
+               nihia.printText(4, nihia.message["EMPTY"])
+               nihia.printVol(4, 104)
 
             #knob 5
             if mixer.trackNumber() <= 121:
                if (event.data1 == nihia.knobs["KNOB_5A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
-                   mixer.setTrackVolume((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
-                   nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+                if mixer.getTrackName(mixer.trackNumber()+5) == "Current" and mixer.trackNumber()+5 >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
+                     mixer.setTrackVolume((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
+                     nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
 
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
-                   mixer.setTrackVolume((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
-                   nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
+                     mixer.setTrackVolume((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
+                     nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
 
-            elif mixer.trackNumber() <= 127:    
-               nihia.printText(6, nihia.message["EMPTY"])
-               nihia.printVol(6, 104)     
+            elif mixer.trackNumber()+5 >= 125:    
+               nihia.printText(5, nihia.message["EMPTY"])
+               nihia.printVol(5, 104)     
 
             #knob 6
             if mixer.trackNumber() <= 120:
                if (event.data1 == nihia.knobs["KNOB_6A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
-                   mixer.setTrackVolume((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
-                   nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+                if mixer.getTrackName(mixer.trackNumber()+6) == "Current" and mixer.trackNumber()+6 >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
+                     mixer.setTrackVolume((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
+                     nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
 
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
-                   mixer.setTrackVolume((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
-                   nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
+                     mixer.setTrackVolume((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
+                     nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
 
 
-            elif mixer.trackNumber() <= 127:    
-               nihia.printText(7, nihia.message["EMPTY"])
-               nihia.printVol(7, 104)     
+            elif mixer.trackNumber()+6 >= 125:    
+               nihia.printText(6, nihia.message["EMPTY"])
+               nihia.printVol(6, 104)     
                           
-            #knob 8
+            #knob 7
             if mixer.trackNumber() <= 119:
                if (event.data1 == nihia.knobs["KNOB_7A"]):
                 event.handled = True
-                if event.data2 == left:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
-                   mixer.setTrackVolume((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
-                   nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+                if mixer.getTrackName(mixer.trackNumber()+7) == "Current" and mixer.trackNumber()+7 >= 126:
+                  pass
+                else:
+                  if event.data2 == left:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
+                     mixer.setTrackVolume((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
+                     nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
 
-                elif event.data2 == right:
-                   x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
-                   mixer.setTrackVolume((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
-                   nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+                  elif event.data2 == right:
+                     x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
+                     mixer.setTrackVolume((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
+                     nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
 
 
-            elif mixer.trackNumber() <= 127:    
-               nihia.printText(8, nihia.message["EMPTY"])     
+            elif mixer.trackNumber()+7 >= 125:    
+               nihia.printText(7, nihia.message["EMPTY"])
+               nihia.printVol(7, 104)      
 
             # MIXER PAN CONTROL 
 
-            #sknob 1
+            #sknob 0
             if mixer.trackNumber() <= 126:
                if (event.data1 == nihia.knobs["KNOB_0B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 0))
-                     mixer.setTrackPan((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
-                     nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 0))
-                     mixer.setTrackPan((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
-                     nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
+                  if mixer.trackNumber()+0 >= 125:    
+                     nihia.printPan(0, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 0))
+                        mixer.setTrackPan((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
+                        nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
+
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 0))
+                        mixer.setTrackPan((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
+                        nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
 
-            elif mixer.trackNumber() <= 127:    
+            elif mixer.trackNumber() >= 126:    
                nihia.printVol(0, 104)
 
-            #sknob 2
+            #sknob 1
             if mixer.trackNumber() <= 125:
                if (event.data1 == nihia.knobs["KNOB_1B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 1))
-                     mixer.setTrackPan((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
-                     nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
 
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 1))
-                     mixer.setTrackPan((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
-                     nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
+                  if mixer.trackNumber()+1 >= 125:    
+                     nihia.printPan(1, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 1))
+                        mixer.setTrackPan((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
+                        nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
 
-
-            elif mixer.trackNumber() <= 127:    
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 1))
+                        mixer.setTrackPan((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
+                        nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
+               
+            elif mixer.trackNumber()+1 >= 126:    
                nihia.printVol(1, 104)
 
-            elif mixer.trackNumber() + 1 == mixer.trackNumber(126):
-               mixer.setTrackVolume(126, 1)
-               mixer.setTrackPan(126, 0)
 
-            #sknob 3
+            #sknob 2
             if mixer.trackNumber() <= 124:
                if (event.data1 == nihia.knobs["KNOB_2B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 2))
-                     mixer.setTrackPan((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
-                     nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
-                
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 2))
-                     mixer.setTrackPan((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
-                     nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
-            elif mixer.trackNumber() <= 127:    
+                  if mixer.trackNumber()+2 >= 125:    
+                     nihia.printPan(2, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 2))
+                        mixer.setTrackPan((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
+                        nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
+                  
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 2))
+                        mixer.setTrackPan((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
+                        nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
+
+            elif mixer.trackNumber()+2 >= 126:    
                nihia.printVol(2, 104)
 
-            #sknob 4
+            #sknob 3
             if mixer.trackNumber() <= 123:
                if (event.data1 == nihia.knobs["KNOB_3B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 3))
-                     mixer.setTrackPan((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
-                     nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
-                
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 3))
-                     mixer.setTrackPan((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
-                     nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
-            elif mixer.trackNumber() <= 127:    
+                  if mixer.trackNumber()+3 >= 125:    
+                     nihia.printPan(3, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 3))
+                        mixer.setTrackPan((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
+                        nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
+                  
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 3))
+                        mixer.setTrackPan((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
+                        nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
+
+            elif mixer.trackNumber()+3 >= 126:    
                nihia.printVol(3, 104)
 
-            #sknob 5
+            #sknob 4
             if mixer.trackNumber() <= 122:
                if (event.data1 == nihia.knobs["KNOB_4B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 4))
-                     mixer.setTrackPan((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
-                     nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
-                
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 4))
-                     mixer.setTrackPan((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
-                     nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
-            elif mixer.trackNumber() <= 127:    
+                  if mixer.trackNumber()+4 >= 125:    
+                     nihia.printPan(4, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 4))
+                        mixer.setTrackPan((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
+                        nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
+                  
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 4))
+                        mixer.setTrackPan((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
+                        nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
+
+            elif mixer.trackNumber()+4 >= 126:    
                nihia.printVol(4, 104)
 
-            #sknob 6
+            #sknob 5
             if mixer.trackNumber() <= 121:
                if (event.data1 == nihia.knobs["KNOB_5B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 5))
-                     mixer.setTrackPan((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
-                     nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
-                
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 5))
-                     mixer.setTrackPan((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
-                     nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
-            elif mixer.trackNumber() <= 127:    
+                  if mixer.trackNumber()+5 >= 125:    
+                     nihia.printPan(5, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 5))
+                        mixer.setTrackPan((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
+                        nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
+                  
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 5))
+                        mixer.setTrackPan((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
+                        nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
+
+            elif mixer.trackNumber()+5 >= 126:    
                nihia.printVol(5, 104)
 
-            #sknob 7
+            #sknob 6
             if mixer.trackNumber() <= 120:
                if (event.data1 == nihia.knobs["KNOB_6B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 6))
-                     mixer.setTrackPan((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
-                     nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
-                
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 6))
-                     mixer.setTrackPan((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
-                     nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
-            elif mixer.trackNumber() <= 127:    
+                  if mixer.trackNumber()+6 >= 125:    
+                     nihia.printPan(6, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 6))
+                        mixer.setTrackPan((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
+                        nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
+                  
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 6))
+                        mixer.setTrackPan((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
+                        nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
+
+            elif mixer.trackNumber()+6 >= 126:    
                nihia.printVol(6, 104)
 
-            #sknob 8
+            #sknob 7
             if mixer.trackNumber() <= 119:
                if (event.data1 == nihia.knobs["KNOB_7B"]):
                   event.handled = True
-                  if event.data2 == left:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 7))
-                     mixer.setTrackPan((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
-                     nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
-                
-                  elif event.data2 == right:
-                     x = (mixer.getTrackPan(mixer.trackNumber() + 7))
-                     mixer.setTrackPan((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
-                     nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
 
-            elif mixer.trackNumber() <= 127:    
-               nihia.printVol(7, 104)
-
+                  if mixer.trackNumber()+7 >= 125:    
+                     nihia.printPan(7, 104)
+                  else:
+                     if event.data2 == left:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 7))
+                        mixer.setTrackPan((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
+                        nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
+                  
+                     elif event.data2 == right:
+                        x = (mixer.getTrackPan(mixer.trackNumber() + 7))
+                        mixer.setTrackPan((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
+                        nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
 
 
 
