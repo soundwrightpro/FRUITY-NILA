@@ -1883,7 +1883,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
         self.UpdateLEDs(), self.UpdateOLED()
 
      def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
-
        """Function that is called when the beat indicator has changed."""
 
        if ui.getFocused(2) == True: # playlist
