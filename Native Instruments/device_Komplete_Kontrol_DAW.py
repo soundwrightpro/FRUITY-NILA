@@ -403,8 +403,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      ui.setHintMsg("Switch to Piano Roll")
                      winSwitch = 0
                      
-
-
          #mute and solo for mixer and channel rack
          if (event.data1 == nihia.buttons["MUTE"]):
             if ui.getFocused(0) == 1: #mixer volume control
@@ -797,13 +795,27 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         ui.setHintMsg("Enter") 
                         
             if jogMove == True:# mixer highlighting when jog wheel is moved
-               mixer.selectTrack(mixer.trackNumber()+1)
-               mixer.selectTrack(mixer.trackNumber()+2)
-               mixer.selectTrack(mixer.trackNumber()+3)
-               mixer.selectTrack(mixer.trackNumber()+4)
-               mixer.selectTrack(mixer.trackNumber()+5)
-               mixer.selectTrack(mixer.trackNumber()+6)
-               mixer.selectTrack(mixer.trackNumber()+7)
+               if mixer.trackNumber()+1 <= 125:
+                  mixer.selectTrack(mixer.trackNumber()+1)
+
+               if mixer.trackNumber()+2 <= 125:
+                  mixer.selectTrack(mixer.trackNumber()+2)
+
+               if mixer.trackNumber()+3 <= 125:   
+                  mixer.selectTrack(mixer.trackNumber()+3)
+
+               if mixer.trackNumber()+4 <= 125:
+                  mixer.selectTrack(mixer.trackNumber()+4)
+
+               if mixer.trackNumber()+5 <= 125:   
+                  mixer.selectTrack(mixer.trackNumber()+5)
+
+               if mixer.trackNumber()+6 <= 125:
+                  mixer.selectTrack(mixer.trackNumber()+6)
+
+               if mixer.trackNumber()+7 <= 125:   
+                  mixer.selectTrack(mixer.trackNumber()+7)
+
                jogMove = False #resets jog wheel tracker
             else:
                pass
@@ -1810,7 +1822,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printPan(7, 104)
 
 
-     def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
+     def OnRefresh(self, HW_Dirty_LEDs): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
@@ -1834,10 +1846,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
              nihia.dataOut(nihia.buttons["REC"], on) #play light bright
           elif Value == 0:
              nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
-
-     def OnIdle(self):
-        self.UpdateLEDs(), self.UpdateOLED()      
-
+ 
 
      #def OnMidiMsg(self, event):
      #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
@@ -1870,25 +1879,19 @@ def OnInit():
       pass
 
 def OnRefresh(Flags):
-   try:
+   #try:
       KompleteKontrolBase.OnRefresh(Flags)
-   except:
-      pass
+   #except:
+   #   pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiMsg(event):
-   try:
+   #try:
       KompleteKontrolBase.OnMidiMsg(event)
-   except:
-     pass
-
-def OnIdle():
-   try:
-      KompleteKontrolBase.OnIdle()
-   except:
-      pass
+   #except:
+   #  pass
 
 def OnDeInit():
    if ui.isClosing() == True:
