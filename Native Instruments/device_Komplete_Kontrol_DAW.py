@@ -106,8 +106,11 @@ jogMove = True
 #time delay for messages on screen
 timedelay = 0.45 #seconds
 
+#This is a 'utility' track that receives the currently selected Mixer Tracks Output. Settings for this track are hard to see, so the mixer skips over it.
+currentUtility = 126
 
-VERSION_NUMBER = "v5.0.2"
+
+VERSION_NUMBER = "v5.0.5"
 FL_VERSION = "7.2"
 FL_NAME = ui.getProgTitle()
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
@@ -407,31 +410,43 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          if (event.data1 == nihia.buttons["MUTE"]):
             if ui.getFocused(0) == 1: #mixer volume control
                event.handled = True
-               mixer.enableTrack(mixer.trackNumber()) #mute 
-               self.UpdateOLED()
-               ui.setHintMsg("Mute")
+               if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                  pass
+               else:
+                  mixer.enableTrack(mixer.trackNumber()) #mute 
+                  self.UpdateOLED()
+                  ui.setHintMsg("Mute")
                
             elif ui.getFocused(1) == 1: # channel rack
                if channels.channelCount() >= 1: 
                   event.handled = True
-                  channels.muteChannel(channels.channelNumber()) 
-                  self.UpdateOLED()
-                  ui.setHintMsg("Mute")
+                  if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                     pass
+                  else:
+                     channels.muteChannel(channels.channelNumber()) 
+                     self.UpdateOLED()
+                     ui.setHintMsg("Mute")
                   
          if (event.data1 ==  nihia.buttons["SOLO"]): 
             if ui.getFocused(0) == 1: #mixer volume control
                event.handled = True
-               mixer.soloTrack(mixer.trackNumber()) #solo
-               self.UpdateOLED()
-               ui.setHintMsg("Solo")
+               if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                  pass
+               else:
+                  mixer.soloTrack(mixer.trackNumber()) #solo
+                  self.UpdateOLED()
+                  ui.setHintMsg("Solo")
 
             elif ui.getFocused(1) == 1: # channel rack
                if channels.channelCount() >= 2: 
                   event.handled = True
-                  channels.soloChannel(channels.channelNumber()) 
-                  self.UpdateOLED()
-                  ui.setHintMsg("Solo")
-               
+                  if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                     pass
+                  else:
+                     channels.soloChannel(channels.channelNumber()) 
+                     self.UpdateOLED()
+                     ui.setHintMsg("Solo")
+                  
 
          #8 volume knobs for mixer & channel rack, 8 tracks at a time
 
@@ -445,11 +460,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                            
 
             #knob 0
-            if mixer.trackNumber() <= 126:
+            if mixer.trackNumber() <= currentUtility:
                if (event.data1 == nihia.knobs["KNOB_0A"]):
                 event.handled = True
 
-                if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= 126:
+                if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -466,7 +481,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 125:
                if (event.data1 == nihia.knobs["KNOB_1A"]):
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber()+1) == "Current" and mixer.trackNumber()+1 >= 126:
+                if mixer.getTrackName(mixer.trackNumber()+1) == "Current" and mixer.trackNumber()+1 >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -487,7 +502,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 124:
                if (event.data1 == nihia.knobs["KNOB_2A"]):
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber()+2) == "Current" and mixer.trackNumber()+2 >= 126:
+                if mixer.getTrackName(mixer.trackNumber()+2) == "Current" and mixer.trackNumber()+2 >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -508,7 +523,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 123:
                if (event.data1 == nihia.knobs["KNOB_3A"]):
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber()+3) == "Current" and mixer.trackNumber()+3 >= 126:
+                if mixer.getTrackName(mixer.trackNumber()+3) == "Current" and mixer.trackNumber()+3 >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -529,7 +544,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 122:
                if (event.data1 == nihia.knobs["KNOB_4A"]):
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber()+4) == "Current" and mixer.trackNumber()+4 >= 126:
+                if mixer.getTrackName(mixer.trackNumber()+4) == "Current" and mixer.trackNumber()+4 >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -551,7 +566,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 121:
                if (event.data1 == nihia.knobs["KNOB_5A"]):
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber()+5) == "Current" and mixer.trackNumber()+5 >= 126:
+                if mixer.getTrackName(mixer.trackNumber()+5) == "Current" and mixer.trackNumber()+5 >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -572,7 +587,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 120:
                if (event.data1 == nihia.knobs["KNOB_6A"]):
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber()+6) == "Current" and mixer.trackNumber()+6 >= 126:
+                if mixer.getTrackName(mixer.trackNumber()+6) == "Current" and mixer.trackNumber()+6 >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -594,7 +609,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if mixer.trackNumber() <= 119:
                if (event.data1 == nihia.knobs["KNOB_7A"]):
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber()+7) == "Current" and mixer.trackNumber()+7 >= 126:
+                if mixer.getTrackName(mixer.trackNumber()+7) == "Current" and mixer.trackNumber()+7 >= currentUtility:
                   pass
                 else:
                   if event.data2 == left:
@@ -615,7 +630,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             # MIXER PAN CONTROL 
 
             #sknob 0
-            if mixer.trackNumber() <= 126:
+            if mixer.trackNumber() <= currentUtility:
                if (event.data1 == nihia.knobs["KNOB_0B"]):
                   event.handled = True
 
@@ -633,7 +648,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
 
-            elif mixer.trackNumber() >= 126:    
+            elif mixer.trackNumber() >= currentUtility:    
                nihia.printVol(0, 104)
 
             #sknob 1
@@ -654,7 +669,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         mixer.setTrackPan((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
                         nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
                
-            elif mixer.trackNumber()+1 >= 126:    
+            elif mixer.trackNumber()+1 >= currentUtility:    
                nihia.printVol(1, 104)
 
 
@@ -676,7 +691,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         mixer.setTrackPan((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
                         nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
-            elif mixer.trackNumber()+2 >= 126:    
+            elif mixer.trackNumber()+2 >= currentUtility:    
                nihia.printVol(2, 104)
 
             #sknob 3
@@ -697,7 +712,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         mixer.setTrackPan((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
                         nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
-            elif mixer.trackNumber()+3 >= 126:    
+            elif mixer.trackNumber()+3 >= currentUtility:    
                nihia.printVol(3, 104)
 
             #sknob 4
@@ -718,7 +733,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         mixer.setTrackPan((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
                         nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
-            elif mixer.trackNumber()+4 >= 126:    
+            elif mixer.trackNumber()+4 >= currentUtility:    
                nihia.printVol(4, 104)
 
             #sknob 5
@@ -739,7 +754,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         mixer.setTrackPan((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
                         nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
-            elif mixer.trackNumber()+5 >= 126:    
+            elif mixer.trackNumber()+5 >= currentUtility:    
                nihia.printVol(5, 104)
 
             #sknob 6
@@ -760,7 +775,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         mixer.setTrackPan((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
                         nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
-            elif mixer.trackNumber()+6 >= 126:    
+            elif mixer.trackNumber()+6 >= currentUtility:    
                nihia.printVol(6, 104)
 
             #sknob 7
@@ -1504,7 +1519,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             xy = 1.25
 
-            if mixer.trackNumber() <= 126:
+            if mixer.trackNumber() <= currentUtility:
                nihia.printText(0, mixer.getTrackName(mixer.trackNumber() + 0))
                nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
                nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
