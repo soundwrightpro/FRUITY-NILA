@@ -656,7 +656,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_1B"]):
                   event.handled = True
 
-                  if mixer.trackNumber()+1 >= 125:    
+                  if mixer.trackNumber()+1 >= currentUtility:    
                      nihia.printPan(1, 104)
                   else:
                      if event.data2 == left:
@@ -678,7 +678,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_2B"]):
                   event.handled = True
 
-                  if mixer.trackNumber()+2 >= 125:    
+                  if mixer.trackNumber()+2 >= currentUtility:    
                      nihia.printPan(2, 104)
                   else:
                      if event.data2 == left:
@@ -699,7 +699,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_3B"]):
                   event.handled = True
 
-                  if mixer.trackNumber()+3 >= 125:    
+                  if mixer.trackNumber()+3 >= currentUtility:    
                      nihia.printPan(3, 104)
                   else:
                      if event.data2 == left:
@@ -720,7 +720,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_4B"]):
                   event.handled = True
 
-                  if mixer.trackNumber()+4 >= 125:    
+                  if mixer.trackNumber()+4 >= currentUtility:    
                      nihia.printPan(4, 104)
                   else:
                      if event.data2 == left:
@@ -741,7 +741,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_5B"]):
                   event.handled = True
 
-                  if mixer.trackNumber()+5 >= 125:    
+                  if mixer.trackNumber()+5 >= currentUtility:    
                      nihia.printPan(5, 104)
                   else:
                      if event.data2 == left:
@@ -762,7 +762,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_6B"]):
                   event.handled = True
 
-                  if mixer.trackNumber()+6 >= 125:    
+                  if mixer.trackNumber()+6 >= currentUtility:    
                      nihia.printPan(6, 104)
                   else:
                      if event.data2 == left:
@@ -783,8 +783,9 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if (event.data1 == nihia.knobs["KNOB_7B"]):
                   event.handled = True
 
-                  if mixer.trackNumber()+7 >= 125:    
+                  if mixer.trackNumber()+7 >= currentUtility:    
                      nihia.printPan(7, 104)
+                     
                   else:
                      if event.data2 == left:
                         x = (mixer.getTrackPan(mixer.trackNumber() + 7))
