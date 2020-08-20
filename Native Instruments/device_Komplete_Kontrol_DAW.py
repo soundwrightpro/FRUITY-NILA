@@ -110,7 +110,7 @@ timedelay = 0.45 #seconds
 currentUtility = 126
 
 
-VERSION_NUMBER = "v5.0.5"
+VERSION_NUMBER = "v5.0.3"
 FL_VERSION = "7.2"
 FL_NAME = ui.getProgTitle()
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
@@ -1700,7 +1700,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             elif ui.getTimeDispMin() == False and int(currentStep) >= 0:
                timeDisp = "B:B | "
             elif int(currentStep) < 0:
-               timmeDisp = " "
+               timeDisp = "REC in..."
+
 
             nihia.printText(0, (timeDisp+currentTime))
             nihia.printText(1, nihia.message["EMPTY"])
@@ -1899,6 +1900,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
      def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
+       
 
        if ui.getFocused(2) == True: # playlist
           self.UpdateOLED()
