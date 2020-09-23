@@ -110,47 +110,16 @@ timedelay = 0.45 #seconds
 currentUtility = 126
 
 
-VERSION_NUMBER = "v5.0.3"
+
+
+VERSION_NUMBER = "v5.0.5"
 FL_VERSION = "7.2"
+FL_BETA = "7.9"
 FL_NAME = ui.getProgTitle()
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
-GOODBYE_MESSAGE = "Goodbye"
-OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\n\nMIT License\nCopyright © 2020 Duwayne Wright\n"
+GOODBYE_MESSAGE = "Ending KK"
+OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\nCopyright © 2020 Duwayne Wright\n"
 
-def VersionCheck(compatibility):
-   """Called to check user's FL Studio version to see if this script can run."""
-   OS = ""
-   print(OUTPUT_MESSAGE)
-
-   if platform == "darwin":
-      OS = "macOS"
-   elif platform == "win32":
-      OS = "Windows"
-      
-   if FL_NAME in ui.getProgTitle() and FL_VERSION in ui.getVersion():
-      print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n\n")
-      compatibility = True
-
-   else:
-      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
-      " will not load on this device. \nPlease update", FL_NAME, ui.getVersion(), "to", FL_NAME, FL_VERSION, 
-      "or higher.\n\n")
-      compatibility = False
-
-   return compatibility
-
-
-def TranslateVolume(Value):
-   """Function that converts values from device into FL Studio comptable values for volume conversion"""
-
-   return (math.exp(Value * math.log(11)) - 1) * 0.1   
-
-
-def VolTodB(Value): #works off of the db scale explained here: https://www.image-line.com/support/flstudio_online_manual/html/mixer_dB.htm
-   """Function that converts % valume into db"""
-   
-   Value = TranslateVolume(Value)
-   return round(math.log10(Value) * 20, 1)
 
 
 
@@ -1945,7 +1914,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
      #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnIdle, (self,))
 
 
+
+
+
 KompleteKontrolBase = KeyKompleteKontrolBase()
+
+
 
 def OnInit():
    # command to initialize the protocol handshake
@@ -1957,19 +1931,19 @@ def OnInit():
       pass
 
 def OnRefresh(flags):
-   #try:
+   try:
       KompleteKontrolBase.OnRefresh(flags)
-   #except:
-   #   pass
+   except:
+      pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiMsg(event):
-   #try:
+   try:
       KompleteKontrolBase.OnMidiMsg(event)
-   #except:
-   #  pass
+   except:
+     pass
 
 def OnDeInit():
    if ui.isClosing() == True:
@@ -1978,3 +1952,67 @@ def OnDeInit():
       nihia.terminate(), KompleteKontrolBase.OnDeInit() # Command to stop the protocol
    else:
       nihia.terminate()
+
+def detectDevice(kkName):
+   """ Gets the MIDI device name from FL Studio and sets `DEVICE_SERIES` to the right value in order for the script to work properly. """
+   
+   deviceName = device.getName()
+
+   if deviceName == "Komplete Kontrol A DAW":
+      kkName = "Komplete Kontrol Series A"
+
+   elif deviceName == "Komplete Kontrol M DAW":
+      kkName = "Komplete Kontrol Series M"
+
+   else:
+      kkName = device.getName()
+ 
+   return kkName
+
+def VersionCheck(compatibility):
+   """Called to check user's FL Studio version to see if this script can run."""
+
+   kkName = ""
+   OS = ""
+   
+   print(OUTPUT_MESSAGE)
+
+   if platform == "darwin":
+      OS = "macOS"
+   elif platform == "win32":
+      OS = "Windows"
+      
+   if FL_NAME in ui.getProgTitle() and FL_VERSION in ui.getVersion() or  FL_BETA in ui.getVersion(4):
+      print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
+      compatibility = True
+
+   else:
+      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
+      " will not load on this device. \nPlease update", FL_NAME, ui.getVersion(), "to", FL_NAME, FL_VERSION, 
+      "or higher.\n")
+      compatibility = False
+
+   seriesDevice = detectDevice(kkName)
+
+   if seriesDevice ==  "Komplete Kontrol Series A" or "Komplete Kontrol Series M":
+      print("A", seriesDevice, "has been detected. It is compatible with this script\n\n")
+
+   else:
+      print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with this script\n\n")
+
+
+
+
+
+   return compatibility
+
+def TranslateVolume(Value):
+   """Function that converts values from device into FL Studio comptable values for volume conversion"""
+
+   return (math.exp(Value * math.log(11)) - 1) * 0.1   
+
+def VolTodB(Value): #works off of the db scale explained here: https://www.image-line.com/support/flstudio_online_manual/html/mixer_dB.htm
+   """Function that converts % valume into db"""
+   
+   Value = TranslateVolume(Value)
+   return round(math.log10(Value) * 20, 1)  
