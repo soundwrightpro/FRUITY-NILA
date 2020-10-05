@@ -111,7 +111,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v5.0.6"
+VERSION_NUMBER = "v5.0.7"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -119,7 +119,7 @@ VER_Release = ui.getVersion(2)
 
 MIN_Major = 20
 MIN_Minor = 7
-MIN_Release = 3
+MIN_Release = 2
 
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Ending KK"
