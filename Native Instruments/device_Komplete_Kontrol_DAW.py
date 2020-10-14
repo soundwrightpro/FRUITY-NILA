@@ -111,7 +111,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v5.0.8"
+VERSION_NUMBER = "v5.0.9"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -838,6 +838,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         ui.setHintMsg("Enter") 
                         
             if jogMove == True:# mixer highlighting when jog wheel is moved
+               mixer.deselectAll()
+
+               if mixer.trackNumber()+0 <= 125:
+                  mixer.selectTrack(mixer.trackNumber()+0)
+
                if mixer.trackNumber()+1 <= 125:
                   mixer.selectTrack(mixer.trackNumber()+1)
 
