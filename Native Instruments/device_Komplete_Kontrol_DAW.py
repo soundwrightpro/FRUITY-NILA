@@ -794,16 +794,18 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                event.handled = True
                if ui.isInPopupMenu() == True:
                   ui.right(1)
+                  pass
                else:
-                  ui.down(1)
+                  ui.jog(8)
                   jogMove = True
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                if ui.isInPopupMenu() == True:
                   ui.left(1)
+                  pass
                else:
-                  ui.up(1)
+                  ui.jog(-8)
                   jogMove = True
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
