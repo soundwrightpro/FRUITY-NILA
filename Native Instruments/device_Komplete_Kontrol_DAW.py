@@ -348,7 +348,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                transport.globalTransport(midi.FPT_F8, 67)
                ui.setHintMsg("Plugin Picker")
                nihia.printText(0, "Plugin Picker")
-               time.sleep(timedelay)
+               #time.sleep(timedelay)
             else:
 
                if winSwitch == 0:
@@ -1411,11 +1411,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
-               ui.up(1)
+               ui.up()
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
-               ui.down(1)
+               ui.down()
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
