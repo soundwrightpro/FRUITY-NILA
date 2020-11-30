@@ -111,7 +111,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v5.0.9"
+VERSION_NUMBER = "v5.1.0"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -146,9 +146,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          #buttons
          if (event.data1 == nihia.buttons["PLAY"]):
             event.handled = True
-            transport.start() #play
-            self.UpdateLEDs()
-            ui.setHintMsg("Play/Pause")
+            if ui.isInPopupMenu() == True:
+               print("Working")
+            else:
+               transport.start() #play
+               self.UpdateLEDs()
+               ui.setHintMsg("Play/Pause")
 
          if (event.data1 == nihia.buttons["RESTART"]):
             event.handled = True
@@ -1994,7 +1997,7 @@ def VersionCheck(compatibility):
       OS = "Windows"
 
 
-   if MIN_Major == int(VER_Major) and int(VER_Minor) >= MIN_Minor and int(VER_Release >=  MIN_Release):
+   if MIN_Major == int(VER_Major) and int(VER_Minor) >= MIN_Minor: # and int(VER_Release >=  MIN_Release):
       print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
       compatibility = True
 
