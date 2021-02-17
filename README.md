@@ -70,6 +70,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
 * tempo light flashing while playing with PLAY and REC button sometimes becomes out of sync.
 * script slows down when machine is taxed. Currently working on threading/multitreading to overcome this issue.
+* **Mute** and **Solo** buttons do not light up when shift isn't pushed. Can't get access to those buttons as NI doesn't allow it.
 
 
 
