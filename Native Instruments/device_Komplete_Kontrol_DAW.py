@@ -58,6 +58,8 @@ import ui # This module allows you to control FL Studio User interface (eg. scro
 import arrangement as arrange # This module allows you to control FL Studio Playlist Arrangements. I've changed it to arrange because I didn't want to 
                               # write out arrangement every time.
 
+import plugins # this module allows for the use of plugis to be control
+
 # The following are the standard Python modules found outside FL Studio's Python enviorment. 
 
 import midi # This module allows for simple sending and receiving of MIDI messages from your device
@@ -111,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v5.1.0"
+VERSION_NUMBER = "v5.5.0"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -123,7 +125,7 @@ MIN_Release = 2
 
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Ending KK"
-OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\nCopyright © 2020 Duwayne Wright\n"
+OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\nCopyright © 2021 Duwayne Wright\n"
 
 
 
@@ -137,7 +139,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
 
-     def OnMidiMsg(self, event): #listens for button or knob activity
+     def TOnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
          global winSwitch
@@ -357,7 +359,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                if winSwitch == 0:
                   ui.showWindow(1)
                   winSwitch += 1
-                  ui.setHintMsg("Switch to Channel Rack")
+                  ui.setHintMsg("Switch to Channel Rack") # channel ra
 
                elif winSwitch == 1:
                   ui.showWindow(0)
@@ -919,14 +921,17 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
                event.handled = True
                ui.down(1)
+               
 
             elif (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == left): #4d encoder spin left 
                event.handled = True
                ui.up(1)
+               
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
                ui.right(1)
+               
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
@@ -934,11 +939,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
-               ui.up(1)
+               #ui.up()
+               plugins.nextPreset(channels.channelNumber(channels.selectedChannel()))
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
-               ui.down(1)
+               #ui.down(1)
+               plugins.prevPreset(channels.channelNumber(channels.selectedChannel()))
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
@@ -1357,11 +1364,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          
             if (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == right): #4d encoder push right
                event.handled = True
-               ui.right(1)
+               #ui.right(1)
+               ui.next()
+               
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
-               ui.left(1)
+               #ui.left(1)
+               ui.previous()
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
@@ -1431,7 +1441,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
  
  
-     def UpdateLEDs(self): #controls all nights located within buttons
+     def TUpdateLEDs(self): #controls all nights located within buttons
          """Function for device light communication (excluding OLED screen)"""
 
          if device.isAssigned():
@@ -1496,7 +1506,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
 
-     def UpdateOLED(self): #controls OLED screen messages
+     def TUpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
 
         if ui.getFocused(0) == True: #mixer volume control
@@ -1877,12 +1887,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          
 
 
-     def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
+     def TOnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
 
-     def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
+     def TOnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
        
 
@@ -1909,23 +1919,21 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
              nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
  
 
-     #def OnMidiMsg(self, event):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
+     def OnMidiMsg(self, event):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
 
-     #def UpdateLEDs(self):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
+     def UpdateLEDs(self):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
 
-     #def UpdateOLED(self):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
+     def UpdateOLED(self):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
 
-     #def OnRefresh(self, flags):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
+     def OnRefresh(self, flags):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
 
-     #def OnUpdateBeatIndicator(self, Value):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
+     def OnUpdateBeatIndicator(self, Value):
+         _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
 
-     #def OnIdle(self):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnIdle, (self,))
 
 
 

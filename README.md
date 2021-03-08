@@ -1,5 +1,5 @@
-# FL NI KK v5.1.0 for FL Studio 20.7.2 and higher
-### **this version does not work with FL Studio 20.7.1**
+# FL NI KK v5.5.0 for FL Studio 20.7.2 and higher
+### **this version does not work with FL Studio 20.7.1 or lower**
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -7,23 +7,10 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
-#### What's New since v4.9.1
-
-* **shift + 4D button** - switching between mixer, browser, channel rack, playlist and piano roll (when visable) 
-* **shift + 4D button** double press opens plugin picker
-* when the mixer is the active window
-  * able to see what the 8 knobs are linked to when you move the 4D jog wheel
-* when playlist is the active window
-  * can add auto markers in playlist (double click to add, double click again at same point to remove)
-  * time/seconds or beats/bars on OLED when playlist is selected (depending on what you have active in FL Studio)
-  * jumping between markers in playlist (left and right on 4d)
-* when broswer is the active window
-  * double press 4D button when plugin or sound is selected. Right click menu will open.
-* when the channel rack is the active window
-  * navigating between groups on the channel rack (double click to open menu)
-* version check before script loads
-* beta compatibility
-* bug fixes (disabled threading)
+#### What's New since v5.1.0
+* Go through presets on the channel rack when plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins interal structure)
+* speed improments through multi-treading processing
+* switch between multiple instances of Komplete Kontrol Plugin by pressing shift+instance, then scroll through instances with 4D
 
 
 ##### Key Features
@@ -63,6 +50,20 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
 * **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want to load (macOS, see known issues)
 * improvements with track names on OLED
+* **shift + 4D button** - switching between mixer, browser, channel rack, playlist and piano roll (when visable) 
+* **shift + 4D button** double press opens plugin picker
+* when the mixer is the active window
+  * able to see what the 8 knobs are linked to when you move the 4D jog wheel
+* when playlist is the active window
+  * can add auto markers in playlist (double click to add, double click again at same point to remove)
+  * time/seconds or beats/bars on OLED when playlist is selected (depending on what you have active in FL Studio)
+  * jumping between markers in playlist (left and right on 4d)
+* when broswer is the active window
+  * double press 4D button when plugin or sound is selected. Right click menu will open.
+* when the channel rack is the active window
+  * navigating between groups on the channel rack (double click to open menu)
+
+
 
 ##### Known Issues
 * **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
