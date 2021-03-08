@@ -8,10 +8,9 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
 #### What's New since v5.1.0
-* Go through presets on the channel rack when plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins interal structure)
-* speed improments through multi-treading processing
+* Go through presets on the channel rack when a plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins internal structure)
+* speed improvements through multi-threading processing
 * switch between multiple instances of Komplete Kontrol Plugin by pressing shift+instance, then scroll through instances with 4D
-
 
 ##### Key Features
 * **transport** play, record, stop control
