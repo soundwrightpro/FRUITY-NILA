@@ -1,4 +1,4 @@
-# FL NI KK v5.5.0 for FL Studio 20.7.2 and higher
+# FL NI KK v6.0.0 for FL Studio 20.7.2 and higher
 ### **this version does not work with FL Studio 20.7.1 or lower**
 
 #### Written by Duwayne 'Sound' Wright
@@ -11,6 +11,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * Go through presets on the channel rack when a plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins internal structure)
 * speed improvements through multi-threading processing
 * switch between multiple instances of Komplete Kontrol Plugin by pressing shift+instance, then scroll through instances with 4D
+* mute & solo buttons light up with active in Channel Rack or Mixer
+* bug fixes
 
 ##### Key Features
 * **transport** play, record, stop control
