@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v6.0.2"
+VERSION_NUMBER = "v6.0.3"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -1558,24 +1558,24 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
-               event.handled = True
+               
                nihia.dataOut(nihia.buttons["MUTE_SELECTED"], off)
                nihia.mixerSendInfo("IS_MUTE",0, value=0)
                
                
             elif mixer.isTrackEnabled(mixer.trackNumber()) == 0: #mute light on
-               event.handled = True
+               
                nihia.dataOut(nihia.buttons["MUTE_SELECTED"], on)
                nihia.mixerSendInfo("IS_MUTE",0, value=1)
 
 
             if mixer.isTrackSolo(mixer.trackNumber()) == 0: #solo light off
-               event.handled = True
+               
                nihia.dataOut(nihia.buttons["SOLO_SELECTED"], off)
                nihia.mixerSendInfo("IS_SOLO",0, value=0)
 
             elif mixer.isTrackSolo(mixer.trackNumber()) == 1: #solo light on
-               event.handled = True
+               
                if mixer.isTrackMuted(mixer.trackNumber()) == 0:
                   nihia.dataOut(nihia.buttons["SOLO_SELECTED"], on)
                   nihia.mixerSendInfo("IS_SOLO",0, value=1)
