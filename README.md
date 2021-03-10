@@ -1,4 +1,4 @@
-# FL NI KK v6.0.0 for FL Studio 20.7.2 and higher
+# FL NI KK v6.0.1 for FL Studio 20.7.2 and higher
 ### **this version does not work with FL Studio 20.7.1 or lower**
 
 #### Written by Duwayne 'Sound' Wright
