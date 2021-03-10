@@ -58,8 +58,11 @@ buttons = {
     "QUANTIZE": 34,
     "AUTO": 35,
 
-    "MUTE": 67,
-    "SOLO": 68,
+    "IS_MUTE": 67,
+    "IS_SOLO": 68,
+
+    "MUTE_SELECTED": 102,
+    "SOLO_SELECTED": 103,
 
     # The 4D encoder events use the same data1, but different data2
     # For example, if you want to retrieve the data1 value for ENCODER_PLUS 
@@ -99,7 +102,10 @@ knobs = {
     "KNOB_4B": 92,
     "KNOB_5B": 93,
     "KNOB_6B": 94,
-    "KNOB_7B": 95
+    "KNOB_7B": 95,
+
+    "INCREASE": 63,
+    "DECREASE": 65
 }
 
 touch_strips = {
@@ -112,6 +118,58 @@ message = {
    "CHANNEL_RACK": "C| ",
    "BROWSER": "B| "
 }
+
+
+mixerinfo_types = {
+    "VOLUME": 70,
+    "PAN": 71,
+    "IS_MUTE": 67,
+    "IS_SOLO": 68,
+    "NAME": 72,
+    
+    # This one makes more sense on DAWs that create more tracks as the user requests it, as there might be projects (for example) on Ableton Live
+    # with only two tracks
+    # However, since FL Studio has all playlist and mixer tracks created, it has no use at all (maybe on the channel rack) and all tracks should have
+    # their existance reported as 1 (which means the track exists) in order to light on the Mute and Solo buttons on the device
+    "EXIST": 64,
+    "SELECTED": 66,
+
+    "SELECTED_AVAILABLE": 104,
+    "SELECTED_MUTE_BY_SOLO": 105,
+
+    # This one only will make an effect on devices with full feature support, like the S-Series MK2 and it's used to send the peak meter information
+    "PEAK": 73,
+
+    # Serves to tell the device if there's a Komplete Kontrol instance added in a certain track or not
+    # In case there's one, we would use mixerSendInfo("KOMPLETE_INSTANCE", trackID, info="NIKBxx")
+    # In case there's none, we would use mixerSendInfo("KOMPLETE_INSTANCE", trackID, info="")
+    # NIKBxx is the name of the first automation parameter of the Komplete Kontrol plugin
+    "KOMPLETE_INSTANCE": 65,
+
+    # The S-Series keyboard have two arrows that graphically show the position of the volume fader and the pan on the screen
+    # These definitions have the MIDI values that have to be set as the data1 value of a simple MIDI message to tell the device where the volume arrow
+    # or the pan arrow should be for the first track
+    # For the rest of the tracks, you sum incrementally
+    # Example:
+    # ----------------------------------------------------
+    # BF 50 00  // Moves the volume fader of the first track down to the bottom 
+    # BF 50 40  // Moves the volume fader of the first track to the middle
+    # 
+    # BF 51 00  // Moves the volume fader of the second track down to the bottom 
+    # BF 51 40  // Moves the volume fader of the second track to the middle
+    # 
+    # BF 58 00  // Moves the pan fader of the first track down to the bottom 
+    # BF 58 40  // Moves the pan fader of the first track to the middle
+    # 
+    # BF 59 00  // Moves the pan fader of the second track down to the bottom 
+    # BF 59 40  // Moves the pan fader of the second track to the middle    
+    
+    "VOLUME_GRAPH": 80,
+    "PAN_GRAPH": 88,
+}
+
+
+
 
 #on/off values
 on = 1
@@ -279,28 +337,6 @@ def printPan(trkn, pan):
 
       device.midiOutSysex(bytes(header))
 
-def oled_mute_solo(lighttype, state): 
-
-   header = [0, 240, 0, 33, 9, 0, 0, 68, 67, 1, 0]
-
-   omute = [lighttype, state, 0]
-   osolo = [lighttype, state, 0]
-
-   n = 0
-
-   if lighttype == buttons["MUTE"]:
-      while n < len(omute):
-         header.append(omute[n])
-         n += 1
-
-   elif lighttype == buttons["SOLO"]:
-      while n < len(osolo):
-         header.append(osolo[n])
-         n += 1
-
-   header.append(247)
-   device.midiOutSysex(bytes(header))
-
 # Method to enable the deep integration features on the device
 def initiate():
     """ Acknowledges the device that a compatible host has been launched, wakes it up from MIDI mode and activates the deep
@@ -309,7 +345,7 @@ def initiate():
 
     # Sends the MIDI message that initiates the handshake: BF 01 01
 
-    dataOut(1, 1)
+    dataOut(1,3)
     #turning on group of lights not initialized during the nihia.initiate()
     dataOut(buttons["CLEAR"], on)
     dataOut(buttons["UNDO"], on) 
@@ -377,39 +413,102 @@ mixerinfo_types = {
     "SELECTED": 66,
 }
 
-# Method for reporting information about the mixer tracks, which is done through Sysex
+# Method for reporting information about the mixer tracks, which is done through SysEx
 # Couldn't make this one as two different functions under the same name since Python doesn't admit function overloading
 def mixerSendInfo(info_type: str, trackID: int, **kwargs):
     """ Sends info about the mixer tracks to the device.
     
-    info_type -- The kind of information you're going to send. ("VOLUME", "PAN"...) Defined on nihia.mixerinfo_types
+    ### Parameters
+
+     - info_type: The kind of information you're going to send as defined on `mixerinfo_types`. ("VOLUME", "PAN"...)
+         - Note: If declared as `"EXIST"`, you can also declare the track type on the `value` argument as a string (values are contained in `track_types` dictionary).
     
-    trackID -- From 0 to 7. Tells the device which track from the ones that are showing up in the screen you're going to tell info about.
-    Third agument depends on what kind of information you are going to send:
-    value (integer) -- Can be 0 (no) or 1 (yes). Used for two-state properties like to tell if the track is solo-ed or not.
-    
-    or
-    info (string) -- Used for track name, track pan and track volume.
+     - trackID: From 0 to 7. Tells the device which track from the ones that are showing up in the screen you're going to tell info about.
+
+    The third (and last) argument depends on what kind of information you are going to send:
+
+     - value (integer): Can be 0 (no) or 1 (yes). Used for two-state properties like to tell if the track is solo-ed or not (except `"EXIST"`).
+
+     - info: Used for track name, track pan, track volume and the Komplete Kontrol instance ID.
+
+     - peakValues: For peak values. They can be neither integers or floats, and they will get reformated automatically. You can
+    also use the `mixer.getTrackPeaks` function directly to fill the argument, but remember you have to specify the left and the right channel separately. You have to 
+    report them as a list of values: `peak=[peakL_0, peakR_0, peakL_1, peakR_1 ...]`
     """
 
     # Gets the inputed values for the optional arguments from **kwargs
     value = kwargs.get("value", 0)
     info = kwargs.get("info", None)
 
-    # Defines the behaviour for when additional info is reported (for track name, track pan and track volume)
-    if info != None:
+    peakValues = kwargs.get("peakValues", None)
 
+    # Compatibility behaviour for older implementations of the layer before the addition of track_types
+    # This will retrieve the correct value in case the developer used the string based declaration
+    if type(value) == str:
+        value = track_types.get(value, 0)
+
+
+    # Defines the behaviour for when additional info is reported (for track name, track pan, track volume and peak values)
+    if info != None:
         # Tells Python that the additional_info argument is in UTF-8
         info = info.encode("UTF-8")
+
+        # Converts the text string to a list of Unicode values
+        info = list(bytes(info))
         
         # Conforms the kind of message midiOutSysex is waiting for
-        msg = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, mixerinfo_types.get(info_type), value, trackID] + list(bytes(info)) + [247]
+        msg = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, mixerinfo_types.get(info_type), value, trackID] + info + [247]
+
+        # Warps the data and sends it to the device
+        device.midiOutSysex(bytes(msg))
+
+    # For peak values
+    # Takes each value from the dictionary and rounds it in order to avoid conflicts with hexadecimals only being "compatible" with integer numbers 
+    # in case peak values are specified
+    elif peakValues != None:
+            
+        for x in range(0, 16):
+            # Makes the max of the peak meter on the device match the one on FL Studio (values that FL Studio gives seem to be infinite)
+            if peakValues[x] >= 1.1:
+                peakValues[x] = 1.1
+        
+            # Translates the 0-1.1 range to 0-127 range
+            peakValues[x] = peakValues[x] * (127 / 1.1)
+        
+            # Truncates the possible decimals and declares the number as an integer to avoid errors in the translation of the data
+            peakValues[x] = int(math.trunc(peakValues[x]))
+
+        # Conforms the kind of message midiOutSysex is waiting for
+        msg = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0, mixerinfo_types.get(info_type), 2, trackID] + peakValues + [247]
 
         # Warps the data and sends it to the device
         device.midiOutSysex(bytes(msg))
 
     # Defines how the method should work normally
-    else:
+    elif info == None:
         
         # Takes the information and wraps it on how it should be sent and sends the message
         device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, mixerinfo_types.get(info_type), value, trackID, 247]))
+
+def mixerSendInfoSelected(info_type: str, info: str):
+    """ Makes the device report MIDI messages for volume and pan adjusting for the selected track when exsitance of this track is reported as true.
+    ### Parameters
+     - info_type: The data you are going to tell about the selected track.
+         - SELECTED: If there's a track selected on the mixer or not.
+         - MUTE_BY_SOLO: To tell if it's muted by solo.
+     - info: The value of the info you are telling.
+         - `info_type = SELECTED`: The track type as defined on `track_types`.
+         - `info_type = MUTE_BY_SOLO`: Yes or no.
+    """
+    if info_type == "SELECTED":
+        info_type = mixerinfo_types.get("SELECTED_AVAILABLE")
+
+        info = track_types.get(info)
+    
+    # Not implemented yet in FL Studio
+    elif info_type == "MUTE_BY_SOLO":
+        info_type = mixerinfo_types.get("SELECTED_MUTE_BY_SOLO")
+    
+
+    # Sends the message
+    dataOut(info_type, info)
