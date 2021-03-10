@@ -1957,19 +1957,19 @@ def OnInit():
       pass
 
 def OnRefresh(flags):
-   #try:
-   KompleteKontrolBase.OnRefresh(flags)
-   #except:
-   #   pass
+   try:
+      KompleteKontrolBase.OnRefresh(flags)
+   except:
+      pass
 
 def OnUpdateBeatIndicator(Value):
    KompleteKontrolBase.OnUpdateBeatIndicator(Value)
 
 def OnMidiMsg(event):
-   #try:
-   KompleteKontrolBase.OnMidiMsg(event)
-   #except:
-   #  pass
+   try:
+      KompleteKontrolBase.OnMidiMsg(event)
+   except:
+     pass
 
 def OnDeInit():
    if ui.isClosing() == True:
