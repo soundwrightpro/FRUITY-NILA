@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v6.0.3"
+VERSION_NUMBER = "v6.0.4"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -139,7 +139,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
       nihia.printText(0, HELLO_MESSAGE)
       time.sleep(timedelay)
 
-     def TOnMidiMsg(self, event): #listens for button or knob activity
+     def OnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
          (only raw data is included here: handled, timestamp, status, data1, data2, port, sysex, pmeflags)"""
          global winSwitch
@@ -1442,7 +1442,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
  
  
-     def TUpdateLEDs(self): #controls all nights located within buttons
+     def UpdateLEDs(self): #controls all nights located within buttons
          """Function for device light communication (excluding OLED screen)"""
 
          if device.isAssigned():
@@ -1506,7 +1506,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
 
-     def TUpdateOLED(self): #controls OLED screen messages
+     def UpdateOLED(self): #controls OLED screen messages
         """Function for OLED control"""
 
         
@@ -1896,12 +1896,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          
 
 
-     def TOnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
+     def OnRefresh(self, flags): #when something happens in FL Studio, update the keyboard lights & OLED
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
 
-     def TOnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
+     def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
        
 
@@ -1928,20 +1928,20 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
              nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
  
 
-     def OnMidiMsg(self, event):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
+     #def OnMidiMsg(self, event):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
 
-     def UpdateLEDs(self):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
+     #def UpdateLEDs(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
 
-     def UpdateOLED(self):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
+     #def UpdateOLED(self):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
 
-     def OnRefresh(self, flags):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
+     #def OnRefresh(self, flags):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
 
-     def OnUpdateBeatIndicator(self, Value):
-         _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
+     #def OnUpdateBeatIndicator(self, Value):
+     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
 
 
 
