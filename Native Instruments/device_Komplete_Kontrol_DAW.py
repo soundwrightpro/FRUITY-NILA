@@ -941,12 +941,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                #ui.up()
-               plugins.nextPreset(channels.channelNumber(channels.selectedChannel()))
+               plugins.prevPreset(channels.channelNumber(channels.selectedChannel()))
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                #ui.down(1)
-               plugins.prevPreset(channels.channelNumber(channels.selectedChannel()))
+               plugins.nextPreset(channels.channelNumber(channels.selectedChannel()))
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
