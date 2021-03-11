@@ -1515,8 +1515,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             xy = 1.25
 
-            print(mixer.isTrackMuted(mixer.trackNumber() + 1))
-
             if mixer.trackNumber() <= currentUtility:
                nihia.printText(0, mixer.getTrackName(mixer.trackNumber() + 0))
                nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
