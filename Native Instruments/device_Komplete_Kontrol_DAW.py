@@ -1515,46 +1515,118 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             xy = 1.25
 
+            print(mixer.isTrackMuted(mixer.trackNumber() + 1))
+
             if mixer.trackNumber() <= currentUtility:
                nihia.printText(0, mixer.getTrackName(mixer.trackNumber() + 0))
                nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
                nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
-               
 
             if mixer.trackNumber() <= 125:
                nihia.printText(1, mixer.getTrackName(mixer.trackNumber() + 1))
                nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
                nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
+               
+               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",1, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",1, value=0)
+
+               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",1, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",1, value=0)               
+                  
 
             if mixer.trackNumber() <= 124:
                nihia.printText(2, mixer.getTrackName(mixer.trackNumber() + 2))
                nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
                nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
+               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",2, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",2, value=0)
+
+               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",2, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",2, value=0)  
+
             if mixer.trackNumber() <= 123:
                nihia.printText(3, mixer.getTrackName(mixer.trackNumber() + 3))
                nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
                nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
+
+               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",3, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",3, value=0)
+
+               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",3, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",3, value=0)  
 
             if mixer.trackNumber() <= 122:
                nihia.printText(4, mixer.getTrackName(mixer.trackNumber() + 4))
                nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
                nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
+               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",4, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",4, value=0)
+
+               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",4, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",4, value=0)  
+
             if mixer.trackNumber() <= 121:
                nihia.printText(5, mixer.getTrackName(mixer.trackNumber() + 5))
                nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
                nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
+
+               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",5, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",5, value=0)
+
+               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",5, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",5, value=0)  
 
             if mixer.trackNumber() <= 120:
                nihia.printText(6, mixer.getTrackName(mixer.trackNumber() + 6))
                nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
                nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
+               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",6, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",6, value=0)
+
+               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",6, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",6, value=0)  
+
             if mixer.trackNumber() <= 119:
                nihia.printText(7, mixer.getTrackName(mixer.trackNumber() + 7))
                nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
                nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
+
+               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",7, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",7, value=0)
+
+               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",7, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",7, value=0)  
                
 
             if mixer.isTrackEnabled(mixer.trackNumber()) == 1: #mute light off
