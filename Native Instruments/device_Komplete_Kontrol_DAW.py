@@ -1541,12 +1541,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
                nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
-               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackMuted(mixer.trackNumber() + 2) == True:
                   nihia.mixerSendInfo("IS_MUTE",2, value=1)
                else:
                   nihia.mixerSendInfo("IS_MUTE",2, value=0)
 
-               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackSolo(mixer.trackNumber() + 2) == True:
                   nihia.mixerSendInfo("IS_SOLO",2, value=1)
                else:
                   nihia.mixerSendInfo("IS_SOLO",2, value=0)  
@@ -1556,12 +1556,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
                nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
-               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackMuted(mixer.trackNumber() + 3) == True:
                   nihia.mixerSendInfo("IS_MUTE",3, value=1)
                else:
                   nihia.mixerSendInfo("IS_MUTE",3, value=0)
 
-               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackSolo(mixer.trackNumber() + 3) == True:
                   nihia.mixerSendInfo("IS_SOLO",3, value=1)
                else:
                   nihia.mixerSendInfo("IS_SOLO",3, value=0)  
@@ -1571,12 +1571,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
                nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
-               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackMuted(mixer.trackNumber() + 4) == True:
                   nihia.mixerSendInfo("IS_MUTE",4, value=1)
                else:
                   nihia.mixerSendInfo("IS_MUTE",4, value=0)
 
-               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackSolo(mixer.trackNumber() + 4) == True:
                   nihia.mixerSendInfo("IS_SOLO",4, value=1)
                else:
                   nihia.mixerSendInfo("IS_SOLO",4, value=0)  
@@ -1586,12 +1586,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
                nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
-               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackMuted(mixer.trackNumber() + 5) == True:
                   nihia.mixerSendInfo("IS_MUTE",5, value=1)
                else:
                   nihia.mixerSendInfo("IS_MUTE",5, value=0)
 
-               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackSolo(mixer.trackNumber() + 5) == True:
                   nihia.mixerSendInfo("IS_SOLO",5, value=1)
                else:
                   nihia.mixerSendInfo("IS_SOLO",5, value=0)  
@@ -1601,12 +1601,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
                nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
-               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackMuted(mixer.trackNumber() + 6) == True:
                   nihia.mixerSendInfo("IS_MUTE",6, value=1)
                else:
                   nihia.mixerSendInfo("IS_MUTE",6, value=0)
 
-               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackSolo(mixer.trackNumber() + 6) == True:
                   nihia.mixerSendInfo("IS_SOLO",6, value=1)
                else:
                   nihia.mixerSendInfo("IS_SOLO",6, value=0)  
@@ -1616,12 +1616,12 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
                nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
 
-               if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackMuted(mixer.trackNumber() + 7) == True:
                   nihia.mixerSendInfo("IS_MUTE",7, value=1)
                else:
                   nihia.mixerSendInfo("IS_MUTE",7, value=0)
 
-               if mixer.isTrackSolo(mixer.trackNumber() + 1) == True:
+               if mixer.isTrackSolo(mixer.trackNumber() + 7) == True:
                   nihia.mixerSendInfo("IS_SOLO",7, value=1)
                else:
                   nihia.mixerSendInfo("IS_SOLO",7, value=0)  
