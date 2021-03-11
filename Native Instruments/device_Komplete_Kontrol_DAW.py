@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v6.0.4"
+VERSION_NUMBER = "v6.0.5"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -1665,69 +1665,159 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(0, 104)
                nihia.printPan(0, 104)
+               nihia.mixerSendInfo("IS_MUTE",0, value=0)
+               nihia.mixerSendInfo("IS_SOLO",0, value=0)
+
 
             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :
                nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 1))
                nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1), 2)))
                nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
+
+               if channels.isChannelMuted(channels.selectedChannel() + 1) == True:
+                  nihia.mixerSendInfo("IS_MUTE",1, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",1, value=0)
+
+               if channels.isChannelSolo(channels.selectedChannel() + 1) == True:
+                  nihia.mixerSendInfo("IS_SOLO",1, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",1, value=0)
+
             else:
                nihia.printText(1, nihia.message["EMPTY"])
                nihia.printVol(1, 104)
                nihia.printPan(1, 104)
+               nihia.mixerSendInfo("IS_MUTE",1, value=0)
+               nihia.mixerSendInfo("IS_SOLO",1, value=0)
 
             if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :
                nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 2))
                nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2), 2)))
                nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)
+
+               if channels.isChannelMuted(channels.selectedChannel() + 2) == True:
+                  nihia.mixerSendInfo("IS_MUTE",2, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",2, value=0)
+
+               if channels.isChannelSolo(channels.selectedChannel() + 2) == True:
+                  nihia.mixerSendInfo("IS_SOLO",2, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",2, value=0)
+
             else:
                nihia.printText(2, nihia.message["EMPTY"])
                nihia.printVol(2, 104)
                nihia.printPan(2, 104)
+               nihia.mixerSendInfo("IS_MUTE",2, value=0)
+               nihia.mixerSendInfo("IS_SOLO",2, value=0)
                
             if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :
                nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 3))
                nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3), 2)))
                nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)
+
+               if channels.isChannelMuted(channels.selectedChannel() + 3) == True:
+                  nihia.mixerSendInfo("IS_MUTE",3, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",3, value=0)
+
+               if channels.isChannelSolo(channels.selectedChannel() + 3) == True:
+                  nihia.mixerSendInfo("IS_SOLO",3, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",3, value=0)
             else:
                nihia.printText(3, nihia.message["EMPTY"])
                nihia.printVol(3, 104)
                nihia.printPan(3, 104)
+               nihia.mixerSendInfo("IS_MUTE",3, value=0)
+               nihia.mixerSendInfo("IS_SOLO",3, value=0)
                
             if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :
                nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 4))
                nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4), 2)))
                nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)
+
+               if channels.isChannelMuted(channels.selectedChannel() + 4) == True:
+                  nihia.mixerSendInfo("IS_MUTE",4, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",4, value=0)
+
+               if channels.isChannelSolo(channels.selectedChannel() + 4) == True:
+                  nihia.mixerSendInfo("IS_SOLO",4, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",4, value=0)
             else:
                nihia.printText(4, nihia.message["EMPTY"])
                nihia.printVol(4, 104)
                nihia.printPan(4, 104)
+               nihia.mixerSendInfo("IS_MUTE",4, value=0)
+               nihia.mixerSendInfo("IS_SOLO",4, value=0)
                
             if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :
                nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 5))
                nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5), 2)))
                nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
+
+               if channels.isChannelMuted(channels.selectedChannel() + 5) == True:
+                  nihia.mixerSendInfo("IS_MUTE",5, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",5, value=0)
+
+               if channels.isChannelSolo(channels.selectedChannel() + 5) == True:
+                  nihia.mixerSendInfo("IS_SOLO",5, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",5, value=0)
+
             else:
                nihia.printText(5, nihia.message["EMPTY"])
                nihia.printVol(5, 104)
                nihia.printPan(5, 104)
+               nihia.mixerSendInfo("IS_MUTE",5, value=0)
+               nihia.mixerSendInfo("IS_SOLO",5, value=0)
                
             if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :
                nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 6))
                nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6), 2)))
                nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
+
+               if channels.isChannelMuted(channels.selectedChannel() + 6) == True:
+                  nihia.mixerSendInfo("IS_MUTE",6, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",6, value=0)
+
+               if channels.isChannelSolo(channels.selectedChannel() + 6) == True:
+                  nihia.mixerSendInfo("IS_SOLO",6, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",6, value=0)
             else:
                nihia.printText(6, nihia.message["EMPTY"])
                nihia.printVol(6, 104)
                nihia.printPan(6, 104)
+               nihia.mixerSendInfo("IS_MUTE",6, value=0)
+               nihia.mixerSendInfo("IS_SOLO",6, value=0)
                
             if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :
                nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 7))
                nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7), 2)))
                nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
+
+               if channels.isChannelMuted(channels.selectedChannel() + 7) == True:
+                  nihia.mixerSendInfo("IS_MUTE",7, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_MUTE",7, value=0)
+
+               if channels.isChannelSolo(channels.selectedChannel() + 7) == True:
+                  nihia.mixerSendInfo("IS_SOLO",7, value=1)
+               else:
+                  nihia.mixerSendInfo("IS_SOLO",7, value=0)
             else:
                nihia.printText(7, nihia.message["EMPTY"])
                nihia.printVol(7, 104)
                nihia.printPan(7, 104)
+               nihia.mixerSendInfo("IS_MUTE",7, value=0)
+               nihia.mixerSendInfo("IS_SOLO",7, value=0)
 
             if channels.isChannelMuted(channels.selectedChannel()) == 0: #mute light off
                
