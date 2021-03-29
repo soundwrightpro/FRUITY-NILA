@@ -352,6 +352,7 @@ def initiate():
     dataOut(buttons["REDO"], on) 
     dataOut(buttons["AUTO"], on) 
     dataOut(buttons["QUANTIZE"], on) 
+    dataOut(buttons["TEMPO"], on)
     device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated
 
     # TODO: Waits and reads the handshake confirmation message

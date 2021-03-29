@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v6.0.5"
+VERSION_NUMBER = "v6.0.7"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -204,6 +204,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
          if (event.data1 == nihia.buttons["TEMPO"]):
             event.handled = True
             transport.stop() #tap tempo
+            
             #BPMv = str(round(mixer.getCurrentTempo()*0.001))+ " BPM"
             #nihia.printText(0, BPMv)
 
