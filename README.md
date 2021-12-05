@@ -1,4 +1,4 @@
-# FL NI KK v6.0.7 for FL Studio 20.8.2 and higher
+# FL NI KK v7.0.0 for FL Studio 20.8.2 and higher
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -6,7 +6,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
-#### What's New since v5.1.0
+#### What's New since v6.0.7
 * dropped older version support. 20.8.2 and higher only!
 * Go through presets on the channel rack when a plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins internal structure)
 * speed improvements through multi-threading processing
