@@ -7,9 +7,9 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
 #### What's New since v7.0.0
+* dropped older version support. 20.9 and higher only!
 * **quantize** has been changed to quick quantize
 * red box around mixers under control
-* dropped older version support. 20.9 and higher only!
 * bug fixes
 
 ##### Key Features
