@@ -1,18 +1,16 @@
-# FL NI KK v7.0.0 for FL Studio 20.8.2 and higher
+# FL NI KK v8.0.0 for FL Studio 20.8.2 and higher
 
 #### Written by Duwayne 'Sound' Wright
 
-Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.7.1 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 or higher for the A-Series or 0.4.4 or higher for the M32 installed**. 
+Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.9 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 or higher for the A-Series or 0.4.4 or higher for the M32 installed**. 
 
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
-#### What's New since v6.0.7
-* dropped older version support. 20.8.2 and higher only!
-* Go through presets on the channel rack when a plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins internal structure)
-* speed improvements through multi-threading processing
-* switch between multiple instances of Komplete Kontrol Plugin by pressing shift+instance, then scroll through instances with 4D
-* mute & solo buttons light up with active in Channel Rack or Mixer
-* bug fixes (Tempo light fix)
+#### What's New since v7.0.0
+* **quantize** has been changed to quick quantize
+* red box around mixers under control
+* dropped older version support. 20.9 and higher only!
+* bug fixes
 
 ##### Key Features
 * **transport** play, record, stop control
@@ -24,11 +22,10 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * **undo/redo** - works as expected, hold shift to redo
 * **four-directional push encoder** - up, down, left, right and push for enter/accept (works on channel rack, mixer, browser and others)
 * **play**, **rec**, **stop**, **loop**, **metro** light up when engaged from FL Studio or controller
-* **quantize** turns off snap, auto (**shift + quantize**) cycles through global snap options
+* **quantize** quick quantize, auto (**shift + quantize**) cycles through global snap options
 * **knobs** All 8 knobs control volume in channel rack or mixer, depending on what windows is active
 * **knobs + shift** controls pan in channel rack or mixer, depending on what windows is active
 * **mute and solo** buttons work on selected track in channel rack or mixer when shift is held down, depending on what windows is active
-* **quantize** light turns off when snap status is none.
 * if the Komplete Control Plugin (not to be confused with the Application) is active, to switch between modes do the following (or vice versa):
   * press **TRACK Instance** and that returns all knobs to FL Studio
   * if FL Studio is active (you can tell if **Scale** & **Arp** buttons are not lit) press in this order, 
@@ -63,14 +60,15 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
   * double press 4D button when plugin or sound is selected. Right click menu will open.
 * when the channel rack is the active window
   * navigating between groups on the channel rack (double click to open menu)
+* Go through presets on the channel rack when a plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins internal structure)
+* switch between multiple instances of Komplete Kontrol Plugin by pressing shift+instance, then scroll through instances with 4D
+* mute & solo buttons light up with active in Channel Rack or Mixer
 
 
 
 ##### Known Issues
 * **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
-* **quantize** button goes between off(snap off) and on (snap on) instead of dim and bright when in use. - todo
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
-* tempo light flashing while playing with PLAY and REC button sometimes becomes out of sync.
 * script slows down when machine is taxed. Currently working on threading/multitreading to overcome this issue.
 * **Mute** and **Solo** buttons do not light up when shift isn't pushed. Can't get access to those buttons as NI doesn't allow it.
 
