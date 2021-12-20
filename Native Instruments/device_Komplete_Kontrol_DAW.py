@@ -113,15 +113,15 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v7.0.0"
+VERSION_NUMBER = "v8.0.0"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
 VER_Release = ui.getVersion(2)
 
 MIN_Major = 20
-MIN_Minor = 8
-MIN_Release = 2
+MIN_Minor = 9
+MIN_Release = 0
 
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
 GOODBYE_MESSAGE = "Ending KK"
@@ -210,17 +210,9 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
          if (event.data1 == nihia.buttons["QUANTIZE"]):
             event.handled = True
-            transport.globalTransport(midi.FPT_Snap, 48) #snap toggle
             self.UpdateLEDs()
-            ui.setHintMsg("Snap")
-
-            if ui.getSnapMode() == 3: # none
-               nihia.printText(0, "Snap Off")
-               time.sleep(timedelay)
-
-            else:
-               nihia.printText(0, "Snap On")
-               time.sleep(timedelay)
+            channels.quickQuantize(channels.channelNumber(),0)
+            ui.setHintMsg("Quick Quantize")
 
          if (event.data1 == nihia.buttons["AUTO"]):
             event.handled = True
@@ -847,36 +839,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                         ui.setHintMsg("Enter") 
                         
             if jogMove == True:# mixer highlighting when jog wheel is moved
-               mixer.deselectAll()
-
-               if mixer.trackNumber()+0 <= 125:
-                  mixer.selectTrack(mixer.trackNumber()+0)
-
-               if mixer.trackNumber()+1 <= 125:
-                  mixer.selectTrack(mixer.trackNumber()+1)
-
-               if mixer.trackNumber()+2 <= 125:
-                  mixer.selectTrack(mixer.trackNumber()+2)
-
-               if mixer.trackNumber()+3 <= 125:   
-                  mixer.selectTrack(mixer.trackNumber()+3)
-
-               if mixer.trackNumber()+4 <= 125:
-                  mixer.selectTrack(mixer.trackNumber()+4)
-
-               if mixer.trackNumber()+5 <= 125:   
-                  mixer.selectTrack(mixer.trackNumber()+5)
-
-               if mixer.trackNumber()+6 <= 125:
-                  mixer.selectTrack(mixer.trackNumber()+6)
-
-               if mixer.trackNumber()+7 <= 125:   
-                  mixer.selectTrack(mixer.trackNumber()+7)
-
-               jogMove = False #resets jog wheel tracker
-            else:
-               pass
-
+               ui.miDisplayRect(mixer.trackNumber()+0,mixer.trackNumber()+7,1000)
 
          elif ui.getFocused(5) == True: # Plugin
 
@@ -1252,6 +1215,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                event.handled = True
                ui.down(1)
                ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
+               
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
@@ -1488,11 +1452,11 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   nihia.dataOut(nihia.buttons["COUNT_IN"], on) 
 
             for f in [ui.getSnapMode()]:
-              if f == 3: #quantize off
-                  nihia.dataOut(nihia.buttons["QUANTIZE"], off)
-                  nihia.dataOut(nihia.buttons["AUTO"], off)
+              if f == 3: #quantize always on
+                  nihia.dataOut(nihia.buttons["QUANTIZE"], on)
+                  nihia.dataOut(nihia.buttons["AUTO"], on)
 
-              elif f != 1: #quantize on
+              elif f != 1: #quantize alwayns on
                   nihia.dataOut(nihia.buttons["QUANTIZE"], on)
                   nihia.dataOut(nihia.buttons["AUTO"], on)
                   
