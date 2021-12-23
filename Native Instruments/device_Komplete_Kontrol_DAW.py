@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v8.0.0"
+VERSION_NUMBER = "v8.0.1"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -1275,6 +1275,36 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
 
          elif ui.getFocused(3) == True: # Piano Roll:
+
+            #knob for volume
+            if (event.data1 == nihia.knobs["KNOB_0A"]):
+             event.handled = True  
+             if event.data2 == nihia.knobs["DECREASE"]:
+                x = (channels.getChannelVolume(channels.selectedChannel() + 0))
+                y = round(x,2)
+                if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
+                  channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
+                  nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+       
+             elif event.data2 == nihia.knobs["INCREASE"]:
+                x = (channels.getChannelVolume(channels.selectedChannel() + 0))
+                y = round(x,2)
+                channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
+                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+
+            #knob for pan
+            if (event.data1 == nihia.knobs["KNOB_0B"]):
+             event.handled = True  
+             if event.data2 == nihia.knobs["DECREASE"]:
+                x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                channels.setChannelPan((channels.selectedChannel() + 0), (x - knobinc) ) # pan values go down
+                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
+  
+             elif event.data2 == nihia.knobs["INCREASE"]:
+                x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
+                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
+
             
             
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
