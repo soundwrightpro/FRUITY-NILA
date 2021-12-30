@@ -34,16 +34,16 @@
 # SOFTWARE.
 
 import device
-import general
 import ui
+import plugins
+import channels
+import math
 
-import midi
-
-import nihia
 import device_Komplete_Kontrol_DAW as kkDAW
+import nihia
 
 
-class KeyKompleteKontrolMIDI(): #used a class to shield against crashes
+class KeyKompleteKontrolMIDI(): # Used a class to shield against crashes
      
     def OnInit(self):
         kkDAW.OnInit()
@@ -53,10 +53,17 @@ class KeyKompleteKontrolMIDI(): #used a class to shield against crashes
         if (event.data1 == nihia.touch_strips["PITCH"]):
             event.handled = False
 
+        # Modulation Wheel
         if (event.data1 == nihia.touch_strips["MOD"]):
-            event.handled = False
-            ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
-            nihia.printText(1, "TESTING")
+            event.handled = True
+            # The plugin in the current selected channel will be the one that receives the modulation wheel value
+            if plugins.isValid(channels.selectedChannel()):
+                # Value 4097 is the default CC parameter for the Modulation Wheel in most Plugins
+                # Value 0.50 is a magic number to get a more precise Modulation Wheel output value
+                plugins.setParamValue( (event.data2/127/10)/0.50/2*10, 4097,channels.selectedChannel())
+            else:
+                ui.setHintMsg("Modulation: %s" % round(event.data2/127 ,2))
+
 
 
 KompleteKontrolMIDI = KeyKompleteKontrolMIDI()
@@ -67,3 +74,4 @@ def OnInit():
 
 def OnMidiIn(event):
     KompleteKontrolMIDI.OnMidiIn(event)
+
