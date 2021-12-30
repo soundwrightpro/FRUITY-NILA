@@ -43,7 +43,7 @@ import nihia
 import device_Komplete_Kontrol_DAW as kkDAW
 
 
-class KeyKompleteKontrolMIDI(): #used a class to sheild against crashes
+class KeyKompleteKontrolMIDI(): #used a class to shield against crashes
      
     def OnInit(self):
         kkDAW.OnInit()
