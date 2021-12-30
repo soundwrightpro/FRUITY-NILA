@@ -62,7 +62,7 @@ class KeyKompleteKontrolMIDI(): # Used a class to shield against crashes
                 # Value 0.50 is a magic number to get a more precise Modulation Wheel output value
                 plugins.setParamValue( (event.data2/127/10)/0.50/2*10, 4097,channels.selectedChannel())
             else:
-                ui.setHintMsg("Modulation: %s" % round(event.data2/127 ,2))
+                ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
 
 
 
