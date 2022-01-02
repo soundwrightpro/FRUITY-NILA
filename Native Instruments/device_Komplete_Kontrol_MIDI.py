@@ -51,9 +51,9 @@ class KeyKompleteKontrolMIDI(): # Used a class to shield against crashes
     def OnMidiIn(self, event):
         # Pitch Bend
         # For the A-Series, the return value is always 0. However when the pitch bend wheel is all the way up, it returns 127.
-        if (event.data1 == nihia.touch_strips["PITCH"] or event.data1 == 127):
-            channels.setChannelPitch(channels.channelNumber(),(127/64)*event.data2-127,1)
-            event.handled = True
+        #if (event.data1 == nihia.touch_strips["PITCH"] or event.data1 == 127):
+        #    channels.setChannelPitch(channels.channelNumber(),(127/64)*event.data2-127,1)
+        #    event.handled = True
 
         # Modulation
         if (event.data1 == nihia.touch_strips["MOD"]):

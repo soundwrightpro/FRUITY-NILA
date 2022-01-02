@@ -1,4 +1,4 @@
-# FL NI KK v8.0.1 for FL Studio 20.8.2 and higher
+# FL NI KK v8.0.5 for FL Studio 20.8.2 and higher
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -7,6 +7,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 ### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
 #### What's New since v7.0.0
+* **mod wheel** and **pitch wheel** support on plugins that have that function
+  * set range to 12 on Pitch in the Channel Window for Pitch to function correctly
 * dropped older version support. 20.9 and higher only!
 * volume control in the piano roll for the selected sound
 * **quantize** has been changed to quick quantize
