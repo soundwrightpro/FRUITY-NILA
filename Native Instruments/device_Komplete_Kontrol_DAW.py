@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v8.0.1"
+VERSION_NUMBER = "v8.0.5"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
