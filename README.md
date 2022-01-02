@@ -1,10 +1,10 @@
-# FL NI KK v8.0.5 for FL Studio 20.8.2 and higher
+# FL NI KK v8.0.7 for FL Studio 20.8.2 and higher
 
 #### Written by Duwayne 'Sound' Wright
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.9 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 or higher for the A-Series or 0.4.4 or higher for the M32 installed**. 
 
-### Have a question? Want to be a beta tester for S-Series developement? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
+### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
 #### What's New since v7.0.0
 * **mod wheel** and **pitch wheel** support on plugins that have that function
@@ -13,7 +13,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * volume control in the piano roll for the selected sound
 * **quantize** has been changed to quick quantize
 * red box around mixers under control
-* bug fixes
+* removed legacy code in regards dB display on controller and implemented new code for same function
+* bug fixes 
 
 ##### Key Features
 * **transport** play, record, stop control
@@ -51,7 +52,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
 * **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want to load (macOS, see known issues)
 * improvements with track names on OLED
-* **shift + 4D button** - switching between mixer, browser, channel rack, playlist and piano roll (when visable) 
+* **shift + 4D button** - switching between mixer, browser, channel rack, playlist and piano roll (when visible) 
 * **shift + 4D button** double press opens plugin picker
 * when the mixer is the active window
   * able to see what the 8 knobs are linked to when you move the 4D jog wheel
@@ -59,7 +60,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
   * can add auto markers in playlist (double click to add, double click again at same point to remove)
   * time/seconds or beats/bars on OLED when playlist is selected (depending on what you have active in FL Studio)
   * jumping between markers in playlist (left and right on 4d)
-* when broswer is the active window
+* when browser is the active window
   * double press 4D button when plugin or sound is selected. Right click menu will open.
 * when the channel rack is the active window
   * navigating between groups on the channel rack (double click to open menu)
@@ -72,7 +73,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 ##### Known Issues
 * **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
 * Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
-* script slows down when machine is taxed. Currently working on threading/multitreading to overcome this issue.
+* script slows down when machine is taxed. Currently working on threading/multi-treading to overcome this issue.
 * **Mute** and **Solo** buttons do not light up when shift isn't pushed. Can't get access to those buttons as NI doesn't allow it.
 
 
@@ -90,7 +91,7 @@ folder under the following location:
 2. In FL Studio 20.7.1 or higher under the MIDI tab in settings set Komplete Kontrol M DAW as Komplete Kontrol DAW in Input, for your M32 or A-Series. Set Port to 1. Above in Output select "Send Master Sync" once again set Port to 1. See image for clarification.
 
 
-![Installlation GIF](/images/install.gif)
+![Installation GIF](/images/install.gif)
 
 Enjoy
 

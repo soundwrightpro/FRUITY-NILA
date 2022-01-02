@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v8.0.5"
+VERSION_NUMBER = "v8.0.7"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -442,12 +442,15 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
                      mixer.setTrackVolume((mixer.trackNumber() + 0), (x - knobinc) ) # volume values go down
-                     nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
+                     #nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
+                     nihia.printVol(0,(round(mixer.getTrackVolume(mixer.trackNumber()+ 0, 1),1)))
+
                   
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 0))
                      mixer.setTrackVolume((mixer.trackNumber() + 0), (x + knobinc) ) # volume values go up
-                     nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
+                     #nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),3)))
+                     nihia.printVol(0,(round(mixer.getTrackVolume(mixer.trackNumber()+ 0, 1),1)))
 
             #knob 1
             if mixer.trackNumber() <= 125:
@@ -459,12 +462,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
                      mixer.setTrackVolume((mixer.trackNumber() + 1), (x - knobinc) ) # volume values go down
-                     nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+                     #nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+                     nihia.printVol(1,(round(mixer.getTrackVolume(mixer.trackNumber()+ 1, 1),1)))
                   
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 1))
                      mixer.setTrackVolume((mixer.trackNumber() + 1), (x + knobinc) ) # volume values go up
-                     nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+                     #nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+                     nihia.printVol(1,(round(mixer.getTrackVolume(mixer.trackNumber()+ 1, 1),1)))
 
             elif mixer.trackNumber()+1 >= 125: 
                nihia.printText(1, nihia.message["EMPTY"])
@@ -480,12 +485,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
                      mixer.setTrackVolume((mixer.trackNumber() + 2), (x - knobinc) ) # volume values go down
-                     nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+                     #nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+                     nihia.printVol(2,(round(mixer.getTrackVolume(mixer.trackNumber()+ 2, 1),1)))
                   
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 2))
                      mixer.setTrackVolume((mixer.trackNumber() + 2), (x + knobinc) ) # volume values go up
-                     nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+                     #nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+                     nihia.printVol(2,(round(mixer.getTrackVolume(mixer.trackNumber()+ 2, 1),1)))
 
             elif mixer.trackNumber()+2 >= 125:    
                nihia.printText(2, nihia.message["EMPTY"])
@@ -501,12 +508,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
                      mixer.setTrackVolume((mixer.trackNumber() + 3), (x - knobinc) ) # volume values go down
-                     nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+                     #nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+                     nihia.printVol(3,(round(mixer.getTrackVolume(mixer.trackNumber()+ 3, 1),1)))
                   
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 3))
                      mixer.setTrackVolume((mixer.trackNumber() + 3), (x + knobinc) ) # volume values go up
-                     nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+                     #nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+                     nihia.printVol(3,(round(mixer.getTrackVolume(mixer.trackNumber()+ 3, 1),1)))
 
             elif mixer.trackNumber()+3 >= 125:    
                nihia.printText(3, nihia.message["EMPTY"])
@@ -522,12 +531,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
                      mixer.setTrackVolume((mixer.trackNumber() + 4), (x - knobinc) ) # volume values go down
-                     nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+                     #nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+                     nihia.printVol(4,(round(mixer.getTrackVolume(mixer.trackNumber()+ 4, 1),1)))
                   
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 4))
                      mixer.setTrackVolume((mixer.trackNumber() + 4), (x + knobinc) ) # volume values go up
-                     nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+                     #nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+                     nihia.printVol(4,(round(mixer.getTrackVolume(mixer.trackNumber()+ 4, 1),1)))
 
 
             elif mixer.trackNumber()+4 >= 125:    
@@ -544,12 +555,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
                      mixer.setTrackVolume((mixer.trackNumber() + 5), (x - knobinc) ) # volume values go down
-                     nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+                     #nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+                     nihia.printVol(5,(round(mixer.getTrackVolume(mixer.trackNumber()+ 5, 1),1)))
 
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 5))
                      mixer.setTrackVolume((mixer.trackNumber() + 5), (x + knobinc) ) # volume values go up
-                     nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+                     #nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+                     nihia.printVol(5,(round(mixer.getTrackVolume(mixer.trackNumber()+ 5, 1),1)))
 
             elif mixer.trackNumber()+5 >= 125:    
                nihia.printText(5, nihia.message["EMPTY"])
@@ -565,12 +578,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
                      mixer.setTrackVolume((mixer.trackNumber() + 6), (x - knobinc) ) # volume values go down
-                     nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+                     #nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+                     nihia.printVol(6,(round(mixer.getTrackVolume(mixer.trackNumber()+ 6, 1),1)))
 
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 6))
                      mixer.setTrackVolume((mixer.trackNumber() + 6), (x + knobinc) ) # volume values go up
-                     nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+                     #nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+                     nihia.printVol(6,(round(mixer.getTrackVolume(mixer.trackNumber()+ 6, 1),1)))
 
 
             elif mixer.trackNumber()+6 >= 125:    
@@ -587,12 +602,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   if event.data2 == nihia.knobs["DECREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
                      mixer.setTrackVolume((mixer.trackNumber() + 7), (x - knobinc) ) # volume values go down
-                     nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+                     #nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+                     nihia.printVol(7,(round(mixer.getTrackVolume(mixer.trackNumber()+ 7, 1),1)))
 
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (mixer.getTrackVolume(mixer.trackNumber() + 7))
                      mixer.setTrackVolume((mixer.trackNumber() + 7), (x + knobinc) ) # volume values go up
-                     nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+                     #nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+                     nihia.printVol(7,(round(mixer.getTrackVolume(mixer.trackNumber()+ 7, 1),1)))
 
 
             elif mixer.trackNumber()+7 >= 125:    
@@ -854,13 +871,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                      y = round(x,2)
                      if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
                         channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
-                        nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+                        nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1) ,2)))
             
                   elif event.data2 == nihia.knobs["INCREASE"]:
                      x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                      y = round(x,2)
                      channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
-                     nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+                     nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1) ,2)))
 
             # PAN CONTROL
 
@@ -940,13 +957,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                 y = round(x,2)
                 if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
                   channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
-                  nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+                  nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1) ,2)))
        
              elif event.data2 == nihia.knobs["INCREASE"]:
                 x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                 y = round(x,2)
                 channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
-                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1) ,2)))
 
    
             #knob 2
@@ -958,13 +975,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   y = round(x,2)
                   if channels.getChannelVolume(channels.selectedChannel() + 1) != 0 :
                      channels.setChannelVolume((channels.selectedChannel() + 1), (y - knobinc) ) # volume values go down
-                     nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1) ,2)))
+                     nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1, 1) ,2)))
                 
                elif event.data2 == nihia.knobs["INCREASE"]:
                   x = (channels.getChannelVolume(channels.selectedChannel() + 1))
                   y = round(x,2)
                   channels.setChannelVolume((channels.selectedChannel() + 1), (y + knobinc) ) # volume values go up
-                  nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1) ,2)))
+                  nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1, 1) ,2)))
 
             #knob 3
             if (event.data1 == nihia.knobs["KNOB_2A"]):
@@ -975,13 +992,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   y = round(x,2)
                   if channels.getChannelVolume(channels.selectedChannel() + 2) != 0 :
                      channels.setChannelVolume((channels.selectedChannel() + 2), (y - knobinc) ) # volume values go down
-                     nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2) ,2)))
+                     nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2, 1) ,2)))
                 
                elif event.data2 == nihia.knobs["INCREASE"]:
                   x = (channels.getChannelVolume(channels.selectedChannel() + 2))
                   y = round(x,2)
                   channels.setChannelVolume((channels.selectedChannel() + 2), (y + knobinc) ) # volume values go up
-                  nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2) ,2)))
+                  nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2, 1) ,2)))
 
             #knob 4
             if (event.data1 == nihia.knobs["KNOB_3A"]):
@@ -992,13 +1009,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   y = round(x,2)
                   if channels.getChannelVolume(channels.selectedChannel() + 3) != 0 :
                      channels.setChannelVolume((channels.selectedChannel() + 3), (y - knobinc) ) # volume values go down
-                     nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3) ,2)))
+                     nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3, 1) ,2)))
                 
                elif event.data2 == nihia.knobs["INCREASE"]:
                   x = (channels.getChannelVolume(channels.selectedChannel() + 3))
                   y = round(x,2)
                   channels.setChannelVolume((channels.selectedChannel() + 3), (y + knobinc) ) # volume values go up
-                  nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3) ,2)))
+                  nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3, 1) ,2)))
 
             #knob 5
             if (event.data1 == nihia.knobs["KNOB_4A"]):
@@ -1009,13 +1026,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   y = round(x,2)
                   if channels.getChannelVolume(channels.selectedChannel() + 4) != 0 :
                      channels.setChannelVolume((channels.selectedChannel() + 4), (y - knobinc) ) # volume values go down
-                     nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4) ,2)))
+                     nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4, 1) ,2)))
                 
                elif event.data2 == nihia.knobs["INCREASE"]:
                   x = (channels.getChannelVolume(channels.selectedChannel() + 4))
                   y = round(x,2)
                   channels.setChannelVolume((channels.selectedChannel() + 4), (y + knobinc) ) # volume values go up
-                  nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4) ,2)))
+                  nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4, 1) ,2)))
 
             #knob 6
             if (event.data1 == nihia.knobs["KNOB_5A"]):
@@ -1026,13 +1043,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   y = round(x,2)
                   if channels.getChannelVolume(channels.selectedChannel() + 5) != 0 :
                      channels.setChannelVolume((channels.selectedChannel() + 5), (y - knobinc) ) # volume values go down
-                     nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5) ,2)))
+                     nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5, 1) ,2)))
                 
                elif event.data2 == nihia.knobs["INCREASE"]:
                   x = (channels.getChannelVolume(channels.selectedChannel() + 5))
                   y = round(x,2)
                   channels.setChannelVolume((channels.selectedChannel() + 5), (y + knobinc) ) # volume values go up
-                  nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5) ,2)))
+                  nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5, 1) ,2)))
 
             #knob 7
             if (event.data1 == nihia.knobs["KNOB_6A"]):
@@ -1043,13 +1060,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   y = round(x,2)
                   if channels.getChannelVolume(channels.selectedChannel() + 6) != 0 :
                      channels.setChannelVolume((channels.selectedChannel() + 6), (y - knobinc) ) # volume values go down
-                     nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6) ,2)))
+                     nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6, 1) ,2)))
                 
                elif event.data2 == nihia.knobs["INCREASE"]:
                   x = (channels.getChannelVolume(channels.selectedChannel() + 6))
                   y = round(x,2)
                   channels.setChannelVolume((channels.selectedChannel() + 6), (y + knobinc) ) # volume values go up
-                  nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6) ,2)))
+                  nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6, 1) ,2)))
 
             #knob 8
             if (event.data1 == nihia.knobs["KNOB_7A"]):
@@ -1060,13 +1077,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                   y = round(x,2)
                   if channels.getChannelVolume(channels.selectedChannel() + 7) != 0 :
                      channels.setChannelVolume((channels.selectedChannel() + 7), (y - knobinc) ) # volume values go down
-                     nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7) ,2)))
+                     nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7, 1) ,2)))
                 
                elif event.data2 == nihia.knobs["INCREASE"]:
                   x = (channels.getChannelVolume(channels.selectedChannel() + 7))
                   y = round(x,2)
                   channels.setChannelVolume((channels.selectedChannel() + 7), (y + knobinc) ) # volume values go up
-                  nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7) ,2)))
+                  nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7, 1) ,2)))
 
             # PAN CONTROL
 
@@ -1287,13 +1304,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                 y = round(x,2)
                 if channels.getChannelVolume(channels.selectedChannel() + 0) != 0 :
                   channels.setChannelVolume((channels.selectedChannel() + 0), (y - knobinc) ) # volume values go down
-                  nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+                  nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1) ,2)))
        
              elif event.data2 == nihia.knobs["INCREASE"]:
                 x = (channels.getChannelVolume(channels.selectedChannel() + 0))
                 y = round(x,2)
                 channels.setChannelVolume((channels.selectedChannel() + 0), (y + knobinc) ) # volume values go up
-                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0) ,2)))
+                nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1) ,2)))
 
             #knob for pan
             if (event.data1 == nihia.knobs["KNOB_0B"]):
@@ -1515,12 +1532,14 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if mixer.trackNumber() <= currentUtility:
                nihia.printText(0, mixer.getTrackName(mixer.trackNumber() + 0))
-               nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
+               #nihia.printVol(0, (round((mixer.getTrackVolume(mixer.trackNumber() + 0) * xy ),2)))
+               nihia.printVol(0,(round(mixer.getTrackVolume(mixer.trackNumber()+ 0, 1),1)))
                nihia.printPan(0, mixer.getTrackPan(mixer.trackNumber() + 0) * 100)
 
             if mixer.trackNumber() <= 125:
                nihia.printText(1, mixer.getTrackName(mixer.trackNumber() + 1))
-               nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+               #nihia.printVol(1, (round((mixer.getTrackVolume(mixer.trackNumber() + 1) * xy ),2)))
+               nihia.printVol(1,(round(mixer.getTrackVolume(mixer.trackNumber()+ 1, 1),1)))
                nihia.printPan(1, mixer.getTrackPan(mixer.trackNumber() + 1) * 100)
                
                if mixer.isTrackMuted(mixer.trackNumber() + 1) == True:
@@ -1536,7 +1555,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if mixer.trackNumber() <= 124:
                nihia.printText(2, mixer.getTrackName(mixer.trackNumber() + 2))
-               nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+               #nihia.printVol(2, (round((mixer.getTrackVolume(mixer.trackNumber() + 2) * xy ),2)))
+               nihia.printVol(2,(round(mixer.getTrackVolume(mixer.trackNumber()+ 2, 1),1)))
                nihia.printPan(2, mixer.getTrackPan(mixer.trackNumber() + 2) * 100)
 
                if mixer.isTrackMuted(mixer.trackNumber() + 2) == True:
@@ -1551,7 +1571,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if mixer.trackNumber() <= 123:
                nihia.printText(3, mixer.getTrackName(mixer.trackNumber() + 3))
-               nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+               #nihia.printVol(3, (round((mixer.getTrackVolume(mixer.trackNumber() + 3) * xy ),2)))
+               nihia.printVol(3,(round(mixer.getTrackVolume(mixer.trackNumber()+ 3, 1),1)))
                nihia.printPan(3, mixer.getTrackPan(mixer.trackNumber() + 3) * 100)
 
                if mixer.isTrackMuted(mixer.trackNumber() + 3) == True:
@@ -1566,7 +1587,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if mixer.trackNumber() <= 122:
                nihia.printText(4, mixer.getTrackName(mixer.trackNumber() + 4))
-               nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+               #nihia.printVol(4, (round((mixer.getTrackVolume(mixer.trackNumber() + 4) * xy ),2)))
+               nihia.printVol(4,(round(mixer.getTrackVolume(mixer.trackNumber()+ 4, 1),1)))
                nihia.printPan(4, mixer.getTrackPan(mixer.trackNumber() + 4) * 100)
 
                if mixer.isTrackMuted(mixer.trackNumber() + 4) == True:
@@ -1581,7 +1603,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if mixer.trackNumber() <= 121:
                nihia.printText(5, mixer.getTrackName(mixer.trackNumber() + 5))
-               nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+               #nihia.printVol(5, (round((mixer.getTrackVolume(mixer.trackNumber() + 5) * xy ),2)))
+               nihia.printVol(5,(round(mixer.getTrackVolume(mixer.trackNumber()+ 5, 1),1)))
                nihia.printPan(5, mixer.getTrackPan(mixer.trackNumber() + 5) * 100)
 
                if mixer.isTrackMuted(mixer.trackNumber() + 5) == True:
@@ -1596,7 +1619,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if mixer.trackNumber() <= 120:
                nihia.printText(6, mixer.getTrackName(mixer.trackNumber() + 6))
-               nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+               #nihia.printVol(6, (round((mixer.getTrackVolume(mixer.trackNumber() + 6) * xy ),2)))
+               nihia.printVol(6,(round(mixer.getTrackVolume(mixer.trackNumber()+ 6, 1),1)))
                nihia.printPan(6, mixer.getTrackPan(mixer.trackNumber() + 6) * 100)
 
                if mixer.isTrackMuted(mixer.trackNumber() + 6) == True:
@@ -1611,7 +1635,8 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if mixer.trackNumber() <= 119:
                nihia.printText(7, mixer.getTrackName(mixer.trackNumber() + 7))
-               nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+               #nihia.printVol(7, (round((mixer.getTrackVolume(mixer.trackNumber() + 7) * xy ),2)))
+               nihia.printVol(7,(round(mixer.getTrackVolume(mixer.trackNumber()+ 7, 1),1)))
                nihia.printPan(7, mixer.getTrackPan(mixer.trackNumber() + 7) * 100)
 
                if mixer.isTrackMuted(mixer.trackNumber() + 7) == True:
@@ -1657,7 +1682,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if channels.channelCount() > 0 and channels.selectedChannel() < (channels.channelCount()-0) :
                nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 0))
-               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0), 2)))
+               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1), 2)))
                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
             else:
                nihia.printText(1, nihia.message["EMPTY"])
@@ -1669,7 +1694,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :
                nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 1))
-               nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1), 2)))
+               nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1, 1), 2)))
                nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
 
                if channels.isChannelMuted(channels.selectedChannel() + 1) == True:
@@ -1691,7 +1716,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :
                nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 2))
-               nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2), 2)))
+               nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2, 1), 2)))
                nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)
 
                if channels.isChannelMuted(channels.selectedChannel() + 2) == True:
@@ -1713,7 +1738,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :
                nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 3))
-               nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3), 2)))
+               nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3, 1), 2)))
                nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)
 
                if channels.isChannelMuted(channels.selectedChannel() + 3) == True:
@@ -1734,7 +1759,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :
                nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 4))
-               nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4), 2)))
+               nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4, 1), 2)))
                nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)
 
                if channels.isChannelMuted(channels.selectedChannel() + 4) == True:
@@ -1755,7 +1780,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :
                nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 5))
-               nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5), 2)))
+               nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5, 1), 2)))
                nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
 
                if channels.isChannelMuted(channels.selectedChannel() + 5) == True:
@@ -1777,7 +1802,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :
                nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 6))
-               nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6), 2)))
+               nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6, 1), 2)))
                nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
 
                if channels.isChannelMuted(channels.selectedChannel() + 6) == True:
@@ -1798,7 +1823,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :
                nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 7))
-               nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7), 2)))
+               nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7, 1), 2)))
                nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
 
                if channels.isChannelMuted(channels.selectedChannel() + 7) == True:
@@ -1880,7 +1905,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if channels.channelCount() > 1 and channels.selectedChannel() < (channels.channelCount()-1) :
                nihia.printText(1, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 1))
-               nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1), 2)))
+               nihia.printVol(1, (round(channels.getChannelVolume(channels.selectedChannel() + 1, 1), 2)))
                nihia.printPan(1, channels.getChannelPan(channels.selectedChannel() + 1) * 100)
             else:
                nihia.printText(1, nihia.message["EMPTY"])
@@ -1889,7 +1914,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
             if channels.channelCount() > 2 and channels.selectedChannel() < (channels.channelCount()-2) :
                nihia.printText(2, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 2))
-               nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2), 2)))
+               nihia.printVol(2, (round(channels.getChannelVolume(channels.selectedChannel() + 2, 1), 2)))
                nihia.printPan(2, channels.getChannelPan(channels.selectedChannel() + 2) * 100)
             else:
                nihia.printText(2, nihia.message["EMPTY"])
@@ -1898,7 +1923,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 3 and channels.selectedChannel() < (channels.channelCount()-3) :
                nihia.printText(3, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 3))
-               nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3), 2)))
+               nihia.printVol(3, (round(channels.getChannelVolume(channels.selectedChannel() + 3, 1), 2)))
                nihia.printPan(3, channels.getChannelPan(channels.selectedChannel() + 3) * 100)
             else:
                nihia.printText(3, nihia.message["EMPTY"])
@@ -1907,7 +1932,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 4 and channels.selectedChannel() < (channels.channelCount()-4) :
                nihia.printText(4, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 4))
-               nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4), 2)))
+               nihia.printVol(4, (round(channels.getChannelVolume(channels.selectedChannel() + 4, 1), 2)))
                nihia.printPan(4, channels.getChannelPan(channels.selectedChannel() + 4) * 100)
             else:
                nihia.printText(4, nihia.message["EMPTY"])
@@ -1916,7 +1941,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 5 and channels.selectedChannel() < (channels.channelCount()-5) :
                nihia.printText(5, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 5))
-               nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5), 2)))
+               nihia.printVol(5, (round(channels.getChannelVolume(channels.selectedChannel() + 5, 1), 2)))
                nihia.printPan(5, channels.getChannelPan(channels.selectedChannel() + 5) * 100)
             else:
                nihia.printText(5, nihia.message["EMPTY"])
@@ -1925,7 +1950,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 6 and channels.selectedChannel() < (channels.channelCount()-6) :
                nihia.printText(6, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 6))
-               nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6), 2)))
+               nihia.printVol(6, (round(channels.getChannelVolume(channels.selectedChannel() + 6, 1), 2)))
                nihia.printPan(6, channels.getChannelPan(channels.selectedChannel() + 6) * 100)
             else:
                nihia.printText(6, nihia.message["EMPTY"])
@@ -1934,7 +1959,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                
             if channels.channelCount() > 7 and channels.selectedChannel() < (channels.channelCount()-7) :
                nihia.printText(7, nihia.message["CHANNEL_RACK"] + channels.getChannelName(channels.selectedChannel() + 7))
-               nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7), 2)))
+               nihia.printVol(7, (round(channels.getChannelVolume(channels.selectedChannel() + 7, 1), 2)))
                nihia.printPan(7, channels.getChannelPan(channels.selectedChannel() + 7) * 100)
             else:
                nihia.printText(7, nihia.message["EMPTY"])
@@ -1946,7 +1971,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                nihia.printPan(0, 104)
 
             else:
-               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0), 2)))
+               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel() + 0, 1), 2)))
                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
 
 
@@ -2004,7 +2029,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             nihia.printText(7, nihia.message["EMPTY"])
 
             if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
-               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0)), 2)))
+               nihia.printVol(0, (round(channels.getChannelVolume(channels.selectedChannel(0), 1), 2)))
                nihia.printPan(0, channels.getChannelPan(channels.selectedChannel(0)) * 100)
             else:
                nihia.printVol(0, 104)
@@ -2192,14 +2217,3 @@ def VersionCheck(compatibility):
       print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with this script\n\n")
 
    return compatibility
-
-def TranslateVolume(Value):
-   """Function that converts values from device into FL Studio comptable values for volume conversion"""
-
-   return (math.exp(Value * math.log(11)) - 1) * 0.1   
-
-def VolTodB(Value): #works off of the db scale explained here: https://www.image-line.com/support/flstudio_online_manual/html/mixer_dB.htm
-   """Function that converts % valume into db"""
-   
-   Value = TranslateVolume(Value)
-   return round(math.log10(Value) * 20, 1)  

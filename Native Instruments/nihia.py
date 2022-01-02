@@ -239,7 +239,7 @@ def printVol(trkn, vol):
 
       vol==(float(vol))
 
-      if vol == 0:
+      if vol <= -60.0:
          volk = "- oo dB"
          letters = list(volk) 
 
@@ -247,15 +247,9 @@ def printVol(trkn, vol):
             lettersh.append(ord(letters[n]))
             n += 1
  
-      elif vol >= 0.01 and vol <= 2.00:
-         
-         #volj = u'%d%%  ' % round((vol*100),2) # returns volume display to percentage
-         #lettersj = list(volj)
-         #while m < len(volj):
-         #   lettersh.append(ord(lettersj[m]))
-         #   m += 1 #end of volume in percentage 
+      elif vol >= -59.0 and vol <= 6.00:
 
-         volk = '%s dB' % kk.VolTodB(vol) # volume displayed in dB from here
+         volk = '%s dB' % (vol) # volume displayed in dB from here
          letters = list(volk)
          while n < len(volk):
             lettersh.append(ord(letters[n]))
