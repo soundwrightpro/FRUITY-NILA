@@ -49,13 +49,14 @@ class KeyKompleteKontrolMIDI(): # Used a class to shield against crashes
         kkDAW.OnInit()
 
     def OnMidiIn(self, event):
-
-        if (event.data1 == nihia.touch_strips["PITCH"]):
-            event.handled = False
+        # Pitch Bend
+        # Normally the return value is always 0, but when the pitch bend wheel is all the way up, it returns 127.
+        if (event.data1 == nihia.touch_strips["PITCH"] or event.data1 == 127):
+            channels.setChannelPitch(channels.channelNumber(),(127/64)*event.data2-127,1)
+            event.handled = True
 
         # Modulation Wheel
         if (event.data1 == nihia.touch_strips["MOD"]):
-            event.handled = True
             # The plugin in the current selected channel will be the one that receives the modulation wheel value
             if plugins.isValid(channels.selectedChannel()):
                 # Value 4097 is the default CC parameter for the Modulation Wheel in most Plugins
@@ -63,8 +64,7 @@ class KeyKompleteKontrolMIDI(): # Used a class to shield against crashes
                 plugins.setParamValue( (event.data2/127/10)/0.50/2*10, 4097,channels.selectedChannel())
             else:
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
-
-
+            event.handled = True
 
 KompleteKontrolMIDI = KeyKompleteKontrolMIDI()
 
@@ -74,4 +74,3 @@ def OnInit():
 
 def OnMidiIn(event):
     KompleteKontrolMIDI.OnMidiIn(event)
-
