@@ -865,17 +865,18 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             # PAN CONTROL
 
             #sknob 1
-            if (event.data1 == nihia.knobs["KNOB_0B"]):
-               event.handled = True  
-               if event.data2 == nihia.knobs["DECREASE"]:
-                  x = (channels.getChannelPan(channels.selectedChannel() + 0))
-                  channels.setChannelPan((channels.selectedChannel() + 0), (x - knobinc) ) # pan values go down
-                  nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
+            if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
+               if (event.data1 == nihia.knobs["KNOB_0B"]):
+                  event.handled = True  
+                  if event.data2 == nihia.knobs["DECREASE"]:
+                     x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                     channels.setChannelPan((channels.selectedChannel() + 0), (x - knobinc) ) # pan values go down
+                     nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
    
-               elif event.data2 == nihia.knobs["INCREASE"]:
-                  x = (channels.getChannelPan(channels.selectedChannel() + 0))
-                  channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
-                  nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
+                  elif event.data2 == nihia.knobs["INCREASE"]:
+                     x = (channels.getChannelPan(channels.selectedChannel() + 0))
+                     channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
+                     nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
 
             if (event.data1 == nihia.knobs["KNOB_1B"] or nihia.knobs["KNOB_2B"] or nihia.knobs["KNOB_3B"] 
             or nihia.knobs["KNOB_4B"] or nihia.knobs["KNOB_5B"] or nihia.knobs["KNOB_6B"] or nihia.knobs["KNOB_7B"] 
