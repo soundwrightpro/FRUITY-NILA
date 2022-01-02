@@ -903,15 +903,17 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                event.handled = True
                ui.left(1)
 
-            if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
-               event.handled = True
-               #ui.up()
-               plugins.prevPreset(channels.channelNumber(channels.selectedChannel()))
-            
-            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
-               event.handled = True
-               #ui.down(1)
-               plugins.nextPreset(channels.channelNumber(channels.selectedChannel()))
+            #plugin preset selection for channel rack when plugin is selected
+            if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
+               if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
+                  event.handled = True
+                  #ui.up()
+                  plugins.prevPreset(channels.channelNumber(channels.selectedChannel()))
+               
+               elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+                  event.handled = True
+                  #ui.down(1)
+                  plugins.nextPreset(channels.channelNumber(channels.selectedChannel()))
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
