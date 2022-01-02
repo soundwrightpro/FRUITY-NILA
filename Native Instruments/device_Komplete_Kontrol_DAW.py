@@ -1325,6 +1325,48 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
                 channels.setChannelPan((channels.selectedChannel() + 0), (x + knobinc) ) # pan values go up
                 nihia.printPan(0, channels.getChannelPan(channels.selectedChannel() + 0) * 100)
 
+
+            #mute and solo for piano roll 
+            if (event.data1 == nihia.buttons["MUTE_SELECTED"]):
+               if ui.getFocused(0) == 1: #mixer volume control
+                  event.handled = True
+                  if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                     pass
+                  else:
+                     mixer.enableTrack(mixer.trackNumber()) #mute 
+                     self.UpdateOLED()
+                     ui.setHintMsg("Mute")
+                  
+               elif ui.getFocused(1) == 1: # channel rack
+                  if channels.channelCount() >= 1: 
+                     event.handled = True
+                     if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                        pass
+                     else:
+                        channels.muteChannel(channels.channelNumber()) 
+                        self.UpdateOLED()
+                        ui.setHintMsg("Mute")
+                     
+            if (event.data1 ==  nihia.buttons["SOLO_SELECTED"]): 
+               if ui.getFocused(0) == 1: #mixer volume control
+                  event.handled = True
+                  if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                     pass
+                  else:
+                     mixer.soloTrack(mixer.trackNumber()) #solo
+                     self.UpdateOLED()
+                     ui.setHintMsg("Solo")
+
+               elif ui.getFocused(1) == 1: # channel rack
+                  if channels.channelCount() >= 2: 
+                     event.handled = True
+                     if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= currentUtility:
+                        pass
+                     else:
+                        channels.soloChannel(channels.channelNumber()) 
+                        self.UpdateOLED()
+                        ui.setHintMsg("Solo")
+
             
             
             if (event.data1 == nihia.buttons["ENCODER_SPIN"]) & (event.data2 == right): #4d encoder spin right 
