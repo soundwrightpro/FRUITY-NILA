@@ -176,7 +176,7 @@ on = 1
 off = 0
  
 def dataOut(data1, data2):
-    """ Function that makes commmuication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
+    """ Function that makes communication with the keyboard easier. By just entering the DATA1 and DATA2 of the MIDI message, 
     it composes the full message in forther to satisfy the syntax required by the midiOut functions, as well as the setting 
     the STATUS of the message to BF as expected.""" 
     
@@ -226,7 +226,7 @@ def printText(trkn, word):
     
 def printVol(trkn, vol):
 
-      """ funtion that makes sendinig vol to the OLED screen easier"""
+      """ function that makes sending vol to the OLED screen easier"""
        
       volk = ""
       
@@ -392,7 +392,7 @@ def buttonSetLight(buttonName: str, lightMode: int):
     dataOut(buttons.get(buttonName), lightModes.get(lightMode))
 
 # Dictionary that goes between the different kinds of information that can be sent to the device to specify information about the mixer tracks
-# and their corresponding identificative bytes
+# and their corresponding identification bytes
 mixerinfo_types = {
     "VOLUME": 70,
     "PAN": 71,
@@ -403,7 +403,7 @@ mixerinfo_types = {
     # This one makes more sense on DAWs that create more tracks as the user requests it, as there might be projects (for example) on Ableton Live
     # with only two tracks
     # However, since FL Studio has all playlist and mixer tracks created, it has no use at all (maybe on the channel rack) and all tracks should have
-    # their existance reported as 1 (which means the track exists) in order to light on the Mute and Solo buttons on the device
+    # their existence reported as 1 (which means the track exists) in order to light on the Mute and Solo buttons on the device
     "EXIST": 64,
     "SELECTED": 66,
 }
@@ -486,7 +486,7 @@ def mixerSendInfo(info_type: str, trackID: int, **kwargs):
         device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, mixerinfo_types.get(info_type), value, trackID, 247]))
 
 def mixerSendInfoSelected(info_type: str, info: str):
-    """ Makes the device report MIDI messages for volume and pan adjusting for the selected track when exsitance of this track is reported as true.
+    """ Makes the device report MIDI messages for volume and pan adjusting for the selected track when existence of this track is reported as true.
     ### Parameters
      - info_type: The data you are going to tell about the selected track.
          - SELECTED: If there's a track selected on the mixer or not.
