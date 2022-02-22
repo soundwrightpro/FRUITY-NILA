@@ -1,6 +1,9 @@
 # name=Komplete Kontrol DAW
-# url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
-# url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
+# url=https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
+# supportedDevices=Komplete Kontrol M DAW,Komplete Kontrol A DAW
+
+# MIT License
+# Copyright © 2022 Duwayne Wright
 
 # GitHub for this script
 # url=https://github.com/soundwrightpro/FLNI_KK
@@ -12,9 +15,6 @@
 
 # Join the FL Studio NI on Discord if you need help or just want to say hi.
 # https://discord.gg/7FYrJEq
-
-# MIT License
-# Copyright © 2020 Duwayne Wright
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -74,7 +74,7 @@ import binascii # This module contains a number of methods to convert between bi
 
 import math #  This module provides access to the mathematical functions.
 
-from sys import platform # This module allows access to the OS version being used. 
+from sys import flags, platform # This module allows access to the OS version being used. 
                           # As for why it's 'from sys import platform' see https://stackoverflow.com/questions/9439480/from-import-vs-import
 
 
@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v8.0.7"
+VERSION_NUMBER = "v8.1.0"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -1909,7 +1909,6 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
         if ui.getFocused(2) == True: # playlist
 
-            #spells out 'Playlist' on tracks 1 through 8 on OLED
             currentBar = str(playlist.getVisTimeBar())
             currentStep = str(playlist.getVisTimeStep())
             currentTick = str(playlist.getVisTimeTick())
@@ -1921,13 +1920,13 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
             elif int(currentStep) >= 0:
                currentTime = str(currentBar+":"+currentStep)
             elif int(currentStep) < 0:
-               currentTime = " "
+               currentTime = str(currentStep)
 
             if ui.getTimeDispMin() == True and int(currentStep) >= 0:
                timeDisp = "M:S | "
             elif ui.getTimeDispMin() == False and int(currentStep) >= 0:
                timeDisp = "B:B | "
-            elif int(currentStep) < 0:
+            elif int(currentStep) <= 0:
                timeDisp = "REC in..."
 
 
@@ -2130,6 +2129,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
      def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
        
+       
 
        if ui.getFocused(2) == True: # playlist
           self.UpdateOLED()
@@ -2171,11 +2171,7 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
 
 
 
-
-
-
 KompleteKontrolBase = KeyKompleteKontrolBase()
-
 
 
 def OnInit():
@@ -2186,6 +2182,7 @@ def OnInit():
       KompleteKontrolBase.OnInit()
    else:
       pass
+
 
 def OnRefresh(flags):
    try:
