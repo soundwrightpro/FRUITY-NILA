@@ -1,6 +1,9 @@
 # name=Komplete Kontrol MIDI
-# url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/
-# url=https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61/
+# url=https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
+# supportedDevices=KOMPLETE KONTROL M32,Komplete Kontrol A25,Komplete Kontrol A49,Komplete Kontrol A61
+
+# MIT License
+# Copyright © 2022 Duwayne Wright
 
 # GitHub for this script
 # url=https://github.com/soundwrightpro/FLNI_KK
@@ -11,9 +14,6 @@
 
 # Have a question? Want to be a beta tester? Have a request? Want to say hi? Join the FL Studio NI on Discord!
 # https://discord.gg/7FYrJEq
-
-# MIT License
-# Copyright © 2020 Duwayne Wright
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
