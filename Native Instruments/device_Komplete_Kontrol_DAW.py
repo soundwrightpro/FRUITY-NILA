@@ -36,7 +36,7 @@
 
 
 # This import section is loading the back-end code required to execute the script. 
-# The following are the custom FL Studio modules not found outside FL Studio's Python enviorment. 
+# The following are the custom FL Studio modules not found outside FL Studio's Python environment. 
 
 import channels # This module allows you to control FL Studio Channels
 
@@ -58,13 +58,13 @@ import ui # This module allows you to control FL Studio User interface (eg. scro
 import arrangement as arrange # This module allows you to control FL Studio Playlist Arrangements. I've changed it to arrange because I didn't want to 
                               # write out arrangement every time.
 
-import plugins # this module allows for the use of plugis to be control
+import plugins # this module allows for the use of plugins to be control
 
-# The following are the standard Python modules found outside FL Studio's Python enviorment. 
+# The following are the standard Python modules found outside FL Studio's Python environment. 
 
 import midi # This module allows for simple sending and receiving of MIDI messages from your device
 
-import utils # Thie module is a collection of small Python functions and classes which make common patterns shorter and easier
+import utils # This module is a collection of small Python functions and classes which make common patterns shorter and easier
 
 import time # This module provides various time-related functions
 
@@ -113,7 +113,7 @@ currentUtility = 126
 
 
 
-VERSION_NUMBER = "v8.1.0"
+VERSION_NUMBER = "v8.5.0"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -124,12 +124,12 @@ MIN_Minor = 9
 MIN_Release = 0
 
 HELLO_MESSAGE = "KK " + VERSION_NUMBER 
-GOODBYE_MESSAGE = "Ending KK"
-OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\nCopyright © 2021 Duwayne Wright\n"
+GOODBYE_MESSAGE = "by: Duwayne"
+OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\nCopyright © 2022 Duwayne Wright\n"
 
 
 
-class KeyKompleteKontrolBase(): #used a class to sheild against crashes
+class Core(): #used a class to shield against crashes
      
      def OnInit(self):
       """ Called when the script has been started.""" 
@@ -2125,10 +2125,10 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
         """Function for when something changed that the script might want to respond to."""
 
         self.UpdateLEDs(), self.UpdateOLED()
+        
 
      def OnUpdateBeatIndicator(self, Value): #play light flashes to the tempo of the project
        """Function that is called when the beat indicator has changed."""
-       
        
 
        if ui.getFocused(2) == True: # playlist
@@ -2152,26 +2152,33 @@ class KeyKompleteKontrolBase(): #used a class to sheild against crashes
              nihia.dataOut(nihia.buttons["REC"], on) #play light bright
           elif Value == 0:
              nihia.dataOut(nihia.buttons["REC"], off) #play light dim  
- 
+
+     def OnWaitingForInput(self):
+         nihia.printText(0, ". . .")
+         time.sleep(timedelay)
+
+     def OnProjectLoad(self):
+         nihia.printText(0, "LOADING...")
+         time.sleep(timedelay)
 
      #def OnMidiMsg(self, event):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
+     #    _thread.start_new_thread(Core.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
+
 
      #def UpdateLEDs(self):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateLEDs, (self,))
+     #    _thread.start_new_thread(Core.TUpdateLEDs, (self,))
 
      #def UpdateOLED(self):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TUpdateOLED, (self,))
+     #    _thread.start_new_thread(Core.TUpdateOLED, (self,))
 
      #def OnRefresh(self, flags):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnRefresh, (self, flags))    
+     #    _thread.start_new_thread(Core.TOnRefresh, (self, flags))    
 
      #def OnUpdateBeatIndicator(self, Value):
-     #    _thread.start_new_thread(KeyKompleteKontrolBase.TOnUpdateBeatIndicator, (self, Value))
+     #    _thread.start_new_thread(Core.TOnUpdateBeatIndicator, (self, Value))
 
 
-
-KompleteKontrolBase = KeyKompleteKontrolBase()
+KKCore = Core()
 
 
 def OnInit():
@@ -2179,23 +2186,23 @@ def OnInit():
    compatibility = False
    compatibility = VersionCheck(compatibility)
    if compatibility == True:
-      KompleteKontrolBase.OnInit()
+      KKCore.OnInit()
    else:
       pass
 
 
 def OnRefresh(flags):
    try:
-      KompleteKontrolBase.OnRefresh(flags)
+      KKCore.OnRefresh(flags)
    except:
       pass
 
 def OnUpdateBeatIndicator(Value):
-   KompleteKontrolBase.OnUpdateBeatIndicator(Value)
+   KKCore.OnUpdateBeatIndicator(Value)
 
 def OnMidiMsg(event):
    try:
-      KompleteKontrolBase.OnMidiMsg(event)
+      KKCore.OnMidiMsg(event)
    except:
      pass
 
@@ -2203,7 +2210,7 @@ def OnDeInit():
    if ui.isClosing() == True:
       nihia.printText(0, GOODBYE_MESSAGE)
       time.sleep(timedelay)
-      nihia.terminate(), KompleteKontrolBase.OnDeInit() # Command to stop the protocol
+      nihia.terminate(), KKCore.OnDeInit() # Command to stop the protocol
    else:
       nihia.terminate()
 
@@ -2222,6 +2229,13 @@ def detectDevice(kkName):
       kkName = device.getName()
  
    return kkName
+
+def OnWaitingForInput():
+   KKCore.OnWaitingForInput()
+   
+def OnProjectLoad(self):
+   KKCore.OnProjectLoad()
+
 
 def VersionCheck(compatibility):
    """Called to check user's FL Studio version to see if this script can run."""

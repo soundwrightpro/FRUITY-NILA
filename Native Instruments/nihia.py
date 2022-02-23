@@ -116,7 +116,8 @@ touch_strips = {
 message = {
    "EMPTY": " ",
    "CHANNEL_RACK": "C| ",
-   "BROWSER": "B| "
+   "BROWSER": "B| ",
+   "WAITING": "Waiting on Input"
 }
 
 
