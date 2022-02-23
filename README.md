@@ -1,4 +1,4 @@
-# FL NI KK v8.1.0 for FL Studio 20.8.2 and higher
+# FL NI KK v8.5.0 for FL Studio 20.8.2 and higher
 
 #### Written by Duwayne 'Sound' Wright
 
@@ -12,6 +12,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 * dropped older version support. 20.9 and higher only!
 * volume, mute and solo control in the piano roll for the selected sound
 * **quantize** has been changed to quick quantize
+* messages on screen for 'wait on input' and while loading project
 * red box around mixers under control
 * removed legacy code in regards dB display on controller and implemented new code for same function
 * bug fixes 
