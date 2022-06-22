@@ -94,7 +94,7 @@ currentUtility = 126
 
 
 global VERSION_NUMBER 
-VERSION_NUMBER = "v8.5.0"
+VERSION_NUMBER = "v8.5.1"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
