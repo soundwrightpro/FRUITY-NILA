@@ -8,32 +8,12 @@
 # GitHub for this script
 # url=https://github.com/soundwrightpro/FLNI_KK
 
-# FL Studio Forum
-# https://forum.image-line.com/viewtopic.php?f=1994&t=225473
 # script by Duwayne "Sound" Wright additional code from Hobyst (absolute legend)
-# find me on the forums as 'soundwrightpro'
+# find Duwayne on the FL Studio forums as 'soundwrightpro'
 
-# Join the FL Studio NI on Discord if you need help or just want to say hi.
+# Join the FL Studio NI on Discord
+# There you can get help, become a beta tester, or get help in coding.
 # https://discord.gg/7FYrJEq
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 
 # This import section is loading the back-end code required to execute the script. 
 # The following are the custom FL Studio modules not found outside FL Studio's Python environment. 
@@ -113,6 +93,7 @@ currentUtility = 126
 
 
 
+global VERSION_NUMBER 
 VERSION_NUMBER = "v8.5.0"
 
 VER_Major = ui.getVersion(0) 
@@ -121,9 +102,9 @@ VER_Release = ui.getVersion(2)
 
 MIN_Major = 20
 MIN_Minor = 9
-MIN_Release = 0
+MIN_Release = 1
 
-HELLO_MESSAGE = "KK " + VERSION_NUMBER 
+HELLO_MESSAGE = "FLNI | KK"  
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\nCopyright © 2022 Duwayne Wright\n"
 
@@ -137,7 +118,8 @@ class Core(): #used a class to shield against crashes
       #initializing NI Host Integration Agent API for FL Studio by Hobyst
       nihia.initiate() 
       nihia.printText(0, HELLO_MESSAGE)
-      time.sleep(timedelay)
+      nihia.printVol(0, 105)
+      time.sleep(2.00)
 
      def OnMidiMsg(self, event): #listens for button or knob activity
          """Called first when a MIDI message is received. Set the event's handled property to True if you don't want further processing.
@@ -2142,7 +2124,7 @@ class Core(): #used a class to shield against crashes
           elif Value == 2:
              nihia.dataOut(nihia.buttons["PLAY"], on) #play light bright
           elif Value == 0:
-             nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim
+             nihia.dataOut(nihia.buttons["PLAY"], off) #play light dim4
 
        elif transport.isRecording() == 1:
           nihia.dataOut(nihia.buttons["PLAY"], on)
@@ -2160,22 +2142,8 @@ class Core(): #used a class to shield against crashes
      def OnProjectLoad(self):
          nihia.printText(0, "LOADING...")
          time.sleep(timedelay)
-
-     #def OnMidiMsg(self, event):
-     #    _thread.start_new_thread(Core.TOnMidiMsg, (self, event)) #Crashes on Windows. Sigh. Can't use for now
-
-
-     #def UpdateLEDs(self):
-     #    _thread.start_new_thread(Core.TUpdateLEDs, (self,))
-
-     #def UpdateOLED(self):
-     #    _thread.start_new_thread(Core.TUpdateOLED, (self,))
-
-     #def OnRefresh(self, flags):
-     #    _thread.start_new_thread(Core.TOnRefresh, (self, flags))    
-
-     #def OnUpdateBeatIndicator(self, Value):
-     #    _thread.start_new_thread(Core.TOnUpdateBeatIndicator, (self, Value))
+         nihia.printVol(0, 104)
+         nihia.printPan(0, 104)
 
 
 KKCore = Core()
@@ -2209,7 +2177,8 @@ def OnMidiMsg(event):
 def OnDeInit():
    if ui.isClosing() == True:
       nihia.printText(0, GOODBYE_MESSAGE)
-      time.sleep(timedelay)
+      nihia.printVol(0, 105)
+      time.sleep(5.00)
       nihia.terminate(), KKCore.OnDeInit() # Command to stop the protocol
    else:
       nihia.terminate()
@@ -2270,3 +2239,22 @@ def VersionCheck(compatibility):
       print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with this script\n\n")
 
    return compatibility
+
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.

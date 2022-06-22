@@ -256,13 +256,21 @@ def printVol(trkn, vol):
             lettersh.append(ord(letters[n]))
             n += 1 # end of volume in dB
          
-      elif vol >= 103:
-         volk = "N/A"
+      elif vol == 104:
+         volk = "---"
          letters = list(volk) 
 
          while n < len(volk):
             lettersh.append(ord(letters[n]))
-            n += 1   
+            n += 1
+
+      elif vol == 105:
+         volk = kk.VERSION_NUMBER
+         letters = list(volk) 
+
+         while n < len(volk):
+            lettersh.append(ord(letters[n]))
+            n += 1      
 
       header.append(trkn)
       
