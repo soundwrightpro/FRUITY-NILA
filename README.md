@@ -1,6 +1,6 @@
 # FL NI KK v8.5.1 for FL Studio 20.8.2 and higher
 
-#### Written by Duwayne 'Sound' Wright
+#### Written by Duwayne Wright
 
 Providing support for the Native Instruments Komplete Kontrol M32 and the A-Series with FL STUDIO. Uses the NI Host Integration protocol instead of the limited MIDI Mode NI provides, so the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. This script doesn't interfere with the operation of the Komplete Kontrol Plugin. **You must have FL Studio 20.9 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 or higher for the A-Series or 0.4.4 or higher for the M32 installed**. 
 
