@@ -8,8 +8,6 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 Download the [latest stable release](https://github.com/hobyst/flmidi-kompletekontrol/releases/latest "latest stable release").
 
-## Main features
-
 - Takes advantage of the DAW integration mode
 - Playback control right from the device
 
