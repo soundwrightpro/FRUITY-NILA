@@ -6,77 +6,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 ### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
-#### What's New since v7.0.0
-* **mod wheel** and **pitch wheel** support on plugins that have that function
-  * set range to 12 on Pitch in the Channel Window for Pitch to function correctly
-* dropped older version support. 20.9 and higher only!
-* volume, mute and solo control in the piano roll for the selected sound
-* **quantize** has been changed to quick quantize
-* messages on screen for 'wait on input' and while loading project
-* red box around mixers under control
-* removed legacy code in regards dB display on controller and implemented new code for same function
-* bug fixes 
-
-##### Key Features
-* **transport** play, record, stop control
-* **count-in** - toggles countdown before recording
-* **restart** (**shift + play**)
-* **loop** - toggles between pattern and song mode
-* **metro** - toggles metro off and on
-* **tempo** - tap to set tempo
-* **undo/redo** - works as expected, hold shift to redo
-* **four-directional push encoder** - up, down, left, right and push for enter/accept (works on channel rack, mixer, browser and others)
-* **play**, **rec**, **stop**, **loop**, **metro** light up when engaged from FL Studio or controller
-* **quantize** quick quantize, auto (**shift + quantize**) cycles through global snap options
-* **knobs** All 8 knobs control volume in channel rack or mixer, depending on what windows is active
-* **knobs + shift** controls pan in channel rack or mixer, depending on what windows is active
-* **mute and solo** buttons work on selected track in channel rack or mixer when shift is held down, depending on what windows is active
-* if the Komplete Control Plugin (not to be confused with the Application) is active, to switch between modes do the following (or vice versa):
-  * press **TRACK Instance** and that returns all knobs to FL Studio
-  * if FL Studio is active (you can tell if **Scale** & **Arp** buttons are not lit) press in this order, 
-    **Instance (Shift+Track)**, **PLUG-IN MIDI**. Knob function has now returned to the Komplete Kontrol Plugin.
-  * if you want to assign the eight knobs yourself, go to **MIDI Mode**. To do this hold shift and press **MIDI**. Assign the knobs as you wish. You have four pages of knobs to do so. To return to full control mode, Press **TRACK**
-* OLED - shows what module window is open with  **Playlist**, **Piano Roll**, **Browser**, **Channel Rack**
-* OLED - **Mute** & **Solo** light up for Channel Rack 
-* pushing down on 4D encoder is enter, useful for plugins like Flex when you want to choose a new sound after scrolling       through using 4D encoder
-* shift + pushing down on 4D encoder toggles between open windows.
-* **clear** (**shift + stop**) functions as the escape key
-* **channel and mixer track names** on the OLED. For the Mixer all track names start with "M: " and for the Channel Rack all track names start with "C: ". Tap on a knob to see the name of what it controls.
-* Scroll through FLEX settings with the 4-D controller (up, down, left, right; click on the list in FLEX then use controls)
-* **play** button flashes to tempo, **record** button flashes to tempo when recording is engaged and **play** button light is engaged 
-* **volume** and **pan** values are displayed on the OLED. Tap on a knob to see the value of the track it's controlling.
-* interact with something on the keyboard, it displays what it is in the hint bar 
-* don't know what a button does? Press it and look at the hint bar. Spells it all out for you.
-* **volume** displayed in dB on the OLED (my thanks to Image-Line for the assist)
-* **Piano Roll** shown as "PR: " with track name and **Browser** when selected show on OLED
-* consolidated into one file for easier updates
-* status messages on OLED when corresponding buttons are pushed, eg. **auto** (shift + auto) now shows the snap setting on the OLED
-* **shift + 4D knob** activates the plugin picker, use the 4D knob directions (left, right, up, down) to choose the plugin you want to load (macOS, see known issues)
-* improvements with track names on OLED
-* **shift + 4D button** - switching between mixer, browser, channel rack, playlist and piano roll (when visible) 
-* **shift + 4D button** double press opens plugin picker
-* when the mixer is the active window
-  * able to see what the 8 knobs are linked to when you move the 4D jog wheel
-* when playlist is the active window
-  * can add auto markers in playlist (double click to add, double click again at same point to remove)
-  * time/seconds or beats/bars on OLED when playlist is selected (depending on what you have active in FL Studio)
-  * jumping between markers in playlist (left and right on 4d)
-* when browser is the active window
-  * double press 4D button when plugin or sound is selected. Right click menu will open.
-* when the channel rack is the active window
-  * navigating between groups on the channel rack (double click to open menu)
-* Go through presets on the channel rack when a plugin is selected (only for plugins that support selecting presets from FL Studio, not through plugins internal structure)
-* switch between multiple instances of Komplete Kontrol Plugin by pressing shift+instance, then scroll through instances with 4D
-* mute & solo buttons light up with active in Channel Rack or Mixer
-
-
-
-##### Known Issues
-* **scale, arp** buttons are exclusive to the Komplete Kontrol and the **ideas** button is exclusive to Machine. 
-* Active window on OLED can't go from **Mixer** to **Playlist**, then **Channel Rack** and vice versa.  - Something is wrong with FL Studio, Image-Line is aware of the problem. Awaiting fix
-* script slows down when machine is taxed. Currently working on threading/multi-treading to overcome this issue.
-* **Mute** and **Solo** buttons do not light up when shift isn't pushed. Can't get access to those buttons as NI doesn't allow it.
-
+Download the latest release here: https://github.com/hobyst/flmidi-kompletekontrol/releases/latest
 
 
 ##### Installation
