@@ -94,14 +94,14 @@ currentUtility = 126
 
 
 global VERSION_NUMBER 
-VERSION_NUMBER = "v8.5.1"
+VERSION_NUMBER = "v8.6.0"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
 VER_Release = ui.getVersion(2)
 
-MIN_Major = 20
-MIN_Minor = 9
+MIN_Major = 21
+MIN_Minor = 0
 MIN_Release = 1
 
 HELLO_MESSAGE = "FLNI | KK"  

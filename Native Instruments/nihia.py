@@ -83,6 +83,7 @@ buttons = {
     "ENCODER_VERTICAL": 48,   
 
     "ENCODER_SPIN": 52
+    
 }
 
 knobs = {
