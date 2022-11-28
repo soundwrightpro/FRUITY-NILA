@@ -6,7 +6,8 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 ### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
-Download the latest release here: https://github.com/hobyst/flmidi-kompletekontrol/releases/latest
+Download the [latest stable release](https://github.com/hobyst/flmidi-kompletekontrol/releases/latest "latest stable release").
+
 
 
 ##### Installation
