@@ -1,4 +1,4 @@
-# FL NI KK v8.5.1 for FL Studio 20.8.2 and higher
+# FL NI KK for FL Studio
 
 #### Written by Duwayne Wright
 
