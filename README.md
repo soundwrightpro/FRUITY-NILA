@@ -6,7 +6,7 @@ Providing support for the Native Instruments Komplete Kontrol M32 and the A-Seri
 
 **You must have FL Studio 20.9 or higher, Komplete Kontrol v2.3.0, and Firmware 0.3.9 or higher**. 
 
-Download the [latest stable release](https://github.com/hobyst/flmidi-kompletekontrol/releases/latest "latest stable release").
+Download the [latest stable release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release").
 
 - Takes advantage of the DAW integration mode
 - Playback control right from the device
