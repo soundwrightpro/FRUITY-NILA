@@ -1,0 +1,13 @@
+arrangement
+channels
+device
+general
+launchMapPages
+midi
+mixer
+patterns
+playlist
+plugins
+transport
+ui
+utils
