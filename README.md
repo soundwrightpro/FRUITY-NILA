@@ -1,4 +1,4 @@
-# FL NI KK for FL Studio
+# FRUITY NILA for FL Studio
 
 #### Written by Duwayne Wright
 
