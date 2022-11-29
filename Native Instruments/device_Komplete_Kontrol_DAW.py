@@ -94,15 +94,19 @@ currentUtility = 126
 
 
 global VERSION_NUMBER 
-VERSION_NUMBER = "v8.6.2"
+VERSION_NUMBER = "v8.6.3"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
 VER_Release = ui.getVersion(2)
 
-MIN_Major = 21
-MIN_Minor = 0
-MIN_Release = 1
+MAX_Major = 21
+MAX_Minor = 0
+MAX_Release = 0
+
+MIN_Major = 20
+MIN_Minor = 9
+MIN_Release = 0
 
 HELLO_MESSAGE = "FLNI | KK"  
 GOODBYE_MESSAGE = "by: Duwayne"
@@ -2225,9 +2229,14 @@ def VersionCheck(compatibility):
       OS = "Windows"
 
 
-   if MIN_Major == int(VER_Major) and int(VER_Minor) >= MIN_Minor: # and int(VER_Release >=  MIN_Release):
-      print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
-      compatibility = True
+   if MIN_Major <= int(VER_Major): 
+      if MAX_Major == int(21) and int(VER_Minor) >= MAX_Minor:
+         print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
+         compatibility = True
+      
+      elif MIN_Major == int(20) and int(VER_Minor) >= MIN_Minor:
+         print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
+         compatibility = True
 
    else:
       print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
