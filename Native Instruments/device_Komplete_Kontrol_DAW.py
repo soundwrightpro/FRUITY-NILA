@@ -94,7 +94,7 @@ currentUtility = 126
 
 
 global VERSION_NUMBER 
-VERSION_NUMBER = "v8.6.1"
+VERSION_NUMBER = "v8.6.2"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -1411,7 +1411,6 @@ class Core(): #used a class to shield against crashes
                #ui.right(1)
                ui.next()
                
-
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
                #ui.left(1)
@@ -1419,12 +1418,14 @@ class Core(): #used a class to shield against crashes
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
-               fileNameText = ui.navigateBrowserMenu(0,0)
+               #fileNameText = ui.navigateBrowserMenu(0,0)
+               ui.next()
                nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
-               fileNameText = ui.navigateBrowserMenu(1,0)
+               #fileNameText = ui.navigateBrowserMenu(1,0)
+               ui.previous()
                nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
