@@ -1,4 +1,5 @@
-# FRUITY NILA for FL Studio
+# FRUITY Native Instruments Lanuage Agent (NILA) for FL Studio
+
 
 #### Written by Duwayne Wright
 
