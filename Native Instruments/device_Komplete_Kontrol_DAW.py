@@ -799,6 +799,14 @@ class Core(): #used a class to shield against crashes
                else:
                   ui.jog(8)
                   jogMove = True
+                  #if mixer.isTrackSwapChannels(mixer.trackNumber()) == True:
+                  #   mixer.swapTrackChannels(mixer.trackNumber(),0)
+                  #   nihia.printText(0, "Swap L/R")
+                  #   time.sleep(timedelay)
+                  #else:
+                  #   mixer.swapTrackChannels(mixer.trackNumber(),1)
+                  #   nihia.printText(0, "Swap L/R")
+                  #   time.sleep(timedelay)
 
             elif (event.data1 == nihia.buttons["ENCODER_HORIZONTAL"]) & (event.data2 == left): #4d encoder push left
                event.handled = True
@@ -808,11 +816,35 @@ class Core(): #used a class to shield against crashes
                else:
                   ui.jog(-8)
                   jogMove = True
+                  #if mixer.isTrackRevPolarity(mixer.trackNumber()) == True:
+                  #   mixer.revTrackPolarity(mixer.trackNumber(),0)
+                  #   nihia.printText(0, "Polarity on ")
+                  #   time.sleep(timedelay)
+                  #else:
+                  #   mixer.revTrackPolarity(mixer.trackNumber(),1)
+                  #   nihia.printText(0, "Polarity off")
+                  #   time.sleep(timedelay)
 
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                if ui.isInPopupMenu() == True:
                   ui.up(1)
+               else:
+                  #pass
+                  mixer.armTrack(mixer.trackNumber())
+                  if mixer.isTrackArmed(mixer.trackNumber()) == True:
+                     ui.setHintMsg("Armed Disk Recording")
+                     nihia.printText(0, "Disk REC off")
+                     time.sleep(timedelay)
+                  else:
+                     ui.setHintMsg("Disarmed Disk Recording")
+                     nihia.printText(0, "Disk REC on")
+                     time.sleep(timedelay)
+
+            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
+               event.handled = True
+               if ui.isInPopupMenu() == True:
+                  ui.down(1)
                else:
                   #pass
                   if mixer.isTrackSlotsEnabled(mixer.trackNumber()) == True:
@@ -823,22 +855,7 @@ class Core(): #used a class to shield against crashes
                      mixer.enableTrackSlots(mixer.trackNumber(),1)
                      nihia.printText(0, "Enable FX")
                      time.sleep(timedelay)
-            
-            elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
-               event.handled = True
-               if ui.isInPopupMenu() == True:
-                  ui.down(1)
-               else:
-                  #pass
-                  mixer.armTrack(mixer.trackNumber())
-                  if mixer.isTrackArmed(mixer.trackNumber()) == True:
-                     ui.setHintMsg("Armed Disk Recording")
-                     nihia.printText(0, "Disk REC On")
-                     time.sleep(timedelay)
-                  else:
-                     ui.setHintMsg("Disarmed Disk Recording")
-                     nihia.printText(0, "Disk REC off")
-                     time.sleep(timedelay)
+
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
