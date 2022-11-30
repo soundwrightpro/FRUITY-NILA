@@ -94,7 +94,7 @@ currentUtility = 126
 
 
 global VERSION_NUMBER 
-VERSION_NUMBER = "v8.6.3"
+VERSION_NUMBER = "v21.0.0"
 
 VER_Major = ui.getVersion(0) 
 VER_Minor = ui.getVersion(1)
@@ -108,9 +108,9 @@ MIN_Major = 20
 MIN_Minor = 9
 MIN_Release = 0
 
-HELLO_MESSAGE = "FLNI | KK"  
+HELLO_MESSAGE = "FRUITY NILA"  
 GOODBYE_MESSAGE = "by: Duwayne"
-OUTPUT_MESSAGE = "\nKomplete Kontrol Script " + VERSION_NUMBER + "\nCopyright © 2022 Duwayne Wright\n"
+OUTPUT_MESSAGE = "\nFRUITY NILA " + VERSION_NUMBER + "\nCopyright © 2022 Duwayne Wright\n"
 
 
 
@@ -815,14 +815,24 @@ class Core(): #used a class to shield against crashes
                if ui.isInPopupMenu() == True:
                   ui.up(1)
                else:
-                  pass
+                  #pass
+                  mixer.selectTrack(mixer.trackNumber())
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                if ui.isInPopupMenu() == True:
                   ui.down(1)
                else:
-                  pass
+                  #pass
+                  mixer.armTrack(mixer.trackNumber())
+                  if mixer.isTrackArmed(mixer.trackNumber()) == True:
+                     ui.setHintMsg("Armed Disk Recording")
+                     nihia.printText(0, "Disk REC On")
+                     time.sleep(timedelay)
+                  else:
+                     ui.setHintMsg("Disarmed Disk Recording")
+                     nihia.printText(0, "Disk REC off")
+                     time.sleep(timedelay)
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
                event.handled = True
@@ -1423,13 +1433,13 @@ class Core(): #used a class to shield against crashes
             if (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == up): #4d encoder push up
                event.handled = True
                #fileNameText = ui.navigateBrowserMenu(0,0)
-               ui.next()
+               ui.previous()
                nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
                #fileNameText = ui.navigateBrowserMenu(1,0)
-               ui.previous()
+               ui.next()
                nihia.printText(0, nihia.message["BROWSER"] + fileNameText)
 
             if (event.data1 == nihia.buttons["ENCODER_BUTTON"]):
@@ -2239,7 +2249,7 @@ def VersionCheck(compatibility):
          compatibility = True
 
    else:
-      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nKomplete Kontrol Script " + VERSION_NUMBER + 
+      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\FRUITY NILA " + VERSION_NUMBER + 
       " will not load on this device. \nPlease update", VER_Major, ui.getVersion(), "to", str(MIN_Major) + "." + str(MIN_Minor) + "." + str(MIN_Release),
       "or higher.\n")
       compatibility = False
@@ -2250,7 +2260,7 @@ def VersionCheck(compatibility):
       print("A", seriesDevice, "has been detected. It is compatible with this script\n\n")
 
    else:
-      print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with this script\n\n")
+      print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with FRUITY NILA\n\n")
 
    return compatibility
 
