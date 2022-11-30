@@ -9,7 +9,7 @@
 
 **You must have Komplete Kontrol v2.3.0 or higher, and Firmware 0.3.9 or higher**. 
 
-Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release").
+Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA.
 
 
 ## Major Features
@@ -26,9 +26,9 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 
 - [x] Komplete Kontrol M32 
 
-- [ ] Komplete Kontrol S49/61/88 MK2
+~~- [ ] Komplete Kontrol S49/61/88 MK2~~ 
 
-- [ ] Komplete Kontrol S25/49/61/88 MK1 
+~~- [ ] Komplete Kontrol S25/49/61/88 MK1~~ 
 
 ### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? 
 **[Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")**
