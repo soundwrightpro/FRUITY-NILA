@@ -8,14 +8,14 @@
 
 **You must have Komplete Kontrol v2.3.0 or higher, and Firmware 0.3.9 or higher**. 
 
-Download the [latest stable release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release").
+Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release").
 
-- Takes advantage of the DAW integration mode
-- Playback control right from the device
 
 ## Features
 
-To see videos on features see: [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto) **COMMING WINTER 2023**
+- Takes advantage of the DAW integration mode
+- Playback control right from the device
+- To see videos on features see: [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto) **COMMING WINTER 2023**
 
 ## Compatible devices
 
