@@ -32,7 +32,9 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 ### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? 
 **[Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")**
 
-My thanks to both [Hobyst](https://github.com/hobyst) for their documentation, programs, and coding help along with the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
+## Thank you
+
+[Hobyst](https://github.com/hobyst) for their documentation, programs, script [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia) and coding help.
 
 **DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
 
