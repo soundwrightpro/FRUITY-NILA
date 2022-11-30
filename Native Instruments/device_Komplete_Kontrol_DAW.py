@@ -109,7 +109,7 @@ MIN_Release = 0
 
 HELLO_MESSAGE = "FRUITY NILA"  
 GOODBYE_MESSAGE = "by: Duwayne"
-OUTPUT_MESSAGE = "\nFRUITY NILA " + VERSION_NUMBER + "\nCopyright © 2022 Duwayne Wright\n"
+OUTPUT_MESSAGE = "\nFRUITY NILA " + VERSION_NUMBER + "\nCopyright © 2022 Duwayne\n"
 
 
 
@@ -815,7 +815,14 @@ class Core(): #used a class to shield against crashes
                   ui.up(1)
                else:
                   #pass
-                  mixer.selectTrack(mixer.trackNumber())
+                  if mixer.isTrackSlotsEnabled(mixer.trackNumber()) == True:
+                     mixer.enableTrackSlots(mixer.trackNumber(),0)
+                     nihia.printText(0, "Disable FX")
+                     time.sleep(timedelay)
+                  else:
+                     mixer.enableTrackSlots(mixer.trackNumber(),1)
+                     nihia.printText(0, "Enable FX")
+                     time.sleep(timedelay)
             
             elif (event.data1 == nihia.buttons["ENCODER_VERTICAL"]) & (event.data2 == down): #4d encoder push down
                event.handled = True
