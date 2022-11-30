@@ -9,8 +9,7 @@
 
 **You must have Komplete Kontrol v2.3.0 or higher, and Firmware 0.3.9 or higher**. 
 
-Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA.
-
+Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA. [How to Install](/install.md)
 
 ## Major Features
 
