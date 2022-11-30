@@ -1,5 +1,5 @@
 # FRUITY NILA 
-(Fruity Native Instruments Lanuage Agent - MIDI Script for FL Studio)
+(Fruity Native Instruments Lanuage Agent - MIDI script for FL Studio)
 
 
 #### Written by Duwayne Wright
