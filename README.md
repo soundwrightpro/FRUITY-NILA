@@ -11,6 +11,7 @@
 
 Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA.
 
+[How to Install](/install.md)
 
 ## Major Features
 
