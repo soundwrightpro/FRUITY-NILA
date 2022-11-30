@@ -11,10 +11,10 @@
 Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release").
 
 
-## Features
+## Major Features
 
 - Takes advantage of the DAW integration mode
-- Playback control right from the device
+- Playback control right and near full control of the mixer from the device
 - To see videos on features see: [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto) **COMMING WINTER 2023**
 
 ## Compatible devices
