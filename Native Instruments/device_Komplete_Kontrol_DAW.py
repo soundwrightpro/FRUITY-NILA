@@ -3,13 +3,12 @@
 # supportedDevices=Komplete Kontrol M DAW,Komplete Kontrol A DAW
 
 # MIT License
-# Copyright © 2022 Duwayne Wright
+# Copyright © 2022 Duwayne 
 
 # GitHub for this script
 # url=https://github.com/soundwrightpro/FLNI_KK
 
-# script by Duwayne "Sound" Wright additional code from Hobyst (absolute legend)
-# find Duwayne on the FL Studio forums as 'soundwrightpro'
+# script by Duwayne with additional code from Hobyst (an absolute legend)
 
 # Join the FL Studio NI on Discord
 # There you can get help, become a beta tester, or get help in coding.
