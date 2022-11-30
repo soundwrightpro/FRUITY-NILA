@@ -1,5 +1,5 @@
 # FRUITY NILA 
-(Fruity Native Instruments Lanuage Agent - MIDI script for FL Studio)
+<sup>(Fruity Native Instruments Lanuage Agent - MIDI script for FL Studio)</sup>
 
 ![DEVICE SCREEN](/images/NILA1.jpg)
 
@@ -37,7 +37,7 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 
 [Hobyst](https://github.com/hobyst) for their documentation, programs, script [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia) and coding help.
 
-**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**
+<sub>**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**</sub>
 
 
 
