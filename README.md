@@ -3,7 +3,7 @@
 
 ![DEVICE SCREEN](/images/NILA1.jpg)
 
-#### Written by Duwayne Wright
+#### Written by Duwayne
 
 **FRUITY NILA** provides support for the Native Instruments [Komplete Kontrol M3](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/) and the [A-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61) with [FL STUDIO](https://www.image-line.com/). By using the NI Host Integration protocol instead of the limited MIDI Mode NI provides, the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. FRUITY NILA doesn't interfere with the operation of the Komplete Kontrol Plugin. 
 
