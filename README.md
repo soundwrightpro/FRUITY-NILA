@@ -29,7 +29,8 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 
 - [ ] Komplete Kontrol S25/49/61/88 MK1 
 
-### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? [Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
+### Have a question? Want to be a beta tester for S-Series development? Have a request? Want to say hi? 
+[Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")
 
 My thanks to [Hobyst](https://github.com/hobyst) for their documentation, programs, and coding help and my thanks to the developers over at Image-Line for making MIDI scripting available & answering all of my questions.
 
