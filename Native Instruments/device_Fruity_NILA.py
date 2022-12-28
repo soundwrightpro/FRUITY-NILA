@@ -15,7 +15,7 @@
 
 
 import nihia
-from nihia import *
+from nihia import mixer as nihia_mixer
 
 from script.NILA_UI import *
 from script.device_setup import *
@@ -91,8 +91,4 @@ def OnIdle():
 
 def OnDeInit():
 	if ui.isClosing() == True:
-		mixer.setTrackName(0, config.HELLO_MESSAGE)
-		mixer.setTrackVol(0, config.GOODBYE_MESSAGE)
-		nihia.goodBye()
-	else:
 		nihia.goodBye()
