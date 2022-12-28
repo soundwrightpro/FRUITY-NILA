@@ -1,5 +1,5 @@
 # FRUITY NILA 
-<sup>(Fruity Native Instruments Lanuage Agent - MIDI script for FL Studio)</sup>
+<sup>(Fruity Native Instruments Language Agent - MIDI script for FL Studio)</sup>
 
 
 #### Written by Duwayne
@@ -8,12 +8,12 @@
 
 **You must have Komplete Kontrol v2.3.0 or higher, and Firmware 0.3.9 or higher**. 
 
-Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA. [How to Install](/install.md)
+Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA. ~~-[How to Install](/install.md)~~- ***COMMING WINTER 2023***
 
 ## Major Features
 
 - Takes advantage of the DAW integration mode
-- Playback control right and near full control of the mixer from the device
+- Playback control right and near full control of the mixer, channel rack, browser, piano roll, and select plugins from the device
 - Watch videos on features from [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto) ***COMMING WINTER 2023***
 
 ## Compatible devices
