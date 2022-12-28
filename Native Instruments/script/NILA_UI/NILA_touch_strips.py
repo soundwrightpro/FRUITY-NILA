@@ -1,4 +1,5 @@
-from script.device_setup import config 
+from script.device_setup import NILA_core
+from script.screen_writer import NILA_OLED
 
 import channels
 import device
@@ -14,7 +15,7 @@ touch_strips = {
 
 def OnMidiMsg(event):
 
-    if ui.getFocused(config.winName["Plugin"]) == True: #plugin
+    if ui.getFocused(5) == True: #plugin
 
         if (event.data1 == touch_strips["MOD"]):
             event.handled = True
@@ -24,3 +25,5 @@ def OnMidiMsg(event):
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
             else:
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
+
+

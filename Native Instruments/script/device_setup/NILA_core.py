@@ -1,9 +1,9 @@
 import nihia
 import nihia.mixer as mix
 
-from script.device_setup import config
-from script.device_setup import NILA_detect_device
 from script.NILA_UI import NILA_buttons
+from script.device_setup import NILA_detect_device
+from script.device_setup import config
 
 import device
 import midi
@@ -18,7 +18,7 @@ import ui
 def OnInit(self):
    nihia.handShake()
    mix.setTrackName(0, config.HELLO_MESSAGE)
-   mix.setTrackVol(0, config.GOODBYE_MESSAGE)
+   mix.setTrackVol(0, config.VERSION_NUMBER)
    time.sleep(2.00)
    nihia.buttons.setLight("UNDO", 1)
    nihia.buttons.setLight("REDO", 1)
@@ -32,22 +32,10 @@ def OnWaitingForInput():
    time.sleep(config.timedelay)
    
 
-def OnProjectLoad(self, status):
-
-   if status == 0: #loading
-      mix.setTrackName(0, config.HELLO_MESSAGE)
-      mix.setTrackVol(0, "Loading File")
-      time.sleep(config.timedelay)
-
-   elif status == 100: # load complete
-      mix.setTrackName(0, config.HELLO_MESSAGE)
-      mix.setTrackVol(0, "Load Complete")
-      time.sleep(config.timedelay)
-
-   elif status == 101: #load error
-      mix.setTrackName(0, config.HELLO_MESSAGE)
-      mix.setTrackVol(0, "Load Error")
-      time.sleep(config.timedelay)
+def OnProjectLoad(self):
+   mix.setTrackName(0, config.HELLO_MESSAGE)
+   mix.setTrackVol(0, config.LOAD_MESSAGE)
+   time.sleep(config.timedelay)
 
 
 def timeConvert(timeDisp, currentTime):

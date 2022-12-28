@@ -15,11 +15,16 @@ import transport
 import ui
 
 
+on = 1
+off = 0
 windowCycle = 0
+jogMove = True
 
  
 def OnMidiMsg(event): #listens for button or knob activity
+
     global windowCycle
+    global jogMove
 
     if (event.data1 == nihia.buttons.button_list.get("PLAY")):
         event.handled = True
@@ -50,14 +55,14 @@ def OnMidiMsg(event): #listens for button or knob activity
         transport.setLoopMode() #loop/pattern mode
         ui.setHintMsg("Song / pattern mode")
 
-        if transport.getLoopMode() ==  config.off:
+        if transport.getLoopMode() == off:
             mix.setTrackName(0, "Pattern:")
-            mix.setTrackVol(0, ("Enabled"))
+            mix.setTrackVol(0, "Enabled")
             time.sleep(config.timedelay) 
 
-        elif transport.getLoopMode() ==  config.on:
+        elif transport.getLoopMode() == on:
             mix.setTrackName(0, "Song:")
-            mix.setTrackVol(0, ("Enabled"))
+            mix.setTrackVol(0, "Enabled")
             time.sleep(config.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("METRO")): # metronome/button
@@ -65,14 +70,14 @@ def OnMidiMsg(event): #listens for button or knob activity
         transport.globalTransport(midi.FPT_Metronome, 110)
         ui.setHintMsg("Metronome")
 
-        if ui.isMetronomeEnabled() ==  config.off: 
+        if ui.isMetronomeEnabled() == off: 
             mix.setTrackName(0, "Metronome:")
-            mix.setTrackVol(0, ("Disabled"))
+            mix.setTrackVol(0, "Disabled")
             time.sleep(config.timedelay) 
 
-        elif ui.isMetronomeEnabled() ==  config.on: 
+        elif ui.isMetronomeEnabled() == on: 
             mix.setTrackName(0, "Metronome:")
-            mix.setTrackVol(0, ("Enabled"))
+            mix.setTrackVol(0, "Enabled")
             time.sleep(config.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
@@ -213,12 +218,12 @@ def OnMidiMsg(event): #listens for button or knob activity
     if (event.data1 == nihia.buttons.button_list.get("UNDO")):
         event.handled = True
         general.undoUp() #undo 
-        ui.setHintMsg(general.getUndoLevelHint())
+        ui.setHintMsg(ui.getHintMsg())
 
     if (event.data1 == nihia.buttons.button_list.get("REDO")):
         event.handled = True
         general.undo() #redo
-        ui.setHintMsg(general.getUndoLevelHint())
+        ui.setHintMsg(ui.getHintMsg())
 
     if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
         event.handled = True
@@ -266,7 +271,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                     
                      
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
-        if ui.getFocused(config.winName["Mixer"]) == True: 
+        if ui.getFocused(0) == True: 
             event.handled = True
             if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= config.currentUtility:
                 pass
@@ -275,7 +280,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 ui.setHintMsg("Mute")
         
     if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
-        if ui.getFocused(config.winName["Mixer"]) == True: 
+        if ui.getFocused(0) == True: 
             event.handled = True
             if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= config.currentUtility:
                 pass
@@ -284,13 +289,13 @@ def OnMidiMsg(event): #listens for button or knob activity
                 ui.setHintMsg("Solo")
 
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
-        if ui.getFocused(config.winName["Channel Rack"])== True: 
+        if ui.getFocused(1) == True: 
             event.handled = True
             channels.muteChannel(channels.channelNumber()) 
             ui.setHintMsg("Mute")
         
     if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
-        if ui.getFocused(config.winName["Channel Rack"]) == True: 
+        if ui.getFocused(1) == True: 
             event.handled = True
             channels.soloChannel(channels.channelNumber()) 
             ui.setHintMsg("Solo")

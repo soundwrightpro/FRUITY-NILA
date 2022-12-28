@@ -1,6 +1,5 @@
 import device
 
-
 def detectDevice(NILA_Name):
    """ Gets the MIDI device name from FL Studio and sets `DEVICE_SERIES` to the right value in order for the script to work properly. """
    

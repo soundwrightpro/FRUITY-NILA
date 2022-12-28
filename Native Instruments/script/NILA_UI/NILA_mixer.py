@@ -1,8 +1,8 @@
 import nihia
 from nihia import mixer as mix
 
-from script.device_setup import config 
 from script.screen_writer import NILA_OLED as oled
+from script.device_setup import config 
 
 import device 
 import math
@@ -363,3 +363,4 @@ def OnMidiMsg(self, event):
                         x = (mixer.getTrackPan(mixer.trackNumber() + 7))
                         mixer.setTrackPan((mixer.trackNumber() + 7), (x + config.increment) )
                         oled.updatePanMix((mixer.trackNumber() + 7), 7)
+

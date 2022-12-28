@@ -7,7 +7,7 @@
 [[
 	Surface:	Komplete Kontrol M DAW and/or Komplete Kontrol A DAW
 	Developer:	Duwayne WRIGHT
-	Version:	10.0.0
+	Version:	21.0 
 
     Copyright (c) 2022 Duwayne WRIGHT
 ]]
@@ -15,8 +15,8 @@
 
 
 import nihia
-from nihia import mixer as nihia_mixer
-
+from nihia import *
+import nihia.mixer as NILA_mixer
 from script.NILA_UI import *
 from script.device_setup import *
 from script.led_writer import NILA_LED
@@ -50,11 +50,11 @@ class Core():
 		NILA_OLED.OnUpdateBeatIndicator(self,Value)
 
 	def OnWaitingForInput(self):
-		nihia_mixer.setTrackName(0, config.wait_input_1)
-		nihia_mixer.setTrackVol(0, config.wait_input_2)
+		NILA_mixer.setTrackName(0, config.wait_input_1)
+		NILA_mixer.setTrackVol(0, config.wait_input_2)
 
-	def OnProjectLoad(self,status):
-		NILA_core.OnProjectLoad(self, status)
+	def OnProjectLoad(self):
+		NILA_core.OnProjectLoad(self)
 	
 	def OnIdle(self):
 		NILA_playlist.OnIdle()
@@ -83,12 +83,16 @@ def OnUpdateBeatIndicator(Value):
 def OnWaitingForInput():
 	n_Core.OnWaitingForInput()
 
-def OnProjectLoad(status):
-   n_Core.OnProjectLoad(status)
+def OnProjectLoad(self):
+   n_Core.OnProjectLoad()
 
 def OnIdle():
 	n_Core.OnIdle()
 
 def OnDeInit():
 	if ui.isClosing() == True:
+		mixer.setTrackName(0, config.HELLO_MESSAGE)
+		mixer.setTrackVol(0, config.GOODBYE_MESSAGE)
+		nihia.goodBye()
+	else:
 		nihia.goodBye()

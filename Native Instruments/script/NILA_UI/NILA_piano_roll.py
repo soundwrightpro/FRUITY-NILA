@@ -45,3 +45,5 @@ def OnMidiMsg(self, event):
                 x = (channels.getChannelPan(channels.selectedChannel() + 0))
                 channels.setChannelPan((channels.selectedChannel() + 0), (x + config.increment) ) 
                 NILA_OLED.updatePanChannel((channels.selectedChannel() + 0), 0)
+
+

@@ -1,8 +1,8 @@
 import nihia
 from nihia import mixer
 
-from script.device_setup import config
 from script.device_setup import NILA_core
+from script.device_setup import config
 from script.screen_writer import NILA_OLED
 
 import channels
@@ -12,12 +12,13 @@ import plugins
 import ui 
 
 
+config.increment
 skip = -1
-
+recognized = False
 
 def plugin(self, event):
 
-    if ui.getFocused(config.winName["Plugin"]) == 1: #plugin control
+    if ui.getFocused(5) == 1: #plugin control
         plugin_name = ui.getFocusedPluginName()   
 
         if plugin_name == config.supported_plugins[0]:
