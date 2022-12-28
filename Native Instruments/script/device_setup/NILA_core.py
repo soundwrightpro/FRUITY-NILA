@@ -18,7 +18,7 @@ import ui
 def OnInit(self):
    nihia.handShake()
    NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
-   NILA_mix.setTrackVol(0, config.VERSION_NUMBER)
+   NILA_mix.setTrackVol(0, config.GOODBYE_MESSAGE)
    time.sleep(2.00)
    nihia.buttons.setLight("UNDO", 1)
    nihia.buttons.setLight("REDO", 1)

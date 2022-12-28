@@ -91,8 +91,6 @@ def OnIdle():
 
 def OnDeInit():
 	if ui.isClosing() == True:
-		mixer.setTrackName(0, config.HELLO_MESSAGE)
-		mixer.setTrackVol(0, config.GOODBYE_MESSAGE)
 		nihia.goodBye()
 	else:
 		nihia.goodBye()
