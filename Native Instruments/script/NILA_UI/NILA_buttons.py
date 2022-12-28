@@ -19,6 +19,7 @@ windowCycle = 0
 
  
 def OnMidiMsg(event): #listens for button or knob activity
+    global windowCycle
 
     if (event.data1 == nihia.buttons.button_list.get("PLAY")):
         event.handled = True
