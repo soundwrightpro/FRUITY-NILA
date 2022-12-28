@@ -61,3 +61,9 @@ nuText = "Not Used"
 
 itemDisp = 0
 itemTime = 0
+
+#FL Studio Variables 
+
+PL_Start = 0 #Called when project loading start
+PL_LoadOk = 100	#Called when project was succesfully loaded
+PL_LoadError = 101 #Called when project loading stopped because of error

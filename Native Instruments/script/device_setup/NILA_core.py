@@ -1,5 +1,5 @@
 import nihia
-import nihia.mixer as mix
+import nihia.mixer as NILA_mix
 
 from script.NILA_UI import NILA_buttons
 from script.device_setup import NILA_detect_device
@@ -17,8 +17,8 @@ import ui
 
 def OnInit(self):
    nihia.handShake()
-   mix.setTrackName(0, config.HELLO_MESSAGE)
-   mix.setTrackVol(0, config.VERSION_NUMBER)
+   NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+   NILA_mix.setTrackVol(0, config.VERSION_NUMBER)
    time.sleep(2.00)
    nihia.buttons.setLight("UNDO", 1)
    nihia.buttons.setLight("REDO", 1)
@@ -27,14 +27,30 @@ def OnInit(self):
    device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated  
 
 
-def OnWaitingForInput():
-   mix.setTrackName(0, ". . .")
+def OnWaitingForInput(status):
+   NILA_mix.setTrackName(0, ". . .")
    time.sleep(config.timedelay)
    
 
-def OnProjectLoad(self):
-   mix.setTrackName(0, config.HELLO_MESSAGE)
-   mix.setTrackVol(0, config.LOAD_MESSAGE)
+def OnProjectLoad(status):
+   if status == config.PL_Start:
+      NILA_mix.setTrackName(0, "Loading...")
+      NILA_mix.setTrackVol(0, "project")
+      time.sleep(config.timedelay)
+
+   elif status == config.PL_LoadOk:
+      NILA_mix.setTrackName(0, "Loading...")
+      NILA_mix.setTrackVol(0, "complete")
+      time.sleep(config.timedelay)
+
+   elif status == config.PL_LoadError:
+      NILA_mix.setTrackName(0, "Loading...")
+      NILA_mix.setTrackVol(0, "error!")
+      time.sleep(config.timedelay)
+
+
+   NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+   NILA_mix.setTrackVol(0, config.LOAD_MESSAGE)
    time.sleep(config.timedelay)
 
 
@@ -67,4 +83,4 @@ def setTrackVolConvert(trackID: int, value: str):
    if value == "-inf dB":
       value = "- oo dB"
 
-   mix.setTrackVol(trackID, value)
+   NILA_mix.setTrackVol(trackID, value)
