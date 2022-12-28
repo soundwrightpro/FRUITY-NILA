@@ -53,8 +53,8 @@ class Core():
 		nihia_mixer.setTrackName(0, config.wait_input_1)
 		nihia_mixer.setTrackVol(0, config.wait_input_2)
 
-	def OnProjectLoad(self):
-		NILA_core.OnProjectLoad(self)
+	def OnProjectLoad(self,status):
+		NILA_core.OnProjectLoad(self, status)
 	
 	def OnIdle(self):
 		NILA_playlist.OnIdle()
@@ -83,8 +83,8 @@ def OnUpdateBeatIndicator(Value):
 def OnWaitingForInput():
 	n_Core.OnWaitingForInput()
 
-def OnProjectLoad(self):
-   n_Core.OnProjectLoad()
+def OnProjectLoad(status):
+   n_Core.OnProjectLoad(status)
 
 def OnIdle():
 	n_Core.OnIdle()

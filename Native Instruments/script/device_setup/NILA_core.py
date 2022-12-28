@@ -32,10 +32,22 @@ def OnWaitingForInput():
    time.sleep(config.timedelay)
    
 
-def OnProjectLoad(self):
-   mix.setTrackName(0, config.HELLO_MESSAGE)
-   mix.setTrackVol(0, config.LOAD_MESSAGE)
-   time.sleep(config.timedelay)
+def OnProjectLoad(self, status):
+
+   if status == 0: #loading
+      mix.setTrackName(0, config.HELLO_MESSAGE)
+      mix.setTrackVol(0, "Loading File")
+      time.sleep(config.timedelay)
+
+   elif status == 100: # load complete
+      mix.setTrackName(0, config.HELLO_MESSAGE)
+      mix.setTrackVol(0, "Load Complete")
+      time.sleep(config.timedelay)
+
+   elif status == 101: #load error
+      mix.setTrackName(0, config.HELLO_MESSAGE)
+      mix.setTrackVol(0, "Load Error")
+      time.sleep(config.timedelay)
 
 
 def timeConvert(timeDisp, currentTime):

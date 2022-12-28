@@ -306,6 +306,8 @@ def OnUpdateBeatIndicator(self, Value):
 
 def OnIdle():
 
+    print()
+
     if ui.getFocused(config.winName["Browser"]) == True:
 
         if ui.getFocusedNodeFileType() == -100:
