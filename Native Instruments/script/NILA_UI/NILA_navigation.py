@@ -1,8 +1,8 @@
 import nihia
 from nihia import mixer as mix
 
-from script.device_setup import NILA_core
 from script.device_setup import config
+from script.device_setup import NILA_core
 
 import arrangement as arrange
 import channels
@@ -15,8 +15,6 @@ import transport
 import plugins
 import ui 
 
-down = right = 1
-up = left = 127
 
 jogMove = True
 
@@ -25,7 +23,7 @@ def encoder(self, event):
     
     global jogMove
     if ui.getFocused(config.winName["Mixer"]) == True: #mixer control
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.right): # encoder spin config.right 
             event.handled = True
             ui.jog(1)
             if ui.isInPopupMenu() == True:
@@ -34,7 +32,7 @@ def encoder(self, event):
                 ui.setHintMsg(mixer.getTrackName(mixer.trackNumber()))
                 jogMove = True
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): # encoder spin left 
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.left): # encoder spin config.left 
             event.handled = True
             ui.jog(-1)
             if ui.isInPopupMenu() == True:
@@ -43,7 +41,7 @@ def encoder(self, event):
                 ui.setHintMsg(mixer.getTrackName(mixer.trackNumber()))
                 jogMove = True
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == right): # encoder push right
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.right): # encoder push config.right
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.right(1)
@@ -53,7 +51,7 @@ def encoder(self, event):
                 ui.setHintMsg(mixer.getTrackName(mixer.trackNumber()))
                 jogMove = True
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == left): # encoder push left
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.left): # encoder push config.left
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.left(1)
@@ -64,7 +62,7 @@ def encoder(self, event):
                 jogMove = True
 
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): # encoder push config.up
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.up(1)
@@ -80,7 +78,7 @@ def encoder(self, event):
                     mix.setTrackName(0, "Disk REC on")
                     time.sleep(config.timedelay)
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): # encoder push config.down
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.down(1)
@@ -124,19 +122,19 @@ def encoder(self, event):
         if ui.isInPopupMenu() == True:
             pass
         else:
-            if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
+            if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.right): # encoder spin config.right 
                 event.handled = True
                 ui.jog(1)
                 ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
                 ui.setHintMsg("Channel Rack selection rectangle")
 
-            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): # encoder spin left 
+            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.left): # encoder spin config.left 
                 event.handled = True
                 ui.jog(-1)
                 ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
                 ui.setHintMsg("Channel Rack selection rectangle")
             
-            if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == right): # encoder push right
+            if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.right): # encoder push config.right
                 event.handled = True
                 if ui.isInPopupMenu() == False:
                     ui.left(1)
@@ -146,7 +144,7 @@ def encoder(self, event):
                 ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
                 ui.setHintMsg("Moving to the start of Channel Rack")
 
-            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == left): # encoder push left
+            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.left): # encoder push config.left
                 event.handled = True
                 if ui.isInPopupMenu() == False:
                     ui.right(1)
@@ -155,12 +153,12 @@ def encoder(self, event):
                 ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
                 ui.setHintMsg("Moving to the end of Channel Rack")
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): # encoder push config.up
             event.handled = True
             ui.up(1)
             ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
         
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): # encoder push config.down
             event.handled = True
             ui.down(1)
             ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, 2000) #red rectangle
@@ -183,37 +181,37 @@ def encoder(self, event):
                     pass
     elif ui.getFocused(config.winName["Plugin"]) == True: 
 
-        if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
+        if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.right): # encoder spin config.right 
             event.handled = True
             ui.down(1)
             
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): # encoder spin left 
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.left): # encoder spin config.left 
             event.handled = True
             ui.up(1)
         
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == right): # encoder push right
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.right): # encoder push config.right
             event.handled = True
             ui.right(1)
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == left): # encoder push left
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.left): # encoder push config.left
             event.handled = True
             ui.left(1)
 
         if channels.getChannelName(channels.selectedChannel()) in ui.getFocusedFormCaption():
-            if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
+            if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): # encoder push config.up
                 event.handled = True
                 plugins.prevPreset(channels.channelNumber(channels.selectedChannel()))
             
-            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
+            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): # encoder push config.down
                 event.handled = True
                 plugins.nextPreset(channels.channelNumber(channels.selectedChannel()))
         else:
-            if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
+            if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): # encoder push config.up
                 event.handled = True
                 ui.up()
 
-            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
+            elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): # encoder push config.down
                 event.handled = True
                 ui.down()
 
@@ -231,27 +229,27 @@ def encoder(self, event):
         config.itemDisp = 0
         config.itemTime= 0
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): #4d encoder spin right 
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.right): #4d encoder spin config.right 
             event.handled = True
             ui.jog(1)
             
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): #4d encoder spin left 
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.left): #4d encoder spin config.left 
             event.handled = True
             ui.jog(-1)
         
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A"))  & (event.data2 == right): #4d encoder push right
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A"))  & (event.data2 == config.right): #4d encoder push config.right
             event.handled = True
             arrange.jumpToMarker(1,0)
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A"))  & (event.data2 == left): #4d encoder push left
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A"))  & (event.data2 == config.left): #4d encoder push config.left
             event.handled = True
             arrange.jumpToMarker(-1,0)
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): #4d encoder push up
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): #4d encoder push config.up
             event.handled = True
             ui.up(1)
         
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): #4d encoder push down
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): #4d encoder push config.down
             event.handled = True
             ui.down(1)
 
@@ -287,7 +285,7 @@ def encoder(self, event):
             else:
                 mix.setTrackName(0, "B| file:")
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.right): # encoder spin config.right 
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.down()
@@ -295,7 +293,7 @@ def encoder(self, event):
                 ui.next()
                 mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
             
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): # encoder spin left 
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.left): # encoder spin config.left 
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.up()
@@ -303,21 +301,21 @@ def encoder(self, event):
                 ui.previous()
                 mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
             
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == right): # encoder push right
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.right): # encoder push config.right
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.right()
             else:
                 ui.next()
             
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == left): # encoder push left
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.left): # encoder push config.left
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.left()
             else:
                 ui.previous()
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): # encoder push config.up
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.up()
@@ -326,7 +324,7 @@ def encoder(self, event):
                 mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
                 ui.previewBrowserMenuItem()
         
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): # encoder push config.down
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.down()
@@ -354,29 +352,29 @@ def encoder(self, event):
                     pass
 
     elif ui.getFocused(config.winName["Piano Roll"]) == True:
-        if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
+        if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.right): # encoder spin config.right 
             event.handled = True
             #ui.down(1)
             ui.jog(1)
             
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): # encoder spin left 
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.left): # encoder spin config.left 
             event.handled = True
             #ui.up(1)
             ui.jog(-1)
         
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == right): # encoder push right
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.right): # encoder push config.right
             event.handled = True
             ui.right(1)
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == left): # encoder push left
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.left): # encoder push config.left
             event.handled = True
             ui.left(1)
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): # encoder push config.up
             event.handled = True
             ui.up()
         
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): # encoder push config.down
             event.handled = True
             ui.down()
 
@@ -393,28 +391,28 @@ def encoder(self, event):
                     pass
 
     else:
-        if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
+        if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.right): # encoder spin config.right 
             event.handled = True
             ui.down(1)
             
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): # encoder spin left 
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == config.left): # encoder spin config.left 
             event.handled = True
             ui.up(1)
         
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == right): # encoder push right
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.right): # encoder push config.right
             event.handled = True
             ui.right(1)
 
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == left): # encoder push left
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == config.left): # encoder push config.left
             event.handled = True
             ui.left(1)
 
-        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
+        if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.up): # encoder push config.up
             event.handled = True
             ui.up()
         
-        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
+        elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == config.down): # encoder push config.down
             event.handled = True
             ui.down()
 

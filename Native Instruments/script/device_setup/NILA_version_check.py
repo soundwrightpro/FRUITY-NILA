@@ -1,5 +1,5 @@
-from script.device_setup import NILA_detect_device
 from script.device_setup import config
+from script.device_setup import NILA_detect_device
 
 from sys import flags, platform
 import ui

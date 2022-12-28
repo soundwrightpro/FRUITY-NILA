@@ -420,9 +420,7 @@ def OnIdle():
         if ui.getFocusedPluginName() in config.supported_plugins:
             pass
             #nihia_mix.setTrackName(0, (str(channels.getChannelName(channels.selectedChannel()))))
-   
             #NILA_core.setTrackVolConvert(0, str(round(channels.getChannelVolume(channels.selectedChannel()+ 0, 1), 1)) + " dB")
-
             #updatePanChannel((channels.selectedChannel() + 0), 0)
 
 

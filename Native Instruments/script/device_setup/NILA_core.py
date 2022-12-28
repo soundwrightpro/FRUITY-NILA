@@ -1,9 +1,9 @@
 import nihia
 import nihia.mixer as mix
 
-from script.NILA_UI import NILA_buttons
-from script.device_setup import NILA_detect_device
 from script.device_setup import config
+from script.device_setup import NILA_detect_device
+from script.NILA_UI import NILA_buttons
 
 import device
 import midi

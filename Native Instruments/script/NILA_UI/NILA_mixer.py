@@ -1,8 +1,8 @@
 import nihia
 from nihia import mixer as mix
 
-from script.screen_writer import NILA_OLED as oled
 from script.device_setup import config 
+from script.screen_writer import NILA_OLED as oled
 
 import device 
 import math
