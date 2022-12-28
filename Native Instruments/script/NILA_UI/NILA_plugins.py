@@ -13,7 +13,6 @@ import ui
 
 
 skip = -1
-recognized = False
 
 
 def plugin(self, event):
