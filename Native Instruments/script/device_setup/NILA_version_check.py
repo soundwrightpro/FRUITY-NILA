@@ -8,6 +8,7 @@ VER_Major = ui.getVersion(0)
 VER_Minor = ui.getVersion(1)
 VER_Release = ui.getVersion(2)
 
+
 def VersionCheck(compatibility):
    """Called to check user's FL Studio version to see if this script can run."""
 
@@ -18,6 +19,7 @@ def VersionCheck(compatibility):
 
    if platform == "darwin":
       OS = "macOS"
+
    elif platform == "win32":
       OS = "Windows"
 
@@ -45,4 +47,3 @@ def VersionCheck(compatibility):
    else:
       print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with FRUITY NILA\n\n")
    return compatibility
-

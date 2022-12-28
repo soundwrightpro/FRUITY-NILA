@@ -7,7 +7,7 @@
 [[
 	Surface:	Komplete Kontrol M DAW and/or Komplete Kontrol A DAW
 	Developer:	Duwayne WRIGHT
-	Version:	21.0 
+	Version:	10.0.0
 
     Copyright (c) 2022 Duwayne WRIGHT
 ]]

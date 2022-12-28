@@ -344,4 +344,3 @@ def OnMidiMsg(self, event):
                     NILA_OLED.updatePanChannel((channels.selectedChannel() + 7), 7)
         else:
             event.handled = True 
-            

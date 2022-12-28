@@ -363,4 +363,3 @@ def OnMidiMsg(self, event):
                         x = (mixer.getTrackPan(mixer.trackNumber() + 7))
                         mixer.setTrackPan((mixer.trackNumber() + 7), (x + config.increment) )
                         oled.updatePanMix((mixer.trackNumber() + 7), 7)
-

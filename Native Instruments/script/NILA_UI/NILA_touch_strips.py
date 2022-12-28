@@ -24,5 +24,3 @@ def OnMidiMsg(event):
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
             else:
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
-
-

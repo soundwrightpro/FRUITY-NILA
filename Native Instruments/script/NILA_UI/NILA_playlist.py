@@ -28,6 +28,7 @@ def OnIdle():
 
       if split_point1 in split_message.lower():
          split_hint = split_message.partition(split_point1)[2]
+
       else:
          split_hint = split_message.partition(split_point2)[2]
 
@@ -48,6 +49,3 @@ def OnIdle():
       mixer.setTrackPan(5, config.blankEvent)
       mixer.setTrackPan(6, config.blankEvent)
       mixer.setTrackPan(7, config.blankEvent)
-
-
-
