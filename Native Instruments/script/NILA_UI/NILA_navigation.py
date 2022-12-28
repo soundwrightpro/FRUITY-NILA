@@ -24,7 +24,7 @@ jogMove = True
 def encoder(self, event): 
     
     global jogMove
-    if ui.getFocused(0) == True: #mixer control
+    if ui.getFocused(config.winName["Mixer"]) == True: #mixer control
         if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
             event.handled = True
             ui.jog(1)
@@ -353,7 +353,7 @@ def encoder(self, event):
                 else:
                     pass
 
-    elif ui.getFocused(3) == True: # Piano Roll:
+    elif ui.getFocused(config.winName["Piano Roll"]) == True:
         if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
             event.handled = True
             #ui.down(1)

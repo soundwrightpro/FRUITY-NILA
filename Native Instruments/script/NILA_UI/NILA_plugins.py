@@ -18,7 +18,7 @@ recognized = False
 
 def plugin(self, event):
 
-    if ui.getFocused(5) == 1: #plugin control
+    if ui.getFocused(config.winName["Plugin"]) == 1: #plugin control
         plugin_name = ui.getFocusedPluginName()   
 
         if plugin_name == config.supported_plugins[0]:

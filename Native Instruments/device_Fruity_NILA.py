@@ -50,8 +50,8 @@ class Core():
 		NILA_OLED.OnUpdateBeatIndicator(self,Value)
 
 	def OnWaitingForInput(self):
-		mixer.setTrackName(0, config.wait_input_1)
-		mixer.setTrackVol(0, config.wait_input_2)
+		nihia_mixer.setTrackName(0, config.wait_input_1)
+		nihia_mixer.setTrackVol(0, config.wait_input_2)
 
 	def OnProjectLoad(self):
 		NILA_core.OnProjectLoad(self)

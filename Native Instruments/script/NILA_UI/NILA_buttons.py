@@ -271,7 +271,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                     
                      
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
-        if ui.getFocused(0) == True: 
+        if ui.getFocused(config.winName["Mixer"]) == True: 
             event.handled = True
             if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= config.currentUtility:
                 pass
@@ -280,7 +280,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 ui.setHintMsg("Mute")
         
     if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
-        if ui.getFocused(0) == True: 
+        if ui.getFocused(config.winName["Mixer"]) == True: 
             event.handled = True
             if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= config.currentUtility:
                 pass
@@ -289,13 +289,13 @@ def OnMidiMsg(event): #listens for button or knob activity
                 ui.setHintMsg("Solo")
 
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
-        if ui.getFocused(1) == True: 
+        if ui.getFocused(config.winName["Channel Rack"])== True: 
             event.handled = True
             channels.muteChannel(channels.channelNumber()) 
             ui.setHintMsg("Mute")
         
     if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
-        if ui.getFocused(1) == True: 
+        if ui.getFocused(config.winName["Channel Rack"]) == True: 
             event.handled = True
             channels.soloChannel(channels.channelNumber()) 
             ui.setHintMsg("Solo")
