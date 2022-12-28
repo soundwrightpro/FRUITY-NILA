@@ -15,16 +15,10 @@ import transport
 import ui
 
 
-on = 1
-off = 0
 windowCycle = 0
-jogMove = True
 
  
 def OnMidiMsg(event): #listens for button or knob activity
-
-    global windowCycle
-    global jogMove
 
     if (event.data1 == nihia.buttons.button_list.get("PLAY")):
         event.handled = True
@@ -55,12 +49,12 @@ def OnMidiMsg(event): #listens for button or knob activity
         transport.setLoopMode() #loop/pattern mode
         ui.setHintMsg("Song / pattern mode")
 
-        if transport.getLoopMode() == off:
+        if transport.getLoopMode() ==  config.off:
             mix.setTrackName(0, "Pattern:")
             mix.setTrackVol(0, ("Enabled"))
             time.sleep(config.timedelay) 
 
-        elif transport.getLoopMode() == on:
+        elif transport.getLoopMode() ==  config.on:
             mix.setTrackName(0, "Song:")
             mix.setTrackVol(0, ("Enabled"))
             time.sleep(config.timedelay) 
@@ -70,12 +64,12 @@ def OnMidiMsg(event): #listens for button or knob activity
         transport.globalTransport(midi.FPT_Metronome, 110)
         ui.setHintMsg("Metronome")
 
-        if ui.isMetronomeEnabled() == off: 
+        if ui.isMetronomeEnabled() ==  config.off: 
             mix.setTrackName(0, "Metronome:")
             mix.setTrackVol(0, ("Disabled"))
             time.sleep(config.timedelay) 
 
-        elif ui.isMetronomeEnabled() == on: 
+        elif ui.isMetronomeEnabled() ==  config.on: 
             mix.setTrackName(0, "Metronome:")
             mix.setTrackVol(0, ("Enabled"))
             time.sleep(config.timedelay) 

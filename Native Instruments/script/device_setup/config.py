@@ -64,3 +64,6 @@ itemTime = 0
 
 down = right = 1
 up = left = 127
+
+on = 1
+off = 0
