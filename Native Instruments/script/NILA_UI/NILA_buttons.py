@@ -213,12 +213,12 @@ def OnMidiMsg(event): #listens for button or knob activity
     if (event.data1 == nihia.buttons.button_list.get("UNDO")):
         event.handled = True
         general.undoUp() #undo 
-        ui.setHintMsg(ui.getHintMsg())
+        ui.setHintMsg(general.getUndoLevelHint())
 
     if (event.data1 == nihia.buttons.button_list.get("REDO")):
         event.handled = True
         general.undo() #redo
-        ui.setHintMsg(ui.getHintMsg())
+        ui.setHintMsg(general.getUndoLevelHint())
 
     if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
         event.handled = True
