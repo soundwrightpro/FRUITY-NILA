@@ -6,7 +6,7 @@
 
 **FRUITY NILA** provides support for the Native Instruments [Komplete Kontrol M32](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/) and the [A-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61) with [FL STUDIO](https://www.image-line.com/). By using the Native Instruments Host Integration protocol instead of the limited MIDI mode Native Instruments provides, the controller acts like as if it was connected to Ableton or Logic Pro X. The Komplete Kontrol App and/or Plugin does not have to be running for this script to function. FRUITY NILA doesn't interfere with the operation of the Komplete Kontrol Plugin. 
 
-**You must have Komplete Kontrol v2.3.0 or higher, and Firmware 0.3.9 or higher**. 
+**You must have Komplete Kontrol v2.3.0 or higher, Firmware 0.3.9 or higher** and FL Studio 21 or higher.
 
 Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA. ~~-[How to Install](/install.md)~~- ***COMMING WINTER 2023***
 
