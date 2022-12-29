@@ -119,6 +119,7 @@ def encoder(self, event):
             if jogMove == True:# mixer highlighting when jog wheel is moved
                 ui.miDisplayRect(mixer.trackNumber()+0,mixer.trackNumber()+7,1000)
 
+
     elif ui.getFocused(config.winName["Channel Rack"]) == True: 
 
         if ui.isInPopupMenu() == True:
@@ -181,6 +182,8 @@ def encoder(self, event):
                     ui.setHintMsg("Enter")
                 else:
                     pass
+
+    
     elif ui.getFocused(config.winName["Plugin"]) == True: 
 
         if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
@@ -225,6 +228,8 @@ def encoder(self, event):
             else:
                 ui.enter()
                 ui.setHintMsg("enter")
+
+
 
     elif ui.getFocused(config.winName["Playlist"]) == True: 
 
@@ -276,6 +281,8 @@ def encoder(self, event):
                     pass
             else:
                 pass
+
+
 
     elif ui.getFocused(config.winName["Browser"]) == True: 
 
@@ -378,6 +385,8 @@ def encoder(self, event):
                     ui.setHintMsg("Enter")
                 else:
                     pass
+
+
 
     elif ui.getFocused(3) == True: # Piano Roll:
         if  (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 

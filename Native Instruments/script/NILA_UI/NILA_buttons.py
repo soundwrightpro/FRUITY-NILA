@@ -88,6 +88,10 @@ def OnMidiMsg(event): #listens for button or knob activity
         event.handled = True
         channels.quickQuantize(channels.channelNumber(),0)
         ui.setHintMsg("Quick Quantize")
+        mix.setTrackName(0, "Piano Roll")
+        mix.setTrackVol(0, "Quick Quantize")
+        time.sleep(config.timedelay) 
+
         
 
     if (event.data1 == nihia.buttons.button_list.get("AUTO")):
@@ -217,13 +221,28 @@ def OnMidiMsg(event): #listens for button or knob activity
 
     if (event.data1 == nihia.buttons.button_list.get("UNDO")):
         event.handled = True
+        undoLevel =  str(general.getUndoHistoryCount()-general.getUndoHistoryLast())
+
         general.undoUp() #undo 
+
         ui.setHintMsg(ui.getHintMsg())
+        mix.setTrackName(0, "History")
+        mix.setTrackVol(0, "Undo @ "+ undoLevel)
+        time.sleep(config.timedelay) 
+        
+        
 
     if (event.data1 == nihia.buttons.button_list.get("REDO")):
         event.handled = True
+        undoLevel =  str(general.getUndoHistoryCount()-general.getUndoHistoryLast())
+
         general.undo() #redo
+
         ui.setHintMsg(ui.getHintMsg())
+        mix.setTrackName(0, "History")
+        mix.setTrackPan(0, "Redo @ "+ undoLevel)
+        time.sleep(config.timedelay)
+        
 
     if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
         event.handled = True
@@ -237,7 +256,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         if doubleclickstatus == True:
             transport.globalTransport(midi.FPT_F8, 67)
             ui.setHintMsg("Plugin Picker")
-            mix.setTrackName(0, "Plugin Picker")
+            mix.setTrackName(0, "Window:")
+            mix.setTrackPan(0, "Plugin Picker")
             time.sleep(config.timedelay)
         else:
 
@@ -245,20 +265,33 @@ def OnMidiMsg(event): #listens for button or knob activity
                 ui.showWindow(1)
                 windowCycle += 1
                 ui.setHintMsg("Channel Rack")
+                mix.setTrackName(0, "Window:")
+                mix.setTrackPan(0, "Channel Rack")
+                time.sleep(config.timedelay)
 
             elif windowCycle == 1:
                 ui.showWindow(0)
                 windowCycle += 1
                 ui.setHintMsg("Mixer")
+                mix.setTrackName(0, "Window:")
+                mix.setTrackPan(0, "Mixer")
+                time.sleep(config.timedelay)
 
             elif windowCycle == 2:
                 ui.showWindow(2)
                 windowCycle += 1
                 ui.setHintMsg("Playlist")
+                mix.setTrackName(0, "Window:")
+                mix.setTrackPan(0, "Playlist")
+                time.sleep(config.timedelay)
 
             elif windowCycle == 3:
                 ui.showWindow(4)
                 ui.setHintMsg("Browser")
+                mix.setTrackName(0, "Window:")
+                mix.setTrackPan(0, "Browser")
+                time.sleep(config.timedelay)
+
                 if ui.getVisible(3) == True:
                     windowCycle += 1
                 else:
@@ -266,7 +299,10 @@ def OnMidiMsg(event): #listens for button or knob activity
 
             elif windowCycle == 4:
                     ui.showWindow(3)
-                    ui.setHintMsg("Switch to Piano Roll")
+                    ui.setHintMsg("Piano Roll")
+                    mix.setTrackName(0, "Window:")
+                    mix.setTrackPan(0, "Piano Roll")
+                    time.sleep(config.timedelay)
                     windowCycle = 0
                     
                      
