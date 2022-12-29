@@ -1,3 +1,47 @@
+"""
+User-editable Python file to change script behavior.
+"""
+
+# Behavior of Browser Jog Wheel 
+# 
+# If set to 0, will turn off sounds playing while you jog(spinning the right most knob)
+# If set to 1, will turn on the sounds while you jog 
+
+jog_preview_sound = 1
+
+# Behavior of Browser Jog Wheel 
+# 
+# If set to 0, will turn off sounds playing while you jog(spinning the right most knob)
+# If set to 1, will turn on the sounds while you jog 
+
+upDown_preview_sound = 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -15,6 +59,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+"""
+Developer variables - Touch these and break the script.  
+""" 
 
 VERSION_NUMBER = "v10.0.0"
 HELLO_MESSAGE = "FRUITY NILA"
@@ -46,6 +94,7 @@ MAX_Release = 0
 MIN_Major = 21
 MIN_Minor = 0
 MIN_Release = 0
+
 
 timedelay = 0.45
 

@@ -294,6 +294,10 @@ def encoder(self, event):
             else:
                 ui.next()
                 mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
+                if config.jog_preview_sound == 1:
+                    ui.previewBrowserMenuItem()
+                else:
+                    pass 
             
         elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): # encoder spin left 
             event.handled = True
@@ -302,6 +306,10 @@ def encoder(self, event):
             else:
                 ui.previous()
                 mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
+                if config.jog_preview_sound == 1:
+                    ui.previewBrowserMenuItem()
+                else:
+                    pass 
             
         if (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == right): # encoder push right
             event.handled = True
@@ -324,7 +332,11 @@ def encoder(self, event):
             else:
                 ui.previous()
                 mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
-                ui.previewBrowserMenuItem()
+                if config.upDown_preview_sound == 1:
+                    ui.previewBrowserMenuItem()
+                else:
+                    pass 
+
         
         elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
             event.handled = True
@@ -333,7 +345,10 @@ def encoder(self, event):
             else:
                 ui.next()
                 mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
-                ui.previewBrowserMenuItem()
+                if config.upDown_preview_sound  == 1:
+                    ui.previewBrowserMenuItem()
+                else:
+                    pass 
 
         if (event.data1 ==  nihia.buttons.button_list.get("ENCODER_BUTTON")):
             event.handled = True
