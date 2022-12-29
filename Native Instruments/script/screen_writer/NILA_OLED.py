@@ -309,12 +309,15 @@ def OnIdle():
     if ui.getFocused(config.winName["Browser"]) == True:
 
         if ui.getFocusedNodeFileType() == -100:
-            nihia_mix.setTrackName(0, config.widTitle[4])
+            nihia_mix.setTrackName(0, "Browser")
         else:
-            if ui.getFocusedNodeFileType() == 7 or ui.getFocusedNodeFileType() == 13 or ui.getFocusedNodeFileType() == 14 or ui.getFocusedNodeFileType() == 15:
-                nihia_mix.setTrackName(0, "B| sound:")
+            if ui.isBrowserAutoHide() == 0:
+                if ui.getFocusedNodeFileType() == 7 or ui.getFocusedNodeFileType() == 13 or ui.getFocusedNodeFileType() == 14 or ui.getFocusedNodeFileType() == 15:
+                    nihia_mix.setTrackName(0, "B| sound:")
+                else:
+                    nihia_mix.setTrackName(0, "B| file:")
             else:
-                nihia_mix.setTrackName(0, "B| file:")
+                pass
 
         nihia_mix.setTrackName(1, config.widTitle[4])
         nihia_mix.setTrackName(2, config.widTitle[4])

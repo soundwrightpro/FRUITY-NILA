@@ -24,7 +24,7 @@ jogMove = True
 def encoder(self, event): 
     
     global jogMove
-    if ui.getFocused(0) == True: #mixer control
+    if ui.getFocused(config.winName["Mixer"])== True: 
         if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
             event.handled = True
             ui.jog(1)
@@ -282,10 +282,13 @@ def encoder(self, event):
         if ui.getFocusedNodeFileType() == -100:
             mix.setTrackName(0, "Browser")
         else:
-            if ui.getFocusedNodeFileType() == 7 or ui.getFocusedNodeFileType() == 13 or ui.getFocusedNodeFileType() == 14 or ui.getFocusedNodeFileType() == 15:
-                mix.setTrackName(0, "B| sound:")
+            if ui.isBrowserAutoHide() == 0:
+                if ui.getFocusedNodeFileType() == 7 or ui.getFocusedNodeFileType() == 13 or ui.getFocusedNodeFileType() == 14 or ui.getFocusedNodeFileType() == 15:
+                    mix.setTrackName(0, "B| sound:")
+                else:
+                    mix.setTrackName(0, "B| file:")
             else:
-                mix.setTrackName(0, "B| file:")
+                pass
 
         if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
             event.handled = True
@@ -316,14 +319,22 @@ def encoder(self, event):
             if ui.isInPopupMenu() == True:
                 ui.right()
             else:
-                ui.next()
+                #ui.next()
+                ui.setHintMsg("Browser Auto Hide On")
+                mix.setTrackVol(0, "Auto Hide On")
+                time.sleep(config.timedelay)
+                ui.setBrowserAutoHide(1)
             
         elif (event.data1 == nihia.buttons.button_list.get("ENCODER_X_A")) & (event.data2 == left): # encoder push left
             event.handled = True
             if ui.isInPopupMenu() == True:
                 ui.left()
             else:
-                ui.previous()
+                #ui.previous()
+                ui.setHintMsg("Browser Auto Hide Off")
+                mix.setTrackVol(0, "Auto Hide Off")
+                time.sleep(config.timedelay)
+                ui.setBrowserAutoHide(0)
 
         if (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == up): # encoder push up
             event.handled = True
