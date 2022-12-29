@@ -273,7 +273,7 @@ def plugin(self, event):
                     '15':16  #7   
                     }
 
-        elif plugin_name == config.supported_plugins[13] :
+        elif plugin_name == config.supported_plugins[12] :
             
             MAPPED_FUNCTION = {
                     '0':0,
