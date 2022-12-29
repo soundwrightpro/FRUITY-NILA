@@ -7,14 +7,14 @@ User-editable Python file to change script behavior.
 # If set to 0, will turn off sounds playing while you jog(spinning the right most knob)
 # If set to 1, will turn on the sounds while you jog 
 
-jog_preview_sound = 1
+jog_preview_sound = 0
 
 # Behavior of Browser Jog Wheel 
 # 
 # If set to 0, will turn off sounds playing while you jog(spinning the right most knob)
 # If set to 1, will turn on the sounds while you jog 
 
-upDown_preview_sound = 0
+upDown_preview_sound = 1
 
 
 
