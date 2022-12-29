@@ -361,7 +361,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackVol(1, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 1)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[0][1]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["1"], channels.selectedChannel())
@@ -382,7 +382,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackVol(2, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 2)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[0][2]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["2"], channels.selectedChannel())
@@ -403,7 +403,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackVol(3, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 3)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[0][3]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["3"], channels.selectedChannel())
@@ -424,7 +424,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackVol(4, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 4)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:        
             if (event.data1 == nihia.mixer.knobs[0][4]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["4"], channels.selectedChannel())
@@ -445,7 +445,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackVol(5, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 5)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[0][5]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["5"], channels.selectedChannel())
@@ -466,7 +466,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackVol(6, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 6)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[0][6]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["6"], channels.selectedChannel())
@@ -487,7 +487,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackVol(7, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 7)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[0][7]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["7"], channels.selectedChannel())
@@ -540,7 +540,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackPan(1, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 1)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[1][1]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["9"], channels.selectedChannel())
@@ -561,7 +561,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackPan(2, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 2)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[1][2]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["10"], channels.selectedChannel())
@@ -582,7 +582,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackPan(3, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 3)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[1][3]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["11"], channels.selectedChannel())
@@ -603,7 +603,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackPan(4, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 4)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:        
             if (event.data1 == nihia.mixer.knobs[1][4]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["12"], channels.selectedChannel())
@@ -624,7 +624,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackPan(5, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 5)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[1][5]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["13"], channels.selectedChannel())
@@ -645,7 +645,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackPan(6, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 6)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[1][6]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["14"], channels.selectedChannel())
@@ -666,7 +666,7 @@ def plugin(self, event):
             event.handled = True
             mixer.setTrackPan(7, config.blankEvent)
             NILA_OLED.updateText(config.blankEvent, 7)
-            ui.setHintMsg(config.nuText)
+            ui.setHintMsg(config.blankEvent)
         else:
             if (event.data1 == nihia.mixer.knobs[1][7]):
                 x = plugins.getParamValue(MAPPED_FUNCTION["15"], channels.selectedChannel())
