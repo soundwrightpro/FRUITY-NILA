@@ -32,26 +32,22 @@ def OnWaitingForInput(status):
    time.sleep(config.timedelay)
    
 
-def OnProjectLoad(status):
+def OnProjectLoad(self, status):
+
    if status == config.PL_Start:
-      NILA_mix.setTrackName(0, "Loading...")
-      NILA_mix.setTrackVol(0, "project")
+      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+      NILA_mix.setTrackVol(0, "Loading File")
       time.sleep(config.timedelay)
 
    elif status == config.PL_LoadOk:
-      NILA_mix.setTrackName(0, "Loading...")
-      NILA_mix.setTrackVol(0, "complete")
+      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+      NILA_mix.setTrackVol(0, "Load Complete")
       time.sleep(config.timedelay)
 
    elif status == config.PL_LoadError:
-      NILA_mix.setTrackName(0, "Loading...")
-      NILA_mix.setTrackVol(0, "error!")
+      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+      NILA_mix.setTrackVol(0, "Load Error!")
       time.sleep(config.timedelay)
-
-
-   NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
-   NILA_mix.setTrackVol(0, config.LOAD_MESSAGE)
-   time.sleep(config.timedelay)
 
 
 def timeConvert(timeDisp, currentTime):
