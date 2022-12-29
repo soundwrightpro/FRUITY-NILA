@@ -264,15 +264,6 @@ def OnUpdateBeatIndicator(self, Value):
 
         timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
 
-        updateText(str(timeDisp), 0)
-        updateText(config.blankEvent, 1)
-        updateText(config.blankEvent, 2)
-        updateText(config.blankEvent, 3)
-        updateText(config.blankEvent, 4)
-        updateText(config.blankEvent, 5)
-        updateText(config.blankEvent, 6)
-        updateText(config.blankEvent, 7)
-
         split_message = ui.getHintMsg()
         split_point1 = ' - '
         split_point2 = ' to '
@@ -427,6 +418,37 @@ def OnIdle():
             #NILA_core.setTrackVolConvert(0, str(round(channels.getChannelVolume(channels.selectedChannel()+ 0, 1), 1)) + " dB")
 
             #updatePanChannel((channels.selectedChannel() + 0), 0)
+
+    timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
+
+    if ui.getFocused(config.winName["Playlist"]) == True: 
+
+        split_message = ui.getHintMsg()
+        split_point1 = ' - '
+        split_point2 = ' to '
+
+        if split_point1 in split_message.lower():
+            split_hint = split_message.partition(split_point1)[2]
+        else:
+            split_hint = split_message.partition(split_point2)[2]
+
+        nihia_mix.setTrackVol(0, str(split_hint[:7] + "| " + currentTime))
+        nihia_mix.setTrackVol(1, config.blankEvent)
+        nihia_mix.setTrackVol(2, config.blankEvent)
+        nihia_mix.setTrackVol(3, config.blankEvent)
+        nihia_mix.setTrackVol(4, config.blankEvent)
+        nihia_mix.setTrackVol(5, config.blankEvent)
+        nihia_mix.setTrackVol(6, config.blankEvent)
+        nihia_mix.setTrackVol(7, config.blankEvent)
+
+        nihia_mix.setTrackPan(0, config.blankEvent)
+        nihia_mix.setTrackPan(1, config.blankEvent)
+        nihia_mix.setTrackPan(2, config.blankEvent)
+        nihia_mix.setTrackPan(3, config.blankEvent)
+        nihia_mix.setTrackPan(4, config.blankEvent)
+        nihia_mix.setTrackPan(5, config.blankEvent)
+        nihia_mix.setTrackPan(6, config.blankEvent)
+        nihia_mix.setTrackPan(7, config.blankEvent)
 
 
 def VolTodB(value: float):

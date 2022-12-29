@@ -10,7 +10,14 @@ import mixer
 import ui 
 
 
-def OnMidiMsg(self, event):    
+def OnMidiMsg(self, event): 
+       
+    """
+    Final track is the 'current' track, which is a special analysis track that has no
+    volume or pan controls. We are not interested in this track as we cannot control it.
+    """
+
+
     if ui.getFocused(config.winName["Mixer"]) == True: 
 
         # VOLUME CONTROL

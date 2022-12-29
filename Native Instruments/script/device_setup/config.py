@@ -1,5 +1,5 @@
 """
-User-editable Python file to change script behavior.
+Start of User-editable Python file to change script behavior
 """
 
 # Behavior of Browser Jog Wheel 
@@ -15,6 +15,38 @@ jog_preview_sound = 0
 # If set to 1, will turn on the sounds while you jog 
 
 upDown_preview_sound = 1
+
+
+"""
+End of User-editable Python file to change script behavior
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -60,9 +92,7 @@ upDown_preview_sound = 1
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""
-Developer variables - Touch these and break the script.  
-""" 
+# script_constants
 
 VERSION_NUMBER = "v10.0.0"
 HELLO_MESSAGE = "FRUITY NILA"
@@ -111,7 +141,7 @@ nuText = "Not Used"
 itemDisp = 0
 itemTime = 0
 
-#FL Studio Variables 
+#fl constants
 
 PL_Start = 0 #Called when project loading start
 PL_LoadOk = 100	#Called when project was succesfully loaded

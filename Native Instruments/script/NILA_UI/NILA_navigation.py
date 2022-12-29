@@ -1,8 +1,9 @@
 import nihia
-from nihia import mixer as mix
+from nihia import mixer as nihia_mix
 
-from script.device_setup import NILA_core
 from script.device_setup import config
+from script.device_setup import NILA_core
+from script.screen_writer import NILA_OLED
 
 import arrangement as arrange
 import channels
@@ -73,11 +74,11 @@ def encoder(self, event):
                 mixer.armTrack(mixer.trackNumber())
                 if mixer.isTrackArmed(mixer.trackNumber()) == True:
                     ui.setHintMsg("Armed Disk Recording")
-                    mix.setTrackName(0, "Disk REC off")
+                    nihia_mix.setTrackName(0, "Disk REC off")
                     time.sleep(config.timedelay)
                 else:
                     ui.setHintMsg("Disarmed Disk Recording")
-                    mix.setTrackName(0, "Disk REC on")
+                    nihia_mix.setTrackName(0, "Disk REC on")
                     time.sleep(config.timedelay)
 
         elif (event.data1 == nihia.buttons.button_list.get("ENCODER_Y_A")) & (event.data2 == down): # encoder push down
@@ -88,11 +89,11 @@ def encoder(self, event):
                 #pass
                 if mixer.isTrackSlotsEnabled(mixer.trackNumber()) == True:
                     mixer.enableTrackSlots(mixer.trackNumber(),0)
-                    mix.setTrackName(0, "Disable FX")
+                    nihia_mix.setTrackName(0, "Disable FX")
                     time.sleep(config.timedelay)
                 else:
                     mixer.enableTrackSlots(mixer.trackNumber(),1)
-                    mix.setTrackName(0, "Enable FX")
+                    nihia_mix.setTrackName(0, "Enable FX")
                     time.sleep(config.timedelay)
 
 
@@ -239,6 +240,8 @@ def encoder(self, event):
         if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): #4d encoder spin right 
             event.handled = True
             ui.jog(1)
+
+
             
         elif (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == left): #4d encoder spin left 
             event.handled = True
@@ -287,13 +290,13 @@ def encoder(self, event):
     elif ui.getFocused(config.winName["Browser"]) == True: 
 
         if ui.getFocusedNodeFileType() == -100:
-            mix.setTrackName(0, "Browser")
+            nihia_mix.setTrackName(0, "Browser")
         else:
             if ui.isBrowserAutoHide() == 0:
                 if ui.getFocusedNodeFileType() == 7 or ui.getFocusedNodeFileType() == 13 or ui.getFocusedNodeFileType() == 14 or ui.getFocusedNodeFileType() == 15:
-                    mix.setTrackName(0, "B| sound:")
+                    nihia_mix.setTrackName(0, "B| sound:")
                 else:
-                    mix.setTrackName(0, "B| file:")
+                    nihia_mix.setTrackName(0, "B| file:")
             else:
                 pass
 
@@ -303,7 +306,7 @@ def encoder(self, event):
                 ui.down()
             else:
                 ui.next()
-                mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
+                nihia_mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
                 if config.jog_preview_sound == 1:
                     ui.previewBrowserMenuItem()
                 else:
@@ -315,7 +318,7 @@ def encoder(self, event):
                 ui.up()
             else:
                 ui.previous()
-                mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
+                nihia_mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
                 if config.jog_preview_sound == 1:
                     ui.previewBrowserMenuItem()
                 else:
@@ -328,7 +331,7 @@ def encoder(self, event):
             else:
                 #ui.next()
                 ui.setHintMsg("Browser Auto Hide On")
-                mix.setTrackVol(0, "Auto Hide On")
+                nihia_mix.setTrackVol(0, "Auto Hide On")
                 time.sleep(config.timedelay)
                 ui.setBrowserAutoHide(1)
             
@@ -339,7 +342,7 @@ def encoder(self, event):
             else:
                 #ui.previous()
                 ui.setHintMsg("Browser Auto Hide Off")
-                mix.setTrackVol(0, "Auto Hide Off")
+                nihia_mix.setTrackVol(0, "Auto Hide Off")
                 time.sleep(config.timedelay)
                 ui.setBrowserAutoHide(0)
 
@@ -349,7 +352,7 @@ def encoder(self, event):
                 ui.up()
             else:
                 ui.previous()
-                mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
+                nihia_mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
                 if config.upDown_preview_sound == 1:
                     ui.previewBrowserMenuItem()
                 else:
@@ -362,7 +365,7 @@ def encoder(self, event):
                 ui.down()
             else:
                 ui.next()
-                mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
+                nihia_mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
                 if config.upDown_preview_sound  == 1:
                     ui.previewBrowserMenuItem()
                 else:
