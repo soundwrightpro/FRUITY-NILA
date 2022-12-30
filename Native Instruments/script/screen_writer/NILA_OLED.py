@@ -9,6 +9,7 @@ import general
 import math
 import mixer
 import playlist
+import time
 import ui
 
 
@@ -257,10 +258,48 @@ def namingTrack(self, event):
         nihia_mix.setTrackPan(6, config.blankEvent)
         nihia_mix.setTrackPan(7, config.blankEvent)
 
+    if ui.getFocused(config.winName["Playlist"]) == True: #piano roll:
+
+        nihia_mix.setTrackName(0, "Playlist")
+        nihia_mix.setTrackName(1, config.blankEvent)
+        nihia_mix.setTrackName(2, config.blankEvent)
+        nihia_mix.setTrackName(3, config.blankEvent)
+        nihia_mix.setTrackName(4, config.blankEvent)
+        nihia_mix.setTrackName(5, config.blankEvent)
+        nihia_mix.setTrackName(6, config.blankEvent)
+        nihia_mix.setTrackName(7, config.blankEvent)
+        
+        #nihia_mix.setTrackVol(1, config.blankEvent)
+        nihia_mix.setTrackVol(1, config.blankEvent)
+        nihia_mix.setTrackVol(2, config.blankEvent)
+        nihia_mix.setTrackVol(3, config.blankEvent)
+        nihia_mix.setTrackVol(4, config.blankEvent)
+        nihia_mix.setTrackVol(5, config.blankEvent)
+        nihia_mix.setTrackVol(6, config.blankEvent)
+        nihia_mix.setTrackVol(7, config.blankEvent)
+
+        nihia_mix.setTrackPan(0, config.blankEvent)
+        nihia_mix.setTrackPan(1, config.blankEvent)
+        nihia_mix.setTrackPan(2, config.blankEvent)
+        nihia_mix.setTrackPan(3, config.blankEvent)
+        nihia_mix.setTrackPan(4, config.blankEvent)
+        nihia_mix.setTrackPan(5, config.blankEvent)
+        nihia_mix.setTrackPan(6, config.blankEvent)
+        nihia_mix.setTrackPan(7, config.blankEvent)
+
 
 def OnUpdateBeatIndicator(self, Value):
 
     if ui.getFocused(config.winName["Playlist"]) == True:
+
+        nihia_mix.setTrackName(0, "Playlist")
+        nihia_mix.setTrackName(1, config.blankEvent)
+        nihia_mix.setTrackName(2, config.blankEvent)
+        nihia_mix.setTrackName(3, config.blankEvent)
+        nihia_mix.setTrackName(4, config.blankEvent)
+        nihia_mix.setTrackName(5, config.blankEvent)
+        nihia_mix.setTrackName(6, config.blankEvent)
+        nihia_mix.setTrackName(7, config.blankEvent)
 
         timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
 
@@ -298,6 +337,7 @@ def OnUpdateBeatIndicator(self, Value):
 def OnIdle():
 
     if ui.getFocused(config.winName["Browser"]) == True:
+
 
         if ui.getFocusedNodeFileType() == -100:
             nihia_mix.setTrackName(0, "Browser")
@@ -422,6 +462,15 @@ def OnIdle():
     timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
 
     if ui.getFocused(config.winName["Playlist"]) == True: 
+
+        nihia_mix.setTrackName(0, "Playlist")
+        nihia_mix.setTrackName(1, config.blankEvent)
+        nihia_mix.setTrackName(2, config.blankEvent)
+        nihia_mix.setTrackName(3, config.blankEvent)
+        nihia_mix.setTrackName(4, config.blankEvent)
+        nihia_mix.setTrackName(5, config.blankEvent)
+        nihia_mix.setTrackName(6, config.blankEvent)
+        nihia_mix.setTrackName(7, config.blankEvent)
 
         split_message = ui.getHintMsg()
         split_point1 = ' - '
