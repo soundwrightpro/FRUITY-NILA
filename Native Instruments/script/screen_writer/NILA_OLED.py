@@ -312,15 +312,32 @@ def OnUpdateBeatIndicator(self, Value):
         split_point1 = ' - '
         split_point2 = ' to '
 
+
         if split_point1 in split_message.lower():
             split_hint = split_message.partition(split_point1)[2]
         else:
             split_hint = split_message.partition(split_point2)[2]
 
+        
         if transport.isPlaying() == True:
-            nihia_mix.setTrackVol(0, str(timeDisp + " | " + currentTime))
+            if timeDisp == "Beats:Bar" and len(currentTime) >= 5:
+                timeDisp = "B:B"
+                nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+            else:
+                nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+
+            if timeDisp == "Min:Sec" and len(currentTime) > 5:
+                timeDisp = "M:S"
+                nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+            else:
+                nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+
         else:    
-            nihia_mix.setTrackVol(0, str(split_hint[:7] + "| " + currentTime))
+            nihia_mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
+
+        
+
+
 
         nihia_mix.setTrackVol(1, config.blankEvent)
         nihia_mix.setTrackVol(2, config.blankEvent)
@@ -532,10 +549,28 @@ def OnIdle():
         else:
             split_hint = split_message.partition(split_point2)[2]
 
-        if transport.isPlaying() == True:
-            nihia_mix.setTrackVol(0, str(timeDisp + " | " + currentTime))
-        else:    
-            nihia_mix.setTrackVol(0, str(split_hint[:7] + "| " + currentTime))
+        if ui.isPrecountEnabled() == True and "-" in currentTime and ":" not in currentTime :
+            
+            nihia_mix.setTrackVol(0, str("REC in " + currentTime.translate({ord('-'): None})))
+            
+        else:
+            if transport.isPlaying() == True:
+                if timeDisp == "Beats:Bar" and len(currentTime) >= 5:
+                    timeDisp = "B:B"
+                    nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+                else:
+                    nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+
+                if timeDisp == "Min:Sec" and len(currentTime) > 5:
+                    timeDisp = "M:S"
+                    nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+                else:
+                    nihia_mix.setTrackVol(0, str(timeDisp + "|" + currentTime))
+
+            else:    
+                nihia_mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
+
+
 
         nihia_mix.setTrackVol(1, config.blankEvent)
         nihia_mix.setTrackVol(2, config.blankEvent)
