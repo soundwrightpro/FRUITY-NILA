@@ -291,14 +291,58 @@ def encoder(self, event):
 
         if ui.getFocusedNodeFileType() == -100:
             nihia_mix.setTrackName(0, "Browser")
+
         else:
-            if ui.isBrowserAutoHide() == 0:
-                if ui.getFocusedNodeFileType() == 7 or ui.getFocusedNodeFileType() == 13 or ui.getFocusedNodeFileType() == 14 or ui.getFocusedNodeFileType() == 15:
-                    nihia_mix.setTrackName(0, "B| sound:")
-                else:
-                    nihia_mix.setTrackName(0, "B| file:")
+            if ui.getFocusedNodeFileType() == -100:
+                nihia_mix.setTrackName(0, "Browser")
+
             else:
-                pass
+                
+                if ui.isBrowserAutoHide() == 0:
+                    if ui.getFocusedNodeFileType() == config.SBN_FLP:
+                        nihia_mix.setTrackName(0, "B| FLP File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_ZIP:
+                        nihia_mix.setTrackName(0, "B| ZIP File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_FLM:
+                        nihia_mix.setTrackName(0, "B| FLP File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_FST:
+                        nihia_mix.setTrackName(0, "B| Preset")
+                        
+                    elif ui.getFocusedNodeFileType() == config.SBN_WAV:
+                        nihia_mix.setTrackName(0, "B| WAV File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_MP3:
+                        nihia_mix.setTrackName(0, "B| MP3 File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_OGG:
+                        nihia_mix.setTrackName(0, "B| OGG File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_FLAC:
+                        nihia_mix.setTrackName(0, "B| FLAC File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_AIFF:
+                        nihia_mix.setTrackName(0, "B| AIFF File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_TXT:
+                        nihia_mix.setTrackName(0, "B| TEXT File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_BMP:
+                        nihia_mix.setTrackName(0, "B| IMAGE File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_MID:
+                        nihia_mix.setTrackName(0, "B| MIDI File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_M4A:
+                        nihia_mix.setTrackName(0, "B| MP4 File")
+
+                    elif ui.getFocusedNodeFileType() == config.SBN_FSC:
+                        nihia_mix.setTrackName(0, "B| FSC File")
+                    else:
+                        nihia_mix.setTrackName(0, "B| File")
+
 
         if (event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL")) & (event.data2 == right): # encoder spin right 
             event.handled = True
