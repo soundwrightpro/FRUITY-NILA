@@ -550,7 +550,6 @@ def OnIdle():
             split_hint = split_message.partition(split_point2)[2]
 
         if ui.isPrecountEnabled() == True and "-" in currentTime and ":" not in currentTime :
-            
             nihia_mix.setTrackVol(0, str("REC in " + currentTime.translate({ord('-'): None})))
             
         else:
@@ -569,7 +568,6 @@ def OnIdle():
 
             else:    
                 nihia_mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
-
 
 
         nihia_mix.setTrackVol(1, config.blankEvent)
