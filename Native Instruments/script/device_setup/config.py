@@ -125,6 +125,10 @@ MIN_Major = 21
 MIN_Minor = 0
 MIN_Release = 0
 
+off = 0
+on = 1
+
+MIDI_Script_Version = 23
 
 timedelay = 0.45
 

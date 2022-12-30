@@ -58,11 +58,13 @@ def OnMidiMsg(event): #listens for button or knob activity
         if transport.getLoopMode() == off:
             mix.setTrackName(0, "Pattern:")
             mix.setTrackVol(0, "Enabled")
+            mix.setTrackPan(0, "Enabled")
             time.sleep(config.timedelay) 
 
         elif transport.getLoopMode() == on:
             mix.setTrackName(0, "Song:")
             mix.setTrackVol(0, "Enabled")
+            mix.setTrackPan(0, "Enabled")
             time.sleep(config.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("METRO")): # metronome/button

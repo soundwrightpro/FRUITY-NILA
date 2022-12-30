@@ -2,6 +2,7 @@ from script.device_setup import NILA_detect_device
 from script.device_setup import config
 
 from sys import flags, platform
+import general 
 import ui
 
 VER_Major = ui.getVersion(0) 
@@ -23,11 +24,11 @@ def VersionCheck(compatibility):
 
 
    if config.MIN_Major <= int(VER_Major): 
-      if config.MAX_Major == int(config.MAX_Major) and int(VER_Minor) >= config.MAX_Minor:
+      if config.MAX_Major == int(config.MAX_Major) and int(VER_Minor) >= config.MAX_Minor and general.getVersion() >= config.MIDI_Script_Version:
          print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
          compatibility = True
       
-      elif config.MIN_Major == int(config.MIN_Major) and int(VER_Minor) >= config.MIN_Minor:
+      elif config.MIN_Major == int(config.MIN_Major) and int(VER_Minor) >= config.MIN_Minor >= config.MIDI_Script_Version:
          print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
          compatibility = True
 

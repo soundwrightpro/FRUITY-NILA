@@ -33,17 +33,17 @@ class Core():
 		NILA_core.OnInit(self)
 
 	def OnMidiMsg(self, event): 
-		NILA_buttons.OnMidiMsg(event)
 		NILA_mixer.OnMidiMsg(self, event)
 		NILA_channel_rack.OnMidiMsg(self, event)
 		NILA_piano_roll.OnMidiMsg(self, event)
 		NILA_navigation.encoder(self, event)
 		NILA_plugins.plugin(self,event)
 		NILA_touch_strips.OnMidiMsg(event)
+		NILA_buttons.OnMidiMsg(event)
 
 	def OnRefresh(self, flags): 
 		NILA_LED.OnRefresh(self, flags)
-		NILA_OLED.namingTrack(self, flags)
+		NILA_OLED.OnRefresh(self, flags)
 
 	def OnUpdateBeatIndicator(self, Value):
 		NILA_LED.OnUpdateBeatIndicator(self, Value)
@@ -57,7 +57,6 @@ class Core():
 		NILA_core.OnProjectLoad(self, status)
 	
 	def OnIdle(self):
-		NILA_playlist.OnIdle()
 		NILA_OLED.OnIdle()
 
 

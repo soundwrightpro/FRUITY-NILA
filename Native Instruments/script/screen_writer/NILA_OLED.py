@@ -5,10 +5,8 @@ from script.device_setup import config
 from script.NILA_UI import NILA_touch_strips
 
 import channels
-import general
 import math
 import mixer
-import playlist
 import time
 import transport
 import ui
@@ -38,8 +36,8 @@ def updateText(self,track):
     nihia_mix.setTrackName(track, self)
 
 
-def namingTrack(self, event):
-
+def OnRefresh(self, event):
+ 
     if ui.getFocused(config.winName["Mixer"]) == True: 
 
         xy = 1.25
@@ -259,7 +257,7 @@ def namingTrack(self, event):
         nihia_mix.setTrackPan(6, config.blankEvent)
         nihia_mix.setTrackPan(7, config.blankEvent)
 
-    if ui.getFocused(config.winName["Playlist"]) == True: #piano roll:
+    if ui.getFocused(config.winName["Playlist"]) == True: #playlist
 
         nihia_mix.setTrackName(0, "Playlist")
         nihia_mix.setTrackName(1, config.blankEvent)
@@ -335,10 +333,6 @@ def OnUpdateBeatIndicator(self, Value):
         else:    
             nihia_mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
 
-        
-
-
-
         nihia_mix.setTrackVol(1, config.blankEvent)
         nihia_mix.setTrackVol(2, config.blankEvent)
         nihia_mix.setTrackVol(3, config.blankEvent)
@@ -361,6 +355,7 @@ def OnUpdateBeatIndicator(self, Value):
 
 
 def OnIdle():
+
 
     if ui.getFocused(config.winName["Browser"]) == True:
 
