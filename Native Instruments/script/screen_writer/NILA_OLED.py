@@ -10,6 +10,7 @@ import math
 import mixer
 import playlist
 import time
+import transport
 import ui
 
 
@@ -290,9 +291,15 @@ def namingTrack(self, event):
 
 def OnUpdateBeatIndicator(self, Value):
 
+    timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
+
     if ui.getFocused(config.winName["Playlist"]) == True:
 
-        nihia_mix.setTrackName(0, "Playlist")
+        #if transport.isPlaying() == True:
+        #    nihia_mix.setTrackName(0, str("P| "+ ))
+        #else:
+        nihia_mix.setTrackName(0, str("Playlist"))
+
         nihia_mix.setTrackName(1, config.blankEvent)
         nihia_mix.setTrackName(2, config.blankEvent)
         nihia_mix.setTrackName(3, config.blankEvent)
@@ -300,8 +307,6 @@ def OnUpdateBeatIndicator(self, Value):
         nihia_mix.setTrackName(5, config.blankEvent)
         nihia_mix.setTrackName(6, config.blankEvent)
         nihia_mix.setTrackName(7, config.blankEvent)
-
-        timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
 
         split_message = ui.getHintMsg()
         split_point1 = ' - '
@@ -312,7 +317,11 @@ def OnUpdateBeatIndicator(self, Value):
         else:
             split_hint = split_message.partition(split_point2)[2]
 
-        nihia_mix.setTrackVol(0, str(split_hint[:7] + "| " + currentTime))
+        if transport.isPlaying() == True:
+            nihia_mix.setTrackVol(0, str(timeDisp + " | " + currentTime))
+        else:    
+            nihia_mix.setTrackVol(0, str(split_hint[:7] + "| " + currentTime))
+
         nihia_mix.setTrackVol(1, config.blankEvent)
         nihia_mix.setTrackVol(2, config.blankEvent)
         nihia_mix.setTrackVol(3, config.blankEvent)
@@ -501,7 +510,11 @@ def OnIdle():
 
     if ui.getFocused(config.winName["Playlist"]) == True: 
 
+        #if transport.isPlaying() == True:
+        #    nihia_mix.setTrackName(0, str("P| "+ ))
+        #else:
         nihia_mix.setTrackName(0, "Playlist")
+
         nihia_mix.setTrackName(1, config.blankEvent)
         nihia_mix.setTrackName(2, config.blankEvent)
         nihia_mix.setTrackName(3, config.blankEvent)
@@ -519,7 +532,11 @@ def OnIdle():
         else:
             split_hint = split_message.partition(split_point2)[2]
 
-        nihia_mix.setTrackVol(0, str(split_hint[:7] + "| " + currentTime))
+        if transport.isPlaying() == True:
+            nihia_mix.setTrackVol(0, str(timeDisp + " | " + currentTime))
+        else:    
+            nihia_mix.setTrackVol(0, str(split_hint[:7] + "| " + currentTime))
+
         nihia_mix.setTrackVol(1, config.blankEvent)
         nihia_mix.setTrackVol(2, config.blankEvent)
         nihia_mix.setTrackVol(3, config.blankEvent)
