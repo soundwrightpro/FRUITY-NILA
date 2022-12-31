@@ -130,7 +130,7 @@ on = 1
 
 MIDI_Script_Version = 23
 
-timedelay = 0.45
+timedelay = 0.35
 
 increment = 0.01
 

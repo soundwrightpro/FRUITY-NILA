@@ -256,6 +256,11 @@ def OnMidiMsg(event): #listens for button or knob activity
         doubleclickstatus = device.isDoubleClick(nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED"))
 
         if doubleclickstatus == True:
+            if windowCycle == 0:
+                windowCycle == 3
+            else:
+                windowCycle -= 1
+
             transport.globalTransport(midi.FPT_F8, 67)
             ui.setHintMsg("Plugin Picker")
             mix.setTrackName(0, "Window:")
