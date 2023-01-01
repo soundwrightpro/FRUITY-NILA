@@ -94,7 +94,7 @@ End of User-editable Python file to change script behavior
 
 # script_constants
 
-VERSION_NUMBER = "v10.0.0"
+VERSION_NUMBER = "v10.0.1"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = "\nFRUITY NILA " + VERSION_NUMBER + "\nCopyright © 2022 Duwayne\n"
