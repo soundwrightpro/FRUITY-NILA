@@ -252,10 +252,13 @@ def OnMidiMsg(event): #listens for button or knob activity
 
     if (event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED")):
         event.handled = True
+ 
 
         doubleclickstatus = device.isDoubleClick(nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED"))
 
+
         if doubleclickstatus == True:
+
             if windowCycle == 0:
                 windowCycle == 3
             else:
@@ -267,6 +270,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             mix.setTrackPan(0, "Plugin Picker")
             time.sleep(config.timedelay)
         else:
+            print("single click ", start)
 
             if windowCycle == 0:
                 ui.showWindow(1)
