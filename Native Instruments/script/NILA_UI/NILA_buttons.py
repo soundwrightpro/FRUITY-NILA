@@ -270,7 +270,6 @@ def OnMidiMsg(event): #listens for button or knob activity
             mix.setTrackPan(0, "Plugin Picker")
             time.sleep(config.timedelay)
         else:
-            print("single click ", start)
 
             if windowCycle == 0:
                 ui.showWindow(1)

@@ -33,13 +33,15 @@ class Core():
 		NILA_core.OnInit(self)
 
 	def OnMidiMsg(self, event): 
-		NILA_mixer.OnMidiMsg(self, event)
-		NILA_channel_rack.OnMidiMsg(self, event)
-		NILA_piano_roll.OnMidiMsg(self, event)
-		NILA_navigation.encoder(self, event)
-		NILA_plugins.plugin(self,event)
-		NILA_touch_strips.OnMidiMsg(event)
-		NILA_buttons.OnMidiMsg(event)
+		if event.midiChan == config.controls:
+			NILA_mixer.OnMidiMsg(self, event)
+			NILA_channel_rack.OnMidiMsg(self, event)
+			NILA_piano_roll.OnMidiMsg(self, event)
+			NILA_navigation.encoder(self, event)
+			NILA_plugins.plugin(self,event)
+			NILA_buttons.OnMidiMsg(event)
+		else:
+			NILA_touch_strips.OnMidiIn(event)
 
 	def OnRefresh(self, flags): 
 		NILA_LED.OnRefresh(self, flags)

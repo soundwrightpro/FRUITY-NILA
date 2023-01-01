@@ -134,6 +134,8 @@ timedelay = 0.35
 
 increment = 0.01
 
+controls = 15
+
 wait_input_1 = "Waiting"
 wait_input_2 = "for input...     "
 
