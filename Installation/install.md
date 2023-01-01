@@ -5,7 +5,7 @@
 
 1. unzip FRUITY-NILA
 
-2. place "Native Instruments" folder in... 
+2. place "Native Instruments" folder in... (delete previous installation if you have installed Furity NILA before)
 
    - for Windows: Documents\Image-Line\FL Studio\Settings\Hardware\
    - for macOS: Documents/Image-Line/FL Studio/Settings/Hardware/
