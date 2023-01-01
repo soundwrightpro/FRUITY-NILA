@@ -3,18 +3,19 @@
 
 **You must have Komplete Kontrol v2.3.0 or higher, Firmware 0.3.9 or higher** and FL Studio 21 or higher.
 
-1. unzip FRUITY-NILA-10.0.0
+1. unzip FRUITY-NILA
 
-2. place Native Instruments folder in... 
+2. place "Native Instruments" folder in... 
 
    - for Windows: Documents\Image-Line\FL Studio\Settings\Hardware\
    - for macOS: Documents/Image-Line/FL Studio/Settings/Hardware/
 
-3. follow the GIF to activate
+3. Open FL Studio, Open Settings and go to MIDI tab (or press F10)
+
+4. Follow the GIF to activate
 
 
 ![How to Activate Fruity NILA](/Installation/install_Fruity_NILA.gif)
-
 
 
 
