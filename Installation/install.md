@@ -1,7 +1,7 @@
 # FRUITY NILA - How to Install
 <sup>(Fruity Native Instruments Language Agent - MIDI script for FL Studio)</sup>
 
-**You must have Komplete Kontrol v2.3.0 or higher, Firmware 0.3.9 or higher** and FL Studio 20.9.2 or higher. Download the latest firmware for your device on the [drivers](https://www.native-instruments.com/en/support/downloads/drivers-other-files/) page.
+**You must have Komplete Kontrol v2.3.0 or higher, Firmware 0.3.9 or higher** and FL Studio 21 or higher. Download the latest firmware for your device on the [drivers](https://www.native-instruments.com/en/support/downloads/drivers-other-files/) page.
 
 1. unzip FRUITY-NILA
 
