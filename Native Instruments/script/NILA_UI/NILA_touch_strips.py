@@ -15,9 +15,6 @@ touch_strips = {
 
 def OnMidiIn(event):
     
-    print(event.handled, event.timestamp, event.status, event.data1, event.data2, event.port, event.note, event.velocity,
-    event.pressure, event.progNum, event.controlNum, event.controlVal, event.pitchBend, event.sysex, event.isIncrement, event.res, event.outEv, event.midiId, event.midiChan)
-
     if ui.getFocused(5) == True: #plugin
 
         if (event.data1 == touch_strips["MOD"]):
