@@ -2,8 +2,8 @@
 
 2. place Native Instruments folder in... 
 
-Windows: Documents\Image-Line\FL Studio\Settings\Hardware\
-macOS: Documents/Image-Line/FL Studio/Settings/Hardware/
+    Windows: Documents\Image-Line\FL Studio\Settings\Hardware\
+    macOS: Documents/Image-Line/FL Studio/Settings/Hardware/
 
 
 3. follow the GIF
