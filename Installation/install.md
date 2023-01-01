@@ -1,9 +1,40 @@
+# FRUITY NILA - How to Install
+<sup>(Fruity Native Instruments Language Agent - MIDI script for FL Studio)</sup>
+
+**You must have Komplete Kontrol v2.3.0 or higher, Firmware 0.3.9 or higher** and FL Studio 21 or higher.
+
 1. unzip FRUITY-NILA-10.0.0
 
 2. place Native Instruments folder in... 
 
-    Windows: Documents\Image-Line\FL Studio\Settings\Hardware\
-    macOS: Documents/Image-Line/FL Studio/Settings/Hardware/
+   - for Windows: Documents\Image-Line\FL Studio\Settings\Hardware\
+   - for macOS: Documents/Image-Line/FL Studio/Settings/Hardware/
+
+3. follow the GIF to activate
 
 
-3. follow the GIF
+![How to Activate Fruity NILA](/Installation/install_Fruity_NILA.gif)
+
+
+
+
+## Compatible devices
+
+### Komplete Kontrol
+
+- [x] Komplete Kontrol A25/49/61
+
+- [x] Komplete Kontrol M32 
+
+~~- [ ] Komplete Kontrol S49/61/88 MK2~~ 
+
+~~- [ ] Komplete Kontrol S25/49/61/88 MK1~~ 
+
+
+
+### Need help? Find it on the **[Fruity NI](https://discord.gg/GeTTWBV "FL Studio NI on Discord")** Discord 
+
+
+Watch videos on features from [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto) ***COMMING WINTER 2023***
+
+<sub>**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**</sub>
