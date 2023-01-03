@@ -12,7 +12,7 @@
 
 3. Open FL Studio, Open Settings and go to MIDI tab (or press F10)
 
-4. Follow the GIF to activate
+4. Follow the GIF to activate (you can choose any port number, as long as they're the same)
 
 
 ![How to Activate Fruity NILA](/Installation/install_Fruity_NILA.gif)
