@@ -1,7 +1,7 @@
 # name=Fruity NILA
 # url=https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
-# supportedDevices=Komplete Kontrol M DAW,Komplete Kontrol A DAW
-
+# supportedDevices=Komplete Kontrol M DAW,Komplete Kontrol A DAW,KOMPLETE KONTROL M32
+# receiveFrom=Forward Device
 
 """
 [[
