@@ -12,11 +12,24 @@
 
 3. Open FL Studio, Open Settings and go to MIDI tab (or press F10)
 
-4. Follow the GIF to activate (you can choose any port number, as long as they're the same)
+4. Follow the GIF to activate
+
+      - you can choose any port number, as long as they're the same (per device)
 
 
-![How to Activate Fruity NILA](/Installation/install_Fruity_NILA.gif)
+       if you have two devices, as in the GIF instructions, each device must on different port numbers
 
+
+<p align="center">
+      <img SRC="install_Fruity_NILA.gif"> 
+</p>
+
+      For the S-Series, if you want to use the expression strip located on the bottom left of the device, 
+      set the input port in the Wrapper Settings.  See GIF below for more details.
+
+<p align="center">
+      <img SRC="expression_touch_strip.gif"> 
+</p>
 
 ### Need help? Find it on the **[Fruity NI](https://discord.gg/GeTTWBV "FL Studio NI on Discord")** Discord 
 
@@ -28,10 +41,8 @@
 
 - [x] Komplete Kontrol M32 
 
-~~- [ ] Komplete Kontrol S49/61/88 MK2~~ 
-
-~~- [ ] Komplete Kontrol S25/49/61/88 MK1~~ 
+- [x] Komplete Kontrol S49/61/88 MK2
 
 ## Watch videos on features from [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto)
 
-<sub>**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**</sub>
+<sub>**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32 & S88 MK2**</sub>

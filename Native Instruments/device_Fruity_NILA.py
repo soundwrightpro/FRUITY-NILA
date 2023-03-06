@@ -1,15 +1,15 @@
 # name=Fruity NILA
 # url=https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
-# supportedDevices=Komplete Kontrol M DAW,Komplete Kontrol A DAW,KOMPLETE KONTROL M32
+# supportedDevices=Komplete Kontrol M DAW, Komplete Kontrol A DAW, KOMPLETE KONTROL M32, Komplete Kontrol DAW 1
 # receiveFrom=Forward Device
 
 """
 [[
-	Surface:	Komplete Kontrol M DAW and/or Komplete Kontrol A DAW
+	Surface:	Komplete Kontrol S-Series , Komplete Kontrol M-Series , Komplete Kontrol A-Series, 
 	Developer:	Duwayne WRIGHT
-	Version:	21.0 
+	Version:	11.0 
 
-    Copyright (c) 2022 Duwayne WRIGHT
+    Copyright (c) 2023 Duwayne WRIGHT
 ]]
 """
 
@@ -21,6 +21,7 @@ from script.NILA_UI import *
 from script.device_setup import *
 from script.led_writer import NILA_LED
 from script.screen_writer import NILA_OLED
+
 
 import general
 import time
@@ -34,16 +35,17 @@ class Core():
 
 	def OnMidiMsg(self, event): 
 		if event.midiChan == config.controls:
+			NILA_navigation.encoder(self, event)
+			NILA_buttons.OnMidiMsg(event)
 			NILA_mixer.OnMidiMsg(self, event)
 			NILA_channel_rack.OnMidiMsg(self, event)
 			NILA_piano_roll.OnMidiMsg(self, event)
-			NILA_navigation.encoder(self, event)
 			NILA_plugins.plugin(self,event)
-			NILA_buttons.OnMidiMsg(event)
+
 		else:
 			NILA_touch_strips.OnMidiIn(event)
 
-	def OnRefresh(self, flags): 
+	def OnRefresh(self, flags):
 		NILA_LED.OnRefresh(self, flags)
 		NILA_OLED.OnRefresh(self, flags)
 
@@ -59,8 +61,12 @@ class Core():
 		NILA_core.OnProjectLoad(self, status)
 	
 	def OnIdle(self):
-		NILA_OLED.OnIdle()
+		NILA_OLED.OnIdle(self)
+	
+	def OnUpdateMeters(self):
+		NILA_OLED.sendPeakInfo()
 
+	
 
 n_Core = Core()
 
@@ -104,7 +110,6 @@ def OnProjectLoad(status):
 		n_Core.OnProjectLoad(status)
 	#except:
 		#pass
-   
 
 def OnIdle():
 	#try:
@@ -112,6 +117,8 @@ def OnIdle():
 	#except:
 		#pass
 	
+def OnUpdateMeters():
+	n_Core.OnUpdateMeters()
 
 def OnDeInit():
 	#try:
@@ -121,3 +128,5 @@ def OnDeInit():
 			nihia.goodBye()
 	#except:
 		#pass
+
+

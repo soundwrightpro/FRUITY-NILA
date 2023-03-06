@@ -17,14 +17,23 @@ import ui
 
 def OnInit(self):
    nihia.handShake()
-   NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
-   NILA_mix.setTrackVol(0, config.GOODBYE_MESSAGE)
-   time.sleep(2.00)
+
+   if device.getName() == "Komplete Kontrol DAW - 1":
+      pass
+   else:
+      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+      NILA_mix.setTrackVol(0, config.GOODBYE_MESSAGE)
+      time.sleep(2.00)
+
    nihia.buttons.setLight("UNDO", 1)
    nihia.buttons.setLight("REDO", 1)
    nihia.buttons.setLight("TEMPO", 1)
    nihia.buttons.setLight("CLEAR", 1)
    device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])) # 'mute' & 'solo' button lights activated  
+
+
+   for x in range(8):
+      nihia.mixer.setTrackExist(x,0)
 
 
 def OnWaitingForInput(status):
@@ -35,19 +44,28 @@ def OnWaitingForInput(status):
 def OnProjectLoad(self, status):
 
    if status == config.PL_Start:
-      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
-      NILA_mix.setTrackVol(0, "Loading File")
-      time.sleep(config.timedelay)
+      if device.getName() == "Komplete Kontrol DAW - 1":
+         pass
+      else:
+         NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+         NILA_mix.setTrackVol(0, "Loading File")
+         time.sleep(config.timedelay)
 
    elif status == config.PL_LoadOk:
-      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
-      NILA_mix.setTrackVol(0, "Load Complete")
-      time.sleep(config.timedelay)
+      if device.getName() == "Komplete Kontrol DAW - 1":
+         pass
+      else:
+         NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+         NILA_mix.setTrackVol(0, "Load Complete")
+         time.sleep(config.timedelay)
 
    elif status == config.PL_LoadError:
-      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
-      NILA_mix.setTrackVol(0, "Load Error!")
-      time.sleep(config.timedelay)
+      if device.getName() == "Komplete Kontrol DAW - 1":
+         pass
+      else:
+         NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+         NILA_mix.setTrackVol(0, "Load Error!")
+         time.sleep(config.timedelay)
 
 
 def timeConvert(timeDisp, currentTime):

@@ -40,10 +40,11 @@ def VersionCheck(compatibility):
 
    seriesDevice = NILA_detect_device.detectDevice(NILA_Name)
 
-   if seriesDevice ==  "Komplete Kontrol Series A" or "Komplete Kontrol Series M":
+   if (seriesDevice == 'Komplete Kontrol Series A' or seriesDevice =='Komplete Kontrol Series M' or seriesDevice =='Komplete Kontrol Series S') == True:
       print("A", seriesDevice, "has been detected. It is compatible with this script\n\n")
-
    else:
-      print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with FRUITY NILA\n\n")
+      print("The", seriesDevice, "is not compatible with this script. Only the Komplete Kontrol Series S, Komplete Kontrol Series A and Komplete Kontrol Series M are comptible with FRUITY NILA\n\n")
    return compatibility
+
+
 
