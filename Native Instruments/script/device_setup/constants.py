@@ -18,7 +18,7 @@
 
 # script_constants
 
-VERSION_NUMBER = "v11.0.1"
+VERSION_NUMBER = "v11.0.2"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = "\nFRUITY NILA " + VERSION_NUMBER + "\nCopyright © 2023 Duwayne\n"
