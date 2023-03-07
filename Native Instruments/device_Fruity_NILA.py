@@ -72,61 +72,61 @@ n_Core = Core()
 
 
 def OnInit():
-	#try:
+	try:
 		compatibility = False
 		if NILA_version_check.VersionCheck(compatibility) == True:
 			n_Core.OnInit()
 		else:
 			pass
-	#except:
-		#pass
+	except:
+		pass
 
 def OnMidiMsg(event):
-	#try:
+	try:
 		n_Core.OnMidiMsg(event)
-	#except:
-		#pass
+	except:
+		pass
 
 def OnRefresh(flags):
-	#try:
+	try:
 		n_Core.OnRefresh(flags)
-	#except:
-		#pass
+	except:
+		pass
 
 def OnUpdateBeatIndicator(Value):
-	#try:
+	try:
 		n_Core.OnUpdateBeatIndicator(Value)
-	#except:
-		#pass
+	except:
+		pass
 	
 def OnWaitingForInput():
-	#try:
+	try:
 		n_Core.OnWaitingForInput()
-	#except:
-		#pass
+	except:
+		pass
 	
 def OnProjectLoad(status):
-	#try:
+	try:
 		n_Core.OnProjectLoad(status)
-	#except:
-		#pass
+	except:
+		pass
 
 def OnIdle():
-	#try:
+	try:
 		n_Core.OnIdle()
-	#except:
-		#pass
+	except:
+		pass
 	
 def OnUpdateMeters():
 	n_Core.OnUpdateMeters()
 
 def OnDeInit():
-	#try:
+	try:
 		if ui.isClosing() == True:
 			nihia.goodBye()
 		else:
 			nihia.goodBye()
-	#except:
-		#pass
+	except:
+		pass
 
 
