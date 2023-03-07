@@ -24,12 +24,6 @@
       <img SRC="install_Fruity_NILA.gif"> 
 </p>
 
-      For the S-Series, if you want to use the expression strip located on the bottom left of the device, 
-      set the input port in the Wrapper Settings.  See GIF below for more details.
-
-<p align="center">
-      <img SRC="expression_touch_strip.gif"> 
-</p>
 
 ### Need help? Find it on the **[Fruity NI](https://discord.gg/GeTTWBV "FL Studio NI on Discord")** Discord 
 
