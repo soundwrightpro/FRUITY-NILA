@@ -1,6 +1,7 @@
 import nihia
 
-from script.device_setup import config
+from script.device_setup import config 
+from script.device_setup import constants
 from script.device_setup import NILA_core
 from script.screen_writer import NILA_OLED as oled
 
@@ -10,7 +11,7 @@ import ui
 
 def OnMidiMsg(self, event):
 
-    if ui.getFocused(config.winName["Piano Roll"]) == True:
+    if ui.getFocused(constants.winName["Piano Roll"]) == True:
 
         #knob 0
         if (event.data1 == nihia.mixer.knobs[0][0]):

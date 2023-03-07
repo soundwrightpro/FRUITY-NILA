@@ -2,7 +2,8 @@ import nihia
 from nihia import mixer
 
 from script.device_setup import NILA_core
-from script.device_setup import config
+from script.device_setup import config 
+from script.device_setup import constants
 from script.screen_writer import NILA_OLED
 
 import channels
@@ -19,7 +20,7 @@ def plugin(self, event):
     if ui.getFocused(5) == 1: #plugin control
         plugin_name = ui.getFocusedPluginName()   
 
-        if plugin_name == config.supported_plugins[0]:
+        if plugin_name == constants.supported_plugins[0]:
             
             MAPPED_FUNCTION = {
             '0':0, 
@@ -40,7 +41,7 @@ def plugin(self, event):
             '15':9,  # 7      
             }
 
-        elif plugin_name == config.supported_plugins[1] :
+        elif plugin_name == constants.supported_plugins[1] :
             
             MAPPED_FUNCTION = {
                     '0':10,
@@ -61,7 +62,7 @@ def plugin(self, event):
                     '15':skip, #7      
                     }   
 
-        elif plugin_name == config.supported_plugins[2] :
+        elif plugin_name == constants.supported_plugins[2] :
             
             MAPPED_FUNCTION = {
                     '0':18,
@@ -82,7 +83,7 @@ def plugin(self, event):
                     '15':2,  #7
                     }
 
-        elif plugin_name == config.supported_plugins[3] :
+        elif plugin_name == constants.supported_plugins[3] :
             
             MAPPED_FUNCTION = {
                     '0':18,
@@ -103,7 +104,7 @@ def plugin(self, event):
                     '15':2   #7
                     }
 
-        elif plugin_name == config.supported_plugins[4] :
+        elif plugin_name == constants.supported_plugins[4] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -124,7 +125,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == config.supported_plugins[5] :
+        elif plugin_name == constants.supported_plugins[5] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -145,7 +146,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == config.supported_plugins[6] :
+        elif plugin_name == constants.supported_plugins[6] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -166,7 +167,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == config.supported_plugins[7]:
+        elif plugin_name == constants.supported_plugins[7]:
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -187,7 +188,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == config.supported_plugins[8] :
+        elif plugin_name == constants.supported_plugins[8] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -208,7 +209,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == config.supported_plugins[9] :
+        elif plugin_name == constants.supported_plugins[9] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -229,7 +230,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
                     
-        elif plugin_name == config.supported_plugins[10] :
+        elif plugin_name == constants.supported_plugins[10] :
             
             MAPPED_FUNCTION = {
                     '0':8,
@@ -250,7 +251,7 @@ def plugin(self, event):
                     '15':skip  #7   
                     }
 
-        elif plugin_name == config.supported_plugins[11] :
+        elif plugin_name == constants.supported_plugins[11] :
             
             MAPPED_FUNCTION = {
                     '0':8,
@@ -271,7 +272,7 @@ def plugin(self, event):
                     '15':16  #7   
                     }
 
-        elif plugin_name == config.supported_plugins[12] :
+        elif plugin_name == constants.supported_plugins[12] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -316,9 +317,9 @@ def plugin(self, event):
         for a in range(8):
                 if MAPPED_FUNCTION[str(a)] == skip and event.data1 == nihia.mixer.knobs[0][a]:
                     event.handled = True
-                    mixer.setTrackVol(a, config.blankEvent)
-                    NILA_OLED.updateText(config.blankEvent, a)
-                    ui.setHintMsg(config.blankEvent)
+                    mixer.setTrackVol(a, constants.blankEvent)
+                    NILA_OLED.updateText(constants.blankEvent, a)
+                    ui.setHintMsg(constants.blankEvent)
                 else:
                     if (event.data1 == nihia.mixer.knobs[0][a]):
                         x = plugins.getParamValue(MAPPED_FUNCTION[str(a)], channels.selectedChannel())
@@ -340,9 +341,9 @@ def plugin(self, event):
                 b = a + 8
                 if MAPPED_FUNCTION[str(b)] == skip and event.data1 == nihia.mixer.knobs[1][a]:
                     event.handled = True
-                    mixer.setTrackVol(a, config.blankEvent)
-                    NILA_OLED.updateText(config.blankEvent, a)
-                    ui.setHintMsg(config.blankEvent)
+                    mixer.setTrackVol(a, constants.blankEvent)
+                    NILA_OLED.updateText(constants.blankEvent, a)
+                    ui.setHintMsg(constants.blankEvent)
                 else:
                     if (event.data1 == nihia.mixer.knobs[1][a]):
                         x = plugins.getParamValue(MAPPED_FUNCTION[str(b)], channels.selectedChannel())

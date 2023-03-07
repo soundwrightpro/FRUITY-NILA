@@ -17,15 +17,12 @@ touch_strips = {
 
 def OnMidiIn(event):
 
+    if (event.data1 == touch_strips["MOD"]):
+        event.handled = True
 
     if (event.data1 == touch_strips["EXPRESSION"]):
         event.handled = True
-        if plugins.isValid(channels.selectedChannel()):
-            device.forwardMIDICC(event.status + (event.data1 << 8) + (event.data2 << 16) + (0 << 24))
-        
 
-    if (event.data1 == touch_strips["MOD"]):
-        event.handled = True
 
     if ui.getFocused(5) == True: #plugin
 
@@ -33,10 +30,23 @@ def OnMidiIn(event):
             event.handled = True
 
             if plugins.isValid(channels.selectedChannel()):
-                plugins.setParamValue((event.data2/127/10)/0.50/2*10, 4097, channels.selectedChannel())
+                plugins.setParamValue((event.data2/127/10)/0.50/2*10, 4097, channels.selectedChannel(), -1, 2)
+                
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
             else:
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
+
+
+        if (event.data1 == touch_strips["EXPRESSION"]):
+            event.handled = True
+
+            if plugins.isValid(channels.selectedChannel()):    
+                plugins.setParamValue(event.data2/127, 4096 + event.data1, channels.selectedChannel(), -1, 2) 
+
+                ui.setHintMsg("Expression: %s" % round(event.data2/1.27))
+            else:
+                ui.setHintMsg("Expression: %s" % round(event.data2/1.27))
+
 
 
 

@@ -2,7 +2,7 @@ import nihia
 from nihia import buttons 
 from nihia import mixer as mix
 
-from script.device_setup import config
+from script.device_setup import constants
 
 import channels
 import device
@@ -62,7 +62,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 mix.setTrackName(0, "Pattern:")
                 mix.setTrackVol(0, "Enabled")
                 mix.setTrackPan(0, "Enabled")
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif transport.getLoopMode() == on:
             if device.getName() == "Komplete Kontrol DAW - 1":
@@ -71,7 +71,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 mix.setTrackName(0, "Song:")
                 mix.setTrackVol(0, "Enabled")
                 mix.setTrackPan(0, "Enabled")
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("METRO")): # metronome/button
         event.handled = True
@@ -84,7 +84,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Metronome:")
                 mix.setTrackVol(0, "Disabled")
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.isMetronomeEnabled() == on:
             if device.getName() == "Komplete Kontrol DAW - 1":
@@ -92,7 +92,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Metronome:")
                 mix.setTrackVol(0, "Enabled")
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
         event.handled = True
@@ -107,7 +107,7 @@ def OnMidiMsg(event): #listens for button or knob activity
         else:
             mix.setTrackName(0, "Piano Roll")
             mix.setTrackVol(0, "Quick Quantize")
-            time.sleep(config.timedelay) 
+            time.sleep(constants.timedelay) 
 
         
 
@@ -130,7 +130,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[0])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 1:
             ui.setHintMsg("Snap: Cell") 
@@ -139,7 +139,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[1])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 3: 
             ui.setHintMsg("Snap: (none)")
@@ -148,7 +148,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[2])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 4:
             ui.setHintMsg("Snap: 1/6 step")
@@ -157,7 +157,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[3])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 5: 
             ui.setHintMsg("Snap: 1/4 step")
@@ -166,7 +166,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[4])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 6: 
             ui.setHintMsg("Snap: 1/3 step")
@@ -175,7 +175,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[5])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 7: 
             ui.setHintMsg("Snap: 1/2 step")
@@ -184,7 +184,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[6])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 8: 
             ui.setHintMsg("Snap: Step")
@@ -193,7 +193,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[7])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 9: 
             ui.setHintMsg("Snap: 1/6 beat")
@@ -202,7 +202,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[8])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 10: 
             ui.setHintMsg("Snap: 1/4 beat")
@@ -211,7 +211,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[9])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 11: 
             ui.setHintMsg("Snap: 1/3 beat")
@@ -220,7 +220,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[10])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 12: 
             ui.setHintMsg("Snap: 1/2 beat")
@@ -229,7 +229,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[11])
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 13:
             ui.setHintMsg("Snap: Beat")
@@ -238,7 +238,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[12])         
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 14: 
             ui.setHintMsg("Snap: Bar")
@@ -247,7 +247,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Main Snap")
                 mix.setTrackPan(0, snapmodevalue[13])           
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
 
     if (event.data1 == nihia.buttons.button_list.get("COUNT_IN")):
@@ -262,14 +262,14 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Count In:")
                 mix.setTrackPan(0, "Enabled")
-                time.sleep(config.timedelay)   
+                time.sleep(constants.timedelay)   
         else:
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
                 mix.setTrackName(0, "Count In:")
                 mix.setTrackPan(0, "Disabled")
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("CLEAR")):
         event.handled = True
@@ -283,7 +283,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 pass
             else:
                 mix.setTrackName(0, "Clear All")
-                time.sleep(config.timedelay) 
+                time.sleep(constants.timedelay) 
         else:
             ui.escape() #escape key
             ui.setHintMsg("Close")
@@ -301,7 +301,7 @@ def OnMidiMsg(event): #listens for button or knob activity
         else:
             mix.setTrackName(0, "History")
             mix.setTrackVol(0, "Undo @ "+ undoLevel)
-            time.sleep(config.timedelay) 
+            time.sleep(constants.timedelay) 
         
         
 
@@ -314,7 +314,7 @@ def OnMidiMsg(event): #listens for button or knob activity
         ui.setHintMsg(ui.getHintMsg())
         mix.setTrackName(0, "History")
         mix.setTrackPan(0, "Redo @ "+ undoLevel)
-        time.sleep(config.timedelay)
+        time.sleep(constants.timedelay)
         
 
     if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
@@ -342,7 +342,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             else:
                 mix.setTrackName(0, "Window:")
                 mix.setTrackPan(0, "Plugin Picker")
-                time.sleep(config.timedelay)
+                time.sleep(constants.timedelay)
         else:
 
             if windowCycle == 0:
@@ -354,7 +354,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 else:
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Channel Rack")
-                    time.sleep(config.timedelay)
+                    time.sleep(constants.timedelay)
 
             elif windowCycle == 1:
                 ui.showWindow(0)
@@ -365,7 +365,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 else:
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Mixer")
-                    time.sleep(config.timedelay)
+                    time.sleep(constants.timedelay)
 
             elif windowCycle == 2:
                 ui.showWindow(2)
@@ -376,7 +376,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 else:
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Playlist")
-                    time.sleep(config.timedelay)
+                    time.sleep(constants.timedelay)
 
             elif windowCycle == 3:
                 ui.showWindow(4)
@@ -386,7 +386,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 else:
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Browser")
-                    time.sleep(config.timedelay)
+                    time.sleep(constants.timedelay)
 
                 if ui.getVisible(3) == True:
                     windowCycle += 1
@@ -401,14 +401,14 @@ def OnMidiMsg(event): #listens for button or knob activity
                     else:
                             mix.setTrackName(0, "Window:")
                             mix.setTrackPan(0, "Piano Roll")
-                            time.sleep(config.timedelay)
+                            time.sleep(constants.timedelay)
                     windowCycle = 0
                     
                      
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
         if ui.getFocused(0) == True: 
             event.handled = True
-            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= config.currentUtility:
+            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
                 pass
             else:
                 mixer.enableTrack(mixer.trackNumber()) 
@@ -417,7 +417,7 @@ def OnMidiMsg(event): #listens for button or knob activity
     if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
         if ui.getFocused(0) == True: 
             event.handled = True
-            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= config.currentUtility:
+            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
                 pass
             else:
                 mixer.soloTrack(mixer.trackNumber()) 
@@ -437,13 +437,13 @@ def OnMidiMsg(event): #listens for button or knob activity
 
 
     
-    if ui.getFocused(config.winName["Mixer"]) == True:
+    if ui.getFocused(constants.winName["Mixer"]) == True:
         
         #s-series mixer mute 
         for x in range(8):
             if event.data1 == nihia.buttons.button_list.get("MUTE") and event.data2 == x:
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= config.currentUtility:
+                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= constants.currentUtility:
                     pass
                 else:
                     mixer.enableTrack(mixer.trackNumber() + x) 
@@ -453,7 +453,7 @@ def OnMidiMsg(event): #listens for button or knob activity
         for x in range(8):
             if event.data1 == nihia.buttons.button_list.get("SOLO") and event.data2 == x:
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= config.currentUtility:
+                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= constants.currentUtility:
                     pass
                 else:
                     mixer.soloTrack(mixer.trackNumber() + x)  
@@ -461,16 +461,16 @@ def OnMidiMsg(event): #listens for button or knob activity
 
         #s-series mixer arm recording
         for x in range(8):
-            if event.data1 == config.select and event.data2 == x:
+            if event.data1 == constants.select and event.data2 == x:
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= config.currentUtility:
+                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= constants.currentUtility:
                     pass
                 else:
                     mixer.armTrack(mixer.trackNumber() + x) 
                     ui.setHintMsg("Armed Disk Recording")
 
     
-    if ui.getFocused(config.winName["Channel Rack"]) == True:
+    if ui.getFocused(constants.winName["Channel Rack"]) == True:
 
         #s-series channel rack mute 
         for x in range(8):
@@ -494,7 +494,7 @@ def OnMidiMsg(event): #listens for button or knob activity
         #s-series channel rack select 
         for x in range(8):
             if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-                if event.data1 == config.select and event.data2 == x: 
+                if event.data1 == constants.select and event.data2 == x: 
                     event.handled = True
                     channels.selectOneChannel(channels.selectedChannel() + x)  
                     ui.setHintMsg("Track selected")

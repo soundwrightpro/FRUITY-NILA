@@ -3,6 +3,8 @@ from nihia import mixer as mix
 
 from script.screen_writer import NILA_OLED as oled
 from script.device_setup import config 
+from script.device_setup import constants 
+
 
 import device 
 import math
@@ -17,16 +19,16 @@ def OnMidiMsg(self, event):
     volume or pan controls. We are not interested in this track as we cannot control it.
     """
 
-    if ui.getFocused(config.winName["Mixer"]) == True: 
+    if ui.getFocused(constants.winName["Mixer"]) == True: 
 
         # VOLUME CONTROL
 
 
         for z in range(8):
-            if mixer.trackNumber() <= config.currentUtility - z:
+            if mixer.trackNumber() <= constants.currentUtility - z:
                 if (event.data1 == nihia.mixer.knobs[0][z]):
                     event.handled = True
-                    if mixer.getTrackName(mixer.trackNumber()+z) == "Current" and mixer.trackNumber()+z >= config.currentUtility:
+                    if mixer.getTrackName(mixer.trackNumber()+z) == "Current" and mixer.trackNumber()+z >= constants.currentUtility:
                         pass
                     else:
                         if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
@@ -41,20 +43,20 @@ def OnMidiMsg(self, event):
                             mix.setTrackVol(z, str(oled.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + z))) + " dB")
                             oled.updateText(mixer.getTrackName(mixer.trackNumber() + z), z)
 
-            elif mixer.trackNumber() + z >= config.currentUtility:
+            elif mixer.trackNumber() + z >= constants.currentUtility:
                 pass     
-                mix.setTrackName(z, config.blankEvent)
-                mix.setTrackVol(z, config.blankEvent) 
+                mix.setTrackName(z, constants.blankEvent)
+                mix.setTrackVol(z, constants.blankEvent) 
 
         # PAN CONTROL
 
         for z in range(8):
-            if mixer.trackNumber() <= config.currentUtility - z:
+            if mixer.trackNumber() <= constants.currentUtility - z:
                 if (event.data1 == nihia.mixer.knobs[1][z]):
                     event.handled = True
 
-                    if mixer.trackNumber() + z >= config.currentUtility - z:
-                        mix.setTrackPan(z, config.blankEvent)
+                    if mixer.trackNumber() + z >= constants.currentUtility - z:
+                        mix.setTrackPan(z, constants.blankEvent)
                     else:
                         if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
                             x = (mixer.getTrackPan(mixer.trackNumber() + z))

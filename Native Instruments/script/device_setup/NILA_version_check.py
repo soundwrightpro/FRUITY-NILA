@@ -1,5 +1,5 @@
 from script.device_setup import NILA_detect_device
-from script.device_setup import config
+from script.device_setup import constants
 
 from sys import flags, platform
 import general 
@@ -15,7 +15,7 @@ def VersionCheck(compatibility):
    NILA_Name = ""
    OS = ""
    
-   print(config.OUTPUT_MESSAGE)
+   print(constants.OUTPUT_MESSAGE)
 
    if platform == "darwin":
       OS = "macOS"
@@ -23,18 +23,18 @@ def VersionCheck(compatibility):
       OS = "Windows"
 
 
-   if config.MIN_Major <= int(VER_Major): 
-      if config.MAX_Major == int(config.MAX_Major) and int(VER_Minor) >= config.MAX_Minor and general.getVersion() >= config.MIDI_Script_Version:
+   if constants.MIN_Major <= int(VER_Major): 
+      if constants.MAX_Major == int(constants.MAX_Major) and int(VER_Minor) >= constants.MAX_Minor and general.getVersion() >= constants.MIDI_Script_Version:
          print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
          compatibility = True
       
-      elif config.MIN_Major == int(config.MIN_Major) and int(VER_Minor) >= config.MIN_Minor >= config.MIDI_Script_Version:
+      elif constants.MIN_Major == int(constants.MIN_Major) and int(VER_Minor) >= constants.MIN_Minor >= constants.MIDI_Script_Version:
          print(ui.getProgTitle(), ui.getVersion(), "\nis compatible with this script on", OS,"\n")
          compatibility = True
 
    else:
-      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nFRUITY NILA " + config.VERSION_NUMBER + 
-      " will not load on this device. \nPlease update", VER_Major, ui.getVersion(), "to", str(config.MIN_Major) + "." + str(config.MIN_Minor) + "." + str(config.MIN_Release),
+      print(ui.getProgTitle(), ui.getVersion(), "\nis not compatible with this script on", OS, "\n\nFRUITY NILA " + constants.VERSION_NUMBER + 
+      " will not load on this device. \nPlease update", VER_Major, ui.getVersion(), "to", str(constants.MIN_Major) + "." + str(constants.MIN_Minor) + "." + str(constants.MIN_Release),
       "or higher.\n")
       compatibility = False
 

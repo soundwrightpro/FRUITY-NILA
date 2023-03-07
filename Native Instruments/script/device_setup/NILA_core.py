@@ -3,7 +3,7 @@ import nihia.mixer as NILA_mix
 
 from script.NILA_UI import NILA_buttons
 from script.device_setup import NILA_detect_device
-from script.device_setup import config
+from script.device_setup import constants
 
 import device
 import midi
@@ -21,8 +21,8 @@ def OnInit(self):
    if device.getName() == "Komplete Kontrol DAW - 1":
       pass
    else:
-      NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
-      NILA_mix.setTrackVol(0, config.GOODBYE_MESSAGE)
+      NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
+      NILA_mix.setTrackVol(0, constants.GOODBYE_MESSAGE)
       time.sleep(2.00)
 
    nihia.buttons.setLight("UNDO", 1)
@@ -38,34 +38,34 @@ def OnInit(self):
 
 def OnWaitingForInput(status):
    NILA_mix.setTrackName(0, ". . .")
-   time.sleep(config.timedelay)
+   time.sleep(constants.timedelay)
    
 
 def OnProjectLoad(self, status):
 
-   if status == config.PL_Start:
+   if status == constants.PL_Start:
       if device.getName() == "Komplete Kontrol DAW - 1":
          pass
       else:
-         NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+         NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
          NILA_mix.setTrackVol(0, "Loading File")
-         time.sleep(config.timedelay)
+         time.sleep(constants.timedelay)
 
-   elif status == config.PL_LoadOk:
+   elif status == constants.PL_LoadOk:
       if device.getName() == "Komplete Kontrol DAW - 1":
          pass
       else:
-         NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+         NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
          NILA_mix.setTrackVol(0, "Load Complete")
-         time.sleep(config.timedelay)
+         time.sleep(constants.timedelay)
 
-   elif status == config.PL_LoadError:
+   elif status == constants.PL_LoadError:
       if device.getName() == "Komplete Kontrol DAW - 1":
          pass
       else:
-         NILA_mix.setTrackName(0, config.HELLO_MESSAGE)
+         NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
          NILA_mix.setTrackVol(0, "Load Error!")
-         time.sleep(config.timedelay)
+         time.sleep(constants.timedelay)
 
 
 def timeConvert(timeDisp, currentTime):

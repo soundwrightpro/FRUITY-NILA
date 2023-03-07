@@ -7,7 +7,7 @@
 [[
 	Surface:	Komplete Kontrol S-Series , Komplete Kontrol M-Series , Komplete Kontrol A-Series, 
 	Developer:	Duwayne WRIGHT
-	Version:	11.0 
+	Version:	11.0.1 
 
     Copyright (c) 2023 Duwayne WRIGHT
 ]]
@@ -34,7 +34,7 @@ class Core():
 		NILA_core.OnInit(self)
 
 	def OnMidiMsg(self, event): 
-		if event.midiChan == config.controls:
+		if event.midiChan == constants.controls:
 			NILA_navigation.encoder(self, event)
 			NILA_buttons.OnMidiMsg(event)
 			NILA_mixer.OnMidiMsg(self, event)
@@ -54,8 +54,8 @@ class Core():
 		NILA_OLED.OnUpdateBeatIndicator(self,Value)
 
 	def OnWaitingForInput(self):
-		NILA_mixer.setTrackName(0, config.wait_input_1)
-		NILA_mixer.setTrackVol(0, config.wait_input_2)
+		NILA_mixer.setTrackName(0, constants.wait_input_1)
+		NILA_mixer.setTrackVol(0, constants.wait_input_2)
 
 	def OnProjectLoad(self, status):
 		NILA_core.OnProjectLoad(self, status)

@@ -2,7 +2,7 @@ import nihia
 from nihia import buttons 
 from nihia import mixer as mix
 
-from script.device_setup import config
+from script.device_setup import constants
 
 import channels
 import device
@@ -20,7 +20,7 @@ off = 0
 
 windowCycle = 0
 jogMove = True
-config.currentUtility
+constants.currentUtility
 
 
 def OnRefresh(self, flags):
@@ -80,7 +80,7 @@ def OnRefresh(self, flags):
                 nihia.buttons.setLight("PLAY", off)
 
 
-        if ui.getFocused(config.winName["Mixer"]) == True:
+        if ui.getFocused(constants.winName["Mixer"]) == True:
             #mixer solo
             if mixer.trackNumber() <= 125:
                 if mixer.isTrackSolo(mixer.trackNumber() + 0) == True or mixer.isTrackSolo(mixer.trackNumber() + 0) == False:
@@ -184,7 +184,7 @@ def OnRefresh(self, flags):
 
 
 
-        if ui.getFocused(config.winName["Channel Rack"]) == True:
+        if ui.getFocused(constants.winName["Channel Rack"]) == True:
    
             #channel mute/solo paradox fix (why was this so hard?!?!?!?)
             if channels.channelCount() >= 2:

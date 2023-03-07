@@ -1,7 +1,7 @@
 from nihia import mixer as nihia_mix
 
 from script.device_setup import NILA_core
-from script.device_setup import config 
+from script.device_setup import constants 
 
 from script.NILA_UI import NILA_plugins
 
@@ -27,7 +27,7 @@ def updatePanMix(self,track):
         nihia_mix.setTrackPan(track, str(round(mixer.getTrackPan(self) * -100)) + "% " + "Left")
 
     for x in range(8):
-        if mixer.trackNumber() <= config.currentUtility - x:
+        if mixer.trackNumber() <= constants.currentUtility - x:
             nihia_mix.setTrackPanGraph(x, mixer.getTrackPan(mixer.trackNumber() + x))
 
 
@@ -57,12 +57,12 @@ def sendPeakInfo():
     TrackPeaks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     for x in range(8):
-        if ui.getFocused(config.winName["Mixer"]) == True:
-            if mixer.trackNumber() <= config.currentUtility - x:
+        if ui.getFocused(constants.winName["Mixer"]) == True:
+            if mixer.trackNumber() <= constants.currentUtility - x:
                 TrackPeaks[(x*2) + 0] = mixer.getTrackPeaks((mixer.trackNumber() + x), midi.PEAK_L)
                 TrackPeaks[(x*2) + 1] = mixer.getTrackPeaks((mixer.trackNumber() + x), midi.PEAK_R)
 
-        elif ui.getFocused(config.winName["Channel Rack"]) == True:
+        elif ui.getFocused(constants.winName["Channel Rack"]) == True:
 
             if channels.getTargetFxTrack((channels.selectedChannel()+0)) > 0:
                 TrackPeaks[0] = mixer.getTrackPeaks(channels.getTargetFxTrack((channels.selectedChannel()+0)), midi.PEAK_L)
@@ -104,7 +104,7 @@ def sendPeakInfo():
                     TrackPeaks[15]  = mixer.getTrackPeaks(channels.getTargetFxTrack((channels.selectedChannel()+7)), midi.PEAK_R) 
 
       
-    if ui.getFocused(config.winName["Browser"]) == True or ui.getFocused(config.winName["Playlist"]) == True:
+    if ui.getFocused(constants.winName["Browser"]) == True or ui.getFocused(constants.winName["Playlist"]) == True:
         TrackPeaks[0] = mixer.getTrackPeaks((mixer.trackNumber() + 0), midi.PEAK_L)
         TrackPeaks[1] = mixer.getTrackPeaks((mixer.trackNumber() + 0), midi.PEAK_R)
             
@@ -121,7 +121,7 @@ def sendPeakInfo():
 
 def OnRefresh(self, event):
  
-    if ui.getFocused(config.winName["Mixer"]) == True: 
+    if ui.getFocused(constants.winName["Mixer"]) == True: 
 
         for x in range(8):
             if mixer.trackNumber() <= (125 - x):
@@ -133,7 +133,7 @@ def OnRefresh(self, event):
             else:
                 nihia_mix.setTrackExist(x,0)
 
-    elif ui.getFocused(config.winName["Channel Rack"]) == True:
+    elif ui.getFocused(constants.winName["Channel Rack"]) == True:
 
         for x in range(8):
             if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x) :
@@ -145,17 +145,17 @@ def OnRefresh(self, event):
 
             else:
                 nihia_mix.setTrackExist(x, 0)
-                nihia_mix.setTrackName(x, (config.blankEvent))
-                NILA_core.setTrackVolConvert(x, config.blankEvent)
-                nihia_mix.setTrackPan(x, config.blankEvent)
+                nihia_mix.setTrackName(x, (constants.blankEvent))
+                NILA_core.setTrackVolConvert(x, constants.blankEvent)
+                nihia_mix.setTrackPan(x, constants.blankEvent)
 
 
 
-    elif ui.getFocused(config.winName["Plugin"]) == True: 
+    elif ui.getFocused(constants.winName["Plugin"]) == True: 
 
         clear()
 
-        if ui.getFocusedPluginName() in config.supported_plugins:
+        if ui.getFocusedPluginName() in constants.supported_plugins:
             updateText(ui.getFocusedPluginName(), 0)
             updateText("supported plugin", 1)
 
@@ -169,69 +169,69 @@ def OnRefresh(self, event):
                 nihia_mix.setTrackExist(y,0)           
 
 
-    if ui.getFocused(config.winName["Piano Roll"]) == True: #piano roll:
+    if ui.getFocused(constants.winName["Piano Roll"]) == True: #piano roll:
 
         for x in range(1,8):
             nihia_mix.setTrackExist(x,0)
 
         nihia_mix.setTrackName(0, (str(channels.getChannelName(channels.selectedChannel()))))
-        nihia_mix.setTrackName(1, config.blankEvent)
-        nihia_mix.setTrackName(2, config.blankEvent)
-        nihia_mix.setTrackName(3, config.blankEvent)
-        nihia_mix.setTrackName(4, config.blankEvent)
-        nihia_mix.setTrackName(5, config.blankEvent)
-        nihia_mix.setTrackName(6, config.blankEvent)
-        nihia_mix.setTrackName(7, config.blankEvent)
+        nihia_mix.setTrackName(1, constants.blankEvent)
+        nihia_mix.setTrackName(2, constants.blankEvent)
+        nihia_mix.setTrackName(3, constants.blankEvent)
+        nihia_mix.setTrackName(4, constants.blankEvent)
+        nihia_mix.setTrackName(5, constants.blankEvent)
+        nihia_mix.setTrackName(6, constants.blankEvent)
+        nihia_mix.setTrackName(7, constants.blankEvent)
         
         NILA_core.setTrackVolConvert(0, str(round(channels.getChannelVolume(channels.selectedChannel()+ 0, 1), 1)) + " dB")
-        nihia_mix.setTrackVol(1, config.blankEvent)
-        nihia_mix.setTrackVol(2, config.blankEvent)
-        nihia_mix.setTrackVol(3, config.blankEvent)
-        nihia_mix.setTrackVol(4, config.blankEvent)
-        nihia_mix.setTrackVol(5, config.blankEvent)
-        nihia_mix.setTrackVol(6, config.blankEvent)
-        nihia_mix.setTrackVol(7, config.blankEvent)
+        nihia_mix.setTrackVol(1, constants.blankEvent)
+        nihia_mix.setTrackVol(2, constants.blankEvent)
+        nihia_mix.setTrackVol(3, constants.blankEvent)
+        nihia_mix.setTrackVol(4, constants.blankEvent)
+        nihia_mix.setTrackVol(5, constants.blankEvent)
+        nihia_mix.setTrackVol(6, constants.blankEvent)
+        nihia_mix.setTrackVol(7, constants.blankEvent)
 
         updatePanChannel((channels.selectedChannel() + 0), 0)
-        nihia_mix.setTrackPan(1, config.blankEvent)
-        nihia_mix.setTrackPan(2, config.blankEvent)
-        nihia_mix.setTrackPan(3, config.blankEvent)
-        nihia_mix.setTrackPan(4, config.blankEvent)
-        nihia_mix.setTrackPan(5, config.blankEvent)
-        nihia_mix.setTrackPan(6, config.blankEvent)
-        nihia_mix.setTrackPan(7, config.blankEvent)
+        nihia_mix.setTrackPan(1, constants.blankEvent)
+        nihia_mix.setTrackPan(2, constants.blankEvent)
+        nihia_mix.setTrackPan(3, constants.blankEvent)
+        nihia_mix.setTrackPan(4, constants.blankEvent)
+        nihia_mix.setTrackPan(5, constants.blankEvent)
+        nihia_mix.setTrackPan(6, constants.blankEvent)
+        nihia_mix.setTrackPan(7, constants.blankEvent)
 
-    if ui.getFocused(config.winName["Playlist"]) == True: #playlist
+    if ui.getFocused(constants.winName["Playlist"]) == True: #playlist
 
         for x in range(1,8):
             nihia_mix.setTrackExist(x,0)
 
         nihia_mix.setTrackName(0, "Playlist")
-        nihia_mix.setTrackName(1, config.blankEvent)
-        nihia_mix.setTrackName(2, config.blankEvent)
-        nihia_mix.setTrackName(3, config.blankEvent)
-        nihia_mix.setTrackName(4, config.blankEvent)
-        nihia_mix.setTrackName(5, config.blankEvent)
-        nihia_mix.setTrackName(6, config.blankEvent)
-        nihia_mix.setTrackName(7, config.blankEvent)
+        nihia_mix.setTrackName(1, constants.blankEvent)
+        nihia_mix.setTrackName(2, constants.blankEvent)
+        nihia_mix.setTrackName(3, constants.blankEvent)
+        nihia_mix.setTrackName(4, constants.blankEvent)
+        nihia_mix.setTrackName(5, constants.blankEvent)
+        nihia_mix.setTrackName(6, constants.blankEvent)
+        nihia_mix.setTrackName(7, constants.blankEvent)
         
-        #nihia_mix.setTrackVol(1, config.blankEvent)
-        nihia_mix.setTrackVol(1, config.blankEvent)
-        nihia_mix.setTrackVol(2, config.blankEvent)
-        nihia_mix.setTrackVol(3, config.blankEvent)
-        nihia_mix.setTrackVol(4, config.blankEvent)
-        nihia_mix.setTrackVol(5, config.blankEvent)
-        nihia_mix.setTrackVol(6, config.blankEvent)
-        nihia_mix.setTrackVol(7, config.blankEvent)
+        #nihia_mix.setTrackVol(1, constants.blankEvent)
+        nihia_mix.setTrackVol(1, constants.blankEvent)
+        nihia_mix.setTrackVol(2, constants.blankEvent)
+        nihia_mix.setTrackVol(3, constants.blankEvent)
+        nihia_mix.setTrackVol(4, constants.blankEvent)
+        nihia_mix.setTrackVol(5, constants.blankEvent)
+        nihia_mix.setTrackVol(6, constants.blankEvent)
+        nihia_mix.setTrackVol(7, constants.blankEvent)
 
-        nihia_mix.setTrackPan(0, config.blankEvent)
-        nihia_mix.setTrackPan(1, config.blankEvent)
-        nihia_mix.setTrackPan(2, config.blankEvent)
-        nihia_mix.setTrackPan(3, config.blankEvent)
-        nihia_mix.setTrackPan(4, config.blankEvent)
-        nihia_mix.setTrackPan(5, config.blankEvent)
-        nihia_mix.setTrackPan(6, config.blankEvent)
-        nihia_mix.setTrackPan(7, config.blankEvent)
+        nihia_mix.setTrackPan(0, constants.blankEvent)
+        nihia_mix.setTrackPan(1, constants.blankEvent)
+        nihia_mix.setTrackPan(2, constants.blankEvent)
+        nihia_mix.setTrackPan(3, constants.blankEvent)
+        nihia_mix.setTrackPan(4, constants.blankEvent)
+        nihia_mix.setTrackPan(5, constants.blankEvent)
+        nihia_mix.setTrackPan(6, constants.blankEvent)
+        nihia_mix.setTrackPan(7, constants.blankEvent)
 
 def clear():
 
@@ -243,18 +243,18 @@ def clear():
         nihia_mix.setTrackArm(y, 0)
         nihia_mix.setTrackSolo(y, 0)
         nihia_mix.setTrackMute(y, 0)
-        updateText(config.blankEvent, y)
-        nihia_mix.setTrackName(y, config.blankEvent)
-        nihia_mix.setTrackPan(y, config.blankEvent)
-        nihia_mix.setTrackVol(y, config.blankEvent)
+        updateText(constants.blankEvent, y)
+        nihia_mix.setTrackName(y, constants.blankEvent)
+        nihia_mix.setTrackPan(y, constants.blankEvent)
+        nihia_mix.setTrackVol(y, constants.blankEvent)
 
 
 
 def OnUpdateBeatIndicator(self, Value):
 
-    if ui.getFocused(config.winName["Playlist"]) == True:
+    if ui.getFocused(constants.winName["Playlist"]) == True:
 
-        timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
+        timeDisp, currentTime = NILA_core.timeConvert(constants.itemDisp, constants.itemTime)
 
         #if transport.isPlaying() == True:
         #    nihia_mix.setTrackName(0, str("P| "+ ))
@@ -264,13 +264,13 @@ def OnUpdateBeatIndicator(self, Value):
             nihia_mix.setTrackExist(x,0)
 
         nihia_mix.setTrackName(0, str("Playlist"))
-        nihia_mix.setTrackName(1, config.blankEvent)
-        nihia_mix.setTrackName(2, config.blankEvent)
-        nihia_mix.setTrackName(3, config.blankEvent)
-        nihia_mix.setTrackName(4, config.blankEvent)
-        nihia_mix.setTrackName(5, config.blankEvent)
-        nihia_mix.setTrackName(6, config.blankEvent)
-        nihia_mix.setTrackName(7, config.blankEvent)
+        nihia_mix.setTrackName(1, constants.blankEvent)
+        nihia_mix.setTrackName(2, constants.blankEvent)
+        nihia_mix.setTrackName(3, constants.blankEvent)
+        nihia_mix.setTrackName(4, constants.blankEvent)
+        nihia_mix.setTrackName(5, constants.blankEvent)
+        nihia_mix.setTrackName(6, constants.blankEvent)
+        nihia_mix.setTrackName(7, constants.blankEvent)
 
         split_message = ui.getHintMsg()
         split_point1 = ' - '
@@ -301,22 +301,22 @@ def OnUpdateBeatIndicator(self, Value):
             else:    
                 nihia_mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
 
-        nihia_mix.setTrackVol(1, config.blankEvent)
-        nihia_mix.setTrackVol(2, config.blankEvent)
-        nihia_mix.setTrackVol(3, config.blankEvent)
-        nihia_mix.setTrackVol(4, config.blankEvent)
-        nihia_mix.setTrackVol(5, config.blankEvent)
-        nihia_mix.setTrackVol(6, config.blankEvent)
-        nihia_mix.setTrackVol(7, config.blankEvent)
+        nihia_mix.setTrackVol(1, constants.blankEvent)
+        nihia_mix.setTrackVol(2, constants.blankEvent)
+        nihia_mix.setTrackVol(3, constants.blankEvent)
+        nihia_mix.setTrackVol(4, constants.blankEvent)
+        nihia_mix.setTrackVol(5, constants.blankEvent)
+        nihia_mix.setTrackVol(6, constants.blankEvent)
+        nihia_mix.setTrackVol(7, constants.blankEvent)
 
-        nihia_mix.setTrackPan(0, config.blankEvent)
-        nihia_mix.setTrackPan(1, config.blankEvent)
-        nihia_mix.setTrackPan(2, config.blankEvent)
-        nihia_mix.setTrackPan(3, config.blankEvent)
-        nihia_mix.setTrackPan(4, config.blankEvent)
-        nihia_mix.setTrackPan(5, config.blankEvent)
-        nihia_mix.setTrackPan(6, config.blankEvent)
-        nihia_mix.setTrackPan(7, config.blankEvent)
+        nihia_mix.setTrackPan(0, constants.blankEvent)
+        nihia_mix.setTrackPan(1, constants.blankEvent)
+        nihia_mix.setTrackPan(2, constants.blankEvent)
+        nihia_mix.setTrackPan(3, constants.blankEvent)
+        nihia_mix.setTrackPan(4, constants.blankEvent)
+        nihia_mix.setTrackPan(5, constants.blankEvent)
+        nihia_mix.setTrackPan(6, constants.blankEvent)
+        nihia_mix.setTrackPan(7, constants.blankEvent)
 
     else:
         pass
@@ -335,9 +335,9 @@ def VolTodB(value: float):
 
 def OnIdle(self):
 
-    if ui.getFocused(config.winName["Playlist"]) == True:
+    if ui.getFocused(constants.winName["Playlist"]) == True:
 
-        timeDisp, currentTime = NILA_core.timeConvert(config.itemDisp, config.itemTime)
+        timeDisp, currentTime = NILA_core.timeConvert(constants.itemDisp, constants.itemTime)
         updatePlaylist()
 
         split_message = ui.getHintMsg()
@@ -354,12 +354,12 @@ def OnIdle(self):
         if transport.isPlaying() == False:
             nihia_mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
   
-    elif ui.getFocused(config.winName["Browser"]) == True: 
+    elif ui.getFocused(constants.winName["Browser"]) == True: 
         updateBrowser()
 
 def updatePlaylist():
 
-    if ui.getFocused(config.winName["Playlist"]) == True:
+    if ui.getFocused(constants.winName["Playlist"]) == True:
 
         if device.getName() == "Komplete Kontrol DAW - 1":
             for x in range(1,8):
@@ -377,7 +377,7 @@ def updatePlaylist():
 
 def updateBrowser():
 
-    if ui.getFocused(config.winName["Browser"]) == True:
+    if ui.getFocused(constants.winName["Browser"]) == True:
 
         fileType = ui.getFocusedNodeFileType()
 
@@ -410,46 +410,46 @@ def updateBrowser():
 
                 else:           
 
-                    if ui.getFocusedNodeFileType() == config.SBN_FLP:
+                    if ui.getFocusedNodeFileType() == constants.SBN_FLP:
                         fileType = "B| FLP File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_ZIP:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_ZIP:
                         fileType = "B| ZIP File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_FLM:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_FLM:
                         fileType = "B| FLP File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_FST:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_FST:
                         fileType = "B| Preset"
                         
-                    elif ui.getFocusedNodeFileType() == config.SBN_WAV:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_WAV:
                         fileType = "B| WAV File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_MP3:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_MP3:
                         fileType = "B| MP3 File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_OGG:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_OGG:
                         fileType = "B| OGG File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_FLAC:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_FLAC:
                         fileType = "B| FLAC File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_AIFF:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_AIFF:
                         fileType = "B| AIFF File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_TXT:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_TXT:
                         fileType = "B| TEXT File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_BMP:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_BMP:
                         fileType = "B| IMAGE File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_MID:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_MID:
                         fileType = "B| MIDI File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_M4A:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_M4A:
                         fileType = "B| MP4 File"
 
-                    elif ui.getFocusedNodeFileType() == config.SBN_FSC:
+                    elif ui.getFocusedNodeFileType() == constants.SBN_FSC:
                         fileType = "B| FSC File"
                     else:
                         fileType = "B| File"
