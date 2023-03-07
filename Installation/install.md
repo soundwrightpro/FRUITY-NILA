@@ -15,9 +15,11 @@
 4. Follow the GIF to activate
 
       - you can choose any port number, as long as they're the same (per device)
+      - if you have two devices, as in the GIF instructions, each device must on different port numbers
+      
+<p></p>
 
-
-       if you have two devices, as in the GIF instructions, each device must on different port numbers
+       the GIF loop ends when the SETTINGS window closes. It will then start the loop again. 
 
 
 <p align="center">
