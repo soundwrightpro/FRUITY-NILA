@@ -3,9 +3,7 @@ from script.screen_writer import NILA_OLED
 from script.device_setup import constants
 
 import channels
-import device
 import math
-import midi
 import plugins
 import ui 
 

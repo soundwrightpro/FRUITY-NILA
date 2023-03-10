@@ -1,7 +1,9 @@
 """
 Start of User-editable Python file to change script behavior
 """
-
+ 
+ 
+ 
 # Behavior of Browser Jog Wheel 
 # 
 # If set to 0, will turn off sounds playing while you jog(spinning the right most knob)

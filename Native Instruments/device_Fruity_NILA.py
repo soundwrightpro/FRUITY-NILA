@@ -16,16 +16,13 @@
 
 import nihia
 from nihia import *
-import nihia.mixer as NILA_mixer
+from nihia import mixer as mix
 from script.NILA_UI import *
 from script.device_setup import *
 from script.device_setup import transform
 from script.led_writer import NILA_LED
-from script.screen_writer import NILA_OLED
+from script.screen_writer import NILA_OLED as oled
 
-
-import general
-import time
 import ui
 
 
@@ -48,21 +45,21 @@ class Core():
 
 	def OnRefresh(self, flags):
 		NILA_LED.OnRefresh(self, flags)
-		NILA_OLED.OnRefresh(self, flags)
+		oled.OnRefresh(self, flags)
 
 	def OnUpdateBeatIndicator(self, Value):
 		NILA_LED.OnUpdateBeatIndicator(self, Value)
-		NILA_OLED.OnUpdateBeatIndicator(self,Value)
+		oled.OnUpdateBeatIndicator(self,Value)
 
 	def OnWaitingForInput(self):
-		NILA_mixer.setTrackName(0, constants.wait_input_1)
-		NILA_mixer.setTrackVol(0, constants.wait_input_2)
+		mix.setTrackName(0, constants.wait_input_1)
+		mix.setTrackVol(0, constants.wait_input_2)
 
 	def OnProjectLoad(self, status):
 		NILA_core.OnProjectLoad(self, status)
 	
 	def OnIdle(self):
-		NILA_OLED.OnIdle(self)
+		oled.OnIdle(self)
 	
 	def OnUpdateMeters(self):
 		transform.sendPeakInfo()
@@ -128,5 +125,3 @@ def OnDeInit():
 			nihia.goodBye()
 	except:
 		pass
-
-

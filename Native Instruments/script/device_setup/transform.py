@@ -6,10 +6,7 @@ import channels
 import playlist
 import math
 import mixer
-import time
-import transport
 import ui
-import device 
 import midi 
 
 

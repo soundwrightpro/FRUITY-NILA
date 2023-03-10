@@ -6,8 +6,6 @@ from script.device_setup import config
 from script.device_setup import constants
 
 import channels
-import device
-import midi
 import plugins
 import ui 
 

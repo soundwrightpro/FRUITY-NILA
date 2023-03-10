@@ -4,17 +4,11 @@ from script.device_setup import NILA_core
 from script.device_setup import constants 
 from script.device_setup import transform
 
-from script.NILA_UI import NILA_plugins
-
-
 import channels
-import math
 import mixer
-import time
 import transport
 import ui
 import device 
-import midi 
 
 
 def OnRefresh(self, event):
@@ -148,12 +142,6 @@ def OnIdle(self):
             mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
   
     elif ui.getFocused(constants.winName["Browser"]) == True: 
-        updateBrowser()
-
-
-def updateBrowser():
-
-    if ui.getFocused(constants.winName["Browser"]) == True:
 
         fileType = ui.getFocusedNodeFileType()
 

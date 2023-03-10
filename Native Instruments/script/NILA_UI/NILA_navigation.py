@@ -8,17 +8,15 @@ from script.screen_writer import NILA_OLED as oled
 import arrangement as arrange
 import channels
 import device 
-import playlist
-import math
 import midi
 import mixer
-import time
 import transport
 import plugins
 import ui 
 
 
 xAxis, yAxis = 0, 0,
+
 
 def encoder(self, event): 
 
@@ -58,7 +56,7 @@ def encoder(self, event):
                     ui.down()
                 else:
                     ui.next()
-                    oled.updateBrowser()
+                    oled.OnIdle(self)
                     if config.jog_preview_sound == 1:
                         ui.previewBrowserMenuItem()
                     else:
@@ -66,7 +64,7 @@ def encoder(self, event):
                     if device.getName() == "Komplete Kontrol DAW - 1":
                         pass
                     else:
-                        oled.updateBrowser()
+                        oled.OnIdle(self)
             else:
                 ui.down(1)
 
@@ -106,7 +104,7 @@ def encoder(self, event):
                     ui.up()
                 else:
                     ui.previous()
-                    oled.updateBrowser()
+                    oled.OnIdle(self)
                     if config.jog_preview_sound == 1:
                         ui.previewBrowserMenuItem()
                     else:
@@ -114,7 +112,7 @@ def encoder(self, event):
                     if device.getName() == "Komplete Kontrol DAW - 1":
                         pass
                     else:
-                        oled.updateBrowser()
+                        oled.OnIdle(self)
             else:
                 ui.up(1)
                 
@@ -250,7 +248,6 @@ def encoder(self, event):
             else:
                 ui.left(1)
 
-
     if event.data1 == yAxis:
         if event.data2 == nihia.buttons.button_list.get("UP"):
             event.handled = True
@@ -284,7 +281,7 @@ def encoder(self, event):
                     if device.getName() == "Komplete Kontrol DAW - 1":
                             pass
                     else:
-                        oled.updateBrowser()
+                        oled.OnIdle(self)
 
             elif ui.getFocused(constants.winName["Playlist"]) == True: 
                 ui.up()
@@ -326,8 +323,7 @@ def encoder(self, event):
                     if device.getName() == "Komplete Kontrol DAW - 1":
                         pass
                     else:  
-                        oled.updateBrowser()
-
+                        oled.OnIdle(self)
 
             elif ui.getFocused(constants.winName["Piano Roll"]) == True:
                 ui.down()

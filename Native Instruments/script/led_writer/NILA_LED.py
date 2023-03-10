@@ -6,12 +6,8 @@ from script.device_setup import constants
 
 import channels
 import device
-import general
-import math
-import midi
 import mixer
 import transport
-import time
 import ui
 
 
@@ -79,7 +75,6 @@ def OnRefresh(self, flags):
             elif g == off: #play off: 
                 nihia.buttons.setLight("PLAY", off)
 
-
         if ui.getFocused(constants.winName["Mixer"]) == True:
             #mixer solo
             if mixer.trackNumber() <= 125:
@@ -114,7 +109,6 @@ def OnRefresh(self, flags):
                 if mixer.isTrackSolo(mixer.trackNumber() + 7) == True or mixer.isTrackSolo(mixer.trackNumber() + 7) == False:
                     mix.setTrackSolo(7, mixer.isTrackSolo(mixer.trackNumber() + 7))
 
-
             #mixer mute 
             if mixer.trackNumber() <= 125:
                 if mixer.isTrackMuted(mixer.trackNumber() + 0) == True or mixer.isTrackMuted(mixer.trackNumber() + 0) == False:
@@ -147,7 +141,6 @@ def OnRefresh(self, flags):
             if mixer.trackNumber() <= 118:
                 if mixer.isTrackMuted(mixer.trackNumber() + 7) == True or mixer.isTrackMuted(mixer.trackNumber() + 7) == False:
                     mix.setTrackMute(7, mixer.isTrackMuted(mixer.trackNumber() + 7))
-
 
             #mixer recording arm
             if mixer.trackNumber() <= 125:
@@ -182,8 +175,6 @@ def OnRefresh(self, flags):
                 if mixer.isTrackArmed(mixer.trackNumber() + 7) == True or mixer.isTrackArmed(mixer.trackNumber() + 7) == False:
                     mix.setTrackArm(7, mixer.isTrackArmed(mixer.trackNumber() + 7))
 
-
-
         if ui.getFocused(constants.winName["Channel Rack"]) == True:
    
             #channel mute/solo paradox fix (why was this so hard?!?!?!?)
@@ -209,15 +200,11 @@ def OnRefresh(self, flags):
                 else:
                     mix.setTrackMute(0, 0)
 
-
-    
-
         # Sets the lights of the 4D Encoder on S-Series keyboards on
         nihia.buttons.setLight("ENCODER_X_S", 1)
         nihia.buttons.setLight("ENCODER_X_S", 127)
         nihia.buttons.setLight("ENCODER_Y_S", 1)
         nihia.buttons.setLight("ENCODER_Y_S", 127)
-
         
 
 def OnUpdateBeatIndicator(self, Value):

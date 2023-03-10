@@ -4,11 +4,8 @@ import nihia.mixer as mix
 from script.device_setup import constants
 
 import device
-import midi
-import general  
 import playlist
 import time
-import transport
 import ui
 
 

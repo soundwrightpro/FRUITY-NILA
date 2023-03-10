@@ -7,7 +7,6 @@ from script.device_setup import constants
 import channels
 import device
 import general
-import math
 import midi
 import mixer
 import playlist

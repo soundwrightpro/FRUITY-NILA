@@ -9,8 +9,6 @@ from script.device_setup import transform
 
 import channels
 import device 
-import math
-import plugins 
 import ui 
 
 def OnMidiMsg(self, event): 

@@ -6,8 +6,6 @@ from script.device_setup import constants
 from script.device_setup import transform
 
 
-import device 
-import math
 import mixer
 import ui 
 
