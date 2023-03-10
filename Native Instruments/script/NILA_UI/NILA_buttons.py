@@ -10,6 +10,7 @@ import general
 import math
 import midi
 import mixer
+import playlist
 import time
 import transport
 import ui
@@ -498,3 +499,13 @@ def OnMidiMsg(event): #listens for button or knob activity
                     event.handled = True
                     channels.selectOneChannel(channels.selectedChannel() + x)  
                     ui.setHintMsg("Track selected")
+                    
+    if ui.getFocused(constants.winName["Playlist"]) == True:
+        
+        #s-series playlist select 
+        for x in range(8):
+            if event.data1 == constants.select and event.data2 == x: 
+                event.handled = True
+                playlist.selectTrack()
+                ui.setHintMsg("")
+                    

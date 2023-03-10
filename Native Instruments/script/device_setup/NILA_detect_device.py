@@ -1,5 +1,6 @@
 import device
 
+
 def detectDevice(NILA_Name):
    """ Gets the MIDI device name from FL Studio and sets `DEVICE_SERIES` to the right value in order for the script to work properly. """
    
@@ -24,7 +25,6 @@ def detectDevice(NILA_Name):
    elif deviceName == "KOMPLETE KONTROL - 1":
       NILA_Name = "Komplete Kontrol Series S" 
       
-
    else:
       NILA_Name = device.getName()
  

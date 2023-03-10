@@ -1,13 +1,10 @@
 import nihia
-import nihia.mixer as NILA_mix
+import nihia.mixer as mix
 
-from script.NILA_UI import NILA_buttons
-from script.device_setup import NILA_detect_device
 from script.device_setup import constants
 
 import device
 import midi
-import mixer
 import general  
 import playlist
 import time
@@ -21,8 +18,8 @@ def OnInit(self):
    if device.getName() == "Komplete Kontrol DAW - 1":
       pass
    else:
-      NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
-      NILA_mix.setTrackVol(0, constants.GOODBYE_MESSAGE)
+      mix.setTrackName(0, constants.HELLO_MESSAGE)
+      mix.setTrackVol(0, constants.GOODBYE_MESSAGE)
       time.sleep(2.00)
 
    nihia.buttons.setLight("UNDO", 1)
@@ -33,11 +30,11 @@ def OnInit(self):
 
 
    for x in range(8):
-      nihia.mixer.setTrackExist(x,0)
+      mix.setTrackExist(x,0)
 
 
 def OnWaitingForInput(status):
-   NILA_mix.setTrackName(0, ". . .")
+   mix.setTrackName(0, ". . .")
    time.sleep(constants.timedelay)
    
 
@@ -47,24 +44,24 @@ def OnProjectLoad(self, status):
       if device.getName() == "Komplete Kontrol DAW - 1":
          pass
       else:
-         NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
-         NILA_mix.setTrackVol(0, "Loading File")
+         mix.setTrackName(0, constants.HELLO_MESSAGE)
+         mix.setTrackVol(0, "Loading File")
          time.sleep(constants.timedelay)
 
    elif status == constants.PL_LoadOk:
       if device.getName() == "Komplete Kontrol DAW - 1":
          pass
       else:
-         NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
-         NILA_mix.setTrackVol(0, "Load Complete")
+         mix.setTrackName(0, constants.HELLO_MESSAGE)
+         mix.setTrackVol(0, "Load Complete")
          time.sleep(constants.timedelay)
 
    elif status == constants.PL_LoadError:
       if device.getName() == "Komplete Kontrol DAW - 1":
          pass
       else:
-         NILA_mix.setTrackName(0, constants.HELLO_MESSAGE)
-         NILA_mix.setTrackVol(0, "Load Error!")
+         mix.setTrackName(0, constants.HELLO_MESSAGE)
+         mix.setTrackVol(0, "Load Error!")
          time.sleep(constants.timedelay)
 
 
@@ -97,4 +94,4 @@ def setTrackVolConvert(trackID: int, value: str):
    if value == "-inf dB":
       value = "- oo dB"
 
-   NILA_mix.setTrackVol(trackID, value)
+   mix.setTrackVol(trackID, value)

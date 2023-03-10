@@ -1,10 +1,9 @@
 import nihia
-from nihia import mixer
+from nihia import mixer as mix
 
 from script.device_setup import NILA_core
 from script.device_setup import config 
 from script.device_setup import constants
-from script.screen_writer import NILA_OLED
 
 import channels
 import device
@@ -17,10 +16,9 @@ skip = -1
 
 def plugin(self, event):
 
-    if ui.getFocused(5) == 1: #plugin control
-        plugin_name = ui.getFocusedPluginName()   
-
-        if plugin_name == constants.supported_plugins[0]:
+    if ui.getFocused(constants.winName["Plugin"]) == 1: #plugin control
+     
+        if ui.getFocusedPluginName()  == constants.supported_plugins["FL Keys"]:
             
             MAPPED_FUNCTION = {
             '0':0, 
@@ -41,7 +39,7 @@ def plugin(self, event):
             '15':9,  # 7      
             }
 
-        elif plugin_name == constants.supported_plugins[1] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["FLEX"] :
             
             MAPPED_FUNCTION = {
                     '0':10,
@@ -62,7 +60,7 @@ def plugin(self, event):
                     '15':skip, #7      
                     }   
 
-        elif plugin_name == constants.supported_plugins[2] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["Sytrus"] :
             
             MAPPED_FUNCTION = {
                     '0':18,
@@ -83,7 +81,7 @@ def plugin(self, event):
                     '15':2,  #7
                     }
 
-        elif plugin_name == constants.supported_plugins[3] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["GMS"] :
             
             MAPPED_FUNCTION = {
                     '0':18,
@@ -104,7 +102,7 @@ def plugin(self, event):
                     '15':2   #7
                     }
 
-        elif plugin_name == constants.supported_plugins[4] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["Harmless"] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -125,7 +123,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == constants.supported_plugins[5] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["Harmor"] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -146,7 +144,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == constants.supported_plugins[6] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["Morphine"] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -167,7 +165,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == constants.supported_plugins[7]:
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["3x Osc"]:
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -188,7 +186,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == constants.supported_plugins[8] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["Fruity DX10"] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -209,7 +207,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
 
-        elif plugin_name == constants.supported_plugins[9] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["BassDrum"] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -230,7 +228,7 @@ def plugin(self, event):
                     '15':15  #7
                     }
                     
-        elif plugin_name == constants.supported_plugins[10] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["MiniSynth"] :
             
             MAPPED_FUNCTION = {
                     '0':8,
@@ -251,7 +249,7 @@ def plugin(self, event):
                     '15':skip  #7   
                     }
 
-        elif plugin_name == constants.supported_plugins[11] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["PoiZone"] :
             
             MAPPED_FUNCTION = {
                     '0':8,
@@ -272,7 +270,7 @@ def plugin(self, event):
                     '15':16  #7   
                     }
 
-        elif plugin_name == constants.supported_plugins[12] :
+        elif ui.getFocusedPluginName()  == constants.supported_plugins["Sakura"] :
             
             MAPPED_FUNCTION = {
                     '0':0,
@@ -315,48 +313,50 @@ def plugin(self, event):
 
 
         for a in range(8):
-                if MAPPED_FUNCTION[str(a)] == skip and event.data1 == nihia.mixer.knobs[0][a]:
+                if MAPPED_FUNCTION[str(a)] == skip and event.data1 == mix.knobs[0][a]:
                     event.handled = True
-                    mixer.setTrackVol(a, constants.blankEvent)
-                    NILA_OLED.updateText(constants.blankEvent, a)
+                    mix.setTrackVol(a, constants.blankEvent)
+                    mix.setTrackName(a, constants.blankEvent)
                     ui.setHintMsg(constants.blankEvent)
                 else:
-                    if (event.data1 == nihia.mixer.knobs[0][a]):
+                    if (event.data1 == mix.knobs[0][a]):
                         x = plugins.getParamValue(MAPPED_FUNCTION[str(a)], channels.selectedChannel())
                         y = round(x,2)
                         event.handled = True
                         
                         ui.setHintMsg(plugins.getParamName(MAPPED_FUNCTION[str(a)], channels.selectedChannel()))
                         
-                        if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+                        if mix.KNOB_DECREASE_MIN_SPEED >= event.data2 >= mix.KNOB_DECREASE_MAX_SPEED:
                             plugins.setParamValue((y - config.increment) , MAPPED_FUNCTION[str(a)], channels.selectedChannel()) 
 
-                        elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+                        elif mix.KNOB_INCREASE_MIN_SPEED <= event.data2 <= mix.KNOB_INCREASE_MAX_SPEED:
                             plugins.setParamValue((y + config.increment) , MAPPED_FUNCTION[str(a)], channels.selectedChannel())
 
-                        mixer.setTrackVol(a, str(round(100*plugins.getParamValue(MAPPED_FUNCTION[str(a)], channels.selectedChannel())   ), ))
-                        NILA_OLED.updateText(plugins.getParamName(MAPPED_FUNCTION[str(a)], channels.selectedChannel()), a)
+                        mix.setTrackVol(a, str(round(100*plugins.getParamValue(MAPPED_FUNCTION[str(a)], channels.selectedChannel())   ), ))
+                        mix.setTrackName(a, plugins.getParamName(MAPPED_FUNCTION[str(a)], channels.selectedChannel()))
 
         for a in range(8):
                 b = a + 8
-                if MAPPED_FUNCTION[str(b)] == skip and event.data1 == nihia.mixer.knobs[1][a]:
+                if MAPPED_FUNCTION[str(b)] == skip and event.data1 == mix.knobs[1][a]:
                     event.handled = True
-                    mixer.setTrackVol(a, constants.blankEvent)
-                    NILA_OLED.updateText(constants.blankEvent, a)
+                    mix.setTrackVol(a, constants.blankEvent)
+                    mix.setTrackName(a, constants.blankEvent)
+                    
+                    mix.setTrackName(a, constants.blankEvent)
                     ui.setHintMsg(constants.blankEvent)
                 else:
-                    if (event.data1 == nihia.mixer.knobs[1][a]):
+                    if (event.data1 == mix.knobs[1][a]):
                         x = plugins.getParamValue(MAPPED_FUNCTION[str(b)], channels.selectedChannel())
                         y = round(x,2)
                         event.handled = True
                         
                         ui.setHintMsg(plugins.getParamName(MAPPED_FUNCTION[str(b)], channels.selectedChannel()))
                         
-                        if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+                        if mix.KNOB_DECREASE_MIN_SPEED >= event.data2 >= mix.KNOB_DECREASE_MAX_SPEED:
                             plugins.setParamValue((y - config.increment) , MAPPED_FUNCTION[str(b)], channels.selectedChannel()) 
 
-                        elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+                        elif mix.KNOB_INCREASE_MIN_SPEED <= event.data2 <= mix.KNOB_INCREASE_MAX_SPEED:
                             plugins.setParamValue((y + config.increment) , MAPPED_FUNCTION[str(b)], channels.selectedChannel())
 
-                        mixer.setTrackPan(a, str(round(100*plugins.getParamValue(MAPPED_FUNCTION[str(b)], channels.selectedChannel())   ), ))
-                        NILA_OLED.updateText(plugins.getParamName(MAPPED_FUNCTION[str(b)], channels.selectedChannel()), a)
+                        mix.setTrackPan(a, str(round(100*plugins.getParamValue(MAPPED_FUNCTION[str(b)], channels.selectedChannel())   ), ))
+                        mix.setTrackName(a, plugins.getParamName(MAPPED_FUNCTION[str(b)], channels.selectedChannel()))

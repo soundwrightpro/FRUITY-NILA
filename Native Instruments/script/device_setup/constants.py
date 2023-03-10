@@ -18,16 +18,25 @@
 
 # script_constants
 
-VERSION_NUMBER = "v11.0.2"
+VERSION_NUMBER = "v11.0.5"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = "\nFRUITY NILA " + VERSION_NUMBER + "\nCopyright © 2023 Duwayne\n"
 LOAD_MESSAGE = "Project Loaded"
 
-
-supported_plugins = ['FL Keys','FLEX','Sytrus','GMS','Harmless','Harmor',
-                    'Morphine', '3x Osc', 'Fruity DX10', 'BassDrum',
-                    'MiniSynth', 'PoiZone', 'Sakura']
+supported_plugins = {"FL Keys": 0,
+                     "FLEX": 1,
+                     "Sytrus": 2,
+                     "GMS": 3,
+                     "Harmless": 4,
+                     "Harmor": 5,
+                     "Morphine": 6,
+                     "3x Osc": 7,
+                     "Fruity DX10": 8,
+                     "BassDrum": 9,
+                     "MiniSynth": 10,
+                     "PoiZone": 11,
+                     "Sakura": 12}
 
 widTitle = ["Mixer", "Channel Rack", "Playlist", "Piano Roll",
             "Browser", "Plugin Window", "Effect Plugin", "Generator Plugin"]
@@ -39,6 +48,12 @@ winName = {
     "Piano Roll": 3,
     "Browser": 4,
     "Plugin": 5
+}
+
+touch_strips = {
+   "PITCH": 0,
+   "MOD": 1,
+   "EXPRESSION": 11 
 }
 
 MAX_Major = 21
@@ -70,6 +85,9 @@ nuText = "Not Used"
 
 itemDisp = 0
 itemTime = 0
+
+mixer_right = 63
+mixer_left = 65
 
 #fl constants
 
@@ -112,3 +130,26 @@ SBN_LIBOWNED = 32	    #Library item(owned)
 SBN_NOTIFICATION = 33	#Notification item
 SBN_DOWNLOAD = 34	    #Download item
 SBN_M4A	= 35	        #M4A file
+
+
+FL_node = {'B| .FLP' : 1,
+             'B| .ZIP' : 2,
+             'B| FL Proj.' : 3,
+             'B| FL Preset' : 4,
+             'B| .WAV' : 7,
+             'B| .SF2' : 11,
+             'B| .SPEECH' : 12,
+             'B| .MP3' : 13,
+             'B| .OGG' : 14,
+             'B| .FLAC' : 15,
+             'B| .FNV' : 19,
+             'B| .AIFF' : 21,
+             'B| .TXT' : 22,
+             'B| IMAGE File' : 23,
+             'B| .WV' : 24,
+             'B| .MIDI' : 27,
+             'B| FLEX PACK' : 28,
+             'B| .MP4' : 35,
+             'B| .INI' : 37,
+             'B| .FSC' : 10,
+             }

@@ -1,5 +1,4 @@
 import nihia
-from nihia import mixer as nihia_mix
 
 from script.device_setup import config
 from script.device_setup import constants
@@ -9,6 +8,7 @@ from script.screen_writer import NILA_OLED as oled
 import arrangement as arrange
 import channels
 import device 
+import playlist
 import math
 import midi
 import mixer
@@ -17,15 +17,13 @@ import transport
 import plugins
 import ui 
 
-mixer_right = 63
-mixer_left = 65
 
 xAxis, yAxis = 0, 0,
 
 def encoder(self, event): 
 
     if event.data1 == nihia.buttons.button_list.get("ENCODER_GENERAL") or event.data1 == nihia.buttons.button_list.get("ENCODER_VOLUME_SELECTED") or event.data1 == nihia.buttons.button_list.get("ENCODER_PAN_SELECTED"):
-        if event.data2 == nihia.buttons.button_list.get("RIGHT") or event.data2 == mixer_right: # encoder spin right 
+        if event.data2 == nihia.buttons.button_list.get("RIGHT") or event.data2 == constants.mixer_right: # encoder spin right 
             event.handled = True
             if ui.getFocused(constants.winName["Mixer"])== True: 
                 if ui.isInPopupMenu() == True:
@@ -73,7 +71,7 @@ def encoder(self, event):
                 ui.down(1)
 
 
-        if event.data2 == nihia.buttons.button_list.get("LEFT") or event.data2 == mixer_left: # encoder spin left 
+        if event.data2 == nihia.buttons.button_list.get("LEFT") or event.data2 == constants.mixer_left: # encoder spin left 
             event.handled = True
             if ui.getFocused(constants.winName["Mixer"])== True: 
                 if ui.isInPopupMenu() == True:
@@ -288,6 +286,9 @@ def encoder(self, event):
                     else:
                         oled.updateBrowser()
 
+            elif ui.getFocused(constants.winName["Playlist"]) == True: 
+                ui.up()
+
 
             elif ui.getFocused(constants.winName["Piano Roll"]) == True:
                 ui.up()
@@ -324,9 +325,9 @@ def encoder(self, event):
                         pass 
                     if device.getName() == "Komplete Kontrol DAW - 1":
                         pass
-                    else:
-                        
+                    else:  
                         oled.updateBrowser()
+
 
             elif ui.getFocused(constants.winName["Piano Roll"]) == True:
                 ui.down()

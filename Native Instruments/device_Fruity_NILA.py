@@ -5,9 +5,9 @@
 
 """
 [[
-	Surface:	Komplete Kontrol S-Series , Komplete Kontrol M-Series , Komplete Kontrol A-Series, 
+	Surface:	Komplete Kontrol S-Series, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
 	Developer:	Duwayne WRIGHT
-	Version:	11.0.2 
+	Version:	11.0.5 
 
     Copyright (c) 2023 Duwayne WRIGHT
 ]]
@@ -19,6 +19,7 @@ from nihia import *
 import nihia.mixer as NILA_mixer
 from script.NILA_UI import *
 from script.device_setup import *
+from script.device_setup import transform
 from script.led_writer import NILA_LED
 from script.screen_writer import NILA_OLED
 
@@ -38,10 +39,10 @@ class Core():
 			NILA_navigation.encoder(self, event)
 			NILA_buttons.OnMidiMsg(event)
 			NILA_mixer.OnMidiMsg(self, event)
+			NILA_playlist.OnMidiMsg(self, event)
 			NILA_channel_rack.OnMidiMsg(self, event)
 			NILA_piano_roll.OnMidiMsg(self, event)
 			NILA_plugins.plugin(self,event)
-
 		else:
 			NILA_touch_strips.OnMidiIn(event)
 
@@ -64,9 +65,8 @@ class Core():
 		NILA_OLED.OnIdle(self)
 	
 	def OnUpdateMeters(self):
-		NILA_OLED.sendPeakInfo()
+		transform.sendPeakInfo()
 
-	
 
 n_Core = Core()
 

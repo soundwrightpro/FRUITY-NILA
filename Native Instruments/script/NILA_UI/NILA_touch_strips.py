@@ -1,5 +1,6 @@
 from script.device_setup import NILA_core
 from script.screen_writer import NILA_OLED
+from script.device_setup import constants
 
 import channels
 import device
@@ -8,25 +9,19 @@ import midi
 import plugins
 import ui 
 
-touch_strips = {
-   "PITCH": 0,
-   "MOD": 1,
-   "EXPRESSION": 11 
-}
-
 
 def OnMidiIn(event):
 
-    if (event.data1 == touch_strips["MOD"]):
+    if (event.data1 == constants.touch_strips["MOD"]):
         event.handled = True
 
-    if (event.data1 == touch_strips["EXPRESSION"]):
+    if (event.data1 == constants.touch_strips["EXPRESSION"]):
         event.handled = True
 
 
-    if ui.getFocused(5) == True: #plugin
+    if ui.getFocused(constants.winName["Plugin"]) == True: #plugin
 
-        if (event.data1 == touch_strips["MOD"]):
+        if (event.data1 == constants.touch_strips["MOD"]):
             event.handled = True
 
             if plugins.isValid(channels.selectedChannel()):
@@ -37,7 +32,7 @@ def OnMidiIn(event):
                 ui.setHintMsg("Modulation: %s" % round(event.data2/1.27))
 
 
-        if (event.data1 == touch_strips["EXPRESSION"]):
+        if (event.data1 == constants.touch_strips["EXPRESSION"]):
             event.handled = True
 
             if plugins.isValid(channels.selectedChannel()):    
@@ -46,7 +41,3 @@ def OnMidiIn(event):
                 ui.setHintMsg("Expression: %s" % round(event.data2/1.27))
             else:
                 ui.setHintMsg("Expression: %s" % round(event.data2/1.27))
-
-
-
-
