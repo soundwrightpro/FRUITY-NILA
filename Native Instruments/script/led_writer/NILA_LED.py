@@ -199,6 +199,12 @@ def OnRefresh(self, flags):
                     mix.setTrackMute(0, 1)
                 else:
                     mix.setTrackMute(0, 0)
+                    
+                if channels.channelCount() == 1 and channels.isChannelSolo(channels.selectedChannel()) == True:
+                    mix.setTrackSolo(0, 0)
+   
+                
+                    
 
         # Sets the lights of the 4D Encoder on S-Series keyboards on
         nihia.buttons.setLight("ENCODER_X_S", 1)

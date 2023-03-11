@@ -28,7 +28,7 @@ def OnRefresh(self, event):
     elif ui.getFocused(constants.winName["Channel Rack"]) == True:
 
         for x in range(8):
-            if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x) :
+            if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
                 mix.setTrackExist(x, 1)
                 mix.setTrackName(x, channels.getChannelName(channels.selectedChannel() + x))
                 mix.setTrackVol(x, str(round(channels.getChannelVolume(channels.selectedChannel() + x, 1), 1)) + " dB")

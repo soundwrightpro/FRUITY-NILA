@@ -29,6 +29,7 @@ def OnMidiMsg(self, event):
                             channels.setChannelVolume((channels.selectedChannel() + z), (y - config.increment) ) 
                             mix.setTrackVol(z, str(round(channels.getChannelVolume(channels.selectedChannel()+ z, 1), 1)) + " dB")
                             mix.setTrackName(z,channels.getChannelName(channels.selectedChannel() + z))
+                            
 
                     elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
                         x = (channels.getChannelVolume(channels.selectedChannel() + z))

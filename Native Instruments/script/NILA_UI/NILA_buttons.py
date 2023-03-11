@@ -471,7 +471,7 @@ def OnMidiMsg(event): #listens for button or knob activity
 
     
     if ui.getFocused(constants.winName["Channel Rack"]) == True:
-
+        
         #s-series channel rack mute 
         for x in range(8):
             if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
@@ -507,4 +507,3 @@ def OnMidiMsg(event): #listens for button or knob activity
                 event.handled = True
                 playlist.selectTrack()
                 ui.setHintMsg("")
-                    
