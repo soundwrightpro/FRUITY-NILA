@@ -37,9 +37,7 @@ def OnRefresh(self, event):
 
             else:
                 mix.setTrackExist(x, 0)
-                mix.setTrackName(x, (constants.blankEvent))
-                NILA_core.setTrackVolConvert(x, constants.blankEvent)
-                mix.setTrackPan(x, constants.blankEvent)
+           
 
     elif ui.getFocused(constants.winName["Plugin"]) == True: 
 
@@ -71,8 +69,6 @@ def OnRefresh(self, event):
 
 
     if ui.getFocused(constants.winName["Playlist"]) == True: #playlist
-
-        remove_part()
 
         mix.setTrackName(0, "Playlist")
         mix.setTrackVolGraph(0, mixer.getTrackVolume(0))
@@ -124,8 +120,12 @@ def OnIdle(self):
 
     if ui.getFocused(constants.winName["Playlist"]) == True:
         
+        remove_part()
+        clear_part()
+        
+        mix.setTrackVolGraph(0, mixer.getTrackVolume(0))
+        
         timeDisp, currentTime = NILA_core.timeConvert(constants.itemDisp, constants.itemTime)
-        #updatePlaylist()
 
         split_message = ui.getHintMsg()
         split_point1 = ' - '
@@ -139,7 +139,10 @@ def OnIdle(self):
 
         mix.setTrackName(0, "Playlist")
         if transport.isPlaying() == False:
-            mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
+            if "Volume" in split_hint[:7]:
+                pass
+            else:
+                mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
   
     elif ui.getFocused(constants.winName["Browser"]) == True: 
 

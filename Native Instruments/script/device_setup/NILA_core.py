@@ -9,10 +9,13 @@ import time
 import ui
 
 
+s_series = False
+
+
 def OnInit(self):
    nihia.handShake()
 
-   if device.getName() == "Komplete Kontrol DAW - 1":
+   if seriesCheck(s_series) == True:
       pass
    else:
       mix.setTrackName(0, constants.HELLO_MESSAGE)
@@ -33,12 +36,20 @@ def OnInit(self):
 def OnWaitingForInput(status):
    mix.setTrackName(0, ". . .")
    time.sleep(constants.timedelay)
+
+
+def seriesCheck(s_series):
+   if ("Komplete Kontrol DAW - 1" == device.getName()) == True:
+      s_series = True
+      return s_series 
+   else:
+      return s_series
    
 
 def OnProjectLoad(self, status):
 
    if status == constants.PL_Start:
-      if device.getName() == "Komplete Kontrol DAW - 1":
+      if seriesCheck(s_series) == True:
          pass
       else:
          mix.setTrackName(0, constants.HELLO_MESSAGE)
@@ -46,7 +57,7 @@ def OnProjectLoad(self, status):
          time.sleep(constants.timedelay)
 
    elif status == constants.PL_LoadOk:
-      if device.getName() == "Komplete Kontrol DAW - 1":
+      if seriesCheck(s_series) == True:
          pass
       else:
          mix.setTrackName(0, constants.HELLO_MESSAGE)
@@ -54,7 +65,7 @@ def OnProjectLoad(self, status):
          time.sleep(constants.timedelay)
 
    elif status == constants.PL_LoadError:
-      if device.getName() == "Komplete Kontrol DAW - 1":
+      if seriesCheck(s_series) == True:
          pass
       else:
          mix.setTrackName(0, constants.HELLO_MESSAGE)
@@ -90,5 +101,5 @@ def timeConvert(timeDisp, currentTime):
 def setTrackVolConvert(trackID: int, value: str):
    if value == "-inf dB":
       value = "- oo dB"
-
+      
    mix.setTrackVol(trackID, value)
