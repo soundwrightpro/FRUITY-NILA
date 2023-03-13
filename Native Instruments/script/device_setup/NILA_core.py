@@ -21,6 +21,9 @@ def OnInit(self):
       mix.setTrackName(0, constants.HELLO_MESSAGE)
       mix.setTrackVol(0, constants.GOODBYE_MESSAGE)
       time.sleep(2.00)
+      
+      
+   device.setHasMeters()
 
    nihia.buttons.setLight("UNDO", 1)
    nihia.buttons.setLight("REDO", 1)

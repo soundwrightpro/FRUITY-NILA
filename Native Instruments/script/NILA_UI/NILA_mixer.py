@@ -31,12 +31,20 @@ def OnMidiMsg(self, event):
                     if mixer.getTrackName(mixer.trackNumber()+z) == "Current" and mixer.trackNumber()+z >= constants.currentUtility:
                         pass
                     else:
-                        if core.seriesCheck(s_series) == True:                            
-                            if nihia.mixer.KNOB_INCREASE_MAX_SPEED <= event.data2:
+                        if core.seriesCheck(s_series) == True:
+                       
+                            if event.data2 in range(65, 95):
+                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment * 2.5)) 
+                                
+                            elif event.data2 in range(96, 127):
                                 mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment)) 
 
-                            elif nihia.mixer.KNOB_DECREASE_MAX_SPEED >= event.data2:
+                            elif event.data2 in range (0, 31):
                                 mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) + config.increment)) 
+
+                            elif event.data2 in range (32, 63):
+                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) + config.increment * 2.5))
+                                   
                         else:
                             if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
                                 mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment)) 
