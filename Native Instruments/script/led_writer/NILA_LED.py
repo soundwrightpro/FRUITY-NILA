@@ -76,104 +76,22 @@ def OnRefresh(self, flags):
                 nihia.buttons.setLight("PLAY", off)
 
         if ui.getFocused(constants.winName["Mixer"]) == True:
-            #mixer solo
-            if mixer.trackNumber() <= 125:
-                if mixer.isTrackSolo(mixer.trackNumber() + 0) == True or mixer.isTrackSolo(mixer.trackNumber() + 0) == False:
-                    mix.setTrackSolo(0, mixer.isTrackSolo(mixer.trackNumber() + 0))
+            
+            for x in range (8):
+                #mixer solo
+                if mixer.trackNumber() <= 125 - x:
+                    if mixer.isTrackSolo(mixer.trackNumber() + x) == True or mixer.isTrackSolo(mixer.trackNumber() + x) == False:
+                        mix.setTrackSolo(x, mixer.isTrackSolo(mixer.trackNumber() + x))
 
-            if mixer.trackNumber() <= 124:
-                if mixer.isTrackSolo(mixer.trackNumber() + 1) == True or mixer.isTrackSolo(mixer.trackNumber() + 1) == False:
-                    mix.setTrackSolo(1, mixer.isTrackSolo(mixer.trackNumber() + 1))
+                #mixer mute 
+                if mixer.trackNumber() <= 125 - x:
+                    if mixer.isTrackMuted(mixer.trackNumber() + x) == True or mixer.isTrackMuted(mixer.trackNumber() + x) == False:
+                        mix.setTrackMute(x, mixer.isTrackMuted(mixer.trackNumber() + x))
 
-            if mixer.trackNumber() <= 123:
-                if mixer.isTrackSolo(mixer.trackNumber() + 2) == True or mixer.isTrackSolo(mixer.trackNumber() + 2) == False:
-                    mix.setTrackSolo(2, mixer.isTrackSolo(mixer.trackNumber() + 2))
-
-            if mixer.trackNumber() <= 122:
-                if mixer.isTrackSolo(mixer.trackNumber() + 3) == True or mixer.isTrackSolo(mixer.trackNumber() + 3) == False:
-                    mix.setTrackSolo(3, mixer.isTrackSolo(mixer.trackNumber() + 3))
-
-            if mixer.trackNumber() <= 121:
-                if mixer.isTrackSolo(mixer.trackNumber() + 4) == True or mixer.isTrackSolo(mixer.trackNumber() + 4) == False:
-                    mix.setTrackSolo(4, mixer.isTrackSolo(mixer.trackNumber() + 4))
-
-            if mixer.trackNumber() <= 120:
-                if mixer.isTrackSolo(mixer.trackNumber() + 5) == True or mixer.isTrackSolo(mixer.trackNumber() + 5) == False:
-                    mix.setTrackSolo(5, mixer.isTrackSolo(mixer.trackNumber() + 5))
-
-            if mixer.trackNumber() <= 119:
-                if mixer.isTrackSolo(mixer.trackNumber() + 6) == True or mixer.isTrackSolo(mixer.trackNumber() + 6) == False:
-                    mix.setTrackSolo(6, mixer.isTrackSolo(mixer.trackNumber() + 6))
-
-            if mixer.trackNumber() <= 118:
-                if mixer.isTrackSolo(mixer.trackNumber() + 7) == True or mixer.isTrackSolo(mixer.trackNumber() + 7) == False:
-                    mix.setTrackSolo(7, mixer.isTrackSolo(mixer.trackNumber() + 7))
-
-            #mixer mute 
-            if mixer.trackNumber() <= 125:
-                if mixer.isTrackMuted(mixer.trackNumber() + 0) == True or mixer.isTrackMuted(mixer.trackNumber() + 0) == False:
-                    mix.setTrackMute(0, mixer.isTrackMuted(mixer.trackNumber() + 0))
-
-            if mixer.trackNumber() <= 124:
-                if mixer.isTrackMuted(mixer.trackNumber() + 1) == True or mixer.isTrackMuted(mixer.trackNumber() + 1) == False:
-                    mix.setTrackMute(1, mixer.isTrackMuted(mixer.trackNumber() + 1))
-
-            if mixer.trackNumber() <= 123:
-                if mixer.isTrackMuted(mixer.trackNumber() + 2) == True or mixer.isTrackMuted(mixer.trackNumber() + 2) == False:
-                    mix.setTrackMute(2, mixer.isTrackMuted(mixer.trackNumber() + 2))
-
-            if mixer.trackNumber() <= 122:
-                if mixer.isTrackMuted(mixer.trackNumber() + 3) == True or mixer.isTrackMuted(mixer.trackNumber() + 3) == False:
-                    mix.setTrackMute(3, mixer.isTrackMuted(mixer.trackNumber() + 3))
-                    
-            if mixer.trackNumber() <= 121:
-                if mixer.isTrackMuted(mixer.trackNumber() + 4) == True or mixer.isTrackMuted(mixer.trackNumber() + 4) == False:
-                    mix.setTrackMute(4, mixer.isTrackMuted(mixer.trackNumber() + 4))
-
-            if mixer.trackNumber() <= 120:
-                if mixer.isTrackMuted(mixer.trackNumber() + 5) == True or mixer.isTrackMuted(mixer.trackNumber() + 5) == False:
-                    mix.setTrackMute(5, mixer.isTrackMuted(mixer.trackNumber() + 5))
-
-            if mixer.trackNumber() <= 119:
-                if mixer.isTrackMuted(mixer.trackNumber() + 6) == True or mixer.isTrackMuted(mixer.trackNumber() + 6) == False:
-                    mix.setTrackMute(6, mixer.isTrackMuted(mixer.trackNumber() + 6))
-
-            if mixer.trackNumber() <= 118:
-                if mixer.isTrackMuted(mixer.trackNumber() + 7) == True or mixer.isTrackMuted(mixer.trackNumber() + 7) == False:
-                    mix.setTrackMute(7, mixer.isTrackMuted(mixer.trackNumber() + 7))
-
-            #mixer recording arm
-            if mixer.trackNumber() <= 125:
-                if mixer.isTrackArmed(mixer.trackNumber() + 0) == True or mixer.isTrackArmed(mixer.trackNumber() + 0) == False:
-                    mix.setTrackArm(0, mixer.isTrackArmed(mixer.trackNumber() + 0))       
-
-            if mixer.trackNumber() <= 124:
-                if mixer.isTrackArmed(mixer.trackNumber() + 1) == True or mixer.isTrackArmed(mixer.trackNumber() + 1) == False:
-                    mix.setTrackArm(1, mixer.isTrackArmed(mixer.trackNumber() + 1))
-    
-            if mixer.trackNumber() <= 123:
-                if mixer.isTrackArmed(mixer.trackNumber() + 2) == True or mixer.isTrackArmed(mixer.trackNumber() + 2) == False:
-                    mix.setTrackArm(2, mixer.isTrackArmed(mixer.trackNumber() + 2))           
-
-            if mixer.trackNumber() <= 122:
-                if mixer.isTrackArmed(mixer.trackNumber() + 3) == True or mixer.isTrackArmed(mixer.trackNumber() + 3) == False:
-                    mix.setTrackArm(3, mixer.isTrackArmed(mixer.trackNumber() + 3))
-
-            if mixer.trackNumber() <= 121:
-                if mixer.isTrackArmed(mixer.trackNumber() + 4) == True or mixer.isTrackArmed(mixer.trackNumber() + 4) == False:
-                    mix.setTrackArm(4, mixer.isTrackArmed(mixer.trackNumber() + 4))           
-
-            if mixer.trackNumber() <= 120:
-                if mixer.isTrackArmed(mixer.trackNumber() + 5) == True or mixer.isTrackArmed(mixer.trackNumber() + 5) == False:
-                    mix.setTrackArm(5, mixer.isTrackArmed(mixer.trackNumber() + 5))  
-
-            if mixer.trackNumber() <= 119:
-                if mixer.isTrackArmed(mixer.trackNumber() + 6) == True or mixer.isTrackArmed(mixer.trackNumber() + 6) == False:
-                    mix.setTrackArm(6, mixer.isTrackArmed(mixer.trackNumber() + 6))           
-
-            if mixer.trackNumber() <= 118:
-                if mixer.isTrackArmed(mixer.trackNumber() + 7) == True or mixer.isTrackArmed(mixer.trackNumber() + 7) == False:
-                    mix.setTrackArm(7, mixer.isTrackArmed(mixer.trackNumber() + 7))
+                #mixer recording arm          
+                if mixer.trackNumber() <= 125 - x:
+                    if mixer.isTrackArmed(mixer.trackNumber() +x) == True or mixer.isTrackArmed(mixer.trackNumber() + x) == False:
+                        mix.setTrackArm(x, mixer.isTrackArmed(mixer.trackNumber() + x))
 
         if ui.getFocused(constants.winName["Channel Rack"]) == True:
    

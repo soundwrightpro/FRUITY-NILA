@@ -464,8 +464,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             if event.data1 == constants.select and event.data2 == x:
                 event.handled = True
                 if mixer.trackNumber() + x <= constants.currentUtility - 1:
-                    print(mixer.trackNumber() + x)
-                    mixer.armTrack(mixer.trackNumber() + x) 
+                    mixer.armTrack(mixer.trackNumber() + x)
                     ui.setHintMsg("Armed Disk Recording")
                 else:
                     pass

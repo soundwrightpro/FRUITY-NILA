@@ -27,6 +27,8 @@ def OnRefresh(self, event):
                     mix.setTrackVol(x, str(transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
                     mix.setTrackVolGraph(x, mixer.getTrackVolume(mixer.trackNumber() + x))
                     transform.updatePanMix((mixer.trackNumber() + x), x)
+                    mix.setTrackSel(0,1)
+
             else:
                 mix.setTrackExist(x,0)
 
@@ -39,6 +41,7 @@ def OnRefresh(self, event):
                 mix.setTrackVol(x, str(round(channels.getChannelVolume(channels.selectedChannel() + x, 1), 1)) + " dB")
                 mix.setTrackVolGraph(x, (channels.getChannelVolume(channels.selectedChannel() + x)/ 1.0 * 0.86))
                 transform.updatePanChannel((channels.selectedChannel() + x), x)
+                mix.setTrackSel(0,0)
 
             else:
                 mix.setTrackExist(x, 0)
@@ -186,12 +189,14 @@ def remove_part(): # remove tracks 1 to 7
 
     for y in range(1,8):
         mix.setTrackExist(y,0)
+    mix.setTrackSel(0,0)
 
 
 def remove_all(): #remove tracks 0 to 7
     
     for y in range(8):
         mix.setTrackExist(y,0)
+    mix.setTrackSel(0,0)
 
       
 def clear_part():
@@ -199,6 +204,7 @@ def clear_part():
     for y in range(1,8):
         mix.setTrackPanGraph(y, 0)
         mix.setTrackVolGraph(y, 0)
+        mix.setTrackSel(0,0)
         mix.setTrackArm(y, 0)
         mix.setTrackSolo(y, 0)
         mix.setTrackMute(y, 0)
@@ -212,6 +218,7 @@ def clear_all():
     for y in range(8):
         mix.setTrackPanGraph(y, 0)
         mix.setTrackVolGraph(y, 0)
+        mix.setTrackSel(0,0)
         mix.setTrackArm(y, 0)
         mix.setTrackSolo(y, 0)
         mix.setTrackMute(y, 0)
