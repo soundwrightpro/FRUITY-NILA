@@ -16,12 +16,17 @@ def OnRefresh(self, event):
     if ui.getFocused(constants.winName["Mixer"]) == True: 
 
         for x in range(8):
-            if mixer.trackNumber() <= (125 - x):
-                mix.setTrackExist(x,1)
-                mix.setTrackName(x, mixer.getTrackName(mixer.trackNumber() + x))
-                mix.setTrackVol(x, str(transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
-                mix.setTrackVolGraph(x, mixer.getTrackVolume(mixer.trackNumber() + x))
-                transform.updatePanMix((mixer.trackNumber() + x), x)
+            if mixer.trackNumber() <= constants.currentUtility - x:
+                if mixer.trackNumber() + x == constants.currentUtility:
+                     mix.setTrackExist(x,0)
+                     if mixer.trackNumber() == constants.currentUtility:
+                         clear_all()
+                else:
+                    mix.setTrackExist(x,1)
+                    mix.setTrackName(x, mixer.getTrackName(mixer.trackNumber() + x))
+                    mix.setTrackVol(x, str(transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
+                    mix.setTrackVolGraph(x, mixer.getTrackVolume(mixer.trackNumber() + x))
+                    transform.updatePanMix((mixer.trackNumber() + x), x)
             else:
                 mix.setTrackExist(x,0)
 

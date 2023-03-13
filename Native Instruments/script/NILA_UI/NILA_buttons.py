@@ -443,31 +443,32 @@ def OnMidiMsg(event): #listens for button or knob activity
         for x in range(8):
             if event.data1 == nihia.buttons.button_list.get("MUTE") and event.data2 == x:
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= constants.currentUtility:
-                    pass
-                else:
+                if mixer.trackNumber() + x <= constants.currentUtility - 1:
                     mixer.enableTrack(mixer.trackNumber() + x) 
-                    ui.setHintMsg("Mute")                
+                    ui.setHintMsg("Mute") 
+                else:
+                    pass              
 
         #s-series mixer solo 
         for x in range(8):
             if event.data1 == nihia.buttons.button_list.get("SOLO") and event.data2 == x:
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= constants.currentUtility:
-                    pass
-                else:
+                if mixer.trackNumber() + x <= constants.currentUtility - 1:
                     mixer.soloTrack(mixer.trackNumber() + x)  
                     ui.setHintMsg("Solo")
+                else:
+                    pass
 
         #s-series mixer arm recording
         for x in range(8):
             if event.data1 == constants.select and event.data2 == x:
                 event.handled = True
-                if mixer.getTrackName(mixer.trackNumber() + x) == "Current" and (mixer.trackNumber() + x) >= constants.currentUtility:
-                    pass
-                else:
+                if mixer.trackNumber() + x <= constants.currentUtility - 1:
+                    print(mixer.trackNumber() + x)
                     mixer.armTrack(mixer.trackNumber() + x) 
                     ui.setHintMsg("Armed Disk Recording")
+                else:
+                    pass
 
     
     if ui.getFocused(constants.winName["Channel Rack"]) == True:
