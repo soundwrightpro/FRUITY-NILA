@@ -36,13 +36,13 @@ def OnMidiMsg(self, event):
                             if event.data2 in range(65, 95):
                                 mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment * 2.5)) 
                                 
-                            elif event.data2 in range(96, 127):
+                            elif event.data2 in range(96, 128):
                                 mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment)) 
 
                             elif event.data2 in range (0, 31):
                                 mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) + config.increment)) 
 
-                            elif event.data2 in range (32, 63):
+                            elif event.data2 in range (32, 64):
                                 mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) + config.increment * 2.5))
                                    
                         else:

@@ -25,7 +25,7 @@ def OnRefresh(self, event):
                     mix.setTrackExist(x,1)
                     mix.setTrackName(x, mixer.getTrackName(mixer.trackNumber() + x))
                     mix.setTrackVol(x, str(transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
-                    mix.setTrackVolGraph(x, mixer.getTrackVolume(mixer.trackNumber() + x))
+                    mix.setTrackVolGraph(x, (mixer.getTrackVolume(mixer.trackNumber() + x) ))
                     transform.updatePanMix((mixer.trackNumber() + x), x)
                     mix.setTrackSel(0,1)
 
