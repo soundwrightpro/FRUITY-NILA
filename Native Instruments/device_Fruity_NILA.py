@@ -106,7 +106,7 @@ def OnProjectLoad(status):
 	try:
 		n_Core.OnProjectLoad(status)
 	except:
-		#pass
+		pass
 
 def OnIdle():
 	try:
