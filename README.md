@@ -28,7 +28,7 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 
 
 
-### Need support? Have a request? Want to say hi? 
+### Need support? Have a request? Found a bug? Want to say hi? 
 **[Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")**
 
 ## Thank you
