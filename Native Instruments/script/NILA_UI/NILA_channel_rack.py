@@ -25,8 +25,6 @@ def OnMidiMsg(self, event):
                     event.handled = True 
                     
                     if core.seriesCheck(s_series) == True: 
-                        
-                        print(event.data2)
                          
                         if event.data2 in range(65, 95):
                             if channels.getChannelVolume(channels.selectedChannel() + z) != 0 :

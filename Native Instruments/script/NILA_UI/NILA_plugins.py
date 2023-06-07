@@ -13,9 +13,9 @@ skip = -1
 
 
 def plugin(self, event):
-
+    
     if ui.getFocused(constants.winName["Plugin"]) == 1: #plugin control
-     
+                     
         if ui.getFocusedPluginName()  == constants.supported_plugins["FL Keys"]:
             
             MAPPED_FUNCTION = {

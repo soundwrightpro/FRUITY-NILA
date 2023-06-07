@@ -6,13 +6,35 @@ from script.device_setup import transform
 
 import channels
 import mixer
+import plugins
 import transport
 import ui
-import device 
+import device
+import math
+
 
 
 def OnRefresh(self, event):
- 
+    
+    self.kompleteInstance = None
+    
+    if plugins.isValid(channels.selectedChannel()) == True:                                   # Checks if plugin exists
+        if plugins.getPluginName(channels.selectedChannel()) == "Komplete Kontrol":           # Checks if plugin is Komplete Kontrol
+            if self.kompleteInstance != plugins.getParamName(0, channels.selectedChannel()):  # Checks against cache and updates if necessary
+                self.kompleteInstance = plugins.getParamName(0, channels.selectedChannel())
+                mix.setTrackKompleteInstance(0, plugins.getParamName(0, channels.selectedChannel()))
+        
+        else:
+            if self.kompleteInstance != "":  # Checks against cache and updates if necessary
+                self.kompleteInstance = ""
+                mix.setTrackKompleteInstance(0, "")
+
+    else:
+        if self.kompleteInstance != "":  # Checks against cache and updates if necessary
+            self.kompleteInstance = ""
+            mix.setTrackKompleteInstance(0, "")
+
+
     if ui.getFocused(constants.winName["Mixer"]) == True: 
 
         for x in range(8):
@@ -25,14 +47,14 @@ def OnRefresh(self, event):
                     mix.setTrackExist(x,1)
                     mix.setTrackName(x, mixer.getTrackName(mixer.trackNumber() + x))
                     mix.setTrackVol(x, str(transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
-                    mix.setTrackVolGraph(x, (mixer.getTrackVolume(mixer.trackNumber() + x) ))
+                    mix.setTrackVolGraph(x, (mixer.getTrackVolume(mixer.trackNumber() + x)))
                     transform.updatePanMix((mixer.trackNumber() + x), x)
                     mix.setTrackSel(0,1)
 
             else:
                 mix.setTrackExist(x,0)
 
-    elif ui.getFocused(constants.winName["Channel Rack"]) == True:
+    if ui.getFocused(constants.winName["Channel Rack"]) == True:
 
         for x in range(8):
             if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
@@ -47,7 +69,7 @@ def OnRefresh(self, event):
                 mix.setTrackExist(x, 0)
            
 
-    elif ui.getFocused(constants.winName["Plugin"]) == True: 
+    if ui.getFocused(constants.winName["Plugin"]) == True: 
 
         clear_all()
         remove_part()
@@ -125,6 +147,9 @@ def OnUpdateBeatIndicator(self, Value):
 
 
 def OnIdle(self):
+    
+    #print(plugins.getParamName(0, channels.selectedChannel()))
+
 
     if ui.getFocused(constants.winName["Playlist"]) == True:
         
@@ -152,7 +177,7 @@ def OnIdle(self):
             else:
                 mix.setTrackVol(0, str(split_hint[:7] + "|" + currentTime))
   
-    elif ui.getFocused(constants.winName["Browser"]) == True: 
+    if ui.getFocused(constants.winName["Browser"]) == True: 
 
         fileType = ui.getFocusedNodeFileType()
 
