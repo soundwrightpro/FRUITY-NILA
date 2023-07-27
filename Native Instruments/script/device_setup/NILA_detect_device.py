@@ -9,7 +9,6 @@ def detectDevice(NILA_Name):
    if deviceName == "Komplete Kontrol A DAW":
       NILA_Name = "Komplete Kontrol Series A"
       
-
    elif deviceName == "Komplete Kontrol M DAW":
       NILA_Name = "Komplete Kontrol Series M"
 
@@ -18,6 +17,9 @@ def detectDevice(NILA_Name):
 
    elif deviceName == "KOMPLETE KONTROL M32":
       NILA_Name = "Komplete Kontrol Series M"  
+      
+   elif deviceName == "KOMPLETE KONTROL M32 MIDI":
+      NILA_Name = "Komplete Kontrol Series M" 
 
    elif deviceName == "KOMPLETE KONTROL S88 MK2 Port 1":
       NILA_Name = "Komplete Kontrol Series S"   
