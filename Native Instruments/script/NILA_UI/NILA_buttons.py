@@ -337,21 +337,19 @@ def OnMidiMsg(event): #listens for button or knob activity
 
             transport.globalTransport(midi.FPT_F8, 67)
             ui.setHintMsg("Plugin Picker")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
+            
+            if " M " in device.getName():
                 mix.setTrackName(0, "Window:")
                 mix.setTrackPan(0, "Plugin Picker")
                 time.sleep(constants.timedelay)
+            
         else:
-
+            
             if windowCycle == 0:
                 ui.showWindow(1)
                 windowCycle += 1
                 ui.setHintMsg("Channel Rack")
-                if device.getName() == "Komplete Kontrol DAW - 1":
-                    pass
-                else:
+                if " M " in device.getName():
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Channel Rack")
                     time.sleep(constants.timedelay)
@@ -360,9 +358,7 @@ def OnMidiMsg(event): #listens for button or knob activity
                 ui.showWindow(0)
                 windowCycle += 1
                 ui.setHintMsg("Mixer")
-                if device.getName() == "Komplete Kontrol DAW - 1":
-                    pass
-                else:
+                if " M " in device.getName():
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Mixer")
                     time.sleep(constants.timedelay)
@@ -371,39 +367,20 @@ def OnMidiMsg(event): #listens for button or knob activity
                 ui.showWindow(2)
                 windowCycle += 1
                 ui.setHintMsg("Playlist")
-                if device.getName() == "Komplete Kontrol DAW - 1":
-                    pass
-                else:
+                if " M " in device.getName():
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Playlist")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 3:
                 ui.showWindow(4)
+                windowCycle = 0
                 ui.setHintMsg("Browser")
-                if device.getName() == "Komplete Kontrol DAW - 1":
-                    pass
-                else:
+                if " M " in device.getName():
                     mix.setTrackName(0, "Window:")
                     mix.setTrackPan(0, "Browser")
                     time.sleep(constants.timedelay)
 
-                if ui.getVisible(3) == True:
-                    windowCycle += 1
-                else:
-                    windowCycle = 0
-
-            elif windowCycle == 4:
-                    ui.showWindow(3)
-                    ui.setHintMsg("Piano Roll")
-                    if device.getName() == "Komplete Kontrol DAW - 1":
-                        pass
-                    else:
-                            mix.setTrackName(0, "Window:")
-                            mix.setTrackPan(0, "Piano Roll")
-                            time.sleep(constants.timedelay)
-                    windowCycle = 0
-                    
                      
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
         if ui.getFocused(0) == True: 

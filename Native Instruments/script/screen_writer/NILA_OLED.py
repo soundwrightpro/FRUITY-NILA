@@ -73,20 +73,23 @@ def OnRefresh(self, event):
 
         clear_all()
         remove_part()
+        
+        mix.setTrackName(0, "P| " + channels.getChannelName(channels.selectedChannel()))
 
-        if ui.getFocusedPluginName() in constants.supported_plugins:
+       # if ui.getFocusedPluginName() in constants.supported_plugins:
             
-            mix.setTrackName(1, "supported plugin")
-            
-            for y in range(8):
-                mix.setTrackExist(y,2)
-        else:
-            clear_all()
-            mix.setTrackName(0, ui.getFocusedPluginName())
+            #mix.setTrackName(0, "supported plugin")
+        #    pass
+           
+        #    for y in range(8):
+        #        mix.setTrackExist(y,2)
+        #else:
+        #    clear_all()
+        #    mix.setTrackName(0, ui.getFocusedPluginName())
 
 
-            for y in range(1,8):
-                mix.setTrackExist(y,0)           
+        #    for y in range(1,8):
+        #        mix.setTrackExist(y,0)           
 
     if ui.getFocused(constants.winName["Piano Roll"]) == True: #piano roll:
 
