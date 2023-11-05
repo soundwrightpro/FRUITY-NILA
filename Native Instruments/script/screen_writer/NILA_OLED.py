@@ -71,10 +71,17 @@ def OnRefresh(self, event):
 
     if ui.getFocused(constants.winName["Plugin"]) == True: 
 
-        clear_all()
+        clear_part()
         remove_part()
         
+        mix.setTrackExist(0, 1)
         mix.setTrackName(0, "P| " + channels.getChannelName(channels.selectedChannel()))
+        mix.setTrackVol(0, str(round(channels.getChannelVolume(channels.selectedChannel() + 0, 1), 1)) + " dB")
+        mix.setTrackVolGraph(0, (channels.getChannelVolume(channels.selectedChannel() + 0)/ 1.0 * 0.86))
+        transform.updatePanChannel((channels.selectedChannel() + 0), 0)
+        mix.setTrackSel(0,0)
+        
+        
 
        # if ui.getFocusedPluginName() in constants.supported_plugins:
             

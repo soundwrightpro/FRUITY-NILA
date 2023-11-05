@@ -4,6 +4,7 @@ from nihia import mixer as mix
 from script.device_setup import NILA_core as core
 from script.device_setup import config 
 from script.device_setup import constants
+from script.screen_writer import NILA_OLED as oled
 
 import channels
 import plugins
@@ -44,15 +45,23 @@ def plugin(self, event):
                 elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
                     channels.setChannelVolume((channels.selectedChannel() + z), (round((channels.getChannelVolume(channels.selectedChannel() + z)), 2) + config.increment))
         
-        if (event.data1 == nihia.mixer.knobs[1][z]):
-                    event.handled = True  
-                    if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-                        x = (channels.getChannelPan(channels.selectedChannel() + z))
-                        channels.setChannelPan((channels.selectedChannel() + z), (x - config.increment) )
+        
+        if (event.data1 == nihia.mixer.knobs[1][0]):
+            event.handled = True  
+            if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+                x = (channels.getChannelPan(channels.selectedChannel() + z))
+                channels.setChannelPan((channels.selectedChannel() + z), (x - config.increment) )
 
-                    elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:  
-                        x = (channels.getChannelPan(channels.selectedChannel() + z))
-                        channels.setChannelPan((channels.selectedChannel() + z), (x + config.increment) )             
+            elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:  
+                x = (channels.getChannelPan(channels.selectedChannel() + z))
+                channels.setChannelPan((channels.selectedChannel() + z), (x + config.increment) )     
+                        
+        for x in range(1, 8):
+            if (event.data1 == nihia.mixer.knobs[0][x]) or (event.data1 == nihia.mixer.knobs[1][x]):
+                event.handled = True 
+                        
+                        
+    oled.OnRefresh(self, event)        
 
 
 
