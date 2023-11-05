@@ -1,6 +1,6 @@
 import nihia
 from nihia import buttons 
-from nihia import mixer as mix
+from nihia import mixer as console
 
 from script.device_setup import constants
 
@@ -59,18 +59,18 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Pattern:")
-                mix.setTrackVol(0, "Enabled")
-                mix.setTrackPan(0, "Enabled")
+                console.setTrackName(0, "Pattern:")
+                console.setTrackVol(0, "Enabled")
+                console.setTrackPan(0, "Enabled")
                 time.sleep(constants.timedelay) 
 
         elif transport.getLoopMode() == on:
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Song:")
-                mix.setTrackVol(0, "Enabled")
-                mix.setTrackPan(0, "Enabled")
+                console.setTrackName(0, "Song:")
+                console.setTrackVol(0, "Enabled")
+                console.setTrackPan(0, "Enabled")
                 time.sleep(constants.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("METRO")): # metronome/button
@@ -82,16 +82,16 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Metronome:")
-                mix.setTrackVol(0, "Disabled")
+                console.setTrackName(0, "Metronome:")
+                console.setTrackVol(0, "Disabled")
                 time.sleep(constants.timedelay) 
 
         elif ui.isMetronomeEnabled() == on:
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Metronome:")
-                mix.setTrackVol(0, "Enabled")
+                console.setTrackName(0, "Metronome:")
+                console.setTrackVol(0, "Enabled")
                 time.sleep(constants.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
@@ -105,8 +105,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         if device.getName() == "Komplete Kontrol DAW - 1":
             pass
         else:
-            mix.setTrackName(0, "Piano Roll")
-            mix.setTrackVol(0, "Quick Quantize")
+            console.setTrackName(0, "Piano Roll")
+            console.setTrackVol(0, "Quick Quantize")
             time.sleep(constants.timedelay) 
 
         
@@ -128,8 +128,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[0])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[0])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 1:
@@ -137,8 +137,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[1])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[1])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 3: 
@@ -146,8 +146,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[2])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[2])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 4:
@@ -155,8 +155,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[3])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[3])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 5: 
@@ -164,8 +164,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[4])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[4])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 6: 
@@ -173,8 +173,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[5])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[5])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 7: 
@@ -182,8 +182,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[6])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[6])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 8: 
@@ -191,8 +191,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[7])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[7])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 9: 
@@ -200,8 +200,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[8])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[8])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 10: 
@@ -209,8 +209,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[9])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[9])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 11: 
@@ -218,8 +218,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[10])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[10])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 12: 
@@ -227,8 +227,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[11])
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[11])
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 13:
@@ -236,8 +236,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[12])         
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[12])         
                 time.sleep(constants.timedelay) 
 
         elif ui.getSnapMode() == 14: 
@@ -245,8 +245,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Main Snap")
-                mix.setTrackPan(0, snapmodevalue[13])           
+                console.setTrackName(0, "Main Snap")
+                console.setTrackPan(0, snapmodevalue[13])           
                 time.sleep(constants.timedelay) 
 
 
@@ -260,15 +260,15 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Count In:")
-                mix.setTrackPan(0, "Enabled")
+                console.setTrackName(0, "Count In:")
+                console.setTrackPan(0, "Enabled")
                 time.sleep(constants.timedelay)   
         else:
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Count In:")
-                mix.setTrackPan(0, "Disabled")
+                console.setTrackName(0, "Count In:")
+                console.setTrackPan(0, "Disabled")
                 time.sleep(constants.timedelay) 
 
     if (event.data1 == nihia.buttons.button_list.get("CLEAR")):
@@ -282,7 +282,7 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                mix.setTrackName(0, "Clear All")
+                console.setTrackName(0, "Clear All")
                 time.sleep(constants.timedelay) 
         else:
             ui.escape() #escape key
@@ -299,8 +299,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         if device.getName() == "Komplete Kontrol DAW - 1":
             pass
         else:
-            mix.setTrackName(0, "History")
-            mix.setTrackVol(0, "Undo @ "+ undoLevel)
+            console.setTrackName(0, "History")
+            console.setTrackVol(0, "Undo @ "+ undoLevel)
             time.sleep(constants.timedelay) 
         
         
@@ -312,8 +312,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         general.undo() #redo
 
         ui.setHintMsg(ui.getHintMsg())
-        mix.setTrackName(0, "History")
-        mix.setTrackPan(0, "Redo @ "+ undoLevel)
+        console.setTrackName(0, "History")
+        console.setTrackPan(0, "Redo @ "+ undoLevel)
         time.sleep(constants.timedelay)
         
 
@@ -339,8 +339,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             ui.setHintMsg("Plugin Picker")
             
             if " M " in device.getName():
-                mix.setTrackName(0, "Window:")
-                mix.setTrackPan(0, "Plugin Picker")
+                console.setTrackName(0, "Window:")
+                console.setTrackPan(0, "Plugin Picker")
                 time.sleep(constants.timedelay)
             
         else:
@@ -350,8 +350,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Channel Rack")
                 if " M " in device.getName():
-                    mix.setTrackName(0, "Window:")
-                    mix.setTrackPan(0, "Channel Rack")
+                    console.setTrackName(0, "Window:")
+                    console.setTrackPan(0, "Channel Rack")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 1:
@@ -359,8 +359,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Mixer")
                 if " M " in device.getName():
-                    mix.setTrackName(0, "Window:")
-                    mix.setTrackPan(0, "Mixer")
+                    console.setTrackName(0, "Window:")
+                    console.setTrackPan(0, "Mixer")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 2:
@@ -368,8 +368,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Playlist")
                 if " M " in device.getName():
-                    mix.setTrackName(0, "Window:")
-                    mix.setTrackPan(0, "Playlist")
+                    console.setTrackName(0, "Window:")
+                    console.setTrackPan(0, "Playlist")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 3:
@@ -377,8 +377,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle = 0
                 ui.setHintMsg("Browser")
                 if " M " in device.getName():
-                    mix.setTrackName(0, "Window:")
-                    mix.setTrackPan(0, "Browser")
+                    console.setTrackName(0, "Window:")
+                    console.setTrackPan(0, "Browser")
                     time.sleep(constants.timedelay)
 
                      
