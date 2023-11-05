@@ -36,6 +36,7 @@ def plugin(self, event):
                 
                 elif event.data2 in range (32, 64):
                     channels.setChannelVolume((channels.selectedChannel() + z), (round((channels.getChannelVolume(channels.selectedChannel() + z)), 2) + config.increment * 2.5))
+                    
             else:
                 
                 if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
