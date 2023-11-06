@@ -8,7 +8,7 @@ import channels
 import device
 import general
 import midi
-import mixer
+import mixer as mix
 import playlist
 import time
 import transport
@@ -339,8 +339,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             ui.setHintMsg("Plugin Picker")
             
             if " M " in device.getName():
-                console.setTrackName(0, "Window:")
-                console.setTrackPan(0, "Plugin Picker")
+                #console.setTrackName(0, "Window:")
+                #console.setTrackPan(0, "Plugin Picker")
                 time.sleep(constants.timedelay)
             
         else:
@@ -350,8 +350,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Channel Rack")
                 if " M " in device.getName():
-                    console.setTrackName(0, "Window:")
-                    console.setTrackPan(0, "Channel Rack")
+                    #console.setTrackName(0, "Window:")
+                    #console.setTrackPan(0, "Channel Rack")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 1:
@@ -359,8 +359,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Mixer")
                 if " M " in device.getName():
-                    console.setTrackName(0, "Window:")
-                    console.setTrackPan(0, "Mixer")
+                    #console.setTrackName(0, "Window:")
+                    #console.setTrackPan(0, "Mixer")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 2:
@@ -368,8 +368,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Playlist")
                 if " M " in device.getName():
-                    console.setTrackName(0, "Window:")
-                    console.setTrackPan(0, "Playlist")
+                    #console.setTrackName(0, "Window:")
+                    #console.setTrackPan(0, "Playlist")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 3:
@@ -377,27 +377,27 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle = 0
                 ui.setHintMsg("Browser")
                 if " M " in device.getName():
-                    console.setTrackName(0, "Window:")
-                    console.setTrackPan(0, "Browser")
+                    #console.setTrackName(0, "Window:")
+                    #console.setTrackPan(0, "Browser")
                     time.sleep(constants.timedelay)
 
                      
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
         if ui.getFocused(0) == True: 
             event.handled = True
-            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
+            if mix.getTrackName(mix.trackNumber()) == "Current" and mix.trackNumber() >= constants.currentUtility:
                 pass
             else:
-                mixer.enableTrack(mixer.trackNumber()) 
+                mix.enableTrack(mix.trackNumber()) 
                 ui.setHintMsg("Mute")
    
     if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
         if ui.getFocused(0) == True: 
             event.handled = True
-            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
+            if mix.getTrackName(mix.trackNumber()) == "Current" and mix.trackNumber() >= constants.currentUtility:
                 pass
             else:
-                mixer.soloTrack(mixer.trackNumber()) 
+                mix.soloTrack(mix.trackNumber()) 
                 ui.setHintMsg("Solo")
 
     if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
@@ -420,8 +420,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         for x in range(8):
             if event.data1 == nihia.buttons.button_list.get("MUTE") and event.data2 == x:
                 event.handled = True
-                if mixer.trackNumber() + x <= constants.currentUtility - 1:
-                    mixer.enableTrack(mixer.trackNumber() + x) 
+                if mix.trackNumber() + x <= constants.currentUtility - 1:
+                    mix.enableTrack(mix.trackNumber() + x) 
                     ui.setHintMsg("Mute") 
                 else:
                     pass              
@@ -430,8 +430,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         for x in range(8):
             if event.data1 == nihia.buttons.button_list.get("SOLO") and event.data2 == x:
                 event.handled = True
-                if mixer.trackNumber() + x <= constants.currentUtility - 1:
-                    mixer.soloTrack(mixer.trackNumber() + x)  
+                if mix.trackNumber() + x <= constants.currentUtility - 1:
+                    mix.soloTrack(mix.trackNumber() + x)  
                     ui.setHintMsg("Solo")
                 else:
                     pass
@@ -440,8 +440,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         for x in range(8):
             if event.data1 == constants.select and event.data2 == x:
                 event.handled = True
-                if mixer.trackNumber() + x <= constants.currentUtility - 1:
-                    mixer.armTrack(mixer.trackNumber() + x)
+                if mix.trackNumber() + x <= constants.currentUtility - 1:
+                    mix.armTrack(mix.trackNumber() + x)
                     ui.setHintMsg("Armed Disk Recording")
                 else:
                     pass
