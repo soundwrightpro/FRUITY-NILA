@@ -7,7 +7,7 @@
 [[
 	Surface:	Komplete Kontrol S-Series mkII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
 	Developer:	Duwayne WRIGHT
-	Version:	11.6.3
+	Version:	11.6.5
 
     Copyright (c) 2023 Duwayne WRIGHT
 ]]
