@@ -1,6 +1,7 @@
-import nihia
-from nihia import buttons 
-from nihia import mixer as console
+from nihia import buttons
+from nihia.mixer import setTrackVol
+from nihia.mixer import setTrackName
+from nihia.mixer import setTrackPan
 
 from script.device_setup import constants
 
@@ -8,15 +9,14 @@ import channels
 import device
 import general
 import midi
-import mixer as mix
+import mixer 
 import playlist
 import time
 import transport
 import ui
 
 
-on = 1
-off = 0
+on, off = 1, 0
 windowCycle = 0
 jogMove = True
 
@@ -26,7 +26,7 @@ def OnMidiMsg(event): #listens for button or knob activity
     global windowCycle
     global jogMove
 
-    if (event.data1 == nihia.buttons.button_list.get("PLAY")):
+    if (event.data1 == buttons.button_list.get("PLAY")):
         event.handled = True
         if ui.isInPopupMenu() == True:
             pass 
@@ -34,23 +34,25 @@ def OnMidiMsg(event): #listens for button or knob activity
             transport.start() #play
             ui.setHintMsg("Play/Pause")
 
-    if (event.data1 == nihia.buttons.button_list.get("RESTART")):
+    if (event.data1 == buttons.button_list.get("RESTART")):
         event.handled = True
         transport.stop() #stop
         transport.start() #restart play at beginning
+        setTrackName(0, "Metronome:")
+        setTrackVol(0, "Enabled")
         ui.setHintMsg("Restart")
         
-    if (event.data1 == nihia.buttons.button_list.get("REC")):
+    if (event.data1 == buttons.button_list.get("REC")):
         event.handled = True
         transport.record() #record
         ui.setHintMsg("Record")
 
-    if (event.data1 == nihia.buttons.button_list.get("STOP")):
+    if (event.data1 == buttons.button_list.get("STOP")):
         event.handled = True
         transport.stop() #stop
         ui.setHintMsg("Stop")
 
-    if (event.data1 == nihia.buttons.button_list.get("LOOP")):
+    if (event.data1 == buttons.button_list.get("LOOP")):
         event.handled = True
         transport.setLoopMode() #loop/pattern mode
         ui.setHintMsg("Song / pattern mode")
@@ -59,21 +61,21 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                console.setTrackName(0, "Pattern:")
-                console.setTrackVol(0, "Enabled")
-                console.setTrackPan(0, "Enabled")
+                setTrackName(0, "Pattern:")
+                setTrackVol(0, "Enabled")
+                setTrackPan(0, "Enabled")
                 time.sleep(constants.timedelay) 
 
         elif transport.getLoopMode() == on:
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                console.setTrackName(0, "Song:")
-                console.setTrackVol(0, "Enabled")
-                console.setTrackPan(0, "Enabled")
+                setTrackName(0, "Song:")
+                setTrackVol(0, "Enabled")
+                setTrackPan(0, "Enabled")
                 time.sleep(constants.timedelay) 
 
-    if (event.data1 == nihia.buttons.button_list.get("METRO")): # metronome/button
+    if (event.data1 == buttons.button_list.get("METRO")): # metronome/button
         event.handled = True
         transport.globalTransport(midi.FPT_Metronome, 110)
         ui.setHintMsg("Metronome")
@@ -82,175 +84,68 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                console.setTrackName(0, "Metronome:")
-                console.setTrackVol(0, "Disabled")
+                setTrackName(0, "Metronome:")
+                setTrackVol(0, "Disabled")
                 time.sleep(constants.timedelay) 
 
         elif ui.isMetronomeEnabled() == on:
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                console.setTrackName(0, "Metronome:")
-                console.setTrackVol(0, "Enabled")
+                setTrackName(0, "Metronome:")
+                setTrackVol(0, "Enabled")
                 time.sleep(constants.timedelay) 
 
-    if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
+    if (event.data1 == buttons.button_list.get("TEMPO")):
         event.handled = True
         transport.stop() #tap tempo
 
-    if (event.data1 == nihia.buttons.button_list.get("QUANTIZE")):
+    if (event.data1 == buttons.button_list.get("QUANTIZE")):
         event.handled = True
         channels.quickQuantize(channels.channelNumber(),0)
         ui.setHintMsg("Quick Quantize")
         if device.getName() == "Komplete Kontrol DAW - 1":
             pass
         else:
-            console.setTrackName(0, "Piano Roll")
-            console.setTrackVol(0, "Quick Quantize")
+            setTrackName(0, "Piano Roll")
+            setTrackVol(0, "Quick Quantize")
             time.sleep(constants.timedelay) 
 
         
-
-    if (event.data1 == nihia.buttons.button_list.get("AUTO")):
+    if event.data1 == buttons.button_list.get("AUTO"):
         event.handled = True
 
-        
-        ui.snapMode(1) #snap toggle
-        
+        ui.snapMode(1)  # Snap toggle
 
-        snapmodevalue = ["Line", "Cell", "None", 
-        "1/6 Step", "1/4 Step", "1/3 Step", "1/2 Step", 
-        "Step", "1/6 Beat", "1/4 Beat", "1/3 Beat", 
-        " 1/2 Beat", "Beat", "Bar"]
+        snapmode_mapping = {
+            0: "Line",
+            1: "Cell",
+            3: "(none)",
+            4: "1/6 step",
+            5: "1/4 step",
+            6: "1/3 step",
+            7: "1/2 step",
+            8: "Step",
+            9: "1/6 beat",
+            10: "1/4 beat",
+            11: "1/3 beat",
+            12: "1/2 beat",
+            13: "Beat",
+            14: "Bar"
+        }
 
-        if ui.getSnapMode() == 0: 
-            ui.setHintMsg("Snap: Line")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[0])
-                time.sleep(constants.timedelay) 
+        snap_mode = ui.getSnapMode()
+        snap_mode_name = snapmode_mapping.get(snap_mode, "Unknown")
 
-        elif ui.getSnapMode() == 1:
-            ui.setHintMsg("Snap: Cell") 
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[1])
-                time.sleep(constants.timedelay) 
+        ui.setHintMsg(f"Snap: {snap_mode_name}")
 
-        elif ui.getSnapMode() == 3: 
-            ui.setHintMsg("Snap: (none)")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[2])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 4:
-            ui.setHintMsg("Snap: 1/6 step")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[3])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 5: 
-            ui.setHintMsg("Snap: 1/4 step")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[4])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 6: 
-            ui.setHintMsg("Snap: 1/3 step")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[5])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 7: 
-            ui.setHintMsg("Snap: 1/2 step")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[6])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 8: 
-            ui.setHintMsg("Snap: Step")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[7])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 9: 
-            ui.setHintMsg("Snap: 1/6 beat")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[8])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 10: 
-            ui.setHintMsg("Snap: 1/4 beat")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[9])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 11: 
-            ui.setHintMsg("Snap: 1/3 beat")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[10])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 12: 
-            ui.setHintMsg("Snap: 1/2 beat")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[11])
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 13:
-            ui.setHintMsg("Snap: Beat")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[12])         
-                time.sleep(constants.timedelay) 
-
-        elif ui.getSnapMode() == 14: 
-            ui.setHintMsg("Snap: Bar")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                console.setTrackName(0, "Main Snap")
-                console.setTrackPan(0, snapmodevalue[13])           
-                time.sleep(constants.timedelay) 
+        if device.getName() != "Komplete Kontrol DAW - 1":
+            setTrackName(0, "Main Snap")
+            setTrackPan(0, snap_mode_name)
+            time.sleep(constants.timedelay)
 
 
-    if (event.data1 == nihia.buttons.button_list.get("COUNT_IN")):
+    if (event.data1 == buttons.button_list.get("COUNT_IN")):
         event.handled = True
         transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recording
         ui.setHintMsg("Countdown before recording")
@@ -260,21 +155,21 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                console.setTrackName(0, "Count In:")
-                console.setTrackPan(0, "Enabled")
+                setTrackName(0, "Count In:")
+                setTrackPan(0, "Enabled")
                 time.sleep(constants.timedelay)   
         else:
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                console.setTrackName(0, "Count In:")
-                console.setTrackPan(0, "Disabled")
+                setTrackName(0, "Count In:")
+                setTrackPan(0, "Disabled")
                 time.sleep(constants.timedelay) 
 
-    if (event.data1 == nihia.buttons.button_list.get("CLEAR")):
+    if (event.data1 == buttons.button_list.get("CLEAR")):
         event.handled = True
 
-        doubleclickstatus = device.isDoubleClick(nihia.buttons.button_list.get("CLEAR"))
+        doubleclickstatus = device.isDoubleClick(buttons.button_list.get("CLEAR"))
 
         if doubleclickstatus == True:
             transport.globalTransport(midi.FPT_F12, 2, 15)
@@ -282,14 +177,14 @@ def OnMidiMsg(event): #listens for button or knob activity
             if device.getName() == "Komplete Kontrol DAW - 1":
                 pass
             else:
-                console.setTrackName(0, "Clear All")
+                setTrackName(0, "Clear All")
                 time.sleep(constants.timedelay) 
         else:
             ui.escape() #escape key
             ui.setHintMsg("Close")
 
 
-    if (event.data1 == nihia.buttons.button_list.get("UNDO")):
+    if (event.data1 == buttons.button_list.get("UNDO")):
         event.handled = True
         undoLevel =  str(general.getUndoHistoryCount()-general.getUndoHistoryLast())
 
@@ -299,33 +194,33 @@ def OnMidiMsg(event): #listens for button or knob activity
         if device.getName() == "Komplete Kontrol DAW - 1":
             pass
         else:
-            console.setTrackName(0, "History")
-            console.setTrackVol(0, "Undo @ "+ undoLevel)
+            setTrackName(0, "History")
+            setTrackVol(0, "Undo @ "+ undoLevel)
             time.sleep(constants.timedelay) 
         
         
 
-    if (event.data1 == nihia.buttons.button_list.get("REDO")):
+    if (event.data1 == buttons.button_list.get("REDO")):
         event.handled = True
         undoLevel =  str(general.getUndoHistoryCount()-general.getUndoHistoryLast())
 
         general.undo() #redo
 
         ui.setHintMsg(ui.getHintMsg())
-        console.setTrackName(0, "History")
-        console.setTrackPan(0, "Redo @ "+ undoLevel)
+        setTrackName(0, "History")
+        setTrackPan(0, "Redo @ "+ undoLevel)
         time.sleep(constants.timedelay)
         
 
-    if (event.data1 == nihia.buttons.button_list.get("TEMPO")):
+    if (event.data1 == buttons.button_list.get("TEMPO")):
         event.handled = True
         transport.globalTransport(midi.FPT_TapTempo, 106) #tap tempo
 
-    if (event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED")):
+    if (event.data1 == buttons.button_list.get("ENCODER_BUTTON_SHIFTED")):
         event.handled = True
  
 
-        doubleclickstatus = device.isDoubleClick(nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED"))
+        doubleclickstatus = device.isDoubleClick(buttons.button_list.get("ENCODER_BUTTON_SHIFTED"))
 
 
         if doubleclickstatus == True:
@@ -339,8 +234,8 @@ def OnMidiMsg(event): #listens for button or knob activity
             ui.setHintMsg("Plugin Picker")
             
             if " M " in device.getName():
-                #console.setTrackName(0, "Window:")
-                #console.setTrackPan(0, "Plugin Picker")
+                #setTrackName(0, "Window:")
+                #setTrackPan(0, "Plugin Picker")
                 time.sleep(constants.timedelay)
             
         else:
@@ -350,8 +245,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Channel Rack")
                 if " M " in device.getName():
-                    #console.setTrackName(0, "Window:")
-                    #console.setTrackPan(0, "Channel Rack")
+                    #setTrackName(0, "Window:")
+                    #setTrackPan(0, "Channel Rack")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 1:
@@ -359,8 +254,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Mixer")
                 if " M " in device.getName():
-                    #console.setTrackName(0, "Window:")
-                    #console.setTrackPan(0, "Mixer")
+                    #setTrackName(0, "Window:")
+                    #setTrackPan(0, "Mixer")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 2:
@@ -368,8 +263,8 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle += 1
                 ui.setHintMsg("Playlist")
                 if " M " in device.getName():
-                    #console.setTrackName(0, "Window:")
-                    #console.setTrackPan(0, "Playlist")
+                    #setTrackName(0, "Window:")
+                    #setTrackPan(0, "Playlist")
                     time.sleep(constants.timedelay)
 
             elif windowCycle == 3:
@@ -377,36 +272,36 @@ def OnMidiMsg(event): #listens for button or knob activity
                 windowCycle = 0
                 ui.setHintMsg("Browser")
                 if " M " in device.getName():
-                    #console.setTrackName(0, "Window:")
-                    #console.setTrackPan(0, "Browser")
+                    #setTrackName(0, "Window:")
+                    #setTrackPan(0, "Browser")
                     time.sleep(constants.timedelay)
 
                      
-    if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
+    if (event.data1 == buttons.button_list.get("MUTE_SELECTED")):
         if ui.getFocused(0) == True: 
             event.handled = True
-            if mix.getTrackName(mix.trackNumber()) == "Current" and mix.trackNumber() >= constants.currentUtility:
+            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
                 pass
             else:
-                mix.enableTrack(mix.trackNumber()) 
+                mixer.enableTrack(mixer.trackNumber()) 
                 ui.setHintMsg("Mute")
    
-    if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
+    if (event.data1 ==  buttons.button_list.get("SOLO_SELECTED")): 
         if ui.getFocused(0) == True: 
             event.handled = True
-            if mix.getTrackName(mix.trackNumber()) == "Current" and mix.trackNumber() >= constants.currentUtility:
+            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
                 pass
             else:
-                mix.soloTrack(mix.trackNumber()) 
+                mixer.soloTrack(mixer.trackNumber()) 
                 ui.setHintMsg("Solo")
 
-    if (event.data1 == nihia.buttons.button_list.get("MUTE_SELECTED")):
+    if (event.data1 == buttons.button_list.get("MUTE_SELECTED")):
         if ui.getFocused(1) == True: 
             event.handled = True
             channels.muteChannel(channels.channelNumber()) 
             ui.setHintMsg("Mute")
         
-    if (event.data1 ==  nihia.buttons.button_list.get("SOLO_SELECTED")): 
+    if (event.data1 ==  buttons.button_list.get("SOLO_SELECTED")): 
         if ui.getFocused(1) == True: 
             event.handled = True
             channels.soloChannel(channels.channelNumber()) 
@@ -418,20 +313,20 @@ def OnMidiMsg(event): #listens for button or knob activity
         
         #s-series mixer mute 
         for x in range(8):
-            if event.data1 == nihia.buttons.button_list.get("MUTE") and event.data2 == x:
+            if event.data1 == buttons.button_list.get("MUTE") and event.data2 == x:
                 event.handled = True
-                if mix.trackNumber() + x <= constants.currentUtility - 1:
-                    mix.enableTrack(mix.trackNumber() + x) 
+                if mixer.trackNumber() + x <= constants.currentUtility - 1:
+                    mixer.enableTrack(mixer.trackNumber() + x) 
                     ui.setHintMsg("Mute") 
                 else:
                     pass              
 
         #s-series mixer solo 
         for x in range(8):
-            if event.data1 == nihia.buttons.button_list.get("SOLO") and event.data2 == x:
+            if event.data1 == buttons.button_list.get("SOLO") and event.data2 == x:
                 event.handled = True
-                if mix.trackNumber() + x <= constants.currentUtility - 1:
-                    mix.soloTrack(mix.trackNumber() + x)  
+                if mixer.trackNumber() + x <= constants.currentUtility - 1:
+                    mixer.soloTrack(mixer.trackNumber() + x)  
                     ui.setHintMsg("Solo")
                 else:
                     pass
@@ -440,8 +335,8 @@ def OnMidiMsg(event): #listens for button or knob activity
         for x in range(8):
             if event.data1 == constants.select and event.data2 == x:
                 event.handled = True
-                if mix.trackNumber() + x <= constants.currentUtility - 1:
-                    mix.armTrack(mix.trackNumber() + x)
+                if mixer.trackNumber() + x <= constants.currentUtility - 1:
+                    mixer.armTrack(mixer.trackNumber() + x)
                     ui.setHintMsg("Armed Disk Recording")
                 else:
                     pass
@@ -452,7 +347,7 @@ def OnMidiMsg(event): #listens for button or knob activity
         #s-series channel rack mute 
         for x in range(8):
             if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-                if event.data1 == nihia.buttons.button_list.get("MUTE") and event.data2 == x:
+                if event.data1 == buttons.button_list.get("MUTE") and event.data2 == x:
                     event.handled = True
                     channels.muteChannel(channels.selectedChannel() + x) 
                     ui.setHintMsg("Mute")  
@@ -460,7 +355,7 @@ def OnMidiMsg(event): #listens for button or knob activity
         #s-series channel rack solo
         for x in range(8):
             if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-                if event.data1 == nihia.buttons.button_list.get("SOLO") and event.data2 == x: 
+                if event.data1 == buttons.button_list.get("SOLO") and event.data2 == x: 
                     event.handled = True
                     if channels.isChannelMuted(channels.selectedChannel() + x) == True and channels.channelCount() == 1:
                         pass

@@ -1,79 +1,76 @@
 import nihia
 from nihia import mixer as mix
-
 from script.device_setup import NILA_core as core
 from script.device_setup import config 
 from script.device_setup import constants
-from script.device_setup import transform 
-
-
 import mixer
 import ui 
 
-        
 def OnMidiMsg(self, event): 
-       
     """
-    Final track is the 'current' track, which is a special analysis track that has no
-    volume or pan controls. We are not interested in this track as we cannot control it.
+    Handles MIDI messages received in FL Studio.
+
+    Parameters:
+    - self: The instance of the script.
+    - event: The MIDI event object containing information about the received MIDI message.
     """
-
-    if ui.getFocused(constants.winName["Mixer"]) == True: 
-
-        # VOLUME CONTROL
-        s_series = False
-        
+    if ui.getFocused(constants.winName["Mixer"]): 
         for z in range(8):
             if mixer.trackNumber() <= constants.currentUtility - z:
-                if (event.data1 == nihia.mixer.knobs[0][z]):
+                track_number = mixer.trackNumber() + z
+                track_name = mixer.getTrackName(track_number)
+
+                if track_number <= constants.currentUtility - z and track_name != "Current":
                     event.handled = True
-                    
-                    if mixer.getTrackName(mixer.trackNumber()+z) == "Current" and mixer.trackNumber()+z >= constants.currentUtility:
-                        pass
-                    else:
-                        if core.seriesCheck(s_series) == True:
-                       
-                            if event.data2 in range(65, 95):
-                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment * 2.5)) 
-                                
-                            elif event.data2 in range(96, 128):
-                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment)) 
 
-                            elif event.data2 in range (0, 31):
-                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) + config.increment)) 
+                    if event.data1 == nihia.mixer.knobs[0][z]:  # VOLUME CONTROL
+                        handle_volume_control(track_number, event.data2)
 
-                            elif event.data2 in range (32, 64):
-                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) + config.increment * 2.5))
-                                   
-                        else:
-                            if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) - config.increment)) 
+                    elif event.data1 == nihia.mixer.knobs[1][z]:  # PAN CONTROL
+                        handle_pan_control(track_number, event.data2)
 
-                            elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-                                mixer.setTrackVolume((mixer.trackNumber() + z), (mixer.getTrackVolume(mixer.trackNumber() + z) + config.increment))       
+def handle_volume_control(track_number, data2):
+    """
+    Handles volume control for a specific mixer track.
 
-                elif mixer.trackNumber() + z >= constants.currentUtility:
-                    pass     
+    Parameters:
+    - track_number: The number of the mixer track to control.
+    - data2: The MIDI event data representing the movement of the MIDI knob.
+    """
+    volume_increment = config.increment
 
-            # PAN CONTROL
+    if core.seriesCheck():
+        if 65 <= data2 < 95:
+            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) - volume_increment * 2.5)
+        elif 96 <= data2 < 128:
+            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) - volume_increment)
+        elif 0 <= data2 < 31:
+            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + volume_increment)
+        elif 32 <= data2 < 64:
+            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + volume_increment * 2.5)
+    else:
+        if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) - volume_increment)
+        elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + volume_increment)
 
-            for z in range(8):
-                if mixer.trackNumber() <= constants.currentUtility - z:
-                    if (event.data1 == nihia.mixer.knobs[1][z]):
-                        event.handled = True
+def handle_pan_control(track_number, data2):
+    """
+    Handles pan control for a specific mixer track.
 
-                        if mixer.trackNumber() + z >= constants.currentUtility - z:
-                            pass
-                        else:
-                            if core.seriesCheck(s_series) == True:
-                                if nihia.mixer.KNOB_INCREASE_MAX_SPEED <= event.data2:
-                                    mixer.setTrackPan((mixer.trackNumber() + z), (mixer.getTrackPan(mixer.trackNumber() + z) - config.increment)) 
-                                
-                                elif nihia.mixer.KNOB_DECREASE_MAX_SPEED >= event.data2:
-                                    mixer.setTrackPan((mixer.trackNumber() + z), (mixer.getTrackPan(mixer.trackNumber() + z) + config.increment))
-                            else:
-                                if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-                                    mixer.setTrackPan((mixer.trackNumber() + z), (mixer.getTrackPan(mixer.trackNumber() + z) - config.increment)) 
-                                
-                                elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-                                    mixer.setTrackPan((mixer.trackNumber() + z), (mixer.getTrackPan(mixer.trackNumber() + z) + config.increment))
+    Parameters:
+    - track_number: The number of the mixer track to control.
+    - data2: The MIDI event data representing the movement of the MIDI knob.
+    """
+    pan_increment = config.increment
+
+    if core.seriesCheck():
+        if nihia.mixer.KNOB_INCREASE_MAX_SPEED <= data2:
+            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) - pan_increment)
+        elif nihia.mixer.KNOB_DECREASE_MAX_SPEED >= data2:
+            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + pan_increment)
+    else:
+        if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) - pan_increment)
+        elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + pan_increment)

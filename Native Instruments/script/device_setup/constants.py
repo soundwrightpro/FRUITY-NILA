@@ -1,155 +1,77 @@
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+# script_constants.py
 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-# script_constants
-
-VERSION_NUMBER = "v11.6.5"
+# Version information
+VERSION_NUMBER = "v12.0.1"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
-OUTPUT_MESSAGE = "\nFRUITY NILA " + VERSION_NUMBER + "\nCopyright © 2023 Duwayne\n"
+OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2023 Duwayne\n"
 LOAD_MESSAGE = "Project Loaded"
 
-supported_plugins = {"FL Keys": 0,
-                     "FLEX": 1,
-                     "Sytrus": 2,
-                     "GMS": 3,
-                     "Harmless": 4,
-                     "Harmor": 5,
-                     "Morphine": 6,
-                     "3x Osc": 7,
-                     "Fruity DX10": 8,
-                     "BassDrum": 9,
-                     "MiniSynth": 10,
-                     "PoiZone": 11,
-                     "Sakura": 12}
-
-widTitle = ["Mixer", "Channel Rack", "Playlist", "Piano Roll",
-            "Browser", "Plugin Window", "Effect Plugin", "Generator Plugin"]
-
-winName = {
-    "Mixer": 0,
-    "Channel Rack": 1,
-    "Playlist": 2,
-    "Piano Roll": 3,
-    "Browser": 4,
-    "Plugin": 5
+# Supported plugins dictionary
+supported_plugins = {
+    "FL Keys": 0,
+    "FLEX": 1,
+    "Sytrus": 2,
+    "GMS": 3,
+    "Harmless": 4,
+    "Harmor": 5,
+    "Morphine": 6,
+    "3x Osc": 7,
+    "Fruity DX10": 8,
+    "BassDrum": 9,
+    "MiniSynth": 10,
+    "PoiZone": 11,
+    "Sakura": 12
 }
 
-touch_strips = {
-   "PITCH": 0,
-   "MOD": 1,
-   "EXPRESSION": 11 
-}
+# Window names and IDs
+widTitle = ["Mixer", "Channel Rack", "Playlist", "Piano Roll", "Browser", "Plugin Window", "Effect Plugin", "Generator Plugin"]
+winName = {"Mixer": 0, "Channel Rack": 1, "Playlist": 2, "Piano Roll": 3, "Browser": 4, "Plugin": 5}
 
-MAX_Major = 21
-MAX_Minor = 0
-MAX_Release = 0
+# Touch strips
+touch_strips = {"PITCH": 0, "MOD": 1, "EXPRESSION": 11}
 
-MIN_Major = 21
-MIN_Minor = 0
-MIN_Release = 0
+# Constants for MAX and MIN
+MAX_Major, MAX_Minor, MAX_Release = 21, 0, 0
+MIN_Major, MIN_Minor, MIN_Release = 21, 0, 0
 
-off = 0
-on = 1
+# On and Off constants
+off, on = 0, 1
 
+# MIDI Script Version
 MIDI_Script_Version = 23
 
+# Time delay
 timedelay = 0.35
 
+# Select constant
 select = 66
 
+# Controls constant
 controls = 15
 
-wait_input_1 = "Waiting"
-wait_input_2 = "for input...     "
+# Waiting input messages
+wait_input_1, wait_input_2 = "Waiting", "for input...     "
 
+# Current utility constant
 currentUtility = 126
 
-blankEvent = "   "
-nuText = "Not Used"
+# Blank and not used events
+blankEvent, nuText = "   ", "Not Used"
 
-itemDisp = 0
-itemTime = 0
+# Item display and time
+itemDisp, itemTime = 0, 0
 
-mixer_right = 63
-mixer_left = 65
+# Mixer right and left constants
+mixer_right, mixer_left = 63, 65
 
-#fl constants
-
-PL_Start = 0 #Called when project loading start
-PL_LoadOk = 100	#Called when project was succesfully loaded
-PL_LoadError = 101 #Called when project loading stopped because of error
-
-SBN_FLP = 1	            #FL studio project
-SBN_ZIP = 2	            #Zipped archive
-SBN_FLM	= 3	            #FL studio project
-SBN_FST	= 4	            #FL Studio state preset
-SBN_DS	= 5	            #Ds file
-SBN_SS	= 6	            #SS file
-SBN_WAV	= 7	            #Wav file
-SBN_XI	= 8	            #XI file
-SBN_FPR	= 9	            #Fpr file
-SBN_FSC	= 10	        #FSC file
-SBN_SF2	= 11	        #SF2 file
-SBN_Speech = 12	        #Speech file
-SBN_MP3	= 13	        #MP3 file
-SBN_OGG	= 14	        #Ogg file
-SBN_FLAC = 15	        #Flac file
-SBN_OSM	= 16	        #OSM file
-SBN_REX	= 17	        #REX file
-SBN_DWP	= 18	        #DirectWave preset
-SBN_FNV	= 19	        #FNV file
-SBN_FXB	= 20	        #FXB file
-SBN_AIFF = 21	        #AIFF file
-SBN_TXT	= 22	        #Text file
-SBN_BMP	= 23	        #Image
-SBN_WV	= 24	        #WV file
-SBN_TS	= 25	        #TS file
-SBN_RBS	= 26	        #RBS file
-SBN_MID	= 27	        #Midi file
-SBN_FLEXPack = 28	    #Flex pack
-SBN_NEWS = 29	        #News item
-SBN_SHOP = 30           #Shop item(unused)
-SBN_LIB = 31	        #Library item
-SBN_LIBOWNED = 32	    #Library item(owned)
-SBN_NOTIFICATION = 33	#Notification item
-SBN_DOWNLOAD = 34	    #Download item
-SBN_M4A	= 35	        #M4A file
-
-
-FL_node = {'B| .FLP' : 1,
-             'B| .ZIP' : 2,
-             'B| FL Proj.' : 3,
-             'B| FL Preset' : 4,
-             'B| .WAV' : 7,
-             'B| .SF2' : 11,
-             'B| .SPEECH' : 12,
-             'B| .MP3' : 13,
-             'B| .OGG' : 14,
-             'B| .FLAC' : 15,
-             'B| .FNV' : 19,
-             'B| .AIFF' : 21,
-             'B| .TXT' : 22,
-             'B| IMAGE File' : 23,
-             'B| .WV' : 24,
-             'B| .MIDI' : 27,
-             'B| FLEX PACK' : 28,
-             'B| .MP4' : 35,
-             'B| .INI' : 37,
-             'B| .FSC' : 10,
-             }
+# FL Constants
+PL_Start, PL_LoadOk, PL_LoadError = 0, 100, 101
+SBN_FLP, SBN_ZIP, SBN_FLM, SBN_FST, SBN_DS, SBN_SS, SBN_WAV, SBN_XI, SBN_FPR, SBN_FSC, SBN_SF2, SBN_Speech, \
+SBN_MP3, SBN_OGG, SBN_FLAC, SBN_OSM, SBN_REX, SBN_DWP, SBN_FNV, SBN_FXB, SBN_AIFF, SBN_TXT, SBN_BMP, SBN_WV, \
+SBN_TS, SBN_RBS, SBN_MID, SBN_FLEXPack, SBN_NEWS, SBN_SHOP, SBN_LIB, SBN_LIBOWNED, SBN_NOTIFICATION, SBN_DOWNLOAD, \
+SBN_M4A = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+FL_node = {'B| .FLP': 1, 'B| .ZIP': 2, 'B| FL Proj.': 3, 'B| FL Preset': 4, 'B| .WAV': 7, 'B| .SF2': 11, 'B| .SPEECH': 12,
+           'B| .MP3': 13, 'B| .OGG': 14, 'B| .FLAC': 15, 'B| .FNV': 19, 'B| .AIFF': 21, 'B| .TXT': 22,
+           'B| IMAGE File': 23, 'B| .WV': 24, 'B| .MIDI': 27, 'B| FLEX PACK': 28, 'B| .MP4': 35, 'B| .INI': 37,
+           'B| .FSC': 10}

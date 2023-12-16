@@ -1,33 +1,32 @@
 import device
 
-
 def detectDevice(NILA_Name):
-   """ Gets the MIDI device name from FL Studio and sets `DEVICE_SERIES` to the right value in order for the script to work properly. """
-   
-   deviceName = device.getName()
+    """
+    Gets the MIDI device name from FL Studio and sets `DEVICE_SERIES` to the right value for the script to work properly.
 
-   if deviceName == "Komplete Kontrol A DAW":
-      NILA_Name = "Komplete Kontrol Series A"
-      
-   elif deviceName == "Komplete Kontrol M DAW":
-      NILA_Name = "Komplete Kontrol Series M"
+    Parameters:
+    - NILA_Name (str): The name of the detected device series.
 
-   elif deviceName == "Komplete Kontrol DAW - 1":
-      NILA_Name = "Komplete Kontrol Series S"
+    Returns:
+    - str: The updated NILA_Name based on the detected MIDI device.
+    """
 
-   elif deviceName == "KOMPLETE KONTROL M32":
-      NILA_Name = "Komplete Kontrol Series M"  
-      
-   elif deviceName == "KOMPLETE KONTROL M32 MIDI":
-      NILA_Name = "Komplete Kontrol Series M" 
+    # Get the current MIDI device name from FL Studio
+    deviceName = device.getName()
 
-   elif deviceName == "KOMPLETE KONTROL S88 MK2 Port 1":
-      NILA_Name = "Komplete Kontrol Series S"   
+    # Map FL Studio MIDI device names to corresponding NATIVE INSTRUMENTS device series names
+    device_mapping = {
+        "Komplete Kontrol A DAW": "Komplete Kontrol Series A",
+        "Komplete Kontrol M DAW": "Komplete Kontrol Series M",
+        "Komplete Kontrol DAW - 1": "Komplete Kontrol Series S",
+        "KOMPLETE KONTROL M32": "Komplete Kontrol Series M",
+        "KOMPLETE KONTROL M32 MIDI": "Komplete Kontrol Series M",
+        "KOMPLETE KONTROL S88 MK2 Port 1": "Komplete Kontrol Series S",
+        "KOMPLETE KONTROL - 1": "Komplete Kontrol Series S",
+    }
 
-   elif deviceName == "KOMPLETE KONTROL - 1":
-      NILA_Name = "Komplete Kontrol Series S" 
-      
-   else:
-      NILA_Name = device.getName()
- 
-   return NILA_Name
+    # Update NILA_Name based on the detected MIDI device
+    NILA_Name = device_mapping.get(deviceName, device.getName())
+
+    return NILA_Name
+

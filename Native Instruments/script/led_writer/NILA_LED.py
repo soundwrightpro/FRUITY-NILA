@@ -1,151 +1,85 @@
 import nihia
-from nihia import buttons 
-from nihia import mixer as mix
-
+from nihia import buttons
+from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm
 from script.device_setup import constants
-
-import channels
 import device
+import channels
 import mixer
 import transport
 import ui
 
+# Constants for button light states
+on, off = 1, 0
 
-on = 1
-off = 0
+def set_light(button_name, state):
+    """
+    Sets the light state of a button.
 
-windowCycle = 0
-jogMove = True
-constants.currentUtility
-
+    Parameters:
+    - button_name (str): The name of the button.
+    - state (int): The state of the light (0 for off, 1 for on).
+    """
+    nihia.buttons.setLight(button_name, state)
 
 def OnRefresh(self, flags):
+    """
+    Handles the refresh event and updates button lights based on the DAW state.
+
+    Parameters:
+    - self: The instance of the script.
+    - flags: Flags indicating the refresh event details.
+    """
     if device.isAssigned():
-        for a in [transport.isPlaying()]:
-            if a == off: #not playing
-                nihia.buttons.setLight("STOP", on) 
-            elif a == on: #playing
-                nihia.buttons.setLight("STOP", off) 
+        # Update transport control lights
+        set_light("STOP", on if not transport.isPlaying() else off)
+        set_light("REC", on if transport.isRecording() else off)
+        set_light("LOOP", on if transport.getLoopMode() == off else off)
+        set_light("METRO", on if ui.isMetronomeEnabled() else off)
+        set_light("COUNT_IN", on if not ui.isPrecountEnabled() else off)
+        set_light("QUANTIZE", on if ui.getSnapMode() in [1, 3] else off)
+        set_light("AUTO", off)
 
-        if transport.isPlaying() == True:
-            pass
-        else:
-            for b in [transport.isRecording()]:
-                if b == off: #not recording
-                    nihia.buttons.setLight("REC", off)
-                elif b == on: #recording
-                    nihia.buttons.setLight("REC", on)
+        # Update PLAY button light when not playing or recording
+        if not transport.isPlaying() and transport.isRecording() == 0:
+            set_light("PLAY", on if transport.isPlaying() else off)
 
-        for c in [transport.getLoopMode()]:
-            if c == off: #loop mood
-                nihia.buttons.setLight("LOOP", on)
+        # Update mixer lights if Mixer window is focused
+        if ui.getFocused(constants.winName["Mixer"]):
+            for x in range(8):
+                track_number = mixer.trackNumber() + x
+                if track_number <= 125:
+                    setTrackSolo(x, mixer.isTrackSolo(track_number))
+                    setTrackMute(x, mixer.isTrackMuted(track_number))
+                    setTrackArm(x, mixer.isTrackArmed(track_number))
 
-            elif c == on: #playlist mode
-                nihia.buttons.setLight("LOOP", off)
-
-        for d in [ui.isMetronomeEnabled()]:
-            if d == off: #metro off
-                nihia.buttons.setLight("METRO", off)
-
-            elif d == on: #metro on
-                nihia.buttons.setLight("METRO", on)
-
-        for e in [ui.isPrecountEnabled()]:
-            if e == off: #pre count on
-                nihia.buttons.setLight("COUNT_IN", off)
-
-            elif e == on: #pre count off
-                nihia.buttons.setLight("COUNT_IN", on)
-
-        for f in [ui.getSnapMode()]:
-            if f == 3: #quantize always on
-                nihia.buttons.setLight("QUANTIZE", on)
-                nihia.buttons.setLight("AUTO", off)
-
-            elif f != 1: #quantize alwayns on
-                nihia.buttons.setLight("QUANTIZE", on)
-                nihia.buttons.setLight("AUTO", off)
-
-        for g in [transport.isPlaying()]:
-            if transport.isRecording() == 0 & transport.isPlaying() == 1: 
-                if g == off: #play off
-                    nihia.buttons.setLight("PLAY", off)
-                elif g != on: #play on
-                    nihia.buttons.setLight("PLAY", on)
-            elif g == off: #play off: 
-                nihia.buttons.setLight("PLAY", off)
-
-        if ui.getFocused(constants.winName["Mixer"]) == True:
-            
-            for x in range (8):
-                #mixer solo
-                if mixer.trackNumber() <= 125 - x:
-                    if mixer.isTrackSolo(mixer.trackNumber() + x) == True or mixer.isTrackSolo(mixer.trackNumber() + x) == False:
-                        mix.setTrackSolo(x, mixer.isTrackSolo(mixer.trackNumber() + x))
-
-                #mixer mute 
-                if mixer.trackNumber() <= 125 - x:
-                    if mixer.isTrackMuted(mixer.trackNumber() + x) == True or mixer.isTrackMuted(mixer.trackNumber() + x) == False:
-                        mix.setTrackMute(x, mixer.isTrackMuted(mixer.trackNumber() + x))
-
-                #mixer recording arm          
-                if mixer.trackNumber() <= 125 - x:
-                    if mixer.isTrackArmed(mixer.trackNumber() +x) == True or mixer.isTrackArmed(mixer.trackNumber() + x) == False:
-                        mix.setTrackArm(x, mixer.isTrackArmed(mixer.trackNumber() + x))
-
-        if ui.getFocused(constants.winName["Channel Rack"]) == True:
-   
-            #channel mute/solo paradox fix (why was this so hard?!?!?!?)
+        # Update Channel Rack lights if Channel Rack window is focused
+        if ui.getFocused(constants.winName["Channel Rack"]):
             if channels.channelCount() >= 2:
                 for x in range(8):
-                    if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount()-x) :
-                        if channels.isChannelSolo(channels.selectedChannel() + x) == True:
-                            mix.setTrackSolo(x, 1)
-                        else:
-                            mix.setTrackSolo(x, 0)
-
-                        if channels.isChannelMuted(channels.selectedChannel() + x) == True:
-                            if channels.isChannelSolo(channels.selectedChannel() + x) == True:
-                                mix.setTrackMute(x, 1)
-                                mix.setTrackSolo(x, 0)
-                            else:
-                                mix.setTrackMute(x, 1)
-                        else:
-                            mix.setTrackMute(x, 0)
+                    selected_channel = channels.selectedChannel()
+                    if channels.channelCount() > x and selected_channel < (channels.channelCount() - x):
+                        setTrackSolo(x, channels.isChannelSolo(selected_channel + x))
+                        setTrackMute(x, channels.isChannelMuted(selected_channel + x))
             else:
-                if channels.isChannelMuted(channels.selectedChannel()) == True:
-                    mix.setTrackMute(0, 1)
-                else:
-                    mix.setTrackMute(0, 0)
-                    
-                if channels.channelCount() == 1 and channels.isChannelSolo(channels.selectedChannel()) == True:
-                    mix.setTrackSolo(0, 0)
-   
-                
-                    
+                setTrackMute(0, 1) if channels.isChannelMuted(channels.selectedChannel()) else setTrackMute(0, 0)
+                setTrackSolo(0, 0) if channels.channelCount() == 1 and channels.isChannelSolo(channels.selectedChannel()) else setTrackSolo(0, 0)
 
-        # Sets the lights of the 4D Encoder on S-Series keyboards on
-        nihia.buttons.setLight("ENCODER_X_S", 1)
-        nihia.buttons.setLight("ENCODER_X_S", 127)
-        nihia.buttons.setLight("ENCODER_Y_S", 1)
-        nihia.buttons.setLight("ENCODER_Y_S", 127)
-        
+        # Set lights for the 4D Encoder on S-Series keyboards
+        set_light("ENCODER_X_S", 1)
+        set_light("ENCODER_X_S", 127)
+        set_light("ENCODER_Y_S", 1)
+        set_light("ENCODER_Y_S", 127)
 
 def OnUpdateBeatIndicator(self, Value):
+    """
+    Handles the beat indicator update event and updates PLAY and REC button lights.
 
+    Parameters:
+    - self: The instance of the script.
+    - Value: The current beat indicator value.
+    """
     if transport.isRecording() == 0:
-        if Value == 1:
-            nihia.buttons.setLight("PLAY", on) 
-        elif Value == 2:
-            nihia.buttons.setLight("PLAY", on) 
-        elif Value == 0:
-            nihia.buttons.setLight("PLAY", off) 
-
+        set_light("PLAY", on if Value in [1, 2] else off)
     elif transport.isRecording() == 1:
-        nihia.buttons.setLight("PLAY", on)
-        if Value == 1:
-            nihia.buttons.setLight("REC", on) 
-        elif Value == 2:
-            nihia.buttons.setLight("REC", on) 
-        elif Value == 0:
-            nihia.buttons.setLight("REC", off) 
+        set_light("PLAY", on)
+        set_light("REC", on if Value in [1, 2] else off)
