@@ -1,7 +1,7 @@
 # script_constants.py
 
 # Version information
-VERSION_NUMBER = "v12.0.1"
+VERSION_NUMBER = "v12.0.0"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2023 Duwayne\n"

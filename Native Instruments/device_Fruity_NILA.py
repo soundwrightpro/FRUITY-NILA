@@ -11,7 +11,7 @@ For more information, visit: https://forum.image-line.com/viewtopic.php?p=149755
 Compatibility Notes:
 - Surface: Komplete Kontrol S-Series mkII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
 - Developer: Duwayne WRIGHT
-- Version: 12.0.1
+- Version: 12.0.0
 - Copyright (c) 2023 Duwayne WRIGHT
 """
 
