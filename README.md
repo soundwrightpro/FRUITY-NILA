@@ -3,7 +3,7 @@
 
 **Author: Duwayne**
 
-**FRUITY NILA** is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, including the [M-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/), [A-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61), and [S-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-s88/) within [FL STUDIO](https://www.image-line.com/). Harnessing the Native Instruments Host Integration protocol, FRUITY NILA elevates your controller's functionality, simulating a seamless connection with Ableton or Logic Pro X. Crucially, this script operates independently of the Komplete Kontrol App or Plugin, ensuring it doesn't disrupt their regular operation.
+**FRUITY NILA** is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, including the [M-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/), [A-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61), and [S-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-s88/) within [FL STUDIO](https://www.image-line.com/). Harnessing the Native Instruments Host Integration protocol, FRUITY NILA elevates your controller's functionality, simulating a seamless connection like with Ableton or Logic Pro X. Crucially, this script operates independently of the Komplete Kontrol App or Plugin, ensuring it doesn't disrupt their regular operation.
 
 **Minimum Requirements:**
 - Komplete Kontrol v2.3.0 or higher
