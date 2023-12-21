@@ -91,7 +91,7 @@ def encoder(self, event):
             elif ui.getFocused(constants.winName["Browser"]):
                 browse("next")
             else:
-                ui.down(1)
+                ui.right(1)
 
         elif event.data2 in (
             nihia.buttons.button_list.get("LEFT"),
@@ -111,7 +111,7 @@ def encoder(self, event):
             elif ui.getFocused(constants.winName["Browser"]):
                 browse("previous")
             else:
-                ui.up(1)
+                ui.left(1)
 
     elif event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON"):
         event.handled = True
@@ -164,7 +164,7 @@ def encoder(self, event):
             if ui.getFocused(constants.winName["Mixer"]):
                 ui.right(1) if ui.isInPopupMenu() else jog(8)
             elif ui.getFocused(constants.winName["Channel Rack"]):
-                ui.left(1) if ui.isInPopupMenu() else ui.right(1)
+                ui.right(1) if ui.isInPopupMenu() else ui.left(1)
             elif ui.getFocused(constants.winName["Plugin"]):
                 ui.right(1)
             elif ui.getFocused(constants.winName["Playlist"]):
@@ -180,7 +180,7 @@ def encoder(self, event):
             if ui.getFocused(constants.winName["Mixer"]):
                 ui.left(1) if ui.isInPopupMenu() else jog(-8)
             elif ui.getFocused(constants.winName["Channel Rack"]):
-                ui.right(1) if ui.isInPopupMenu() else ui.left(1)
+                ui.left(1) if ui.isInPopupMenu() else ui.right(1)
             elif ui.getFocused(constants.winName["Plugin"]):
                 ui.left(1)
             elif ui.getFocused(constants.winName["Playlist"]):
