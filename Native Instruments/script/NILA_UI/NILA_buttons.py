@@ -8,6 +8,7 @@ import midi
 import mixer
 import time
 import transport
+import playlist
 import ui
 
 # Constants for on and off states
@@ -28,6 +29,7 @@ def set_track_info(track_index, name, vol, pan=None):
         vol (str): Volume information to set for the track.
         pan (str, optional): Pan information to set for the track. Defaults to None.
     """
+        
     if device.getName() != "Komplete Kontrol DAW - 1":
         setTrackName(track_index, name)
         setTrackVol(track_index, vol)
@@ -115,6 +117,7 @@ def OnMidiMsg(event):
 
     elif event.data1 == buttons.button_list.get("TEMPO"):
         transport.stop()  # tap tempo
+        transport.globalTransport(midi.FPT_TapTempo, 106)  # tap tempo
 
     elif event.data1 == buttons.button_list.get("QUANTIZE"):
         channels.quickQuantize(channels.channelNumber(), 0)
@@ -148,8 +151,6 @@ def OnMidiMsg(event):
         ui.setHintMsg(ui.getHintMsg())
         set_track_info(0, "History", "Redo @ " + undo_level)
 
-    elif event.data1 == buttons.button_list.get("TEMPO"):
-        transport.globalTransport(midi.FPT_TapTempo, 106)  # tap tempo
 
     if event.data1 == buttons.button_list.get("AUTO"):
         event.handled = True
@@ -179,7 +180,7 @@ def OnMidiMsg(event):
         ui.setHintMsg(f"Snap: {snap_mode_name}")
 
         if device.getName() != "Komplete Kontrol DAW - 1":
-            set_track_info(0, "Main Snap", snap_mode_name)
+            set_track_info(0, "Main Snap", snap_mode_name, snap_mode_name)
             time.sleep(constants.timedelay)
 
     if event.data1 == buttons.button_list.get("ENCODER_BUTTON_SHIFTED"):

@@ -43,11 +43,9 @@ def OnMidiMsg(self, event):
     - self: The instance of the script.
     - event: The MIDI event.
     """
-    
     knob_speed = 0
     
     if ui.getFocused(constants.winName["Channel Rack"]):
-        
         
         # VOLUME AND PAN CONTROL
         #s_series = False

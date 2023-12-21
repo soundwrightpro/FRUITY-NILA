@@ -7,6 +7,7 @@ import ui
 import time
 
 
+
 def OnMidiMsg(self, event):
     """
     Handles MIDI messages received in FL Studio.
