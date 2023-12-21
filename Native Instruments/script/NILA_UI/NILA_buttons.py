@@ -5,6 +5,7 @@ import channels
 import device
 import general
 import midi
+import mixer
 import time
 import transport
 import ui
