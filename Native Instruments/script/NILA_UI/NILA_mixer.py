@@ -25,14 +25,21 @@ def OnMidiMsg(self, event):
                 if track_number <= constants.currentUtility - z and track_name != "Current":
                     event.handled = True
                     
+                    # Check the time between consecutive signals
+                    current_time = time.time()  
+                    time_difference = current_time - getattr(self, f'last_signal_time_{z}', current_time)
+                    setattr(self, f'last_signal_time_{z}', current_time)
+                    
+                    adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference <= constants.speed_increase_wait else config.increment
+                    
                     if event.data1 == nihia.mixer.knobs[0][z]:  # VOLUME CONTROL
-                        handle_volume_control(track_number, event.data2)
+                        handle_volume_control(track_number, event.data2, adjusted_increment)
 
                     elif event.data1 == nihia.mixer.knobs[1][z]:  # PAN CONTROL
-                        handle_pan_control(track_number, event.data2)
+                        handle_pan_control(track_number, event.data2, adjusted_increment)
 
 
-def handle_volume_control(track_number, data2):
+def handle_volume_control(track_number, data2, volume_increment):
     """
     Handles volume control for a specific mixer track.
 
@@ -40,8 +47,6 @@ def handle_volume_control(track_number, data2):
     - track_number: The number of the mixer track to control.
     - data2: The MIDI event data representing the movement of the MIDI knob.
     """
-    volume_increment = config.increment
-
     if core.seriesCheck():
         if 65 <= data2 < 95:
             mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) - volume_increment)
@@ -58,7 +63,7 @@ def handle_volume_control(track_number, data2):
             mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + volume_increment)
 
 
-def handle_pan_control(track_number, data2):
+def handle_pan_control(track_number, data2, pan_increment):
     """
     Handles pan control for a specific mixer track.
 
@@ -66,8 +71,6 @@ def handle_pan_control(track_number, data2):
     - track_number: The number of the mixer track to control.
     - data2: The MIDI event data representing the movement of the MIDI knob.
     """
-    pan_increment = config.increment
-
     if core.seriesCheck():
         if nihia.mixer.KNOB_INCREASE_MAX_SPEED <= data2:
             mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) - pan_increment)
