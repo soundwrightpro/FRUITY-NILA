@@ -42,6 +42,8 @@ def OnRefresh(self, flags):
         # Update PLAY button light when not playing or recording
         if not transport.isPlaying() and transport.isRecording() == 0:
             set_light("PLAY", on if transport.isPlaying() else off)
+        elif transport.isPlaying() == False and transport.isRecording()== True:
+            set_light("PLAY", off)
 
         # Update mixer lights if Mixer window is focused
         if ui.getFocused(constants.winName["Mixer"]):
@@ -83,3 +85,4 @@ def OnUpdateBeatIndicator(self, Value):
     elif transport.isRecording() == 1:
         set_light("PLAY", on)
         set_light("REC", on if Value in [1, 2] else off)
+
