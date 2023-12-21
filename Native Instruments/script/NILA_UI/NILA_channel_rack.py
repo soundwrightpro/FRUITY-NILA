@@ -76,7 +76,12 @@ def OnMidiMsg(self, event):
                         setattr(self, f'last_signal_time_{z}', current_time)
 
                         # Adjust increment value based on the time difference
-                        adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference < constants.speed_increase_wait else config.increment
+                        if time_difference <= constants.speed_increase_wait:
+                            print("false")
+                        else:
+                            print("true")
+                            
+                        adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference <= constants.speed_increase_wait else config.increment
 
                         new_value = adjust_channel_value(current_value, event.data2, adjusted_increment, knob_speed)
                         
@@ -85,7 +90,6 @@ def OnMidiMsg(self, event):
                             oled.OnRefresh(self, event)
                         else:
                             channels.setChannelPan(current_channel, new_value)
-                            
-                        
+    
                 else:
                     event.handled = True

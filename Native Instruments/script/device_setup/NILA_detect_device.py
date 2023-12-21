@@ -29,4 +29,3 @@ def detectDevice(NILA_Name):
     NILA_Name = device_mapping.get(deviceName, device.getName())
 
     return NILA_Name
-

@@ -60,7 +60,3 @@ def VersionCheck(compatibility):
         compatibility = False
 
     return compatibility
-
-
-
-

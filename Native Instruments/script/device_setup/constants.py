@@ -76,8 +76,8 @@ itemDisp, itemTime = 0, 0
 mixer_right, mixer_left = 63, 65
 
 # Knob speed and delay time before increment is doubled
-knob_rotation_speed = 2
-speed_increase_wait = 0.2  # in milliseconds
+knob_rotation_speed = 3.5
+speed_increase_wait = 0.05  # in milliseconds
 
 # FL Constants
 # FL project file types and their associated constants
