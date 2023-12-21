@@ -1,5 +1,4 @@
 import nihia
-from nihia import mixer as mix
 from script.device_setup import NILA_core as core
 from script.device_setup import config
 from script.device_setup import constants
