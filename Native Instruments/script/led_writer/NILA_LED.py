@@ -35,8 +35,8 @@ def OnRefresh(self, flags):
         set_light("REC", on if transport.isRecording() else off)
         set_light("LOOP", on if transport.getLoopMode() == off else off)
         set_light("METRO", on if ui.isMetronomeEnabled() else off)
-        set_light("COUNT_IN", on if not ui.isPrecountEnabled() else off)
-        set_light("QUANTIZE", on if ui.getSnapMode() in [1, 3] else off)
+        set_light("COUNT_IN", on if ui.isPrecountEnabled() else off)
+        set_light("QUANTIZE", on if ui.getSnapMode() in [1, 3] else on)
         set_light("AUTO", off)
 
         # Update PLAY button light when not playing or recording

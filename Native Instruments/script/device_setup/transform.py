@@ -146,3 +146,18 @@ def setTrackVolConvert(trackID: int, value: str):
     if value == "-inf dB":
         value = "- oo dB"
     mix.setTrackVol(trackID, value)
+
+
+def clamp(value, min_value, max_value):
+    """
+    Clamps the given value within the specified range.
+
+    Args:
+        value: The value to be clamped.
+        min_value: The minimum allowed value.
+        max_value: The maximum allowed value.
+
+    Returns:
+        The clamped value.
+    """
+    return max(min(value, max_value), min_value)

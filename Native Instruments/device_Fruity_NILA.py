@@ -10,9 +10,9 @@ For more information, visit: https://forum.image-line.com/viewtopic.php?p=149755
 
 Compatibility Notes:
 - Surface: Komplete Kontrol S-Series mkII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
-- Developer: Duwayne WRIGHT
-- Version: 12.0.0
-- Copyright (c) 2023 Duwayne WRIGHT
+- Developer: Duwayne 
+
+- Copyright (c) 2023  
 """
 
 import nihia
@@ -45,8 +45,8 @@ class Core():
             if NILA_version_check.VersionCheck(compatibility):
                 NILA_core.OnInit(self)
         except Exception as e:
-            print(f"OnInit error: {e}")
-            print(f"Line number: {exc_traceback.tb_lineno}")  
+            print(f"OnInit error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n")  
 
             
 
@@ -66,7 +66,8 @@ class Core():
             else:
                 NILA_touch_strips.OnMidiIn(event)
         except Exception as e:
-            print(f"OnMidiMsg error: {e}")
+            print(f"OnMidiMsg error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n") 
 
             
 
@@ -78,8 +79,8 @@ class Core():
             NILA_LED.OnRefresh(self, flags)
             oled.OnRefresh(self, flags)
         except Exception as e:
-            print(f"OnRefresh error: {e}")
-            print(f"Line number: {exc_traceback.tb_lineno}")       
+            print(f"OnRefresh error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n")       
 
     def OnUpdateBeatIndicator(self, Value):
         """
@@ -89,8 +90,8 @@ class Core():
             NILA_LED.OnUpdateBeatIndicator(self, Value)
             oled.OnUpdateBeatIndicator(self, Value)
         except Exception as e:
-            print(f"OnUpdateBeatIndicator error: {e}")
-            print(f"Line number: {exc_traceback.tb_lineno}")  
+            print(f"OnUpdateBeatIndicator error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n")  
 
     def OnWaitingForInput(self):
         """
@@ -100,8 +101,8 @@ class Core():
             setTrackName(0, constants.wait_input_1)
             setTrackVol(0, constants.wait_input_2)
         except Exception as e:
-            print(f"OnWaitingForInput error: {e}")
-            print(f"Line number: {exc_traceback.tb_lineno}")
+            print(f"OnWaitingForInput error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
 
     def OnProjectLoad(self, status):
         """
@@ -110,8 +111,8 @@ class Core():
         try:
             NILA_core.OnProjectLoad(self, status)
         except Exception as e:
-            print(f"OnProjectLoad error: {e}")
-            print(f"Line number: {exc_traceback.tb_lineno}")
+            print(f"OnProjectLoad error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
 
     def OnIdle(self):
         """
@@ -120,8 +121,8 @@ class Core():
         try:
             oled.OnIdle(self)
         except Exception as e:
-            print(f"OnIdle error: {e}")
-            print(f"Line number: {exc_traceback.tb_lineno}")
+            print(f"OnIdle error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
 
     def OnUpdateMeters(self):
         """
@@ -130,8 +131,8 @@ class Core():
         try:
             transform.sendPeakInfo()
         except Exception as e:
-            print(f"OnUpdateMeters error: {e}")
-            print(f"Line number: {exc_traceback.tb_lineno}")
+            print(f"OnUpdateMeters error: {e}\n")
+            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
 
 n_Core = Core()
 
@@ -166,5 +167,5 @@ def OnDeInit():
         else:
             nihia.goodBye()
     except Exception as e:
-        print(f"OnDeInit error: {e}")
-        print(f"Line number: {exc_traceback.tb_lineno}")
+        print(f"OnDeInit error: {e}\n")
+        print(f"Line number: {exc_traceback.tb_lineno}\n\n")

@@ -1,21 +1,24 @@
-# FRUITY NILA 
-<sup>(Fruity Native Instruments Language Agent - MIDI script for FL Studio)</sup>
+# FRUITY NILA
+*Fruity Native Instruments Language Agent - MIDI script for FL Studio*
 
-#### Written by Duwayne
+**Author: Duwayne**
 
-**FRUITY NILA** provides comprehensive support for Native Instruments controllers, including the [M-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/), [A-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61), and [S-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-s88/) within [FL STUDIO](https://www.image-line.com/). By leveraging the Native Instruments Host Integration protocol, FRUITY NILA transforms your controller's functionality to emulate a connection with Ableton or Logic Pro X. Notably, this script operates independently of the Komplete Kontrol App or Plugin, and it does not interfere with their normal operation.
+**FRUITY NILA** is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, including the [M-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/), [A-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61), and [S-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-s88/) within [FL STUDIO](https://www.image-line.com/). Harnessing the Native Instruments Host Integration protocol, FRUITY NILA elevates your controller's functionality, simulating a seamless connection with Ableton or Logic Pro X. Crucially, this script operates independently of the Komplete Kontrol App or Plugin, ensuring it doesn't disrupt their regular operation.
 
-**Minimum Requirements: Komplete Kontrol v2.3.0 or higher, Firmware 0.3.9 or higher, and FL Studio 21 or higher.**
+**Minimum Requirements:**
+- Komplete Kontrol v2.3.0 or higher
+- Firmware 0.3.9 or higher
+- FL Studio 21 or higher
 
-Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest "latest stable release") of FRUITY NILA. Learn how to install it [here](Installation/install.md).
+Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest) of FRUITY NILA and refer to the installation guide [here](Installation/install.md).
 
-## Major Features
+## Key Features
 
-- DAW integration mode for seamless functionality
-- Playback control and near full control of the mixer, channel rack, browser, piano roll, and select stock plugins
+- DAW integration mode for a seamless workflow
+- Control playback and access nearly full functionality of the mixer, channel rack, browser, piano roll, and select stock plugins
 - Watch detailed feature videos by [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto)
 
-## Compatible devices
+## Compatible Devices
 
 ### Komplete Kontrol
 
@@ -23,11 +26,12 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 - [x] Komplete Kontrol M32 
 - [x] Komplete Kontrol S49/61/88 MK2
 
-### Need support, have a request, found a bug, or just want to say hi? 
-**[Join us on Discord!](https://discord.gg/GeTTWBV "FL Studio NI on Discord")**
+### Need Support, Have a Request, Found a Bug, or Just Want to Say Hi? 
+
+**[Join us on Discord!](https://discord.gg/GeTTWBV)**
 
 ## Special Thanks
 
 [Hobyst](https://github.com/hobyst) for their outstanding documentation, programs, script [NI Host Integration Agent API for FL Studio](https://github.com/hobyst/flmidi-nihia), and coding assistance.
 
-<sub>**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32**</sub>
+*Development of this script takes place on an M32.*

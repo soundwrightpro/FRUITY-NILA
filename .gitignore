@@ -1,6 +1,8 @@
-
 .github/.DS_Store
+.github/ISSUE_TEMPLATE/bug_report.md
+.github/ISSUE_TEMPLATE/feature_request.md
 .venv/.DS_Store
+.vscode/settings.json
 images/.DS_Store
 Native Instruments/script/device_setup/.DS_Store
 Native Instruments/script/.DS_Store

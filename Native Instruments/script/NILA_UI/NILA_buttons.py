@@ -1,117 +1,155 @@
 from nihia import buttons
-from nihia.mixer import setTrackVol
-from nihia.mixer import setTrackName
-from nihia.mixer import setTrackPan
-
+from nihia.mixer import setTrackVol, setTrackName, setTrackPan
 from script.device_setup import constants
-
 import channels
 import device
 import general
 import midi
-import mixer 
-import playlist
 import time
 import transport
 import ui
 
-
+# Constants for on and off states
 on, off = 1, 0
+
+# Global variables
 windowCycle = 0
 jogMove = True
 
- 
-def OnMidiMsg(event): #listens for button or knob activity
 
-    global windowCycle
-    global jogMove
+def set_track_info(track_index, name, vol, pan=None):
+    """
+    Set track information such as name, volume, and pan.
 
-    if (event.data1 == buttons.button_list.get("PLAY")):
-        event.handled = True
-        if ui.isInPopupMenu() == True:
-            pass 
-        else:
-            transport.start() #play
-            ui.setHintMsg("Play/Pause")
+    Args:
+        track_index (int): Index of the track.
+        name (str): Name to set for the track.
+        vol (str): Volume information to set for the track.
+        pan (str, optional): Pan information to set for the track. Defaults to None.
+    """
+    if device.getName() != "Komplete Kontrol DAW - 1":
+        setTrackName(track_index, name)
+        setTrackVol(track_index, vol)
+        if pan is not None:
+            setTrackPan(track_index, pan)
 
-    if (event.data1 == buttons.button_list.get("RESTART")):
-        event.handled = True
-        transport.stop() #stop
-        transport.start() #restart play at beginning
-        setTrackName(0, "Metronome:")
-        setTrackVol(0, "Enabled")
+
+def handle_metronome_enabled():
+    """
+    Handle metronome enabled state and update track information.
+    """
+    if ui.isMetronomeEnabled() == off:
+        set_track_info(0, "Metronome:", "Disabled")
+    elif ui.isMetronomeEnabled() == on:
+        set_track_info(0, "Metronome:", "Enabled")
+
+
+def handle_precount_enabled():
+    """
+    Handle precount enabled state and update track information.
+    """
+    set_track_info(0, "Count In:", "Enabled" if ui.isPrecountEnabled() == 1 else "Disabled")
+
+
+def handle_mixer_action(event, action_function, track_number, hint_message):
+    """
+    Handle mixer actions.
+
+    Args:
+        event (MIDIEvent): MIDI event to handle.
+        action_function (function): Mixer action function.
+        track_number (int): Track number for the action.
+        hint_message (str): Hint message for UI.
+    """
+    event.handled = True
+    if track_number <= constants.currentUtility - 1:
+        action_function(track_number)
+        ui.setHintMsg(hint_message)
+    else:
+        pass
+
+
+def OnMidiMsg(event):
+    """
+    Handle MIDI messages.
+
+    Args:
+        event (MIDIEvent): MIDI event to handle.
+    """
+    global windowCycle, jogMove
+
+    # Mark the event as handled
+    event.handled = True
+
+    if event.data1 == buttons.button_list.get("PLAY") and not ui.isInPopupMenu():
+        transport.start()  # play
+        ui.setHintMsg("Play/Pause")
+
+    elif event.data1 == buttons.button_list.get("RESTART"):
+        transport.stop()  # stop
+        transport.start()  # restart play at the beginning
+        set_track_info(0, "Metronome:", "Enabled")
         ui.setHintMsg("Restart")
-        
-    if (event.data1 == buttons.button_list.get("REC")):
-        event.handled = True
-        transport.record() #record
+
+    elif event.data1 == buttons.button_list.get("REC"):
+        transport.record()  # record
         ui.setHintMsg("Record")
 
-    if (event.data1 == buttons.button_list.get("STOP")):
-        event.handled = True
-        transport.stop() #stop
+    elif event.data1 == buttons.button_list.get("STOP"):
+        transport.stop()  # stop
         ui.setHintMsg("Stop")
 
-    if (event.data1 == buttons.button_list.get("LOOP")):
-        event.handled = True
-        transport.setLoopMode() #loop/pattern mode
+    elif event.data1 == buttons.button_list.get("LOOP"):
+        transport.setLoopMode()  # loop/pattern mode
         ui.setHintMsg("Song / pattern mode")
-
         if transport.getLoopMode() == off:
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                setTrackName(0, "Pattern:")
-                setTrackVol(0, "Enabled")
-                setTrackPan(0, "Enabled")
-                time.sleep(constants.timedelay) 
-
+            set_track_info(0, "Pattern:", "Enabled")
         elif transport.getLoopMode() == on:
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                setTrackName(0, "Song:")
-                setTrackVol(0, "Enabled")
-                setTrackPan(0, "Enabled")
-                time.sleep(constants.timedelay) 
+            set_track_info(0, "Song:", "Enabled")
 
-    if (event.data1 == buttons.button_list.get("METRO")): # metronome/button
-        event.handled = True
+    elif event.data1 == buttons.button_list.get("METRO"):
         transport.globalTransport(midi.FPT_Metronome, 110)
         ui.setHintMsg("Metronome")
+        handle_metronome_enabled()
 
-        if ui.isMetronomeEnabled() == off: 
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                setTrackName(0, "Metronome:")
-                setTrackVol(0, "Disabled")
-                time.sleep(constants.timedelay) 
+    elif event.data1 == buttons.button_list.get("TEMPO"):
+        transport.stop()  # tap tempo
 
-        elif ui.isMetronomeEnabled() == on:
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                setTrackName(0, "Metronome:")
-                setTrackVol(0, "Enabled")
-                time.sleep(constants.timedelay) 
-
-    if (event.data1 == buttons.button_list.get("TEMPO")):
-        event.handled = True
-        transport.stop() #tap tempo
-
-    if (event.data1 == buttons.button_list.get("QUANTIZE")):
-        event.handled = True
-        channels.quickQuantize(channels.channelNumber(),0)
+    elif event.data1 == buttons.button_list.get("QUANTIZE"):
+        channels.quickQuantize(channels.channelNumber(), 0)
         ui.setHintMsg("Quick Quantize")
-        if device.getName() == "Komplete Kontrol DAW - 1":
-            pass
-        else:
-            setTrackName(0, "Piano Roll")
-            setTrackVol(0, "Quick Quantize")
-            time.sleep(constants.timedelay) 
+        set_track_info(0, "Piano Roll", "Quick Quantize")
 
-        
+    elif event.data1 == buttons.button_list.get("COUNT_IN"):
+        transport.globalTransport(midi.FPT_CountDown, 115)  # countdown before recording
+        ui.setHintMsg("Countdown before recording")
+        handle_precount_enabled()
+
+    elif event.data1 == buttons.button_list.get("CLEAR"):
+        double_click_status = device.isDoubleClick(buttons.button_list.get("CLEAR"))
+        if double_click_status:
+            transport.globalTransport(midi.FPT_F12, 2, 15)
+            ui.setHintMsg("Clear All Windows")
+            set_track_info(0, "Clear All")
+        else:
+            ui.escape()  # escape key
+            ui.setHintMsg("Close")
+
+    elif event.data1 == buttons.button_list.get("UNDO"):
+        undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
+        general.undoUp()  # undo
+        ui.setHintMsg(ui.getHintMsg())
+        set_track_info(0, "History", "Undo @ " + undo_level)
+
+    elif event.data1 == buttons.button_list.get("REDO"):
+        undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
+        general.undo()  # redo
+        ui.setHintMsg(ui.getHintMsg())
+        set_track_info(0, "History", "Redo @ " + undo_level)
+
+    elif event.data1 == buttons.button_list.get("TEMPO"):
+        transport.globalTransport(midi.FPT_TapTempo, 106)  # tap tempo
+
     if event.data1 == buttons.button_list.get("AUTO"):
         event.handled = True
 
@@ -140,242 +178,97 @@ def OnMidiMsg(event): #listens for button or knob activity
         ui.setHintMsg(f"Snap: {snap_mode_name}")
 
         if device.getName() != "Komplete Kontrol DAW - 1":
-            setTrackName(0, "Main Snap")
-            setTrackPan(0, snap_mode_name)
+            set_track_info(0, "Main Snap", snap_mode_name)
             time.sleep(constants.timedelay)
 
-
-    if (event.data1 == buttons.button_list.get("COUNT_IN")):
+    if event.data1 == buttons.button_list.get("ENCODER_BUTTON_SHIFTED"):
         event.handled = True
-        transport.globalTransport(midi.FPT_CountDown, 115) #countdown before recording
-        ui.setHintMsg("Countdown before recording")
-        
-
-        if ui.isPrecountEnabled() == 1: 
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                setTrackName(0, "Count In:")
-                setTrackPan(0, "Enabled")
-                time.sleep(constants.timedelay)   
-        else:
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                setTrackName(0, "Count In:")
-                setTrackPan(0, "Disabled")
-                time.sleep(constants.timedelay) 
-
-    if (event.data1 == buttons.button_list.get("CLEAR")):
-        event.handled = True
-
-        doubleclickstatus = device.isDoubleClick(buttons.button_list.get("CLEAR"))
-
-        if doubleclickstatus == True:
-            transport.globalTransport(midi.FPT_F12, 2, 15)
-            ui.setHintMsg("Clear All Windows")
-            if device.getName() == "Komplete Kontrol DAW - 1":
-                pass
-            else:
-                setTrackName(0, "Clear All")
-                time.sleep(constants.timedelay) 
-        else:
-            ui.escape() #escape key
-            ui.setHintMsg("Close")
-
-
-    if (event.data1 == buttons.button_list.get("UNDO")):
-        event.handled = True
-        undoLevel =  str(general.getUndoHistoryCount()-general.getUndoHistoryLast())
-
-        general.undoUp() #undo 
-
-        ui.setHintMsg(ui.getHintMsg())
-        if device.getName() == "Komplete Kontrol DAW - 1":
-            pass
-        else:
-            setTrackName(0, "History")
-            setTrackVol(0, "Undo @ "+ undoLevel)
-            time.sleep(constants.timedelay) 
-        
-        
-
-    if (event.data1 == buttons.button_list.get("REDO")):
-        event.handled = True
-        undoLevel =  str(general.getUndoHistoryCount()-general.getUndoHistoryLast())
-
-        general.undo() #redo
-
-        ui.setHintMsg(ui.getHintMsg())
-        setTrackName(0, "History")
-        setTrackPan(0, "Redo @ "+ undoLevel)
-        time.sleep(constants.timedelay)
-        
-
-    if (event.data1 == buttons.button_list.get("TEMPO")):
-        event.handled = True
-        transport.globalTransport(midi.FPT_TapTempo, 106) #tap tempo
-
-    if (event.data1 == buttons.button_list.get("ENCODER_BUTTON_SHIFTED")):
-        event.handled = True
- 
 
         doubleclickstatus = device.isDoubleClick(buttons.button_list.get("ENCODER_BUTTON_SHIFTED"))
 
+        window_mappings = {
+            0: (1, "Channel Rack"),
+            1: (0, "Mixer"),
+            2: (2, "Playlist"),
+            3: (4, "Browser")
+        }
 
-        if doubleclickstatus == True:
-
-            if windowCycle == 0:
-                windowCycle == 3
-            else:
-                windowCycle -= 1
-
+        if doubleclickstatus:
+            windowCycle = (windowCycle - 1) % 4
             transport.globalTransport(midi.FPT_F8, 67)
             ui.setHintMsg("Plugin Picker")
-            
-            if " M " in device.getName():
-                #setTrackName(0, "Window:")
-                #setTrackPan(0, "Plugin Picker")
-                time.sleep(constants.timedelay)
-            
         else:
-            
-            if windowCycle == 0:
-                ui.showWindow(1)
-                windowCycle += 1
-                ui.setHintMsg("Channel Rack")
-                if " M " in device.getName():
-                    #setTrackName(0, "Window:")
-                    #setTrackPan(0, "Channel Rack")
-                    time.sleep(constants.timedelay)
+            window, hint_msg = window_mappings[windowCycle]
+            ui.showWindow(window)
+            windowCycle = (windowCycle + 1) % 4
+            ui.setHintMsg(hint_msg)
+            if " M " in device.getName():
+                time.sleep(constants.timedelay)
 
-            elif windowCycle == 1:
-                ui.showWindow(0)
-                windowCycle += 1
-                ui.setHintMsg("Mixer")
-                if " M " in device.getName():
-                    #setTrackName(0, "Window:")
-                    #setTrackPan(0, "Mixer")
-                    time.sleep(constants.timedelay)
+    button_id = event.data1
+    is_mute_button = button_id == buttons.button_list["MUTE_SELECTED"]
+    is_solo_button = button_id == buttons.button_list["SOLO_SELECTED"]
 
-            elif windowCycle == 2:
-                ui.showWindow(2)
-                windowCycle += 1
-                ui.setHintMsg("Playlist")
-                if " M " in device.getName():
-                    #setTrackName(0, "Window:")
-                    #setTrackPan(0, "Playlist")
-                    time.sleep(constants.timedelay)
+    if is_mute_button or is_solo_button:
+        focused_index = 0 if ui.getFocused(0) else 1
+        event.handled = True
 
-            elif windowCycle == 3:
-                ui.showWindow(4)
-                windowCycle = 0
-                ui.setHintMsg("Browser")
-                if " M " in device.getName():
-                    #setTrackName(0, "Window:")
-                    #setTrackPan(0, "Browser")
-                    time.sleep(constants.timedelay)
-
-                     
-    if (event.data1 == buttons.button_list.get("MUTE_SELECTED")):
-        if ui.getFocused(0) == True: 
-            event.handled = True
+        if focused_index == 0:
             if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
                 pass
             else:
-                mixer.enableTrack(mixer.trackNumber()) 
-                ui.setHintMsg("Mute")
-   
-    if (event.data1 ==  buttons.button_list.get("SOLO_SELECTED")): 
-        if ui.getFocused(0) == True: 
-            event.handled = True
-            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
-                pass
-            else:
-                mixer.soloTrack(mixer.trackNumber()) 
-                ui.setHintMsg("Solo")
+                mixer_function = mixer.enableTrack if is_mute_button else mixer.soloTrack
+                mixer_function(mixer.trackNumber())
+                ui.setHintMsg("Mute" if is_mute_button else "Solo")
+        elif focused_index == 1:
+            channel_function = channels.muteChannel if is_mute_button else channels.soloChannel
+            channel_function(channels.channelNumber())
+            ui.setHintMsg("Mute" if is_mute_button else "Solo")
 
-    if (event.data1 == buttons.button_list.get("MUTE_SELECTED")):
-        if ui.getFocused(1) == True: 
-            event.handled = True
-            channels.muteChannel(channels.channelNumber()) 
-            ui.setHintMsg("Mute")
-        
-    if (event.data1 ==  buttons.button_list.get("SOLO_SELECTED")): 
-        if ui.getFocused(1) == True: 
-            event.handled = True
-            channels.soloChannel(channels.channelNumber()) 
-            ui.setHintMsg("Solo")
+    if ui.getFocused(constants.winName["Mixer"]):
+        button_id = event.data1
 
-
-    
-    if ui.getFocused(constants.winName["Mixer"]) == True:
-        
-        #s-series mixer mute 
+        # s-series mixer actions
         for x in range(8):
-            if event.data1 == buttons.button_list.get("MUTE") and event.data2 == x:
-                event.handled = True
-                if mixer.trackNumber() + x <= constants.currentUtility - 1:
-                    mixer.enableTrack(mixer.trackNumber() + x) 
-                    ui.setHintMsg("Mute") 
-                else:
-                    pass              
+            target_track = mixer.trackNumber() + x
+            if button_id == buttons.button_list["MUTE"] and event.data2 == x:
+                handle_mixer_action(event, mixer.enableTrack, target_track, "Mute")
+            elif button_id == buttons.button_list["SOLO"] and event.data2 == x:
+                handle_mixer_action(event, mixer.soloTrack, target_track, "Solo")
+            elif button_id == constants.select and event.data2 == x:
+                handle_mixer_action(event, mixer.armTrack, target_track, "Armed Disk Recording")
 
-        #s-series mixer solo 
+    win_channel_rack = ui.getFocused(constants.winName["Channel Rack"])
+
+    if win_channel_rack:
+        button_list = buttons.button_list
+        channel_count = channels.channelCount()
+        selected_channel = channels.selectedChannel()
+
         for x in range(8):
-            if event.data1 == buttons.button_list.get("SOLO") and event.data2 == x:
-                event.handled = True
-                if mixer.trackNumber() + x <= constants.currentUtility - 1:
-                    mixer.soloTrack(mixer.trackNumber() + x)  
+            if channel_count > x and selected_channel < (channel_count - x):
+                if event.data1 == button_list.get("MUTE") and event.data2 == x:
+                    event.handled = True
+                    channels.muteChannel(selected_channel + x)
+                    ui.setHintMsg("Mute")
+
+                if event.data1 == button_list.get("SOLO") and event.data2 == x and not (
+                        channels.isChannelMuted(selected_channel + x) and channel_count == 1):
+                    event.handled = True
+                    channels.soloChannel(selected_channel + x)
                     ui.setHintMsg("Solo")
-                else:
-                    pass
 
-        #s-series mixer arm recording
+                if event.data1 == constants.select and event.data2 == x:
+                    event.handled = True
+                    channels.selectOneChannel(selected_channel + x)
+                    ui.setHintMsg("Track selected")
+
+    win_playlist = ui.getFocused(constants.winName["Playlist"])
+
+    if win_playlist:
         for x in range(8):
             if event.data1 == constants.select and event.data2 == x:
                 event.handled = True
-                if mixer.trackNumber() + x <= constants.currentUtility - 1:
-                    mixer.armTrack(mixer.trackNumber() + x)
-                    ui.setHintMsg("Armed Disk Recording")
-                else:
-                    pass
-
-    
-    if ui.getFocused(constants.winName["Channel Rack"]) == True:
-        
-        #s-series channel rack mute 
-        for x in range(8):
-            if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-                if event.data1 == buttons.button_list.get("MUTE") and event.data2 == x:
-                    event.handled = True
-                    channels.muteChannel(channels.selectedChannel() + x) 
-                    ui.setHintMsg("Mute")  
-
-        #s-series channel rack solo
-        for x in range(8):
-            if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-                if event.data1 == buttons.button_list.get("SOLO") and event.data2 == x: 
-                    event.handled = True
-                    if channels.isChannelMuted(channels.selectedChannel() + x) == True and channels.channelCount() == 1:
-                        pass
-                    else:
-                        channels.soloChannel(channels.selectedChannel() + x)  
-                        ui.setHintMsg("Solo")
-
-        #s-series channel rack select 
-        for x in range(8):
-            if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-                if event.data1 == constants.select and event.data2 == x: 
-                    event.handled = True
-                    channels.selectOneChannel(channels.selectedChannel() + x)  
-                    ui.setHintMsg("Track selected")
-                    
-    if ui.getFocused(constants.winName["Playlist"]) == True:
-        
-        #s-series playlist select 
-        for x in range(8):
-            if event.data1 == constants.select and event.data2 == x: 
-                event.handled = True
                 playlist.selectTrack()
                 ui.setHintMsg("")
+                break  # Exit the loop since the track has been selected

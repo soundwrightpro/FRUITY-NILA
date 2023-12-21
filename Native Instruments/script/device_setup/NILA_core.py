@@ -21,7 +21,7 @@ def OnInit(self):
 
     device.setHasMeters()
 
-    for button in ["UNDO", "REDO", "TEMPO", "CLEAR"]:
+    for button in ["UNDO", "REDO", "TEMPO", "CLEAR", "QUANTIZE"]:
         nihia.buttons.setLight(button, 1)
 
     device.midiOutSysex(bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247]))  # 'mute' & 'solo' button lights activated
