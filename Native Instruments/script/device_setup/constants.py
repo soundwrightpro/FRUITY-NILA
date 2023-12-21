@@ -11,7 +11,7 @@ Copyright © 2023 Duwayne
 """
 
 # Version information
-VERSION_NUMBER = "v12.0.2"
+VERSION_NUMBER = "v12.0.3"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2023 Duwayne\n"

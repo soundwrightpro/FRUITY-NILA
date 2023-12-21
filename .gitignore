@@ -1,4 +1,6 @@
 .github/.DS_Store
+.github/ISSUE_TEMPLATE/
+.github
 .github/ISSUE_TEMPLATE/bug_report.md
 .github/ISSUE_TEMPLATE/feature_request.md
 .venv/.DS_Store
@@ -11,3 +13,4 @@ past versions/.DS_Store
 past versions/.DS_Store
 Native Instruments/nihia/.DS_Store
 .DS_Store
+.gitignore
