@@ -85,4 +85,3 @@ def OnUpdateBeatIndicator(self, Value):
     elif transport.isRecording() == 1:
         set_light("PLAY", on)
         set_light("REC", on if Value in [1, 2] else off)
-

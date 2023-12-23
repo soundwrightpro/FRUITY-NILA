@@ -75,30 +75,29 @@ def sendPeakInfo():
     """
     TrackPeaks = [0] * 16
 
-    if transport.isPlaying():
-        if ui.getFocused(constants.winName["Mixer"]):
-            for x in range(8):
-                if mixer.trackNumber() <= constants.currentUtility - x:
-                    TrackPeaks[(x * 2) + 0] = mixer.getTrackPeaks((mixer.trackNumber() + x), midi.PEAK_L)
-                    TrackPeaks[(x * 2) + 1] = mixer.getTrackPeaks((mixer.trackNumber() + x), midi.PEAK_R)
-        elif ui.getFocused(constants.winName["Channel Rack"]):
-            for x in range(8):
-                if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-                    if channels.getTargetFxTrack((channels.selectedChannel() + x)) > 0:
-                        TrackPeaks[(x * 2) + 0] = mixer.getTrackPeaks(channels.getTargetFxTrack((channels.selectedChannel() + x)), midi.PEAK_L)
-                        TrackPeaks[(x * 2) + 1] = mixer.getTrackPeaks(channels.getTargetFxTrack((channels.selectedChannel() + x)), midi.PEAK_R)
-        elif ui.getFocused(constants.winName["Playlist"]):
-            TrackPeaks[0] = mixer.getTrackPeaks(0, midi.PEAK_L)
-            TrackPeaks[1] = mixer.getTrackPeaks(0, midi.PEAK_R)
-        elif ui.getFocused(constants.winName["Browser"]) or ui.getFocused(constants.winName["Playlist"]):
-            TrackPeaks[0] = mixer.getTrackPeaks(0, midi.PEAK_L)
-            TrackPeaks[1] = mixer.getTrackPeaks(0, midi.PEAK_R)
+    if ui.getFocused(constants.winName["Mixer"]):
+        for x in range(8):
+            if mixer.trackNumber() <= constants.currentUtility - x:
+                TrackPeaks[(x * 2) + 0] = mixer.getTrackPeaks((mixer.trackNumber() + x), midi.PEAK_L)
+                TrackPeaks[(x * 2) + 1] = mixer.getTrackPeaks((mixer.trackNumber() + x), midi.PEAK_R)
+    elif ui.getFocused(constants.winName["Channel Rack"]):
+        for x in range(8):
+            if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
+                if channels.getTargetFxTrack((channels.selectedChannel() + x)) > 0:
+                    TrackPeaks[(x * 2) + 0] = mixer.getTrackPeaks(channels.getTargetFxTrack((channels.selectedChannel() + x)), midi.PEAK_L)
+                    TrackPeaks[(x * 2) + 1] = mixer.getTrackPeaks(channels.getTargetFxTrack((channels.selectedChannel() + x)), midi.PEAK_R)
+    elif ui.getFocused(constants.winName["Playlist"]):
+        TrackPeaks[0] = mixer.getTrackPeaks(0, midi.PEAK_L)
+        TrackPeaks[1] = mixer.getTrackPeaks(0, midi.PEAK_R)
+    elif ui.getFocused(constants.winName["Browser"]) or ui.getFocused(constants.winName["Playlist"]):
+        TrackPeaks[0] = mixer.getTrackPeaks(0, midi.PEAK_L)
+        TrackPeaks[1] = mixer.getTrackPeaks(0, midi.PEAK_R)
 
-        for x in range(16):
-            TrackPeaks[x] = min(1.1, TrackPeaks[x])
-            TrackPeaks[x] = int(TrackPeaks[x] * (127 / 1.1))
+    for x in range(16):
+        TrackPeaks[x] = min(1.1, TrackPeaks[x])
+        TrackPeaks[x] = int(TrackPeaks[x] * (127 / 1.1))
 
-        mix.sendPeakMeterData(TrackPeaks)
+    mix.sendPeakMeterData(TrackPeaks) 
 
 
 def timeConvert(timeDisp, currentTime):

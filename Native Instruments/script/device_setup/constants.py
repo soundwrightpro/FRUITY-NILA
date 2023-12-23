@@ -1,12 +1,8 @@
 """
-script_constants.py
 
 These constants are used in various parts of the FRUITY NILA code base to maintain version information,
 define supported plugins, specify window names and IDs, set touch strip mappings, and establish various
 other constants for MIDI script functionality.
-
-Author: Duwayne
-Copyright © 2023 Duwayne
 
 """
 
