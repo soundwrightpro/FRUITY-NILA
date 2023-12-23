@@ -1,6 +1,6 @@
 import nihia
 from nihia import mixer as mix
-from script.device_setup import config, constants, transform
+from script.device_setup import config, constants, NILA_transform
 from script.screen_writer import NILA_OLED as oled
 import mixer
 import ui 
@@ -40,5 +40,5 @@ def adjust_track_volume(track_index, increment):
         increment: Amount to adjust the volume.
     """
     current_volume = mixer.getTrackVolume(track_index)
-    new_volume = transform.clamp(current_volume + increment, 0.0, 1.0)
+    new_volume = NILA_transform.clamp(current_volume + increment, 0.0, 1.0)
     mixer.setTrackVolume(track_index, new_volume)

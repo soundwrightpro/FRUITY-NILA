@@ -1,6 +1,6 @@
 import nihia
 from nihia import mixer as mix
-from script.device_setup import config, constants, transform, NILA_core
+from script.device_setup import config, constants, NILA_transform, NILA_core
 import channels
 import ui
 
@@ -77,4 +77,4 @@ def adjust_channel_pan(channel_index, current_pan, increment):
     """
     updated_pan = current_pan + increment
     channels.setChannelPan(channels.selectedChannel() + channel_index, updated_pan)
-    transform.updatePanChannel(channels.selectedChannel() + channel_index, 0)
+    NILA_transform.updatePanChannel(channels.selectedChannel() + channel_index, 0)

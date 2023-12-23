@@ -14,14 +14,14 @@ Supporting Functions:
 
 Dependencies:
 - nihia.mixer as mix: Provides access to mixer-related functions.
-- script.device_setup.NILA_core, constants, transform: Handles device setup and constants.
+- script.device_setup.NILA_core, constants, NILA_transform: Handles device setup and constants.
 - channels, mixer, plugins, transport, ui, device: FL Studio API modules for channel, mixer, plugin, transport, UI, and device interactions.
 - math: Python math module for mathematical operations.
 """
 
 from nihia import mixer as mix
 
-from script.device_setup import NILA_core, constants, transform
+from script.device_setup import NILA_core, constants, NILA_transform
 
 import channels
 import mixer
@@ -56,9 +56,9 @@ def OnRefresh(self, event):
             if mixer.trackNumber() <= constants.currentUtility - x and trackNumber != constants.currentUtility:
                 mix.setTrackExist(x, 1)
                 mix.setTrackName(x, mixer.getTrackName(trackNumber))
-                mix.setTrackVol(x, str(transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
+                mix.setTrackVol(x, str(NILA_transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
                 mix.setTrackVolGraph(x, mixer.getTrackVolume(trackNumber))
-                transform.updatePanMix(trackNumber, x)
+                NILA_transform.updatePanMix(trackNumber, x)
                 mix.setTrackSel(0, 1 if trackNumber == constants.currentUtility else 0)
             else:
                 mix.setTrackExist(x, 0)
@@ -71,7 +71,7 @@ def OnRefresh(self, event):
                 mix.setTrackName(x, channels.getChannelName(selectedChannel))
                 mix.setTrackVol(x, f"{round(channels.getChannelVolume(selectedChannel, 1), 1)} dB")
                 mix.setTrackVolGraph(x, channels.getChannelVolume(selectedChannel) / 1.0 * 0.86)
-                transform.updatePanChannel(selectedChannel, x)
+                NILA_transform.updatePanChannel(selectedChannel, x)
                 mix.setTrackSel(0, 0)
             else:
                 mix.setTrackExist(x, 0)
@@ -83,7 +83,7 @@ def OnRefresh(self, event):
         mix.setTrackName(0, f"P| {channels.getChannelName(channels.selectedChannel())}")
         mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
         mix.setTrackVolGraph(0, channels.getChannelVolume(channels.selectedChannel()) / 1.0 * 0.86)
-        transform.updatePanChannel(channels.selectedChannel(), 0)
+        NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
         mix.setTrackSel(0, 0)
 
     if ui.getFocused(constants.winName["Piano Roll"]) == True:
@@ -91,7 +91,7 @@ def OnRefresh(self, event):
         clear_part()
         mix.setTrackName(0, str(channels.getChannelName(channels.selectedChannel())))
         NILA_core.setTrackVolConvert(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
-        transform.updatePanChannel(channels.selectedChannel(), 0)
+        NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
 
     if ui.getFocused(constants.winName["Playlist"]) == True:
         mix.setTrackName(0, "Playlist")
@@ -160,7 +160,7 @@ def OnIdle(self):
 
 def remove_part():
     """
-    Removes tracks 1 to 7.
+    Removes tracks 1 to 7, excluding Track 0
     """
     for y in range(1, 8):
         mix.setTrackExist(y, 0)
@@ -176,7 +176,7 @@ def remove_all():
 
 def clear_part():
     """
-    Clears information from tracks 1 to 7.
+    Clears information from tracks 1 to 7, excluding Track 0
     """
     for y in range(1, 8):
         mix.setTrackPanGraph(y, 0)
@@ -191,7 +191,7 @@ def clear_part():
 
 def clear_all():
     """
-    Clears information from all tracks (0 to 7).
+    Clears information from all tracks 0 to 7.
     """
     for y in range(8):
         mix.setTrackPanGraph(y, 0)

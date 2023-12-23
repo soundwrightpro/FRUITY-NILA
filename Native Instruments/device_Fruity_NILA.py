@@ -4,32 +4,33 @@
 # receiveFrom=Forward Device
 
 """
-Fruity NILA is a script designed for FL Studio.
+FRUITY NILA is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, 
+including the M-Series, A-Series, and S-Series within FL STUDIO. Harnessing the Native Instruments Host Integration protocol, 
+FRUITY NILA elevates your controller's functionality, simulating a seamless connection like with Ableton or Logic Pro X. 
+Crucially, this script operates independently of the Komplete Kontrol App or Plugin, 
+ensuring it doesn't disrupt their regular operation..
 
-For more information, visit: https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
+For more information, visit: https://github.com/soundwrightpro/FRUITY-NILA
 
 Compatibility Notes:
-- Surface: Komplete Kontrol S-Series mkII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
-- Developer: Duwayne 
+- Surface: Komplete Kontrol S-Series MKII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
 
-- Copyright (c) 2023  
+Developer: Duwayne 
+Copyright (c) 2023 
 """
 
 import nihia
-from nihia import *
 from script.NILA_UI import *
 from script.device_setup import *
-from script.device_setup import transform
 from script.led_writer import NILA_LED
-from script.screen_writer import NILA_OLED as oled
+from script.screen_writer import NILA_OLED
 
-from nihia.mixer import setTrackVol
-from nihia.mixer import setTrackName
-
-import sys
-exc_type, exc_value, exc_traceback = sys.exc_info()
+from nihia.mixer import setTrackVol, setTrackName
 
 import ui
+import sys
+
+exc_type, exc_value, exc_traceback = sys.exc_info()
 
 
 class Core(): 
@@ -45,10 +46,7 @@ class Core():
             if NILA_version_check.VersionCheck(compatibility):
                 NILA_core.OnInit(self)
         except Exception as e:
-            print(f"OnInit error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n")  
-
-            
+            self.handle_exception("OnInit", e)
 
     def OnMidiMsg(self, event): 
         """
@@ -66,10 +64,7 @@ class Core():
             else:
                 NILA_touch_strips.OnMidiIn(event)
         except Exception as e:
-            print(f"OnMidiMsg error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n") 
-
-            
+            self.handle_exception("OnMidiMsg", e)
 
     def OnRefresh(self, flags):
         """
@@ -77,10 +72,9 @@ class Core():
         """
         try:
             NILA_LED.OnRefresh(self, flags)
-            oled.OnRefresh(self, flags)
+            NILA_OLED.OnRefresh(self, flags)
         except Exception as e:
-            print(f"OnRefresh error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n")       
+            self.handle_exception("OnRefresh", e)     
 
     def OnUpdateBeatIndicator(self, Value):
         """
@@ -88,10 +82,9 @@ class Core():
         """
         try:
             NILA_LED.OnUpdateBeatIndicator(self, Value)
-            oled.OnUpdateBeatIndicator(self, Value)
+            NILA_OLED.OnUpdateBeatIndicator(self, Value)
         except Exception as e:
-            print(f"OnUpdateBeatIndicator error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n")  
+            self.handle_exception("OnUpdateBeatIndicator", e) 
 
     def OnWaitingForInput(self):
         """
@@ -101,8 +94,7 @@ class Core():
             setTrackName(0, constants.wait_input_1)
             setTrackVol(0, constants.wait_input_2)
         except Exception as e:
-            print(f"OnWaitingForInput error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
+            self.handle_exception("OnWaitingForInput", e)
 
     def OnProjectLoad(self, status):
         """
@@ -111,28 +103,32 @@ class Core():
         try:
             NILA_core.OnProjectLoad(self, status)
         except Exception as e:
-            print(f"OnProjectLoad error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
+            self.handle_exception("OnProjectLoad", e)
 
     def OnIdle(self):
         """
         Idle method for handling idle state.
         """
         try:
-            oled.OnIdle(self)
+            NILA_OLED.OnIdle(self)
         except Exception as e:
-            print(f"OnIdle error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
+            self.handle_exception("OnIdle", e)
 
     def OnUpdateMeters(self):
         """
         Method for updating volume meters.
         """
         try:
-            transform.sendPeakInfo()
+            NILA_transform.sendPeakInfo()
         except Exception as e:
-            print(f"OnUpdateMeters error: {e}\n")
-            print(f"Line number: {exc_traceback.tb_lineno}\n\n")
+            self.handle_exception("OnUpdateMeters", e)
+            
+    def handle_exception(self, method_name, exception):
+        """
+        Handles exceptions and prints error details.
+        """
+        print(f"{method_name} error: {exception}")
+        print(f"Line number: {sys.exc_info()[2].tb_lineno}\n\n")
 
 n_Core = Core()
 

@@ -1,4 +1,4 @@
-from nihia import mixer as mix
+from nihia import mixer as nihia_mixer
 from script.device_setup import constants
 import channels
 import playlist
@@ -7,7 +7,6 @@ import ui
 import midi
 import transport
 import mixer 
-
 
 
 def VolTodB(value: float) -> float:
@@ -36,15 +35,15 @@ def updatePanMix(self, track):
     """
     pan_value = mixer.getTrackPan(track)
     if pan_value == 0:
-        mix.setTrackPan(track, "Centered")
+        nihia_mixer.setTrackPan(track, "Centered")
     elif pan_value > 0:
-        mix.setTrackPan(track, f"{round(pan_value * 100)}% Right")
+        nihia_mixer.setTrackPan(track, f"{round(pan_value * 100)}% Right")
     elif pan_value < 0:
-        mix.setTrackPan(track, f"{round(pan_value * -100)}% Left")
+        nihia_mixer.setTrackPan(track, f"{round(pan_value * -100)}% Left")
 
     for x in range(8):
         if mixer.trackNumber() <= constants.currentUtility - x:
-            mix.setTrackPanGraph(x, mixer.getTrackPan(mixer.trackNumber() + x))
+            nihia_mixer.setTrackPanGraph(x, mixer.getTrackPan(mixer.trackNumber() + x))
 
 
 def updatePanChannel(self, track):
@@ -56,17 +55,17 @@ def updatePanChannel(self, track):
     """
     pan_value = channels.getChannelPan(track)
     if pan_value == 0:
-        mix.setTrackPan(track, "Centered")
+        nihia_mixer.setTrackPan(track, "Centered")
     elif pan_value > 0:
-        mix.setTrackPan(track, f"{round(pan_value * 100)}% Right")
+        nihia_mixer.setTrackPan(track, f"{round(pan_value * 100)}% Right")
     elif pan_value < 0:
-        mix.setTrackPan(track, f"{round(pan_value * -100)}% Left")
+        nihia_mixer.setTrackPan(track, f"{round(pan_value * -100)}% Left")
 
-    mix.setTrackPanGraph(0, channels.getChannelPan(channels.selectedChannel() + 0))
+    nihia_mixer.setTrackPanGraph(0, channels.getChannelPan(channels.selectedChannel() + 0))
 
     for x in range(1, 8):
         if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
-            mix.setTrackPanGraph(x, channels.getChannelPan(channels.selectedChannel() + x))
+            nihia_mixer.setTrackPanGraph(x, channels.getChannelPan(channels.selectedChannel() + x))
 
 
 def sendPeakInfo():
@@ -97,7 +96,7 @@ def sendPeakInfo():
         TrackPeaks[x] = min(1.1, TrackPeaks[x])
         TrackPeaks[x] = int(TrackPeaks[x] * (127 / 1.1))
 
-    mix.sendPeakMeterData(TrackPeaks) 
+    nihia_mixer.sendPeakMeterData(TrackPeaks)
 
 
 def timeConvert(timeDisp, currentTime):
@@ -144,7 +143,7 @@ def setTrackVolConvert(trackID: int, value: str):
     """
     if value == "-inf dB":
         value = "- oo dB"
-    mix.setTrackVol(trackID, value)
+    nihia_mixer.setTrackVol(trackID, value)
 
 
 def clamp(value, min_value, max_value):

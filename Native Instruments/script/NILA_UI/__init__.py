@@ -22,6 +22,11 @@ Usage:
 Note: Users should update this list based on the specific modules they want to use in their script.
 
 """
-__all__ = ["NILA_buttons", "NILA_channel_rack", "NILA_mixer",
-           "NILA_navigation", "NILA_piano_roll", "NILA_playlist",
-           "NILA_plugins", "NILA_touch_strips"]
+__all__ = ["NILA_buttons", 
+           "NILA_channel_rack", 
+           "NILA_mixer",
+           "NILA_navigation", 
+           "NILA_piano_roll", 
+           "NILA_playlist",
+           "NILA_plugins", 
+           "NILA_touch_strips"]

@@ -1,6 +1,6 @@
 import nihia
 from nihia import buttons
-from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm
+from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm, setTrackMutedBySolo
 from script.device_setup import constants
 import device
 import channels
@@ -40,19 +40,26 @@ def OnRefresh(self, flags):
         set_light("AUTO", off)
 
         # Update PLAY button light when not playing or recording
-        if not transport.isPlaying() and transport.isRecording() == 0:
+        if not transport.isPlaying() and transport.isRecording() == False:
             set_light("PLAY", on if transport.isPlaying() else off)
-        elif transport.isPlaying() == False and transport.isRecording()== True:
+        elif transport.isPlaying() == False and transport.isRecording() == True:
             set_light("PLAY", off)
 
         # Update mixer lights if Mixer window is focused
         if ui.getFocused(constants.winName["Mixer"]):
             for x in range(8):
                 track_number = mixer.trackNumber() + x
-                if track_number <= 125:
-                    setTrackSolo(x, mixer.isTrackSolo(track_number))
-                    setTrackMute(x, mixer.isTrackMuted(track_number))
-                    setTrackArm(x, mixer.isTrackArmed(track_number))
+                if 0 < track_number <= 125:
+                    is_muted = mixer.isTrackMuted(track_number)
+                    is_solo = mixer.isTrackSolo(track_number)
+                    
+                    if is_muted and is_solo:
+                        setTrackMute(x, on)
+                        setTrackSolo(x, off)
+                    else:
+                        setTrackSolo(x, is_solo)
+                        setTrackMute(x, is_muted)
+                        setTrackArm(x, mixer.isTrackArmed(track_number))
 
         # Update Channel Rack lights if Channel Rack window is focused
         if ui.getFocused(constants.winName["Channel Rack"]):
@@ -63,8 +70,8 @@ def OnRefresh(self, flags):
                         setTrackSolo(x, channels.isChannelSolo(selected_channel + x))
                         setTrackMute(x, channels.isChannelMuted(selected_channel + x))
             else:
-                setTrackMute(0, 1) if channels.isChannelMuted(channels.selectedChannel()) else setTrackMute(0, 0)
-                setTrackSolo(0, 0) if channels.channelCount() == 1 and channels.isChannelSolo(channels.selectedChannel()) else setTrackSolo(0, 0)
+                setTrackMute(0, on) if channels.isChannelMuted(channels.selectedChannel()) else setTrackMute(0, off)
+                setTrackSolo(0, off) if channels.channelCount() == 1 and channels.isChannelSolo(channels.selectedChannel()) else setTrackSolo(0, off)
 
         # Set lights for the 4D Encoder on S-Series keyboards
         set_light("ENCODER_X_S", 1)
