@@ -77,14 +77,21 @@ def OnRefresh(self, event):
                 mix.setTrackExist(x, 0)
 
     if ui.getFocused(constants.winName["Plugin"]) == True:
-        clear_part()
-        remove_part()
-        mix.setTrackExist(0, 1)
-        mix.setTrackName(0, f"P| {channels.getChannelName(channels.selectedChannel())}")
-        mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
-        mix.setTrackVolGraph(0, channels.getChannelVolume(channels.selectedChannel()) / 1.0 * 0.86)
-        NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
-        mix.setTrackSel(0, 0)
+            if not mixer.getActiveEffectIndex(): 
+                clear_part()
+                remove_part()
+                mix.setTrackExist(0, 1)
+                mix.setTrackName(0, f"P| {channels.getChannelName(channels.selectedChannel())}")
+                mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
+                mix.setTrackVolGraph(0, channels.getChannelVolume(channels.selectedChannel()) / 1.0 * 0.86)
+                NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
+                mix.setTrackSel(0, 0)
+            else:
+                clear_all()
+                remove_all()
+                #mix.setTrackExist(0, 1)
+                #mix.setTrackName(0, f"P| {plugins.getPluginName(0,0)}")
+                    
 
     if ui.getFocused(constants.winName["Piano Roll"]) == True:
         remove_part()
