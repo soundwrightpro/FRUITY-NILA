@@ -87,10 +87,22 @@ def OnRefresh(self, event):
                 NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
                 mix.setTrackSel(0, 0)
             else:
-                clear_all()
-                remove_all()
-                #mix.setTrackExist(0, 1)
-                #mix.setTrackName(0, f"P| {plugins.getPluginName(0,0)}")
+                if device.getName() == "Komplete Kontrol DAW - 1":
+                    track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+                    shortened_plugin_name = full_plugin_name[:9]
+                    clear_all()
+                    remove_all()
+                    mix.setTrackExist(0, 1)
+                    mix.setTrackName(0, shortened_plugin_name)
+                else:
+                    track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+                    clear_part()
+                    remove_part()
+                    mix.setTrackExist(0, 1)
+                    mix.setTrackName(0, f"P| Insert: {track_index}")
+                    mix.setTrackVol(0,full_plugin_name)
                     
 
     if ui.getFocused(constants.winName["Piano Roll"]) == True:
