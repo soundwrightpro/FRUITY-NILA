@@ -90,14 +90,24 @@ def OnRefresh(self, event):
                 if device.getName() == "Komplete Kontrol DAW - 1":
                     track_index, mixer_slot = mixer.getActiveEffectIndex()
                     full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+                    
+                    if "Fruity" in full_plugin_name:
+                        # Remove the word "Fruity"
+                        full_plugin_name = full_plugin_name.replace("Fruity", "")
+                        
                     shortened_plugin_name = full_plugin_name[:9]
-                    clear_all()
-                    remove_all()
+                    clear_part()
+                    remove_part()
                     mix.setTrackExist(0, 1)
                     mix.setTrackName(0, shortened_plugin_name)
                 else:
                     track_index, mixer_slot = mixer.getActiveEffectIndex()
                     full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+                    
+                    if "Fruity" in full_plugin_name:
+                        # Remove the word "Fruity"
+                        full_plugin_name = full_plugin_name.replace("Fruity", "")
+                        
                     clear_part()
                     remove_part()
                     mix.setTrackExist(0, 1)
