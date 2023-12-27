@@ -4,8 +4,9 @@ import channels
 import mixer
 import midi
 import general
+import time
 
-
+# Function to handle plugin control events for the NILA system
 def plugin(self, event):
     """
     Handles plugin control events for the NILA system.
@@ -17,14 +18,15 @@ def plugin(self, event):
     event.handled = True
 
     if not mixer.getActiveEffectIndex():
-        handle_channel_rack_controls(event)
+        handle_channel_rack_controls(self, event)
     else:
-        handle_mixer_effect(event)
+        handle_mixer_effect(self, event)
 
 
-def handle_mixer_effect(event):
+# Function to handle control events for the active mixer effect slot mix level for focused plugin on the mixer
+def handle_mixer_effect(self, event):
     """
-    Handles control events for the active mixer effect slot mix level for focused plugin on mixer.
+    Handles control events for the active mixer effect slot mix level for focused plugin on the mixer.
 
     Args:
         event (object): The event triggered by the user's input.
@@ -38,10 +40,11 @@ def handle_mixer_effect(event):
     converted_volume = round((mix_slot_volume / 12800) * 100)
 
     if event.data1 == nihia.mixer.knobs[0][0]:
-        handle_mixer_effect_mix(event, converted_volume, event_id)
+        handle_mixer_effect_mix(self, event, converted_volume, event_id)
 
 
-def handle_mixer_effect_mix(event, converted_volume, event_id):
+# Function to handle mix level knob control events
+def handle_mixer_effect_mix(self, event, converted_volume, event_id):
     """
     Handles mix level knob control events.
 
@@ -51,16 +54,19 @@ def handle_mixer_effect_mix(event, converted_volume, event_id):
         event_id (int): Event ID for the mixer plugin.
     """
     volume_increment = config.increment * 100
+    
+    new_value = knob_time_check(self, volume_increment)
 
     if not NILA_core.seriesCheck():
-        handle_non_series_knob_event(event, converted_volume, event_id, volume_increment)
+        handle_non_series_knob_event(self, event, converted_volume, event_id, volume_increment)
     else:
-        handle_series_knob_event(event, converted_volume, event_id, volume_increment)
+        handle_series_knob_event(self, event, converted_volume, event_id, volume_increment)
 
 
-def handle_non_series_knob_event(event, converted_volume, event_id, volume_increment):
+# Function to handle knob events in non-series devices
+def handle_non_series_knob_event(self, event, converted_volume, event_id, volume_increment):
     """
-    Handles knob events in non-series s devices.
+    Handles knob events in non-series devices.
 
     Args:
         event (object): The event triggered by the user's input.
@@ -68,17 +74,20 @@ def handle_non_series_knob_event(event, converted_volume, event_id, volume_incre
         event_id (int): Event ID for the mixer plugin.
         volume_increment (float): Increment value for volume change.
     """
+    new_value = knob_time_check(self, volume_increment)
+    
     if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED and converted_volume - 1 >= 0:
         converted_volume -= volume_increment
     elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED and converted_volume + 1 <= 100:
         converted_volume += volume_increment
 
-    update_and_record_volume(event_id, converted_volume)
+    update_and_record_volume(self, event_id, converted_volume)
 
 
-def handle_series_knob_event(event, converted_volume, event_id, volume_increment):
+# Function to handle knob events in series devices
+def handle_series_knob_event(self, event, converted_volume, event_id, volume_increment):
     """
-    Handles knob events in series s devices.
+    Handles knob events in series devices.
 
     Args:
         event (object): The event triggered by the user's input.
@@ -102,10 +111,11 @@ def handle_series_knob_event(event, converted_volume, event_id, volume_increment
         if converted_volume + 1 <= 100:
             converted_volume += volume_increment
 
-    update_and_record_volume(event_id, converted_volume)
+    update_and_record_volume(self, event_id, converted_volume)
 
 
-def update_and_record_volume(event_id, converted_volume):
+# Function to update the volume of the mix level on the focused plugin
+def update_and_record_volume(self, event_id, converted_volume):
     """
     Update the volume of the mix level on the focused plugin.
 
@@ -113,11 +123,13 @@ def update_and_record_volume(event_id, converted_volume):
         event_id (int): Event ID for the mixer plugin.
         converted_volume (float): Current volume converted to the percentage scale.
     """
+
     mix_slot_volume = round((converted_volume / 100) * 12800)
     general.processRECEvent(event_id, mix_slot_volume, midi.REC_UpdateValue)
+    
 
-
-def handle_channel_rack_controls(event):
+# Function to handle controls specific to the Channel Rack
+def handle_channel_rack_controls(self, event):
     """
     Handles controls specific to the Channel Rack.
 
@@ -125,14 +137,13 @@ def handle_channel_rack_controls(event):
         event (object): The event triggered by the user's input.
     """
     if event.data1 == nihia.mixer.knobs[0][0]:
-        handle_volume_control(event)
+        handle_volume_control(self, event)
     elif event.data1 == nihia.mixer.knobs[1][0]:
-        handle_pan_control(event)
-    else:
-        handle_other_controls(event)
+        handle_pan_control(self, event)
 
 
-def handle_volume_control(event):
+# Function to handle volume control events
+def handle_volume_control(self, event):
     """
     Handles volume control events.
 
@@ -140,34 +151,38 @@ def handle_volume_control(event):
         event (object): The event triggered by the user's input.
     """
     if NILA_core.seriesCheck():
-        handle_series_volume(event)
+        handle_series_volume(self, event)
     else:
-        handle_single_volume(event)
+        handle_single_volume(self, event)
 
 
-def handle_series_volume(event):
+# Function to handle volume control events for series S device on the channel rack
+def handle_series_volume(self, event):
     """
-    Handles volume control events for series S device on the channel rack .
+    Handles volume control events for series S device on the channel rack.
 
     Args:
         event (object): The event triggered by the user's input.
     """
     selected_channel = channels.selectedChannel()
     volume_increment = config.increment
+    
+    new_value = knob_time_check(self, volume_increment)
 
     if 65 <= event.data2 < 95 and channels.getChannelVolume(selected_channel) != 0:
         channels.setChannelVolume(
-            selected_channel, round(channels.getChannelVolume(selected_channel) - volume_increment * 2.5, 2))
+            selected_channel, round(channels.getChannelVolume(selected_channel) - new_value * 2.5, 2))
     elif 96 <= event.data2 < 128 and channels.getChannelVolume(selected_channel) != 0:
-        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) - volume_increment, 2))
+        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) - new_value, 2))
     elif 0 <= event.data2 < 31:
-        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) + volume_increment, 2))
+        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) + new_value, 2))
     elif 32 <= event.data2 < 64:
         channels.setChannelVolume(
-            selected_channel, round(channels.getChannelVolume(selected_channel) + volume_increment * 2.5, 2))
+            selected_channel, round(channels.getChannelVolume(selected_channel) + new_value * 2.5, 2))
 
 
-def handle_single_volume(event):
+# Function to handle volume control events for single mode
+def handle_single_volume(self, event):
     """
     Handles volume control events for single mode.
 
@@ -176,14 +191,17 @@ def handle_single_volume(event):
     """
     selected_channel = channels.selectedChannel()
     volume_increment = config.increment
-
+    
+    new_value = knob_time_check(self, volume_increment)
+    
     if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED and channels.getChannelVolume(selected_channel) != 0:
-        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) - volume_increment, 2))
+        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) - new_value, 2))
     elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) + volume_increment, 2))
+        channels.setChannelVolume(selected_channel, round(channels.getChannelVolume(selected_channel) + new_value, 2))
 
 
-def handle_pan_control(event):
+# Function to handle pan control events
+def handle_pan_control(self, event):
     """
     Handles pan control events.
 
@@ -192,13 +210,16 @@ def handle_pan_control(event):
     """
     selected_channel = channels.selectedChannel()
     pan_increment = config.increment
+    
+    new_value = knob_time_check(self, pan_increment)
 
     if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-        channels.setChannelPan(selected_channel, channels.getChannelPan(selected_channel) - pan_increment)
+        channels.setChannelPan(selected_channel, channels.getChannelPan(selected_channel) - new_value)
     elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-        channels.setChannelPan(selected_channel, channels.getChannelPan(selected_channel) + pan_increment)
+        channels.setChannelPan(selected_channel, channels.getChannelPan(selected_channel) + new_value)
 
 
+# Function to handle other knob control events
 def handle_other_controls(event):
     """
     Handles other knob control events.
@@ -207,3 +228,26 @@ def handle_other_controls(event):
         event (object): The event triggered by the user's input.
     """
     event.handled = any(event.data1 == nihia.mixer.knobs[i][x] for i in range(2) for x in range(8))
+
+
+# Function to check the time between consecutive signals and adjust the knob increment accordingly
+def knob_time_check(self, adjusted_increment):
+    """
+    Check the time between consecutive signals and adjust the knob increment accordingly.
+
+    Args:
+        self (object): The instance of the NILA system.
+        adjusted_increment (float): Adjusted increment value for volume change.
+
+    Returns:
+        float: Adjusted knob increment.
+    """
+    
+    # Check the time between consecutive signals
+    current_time = time.time()  
+    time_difference = current_time - getattr(self, f'last_signal_time_', current_time)
+    setattr(self, f'last_signal_time_', current_time)
+    
+    adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference <= constants.speed_increase_wait else config.increment
+    
+    return adjusted_increment
