@@ -55,18 +55,18 @@ def handle_mixer_effect_mix(self, event, converted_volume, event_id):
     """
     volume_increment = config.increment * 100
     
-    new_value = knob_time_check(self, volume_increment)
+    adjusted_increment = knob_time_check_mixer(self, volume_increment)
 
     if not NILA_core.seriesCheck():
-        handle_non_series_knob_event(self, event, converted_volume, event_id, volume_increment)
+        handle_non_series_knob_event(self, event, converted_volume, event_id, adjusted_increment)
     else:
-        handle_series_knob_event(self, event, converted_volume, event_id, volume_increment)
+        handle_series_knob_event(self, event, converted_volume, event_id, adjusted_increment)
 
 
-# Function to handle knob events in non-series devices
+# Function to handle knob events in non-series S devices
 def handle_non_series_knob_event(self, event, converted_volume, event_id, volume_increment):
     """
-    Handles knob events in non-series devices.
+    Handles knob events in non-series S devices.
 
     Args:
         event (object): The event triggered by the user's input.
@@ -74,8 +74,9 @@ def handle_non_series_knob_event(self, event, converted_volume, event_id, volume
         event_id (int): Event ID for the mixer plugin.
         volume_increment (float): Increment value for volume change.
     """
-    new_value = knob_time_check(self, volume_increment)
-    
+
+    # Adjust volume increment based on knob rotation speed
+
     if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED and converted_volume - 1 >= 0:
         converted_volume -= volume_increment
     elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED and converted_volume + 1 <= 100:
@@ -95,6 +96,8 @@ def handle_series_knob_event(self, event, converted_volume, event_id, volume_inc
         event_id (int): Event ID for the mixer plugin.
         volume_increment (float): Increment value for volume change.
     """
+
+    
     if 65 <= event.data2 < 95:
         if converted_volume - 1 >= 0:
             converted_volume -= volume_increment
@@ -244,10 +247,43 @@ def knob_time_check(self, adjusted_increment):
     """
     
     # Check the time between consecutive signals
-    current_time = time.time()  
+    current_time = time.time() 
+     
+    
     time_difference = current_time - getattr(self, f'last_signal_time_', current_time)
-    setattr(self, f'last_signal_time_', current_time)
+    #setattr(self, f'last_signal_time_', current_time)
     
     adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference <= constants.speed_increase_wait else config.increment
-    
+        
     return adjusted_increment
+
+
+def knob_time_check_mixer(self, adjusted_increment):
+    """
+    Check the time between consecutive signals and adjust the knob increment accordingly.
+
+    Args:
+        self (object): The instance of the NILA system.
+        adjusted_increment (float): Adjusted increment value for volume change.
+
+    Returns:
+        float: Adjusted knob increment.
+    """
+
+    # Check the time between consecutive signals
+    current_time = time.time()
+    time_difference = current_time - getattr(self, 'last_signal_time', current_time)
+    
+    # Update last signal time
+    setattr(self, 'last_signal_time', current_time)
+
+    # Adjust volume increment based on the time difference
+    
+    if time_difference <= 0.005:
+        adjusted_increment *= 13
+    # Add additional conditions for different time thresholds if needed
+
+    return adjusted_increment
+
+
+
