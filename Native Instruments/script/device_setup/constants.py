@@ -68,6 +68,8 @@ blankEvent, nuText = "   ", "Not Used"
 # Item display and time
 itemDisp, itemTime = 0, 0
 
+midi_CC_max = 12800
+
 # Mixer right and left constants
 mixer_right, mixer_left = 63, 65
 

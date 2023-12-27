@@ -37,7 +37,7 @@ def handle_mixer_effect(self, event):
     mix_slot_volume = general.processRECEvent(event_id, 0, midi.REC_GetValue)
 
     # Convert mix_slot_volume to the percentage scale [0, 100]
-    converted_volume = round((mix_slot_volume / 12800) * 100)
+    converted_volume = round((mix_slot_volume / constants.midi_CC_max) * 100)
 
     if event.data1 == nihia.mixer.knobs[0][0]:
         handle_mixer_effect_mix(self, event, converted_volume, event_id)
@@ -97,7 +97,6 @@ def handle_series_knob_event(self, event, converted_volume, event_id, volume_inc
         volume_increment (float): Increment value for volume change.
     """
 
-    
     if 65 <= event.data2 < 95:
         if converted_volume - 1 >= 0:
             converted_volume -= volume_increment
@@ -127,7 +126,7 @@ def update_and_record_volume(self, event_id, converted_volume):
         converted_volume (float): Current volume converted to the percentage scale.
     """
 
-    mix_slot_volume = round((converted_volume / 100) * 12800)
+    mix_slot_volume = round((converted_volume / 100) * constants.midi_CC_max)
     general.processRECEvent(event_id, mix_slot_volume, midi.REC_UpdateValue)
     
 
@@ -245,7 +244,6 @@ def knob_time_check(self, adjusted_increment):
     Returns:
         float: Adjusted knob increment.
     """
-    
     # Check the time between consecutive signals
     current_time = time.time() 
      
@@ -269,7 +267,6 @@ def knob_time_check_mixer(self, adjusted_increment):
     Returns:
         float: Adjusted knob increment.
     """
-
     # Check the time between consecutive signals
     current_time = time.time()
     time_difference = current_time - getattr(self, 'last_signal_time', current_time)
@@ -284,6 +281,3 @@ def knob_time_check_mixer(self, adjusted_increment):
     # Add additional conditions for different time thresholds if needed
 
     return adjusted_increment
-
-
-
