@@ -33,3 +33,4 @@ upDown_preview_sound = 1
 rectChannel = 2000
 rectMixer = 2000
 increment = 0.01
+double_click_speed = 0.500 #ms

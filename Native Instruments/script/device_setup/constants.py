@@ -32,7 +32,7 @@ supported_plugins = {
 
 # Window names and IDs
 widTitle = ["Mixer", "Channel Rack", "Playlist", "Piano Roll", "Browser", "Plugin Window", "Effect Plugin", "Generator Plugin"]
-winName = {"Mixer": 0, "Channel Rack": 1, "Playlist": 2, "Piano Roll": 3, "Browser": 4, "Plugin": 5}
+winName = {"Mixer": 0, "Channel Rack": 1, "Playlist": 2, "Piano Roll": 3, "Browser": 4, "Plugin": 5, "Effect Plugin": 6, "Generator Plugin": 7}
 
 # Touch strips
 touch_strips = {"PITCH": 0, "MOD": 1, "EXPRESSION": 11}

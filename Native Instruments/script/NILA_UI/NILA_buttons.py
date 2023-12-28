@@ -14,11 +14,6 @@ import ui
 # Constants for on and off states
 on, off = 1, 0
 
-# Global variables
-windowCycle = 0
-jogMove = True
-
-
 def set_track_info(track_index, name, vol, pan=None):
     """
     Set track information such as name, volume, and pan.
@@ -79,7 +74,6 @@ def OnMidiMsg(event):
     Args:
         event (MIDIEvent): MIDI event to handle.
     """
-    global windowCycle, jogMove
 
     # Mark the event as handled
     event.handled = True
@@ -134,7 +128,7 @@ def OnMidiMsg(event):
         if double_click_status:
             transport.globalTransport(midi.FPT_F12, 2, 15)
             ui.setHintMsg("Clear All Windows")
-            set_track_info(0, "Clear All")
+            set_track_info(0, "Clear All", "")
         else:
             ui.escape()  # escape key
             ui.setHintMsg("Close")
@@ -143,13 +137,13 @@ def OnMidiMsg(event):
         undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
         general.undoUp()  # undo
         ui.setHintMsg(ui.getHintMsg())
-        set_track_info(0, "History", "Undo @ " + undo_level)
+        set_track_info(0, "History", f"Undo @ {undo_level}")
 
     elif event.data1 == buttons.button_list.get("REDO"):
         undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
         general.undo()  # redo
         ui.setHintMsg(ui.getHintMsg())
-        set_track_info(0, "History", "Redo @ " + undo_level)
+        set_track_info(0, "History", f"Redo @ {undo_level}")
 
 
     if event.data1 == buttons.button_list.get("AUTO"):
@@ -183,29 +177,6 @@ def OnMidiMsg(event):
             set_track_info(0, "Main Snap", snap_mode_name, snap_mode_name)
             time.sleep(constants.timedelay)
 
-    if event.data1 == buttons.button_list.get("ENCODER_BUTTON_SHIFTED"):
-        event.handled = True
-
-        doubleclickstatus = device.isDoubleClick(buttons.button_list.get("ENCODER_BUTTON_SHIFTED"))
-
-        window_mappings = {
-            0: (1, "Channel Rack"),
-            1: (0, "Mixer"),
-            2: (2, "Playlist"),
-            3: (4, "Browser")
-        }
-
-        if doubleclickstatus:
-            windowCycle = (windowCycle - 1) % 4
-            transport.globalTransport(midi.FPT_F8, 67)
-            ui.setHintMsg("Plugin Picker")
-        else:
-            window, hint_msg = window_mappings[windowCycle]
-            ui.showWindow(window)
-            windowCycle = (windowCycle + 1) % 4
-            ui.setHintMsg(hint_msg)
-            if " M " in device.getName():
-                time.sleep(constants.timedelay)
 
     button_id = event.data1
     is_mute_button = button_id == buttons.button_list["MUTE_SELECTED"]

@@ -97,21 +97,14 @@ def handle_series_knob_event(self, event, converted_volume, event_id, volume_inc
         volume_increment (float): Increment value for volume change.
     """
 
-    if 65 <= event.data2 < 95:
+    if 65 <= event.data2 < 95 or 96 <= event.data2 < 128:
         if converted_volume - 1 >= 0:
             converted_volume -= volume_increment
 
-    elif 96 <= event.data2 < 128:
-        if converted_volume - 1 >= 0:
-            converted_volume -= volume_increment
-
-    elif 0 <= event.data2 < 31:
+    elif 0 <= event.data2 < 31 or 32 <= event.data2 < 64:
         if converted_volume + 1 <= 100:
             converted_volume += volume_increment
 
-    elif 32 <= event.data2 < 64:
-        if converted_volume + 1 <= 100:
-            converted_volume += volume_increment
 
     update_and_record_volume(self, event_id, converted_volume)
 
@@ -127,7 +120,7 @@ def update_and_record_volume(self, event_id, converted_volume):
     """
 
     mix_slot_volume = round((converted_volume / 100) * constants.midi_CC_max)
-    general.processRECEvent(event_id, mix_slot_volume, midi.REC_UpdateValue)
+    general.processRECEvent(event_id, mix_slot_volume, midi.REC_UpdateValue | midi.REC_UpdateControl)
     
 
 # Function to handle controls specific to the Channel Rack
@@ -277,7 +270,7 @@ def knob_time_check_mixer(self, adjusted_increment):
     # Adjust volume increment based on the time difference
     
     if time_difference <= 0.005:
-        adjusted_increment *= 13
+        adjusted_increment *= 14
     # Add additional conditions for different time thresholds if needed
 
     return adjusted_increment
