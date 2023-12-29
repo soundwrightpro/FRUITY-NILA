@@ -59,6 +59,9 @@ controls = 15
 # Waiting input messages
 wait_input_1, wait_input_2 = "Waiting", "for input...     "
 
+#stereo separation constant
+stereo_sep = 0.25
+
 # Current utility constant
 currentUtility = 126
 
