@@ -25,6 +25,8 @@
       <img SRC="install_Fruity_NILA.gif"> 
 </p>
 
+To have an accurate knob spin 'smoothing' down to 0 %. See the image below.
+
 <p align="center">
       <img SRC="General_Settings.jpg"> 
 </p>
