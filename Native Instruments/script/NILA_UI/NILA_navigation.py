@@ -95,8 +95,7 @@ def encoder(self, event):
 
     if event.data1 in (
         nihia.buttons.button_list.get("ENCODER_GENERAL"),
-        nihia.buttons.button_list.get("ENCODER_VOLUME_SELECTED"),
-        nihia.buttons.button_list.get("ENCODER_PAN_SELECTED"),
+        nihia.buttons.button_list.get("ENCODER_VOLUME_SELECTED")
     ):
         if event.data2 in (
             nihia.buttons.button_list.get("RIGHT"),
@@ -140,7 +139,28 @@ def encoder(self, event):
             else:
                 ui.up(1)
 
-    elif event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON"):
+    if event.data1 == nihia.buttons.button_list.get("ENCODER_PAN_SELECTED"):
+        
+        if event.data2 in (
+            nihia.buttons.button_list.get("RIGHT"),
+            constants.mixer_right, 
+        ):
+            event.handled = True
+            if ui.getFocused(constants.winName["Playlist"]):
+                #ui.verZoom(10)
+                transport.globalTransport(midi.FPT_HZoomJog, 1, midi.PME_System, midi.GT_All)
+    
+        if event.data2 in (
+            nihia.buttons.button_list.get("LEFT"),
+            constants.mixer_left, 
+        ):
+            event.handled = True
+            if ui.getFocused(constants.winName["Playlist"]):
+                #ui.verZoom(-10)
+                transport.globalTransport(midi.FPT_HZoomJog, -1, midi.PME_System, midi.GT_All)
+
+
+    if event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON"):
         event.handled = True
         button_id = nihia.buttons.button_list.get("ENCODER_BUTTON")
 
@@ -294,6 +314,8 @@ def encoder(self, event):
                     ui.previewBrowserMenuItem()
                 elif device.getName() != "Komplete Kontrol DAW - 1":
                     oled.OnIdle(self)
+            elif ui.getFocused(constants.winName["Playlist"]):
+                ui.down()
             elif ui.getFocused(constants.winName["Piano Roll"]):
                 ui.down()
 
