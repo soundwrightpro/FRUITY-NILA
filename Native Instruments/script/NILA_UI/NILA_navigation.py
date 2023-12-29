@@ -146,7 +146,7 @@ def encoder(self, event):
             constants.mixer_right, 
         ):
             event.handled = True
-            if ui.getFocused(constants.winName["Playlist"]):
+            if ui.getFocused(constants.winName["Playlist"]) or ui.getFocused(constants.winName["Piano Roll"]):
                 #ui.verZoom(10)
                 transport.globalTransport(midi.FPT_HZoomJog, 1, midi.PME_System, midi.GT_All)
     
@@ -155,7 +155,7 @@ def encoder(self, event):
             constants.mixer_left, 
         ):
             event.handled = True
-            if ui.getFocused(constants.winName["Playlist"]):
+            if ui.getFocused(constants.winName["Playlist"]) or ui.getFocused(constants.winName["Piano Roll"]):
                 #ui.verZoom(-10)
                 transport.globalTransport(midi.FPT_HZoomJog, -1, midi.PME_System, midi.GT_All)
 
