@@ -5,6 +5,7 @@ import mixer
 import midi
 import general
 import time
+import ui
 
 # Function to handle plugin control events for the NILA system
 def plugin(self, event):
@@ -15,12 +16,15 @@ def plugin(self, event):
         self (object): The instance of the NILA system.
         event (object): The event triggered by the user's input.
     """
-    event.handled = True
+    
 
-    if not mixer.getActiveEffectIndex():
-        handle_channel_rack_controls(self, event)
-    else:
-        handle_mixer_effect(self, event)
+    if ui.getFocused(constants.winName["Plugin"]):
+        event.handled = True
+        if ui.getFocused(constants.winName["Generator Plugin"]):
+            handle_channel_rack_controls(self, event)
+        else:
+            handle_mixer_effect(self, event)
+
 
 
 # Function to handle control events for the active mixer effect slot mix level for focused plugin on the mixer

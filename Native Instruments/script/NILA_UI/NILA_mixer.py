@@ -16,6 +16,7 @@ def OnMidiMsg(self, event):
     - self: The instance of the script.
     - event: The MIDI event object containing information about the received MIDI message.
     """
+
     if ui.getFocused(constants.winName["Mixer"]):
         for z in range(8):
             if mixer.trackNumber() <= constants.currentUtility - z:

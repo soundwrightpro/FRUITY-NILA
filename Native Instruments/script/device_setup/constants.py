@@ -70,7 +70,7 @@ itemDisp, itemTime = 0, 0
 
 midi_CC_max = 12800
 
-# Mixer right and left constants
+# Mixer right and left constants from the S-Series that aren't included in NIHIA
 mixer_right, mixer_left = 63, 65
 
 # Knob speed and delay time before increment is doubled

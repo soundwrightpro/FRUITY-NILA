@@ -18,29 +18,28 @@ windowCycle = 0
 last_click_time = 0
 
 def onButtonClick(button):
-    """
-    Check if a button is double-clicked.
-
-    Parameters:
-        button: The button identifier.
-
-    Returns:
-        bool: True if double-clicked, False otherwise.
-    """
     global last_click_time
 
     # Get the current time
     current_time = time.time()
 
     # Check if it's a double-click
-    double_click_status = (current_time - last_click_time) < config.double_click_speed
+    if (current_time - last_click_time) < config.double_click_speed :  # Adjust the time window as needed
+        double_click_status = True
+    else:
+        double_click_status = False
+
     # Update the last click time
     last_click_time = current_time
 
     return double_click_status
 
+
+
 # Define the encoder function that handles various events
 def encoder(self, event):
+    global windowCycle
+    
     """
     Handle encoder events for a specific controller.
 
@@ -93,6 +92,7 @@ def encoder(self, event):
                 oled.OnIdle(self)
 
     # Handle encoder jog wheel events
+
     if event.data1 in (
         nihia.buttons.button_list.get("ENCODER_GENERAL"),
         nihia.buttons.button_list.get("ENCODER_VOLUME_SELECTED"),
@@ -100,11 +100,13 @@ def encoder(self, event):
     ):
         if event.data2 in (
             nihia.buttons.button_list.get("RIGHT"),
-            constants.mixer_right,
+            constants.mixer_right, 
         ):
             event.handled = True
-            # Handle right movement based on the focused UI
-            if ui.getFocused(constants.winName["Mixer"]) or ui.getFocused(constants.winName["Channel Rack"]):
+            
+            if ui.getFocused(constants.winName["Mixer"]):
+                jog(1)
+            elif ui.getFocused(constants.winName["Channel Rack"]):
                 jog(1)
             elif ui.getFocused(constants.winName["Plugin"]):
                 ui.down(1)
@@ -116,14 +118,16 @@ def encoder(self, event):
                 browse("next")
             else:
                 ui.down(1)
+                
 
         elif event.data2 in (
             nihia.buttons.button_list.get("LEFT"),
             constants.mixer_left,
         ):
             event.handled = True
-            # Handle left movement based on the focused UI
-            if ui.getFocused(constants.winName["Mixer"]) or ui.getFocused(constants.winName["Channel Rack"]):
+            if ui.getFocused(constants.winName["Mixer"]):
+                jog(-1)
+            elif ui.getFocused(constants.winName["Channel Rack"]):
                 jog(-1)
             elif ui.getFocused(constants.winName["Plugin"]):
                 ui.up(1)
@@ -142,7 +146,6 @@ def encoder(self, event):
 
         if ui.getFocused(constants.winName["Mixer"]) or ui.getFocused(
                 constants.winName["Plugin"]) or ui.getFocused(constants.winName["Piano Roll"]):
-            # Handle button click based on the focused UI
             if onButtonClick(button_id):
                 if ui.isInPopupMenu():
                     ui.enter()
@@ -152,25 +155,22 @@ def encoder(self, event):
                     ui.setHintMsg("Open Menu")
                     mixer.deselectAll()
                     mixer.selectTrack(mixer.trackNumber())
-
+                    
         elif ui.getFocused(constants.winName["Channel Rack"]):
-            # Handle button click based on the focused UI
             if onButtonClick(button_id):
                 if ui.isInPopupMenu():
                     ui.enter()
                     ui.setHintMsg("Enter")
                 else:
-                    transport.globalTransport(midi.FPT_ItemMenu, 4)
+                    transport.globalTransport(midi.FPT_ItemMenu, 4) #'/Applications/FL Studio 21.app/Contents/Libs/../Resources/FL/Shared/Python/Lib/midi.py'>
                     ui.setHintMsg("Open Menu")
                     mixer.deselectAll()
                     mixer.selectTrack(mixer.trackNumber())
-
+                    
         elif ui.getFocused(constants.winName["Playlist"]):
-            # Handle button click based on the focused UI
             if onButtonClick(button_id) and not ui.isInPopupMenu():
                 arrange.addAutoTimeMarker(mixer.getSongTickPos(), str("Mark"))
         elif ui.getFocused(constants.winName["Browser"]):
-            # Handle button click based on the focused UI
             if onButtonClick(button_id):
                 if ui.getFocusedNodeFileType() <= -100:
                     ui.enter()
@@ -180,7 +180,7 @@ def encoder(self, event):
                     ui.setHintMsg("Open menu")
         else:
             ui.enter()
-
+            
     if event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED"):
         event.handled = True
 
@@ -202,6 +202,8 @@ def encoder(self, event):
             windowCycle = (windowCycle + 1) % 4
             ui.setHintMsg(hint_msg)
 
+        
+
     if device.getName() == "Komplete Kontrol DAW - 1":
         yAxis, xAxis = nihia.buttons.button_list.get("ENCODER_Y_S"), nihia.buttons.button_list.get("ENCODER_X_S")
     else:
@@ -210,43 +212,52 @@ def encoder(self, event):
     if event.data1 == xAxis:
         event.handled = True
         if event.data2 == nihia.buttons.button_list.get("RIGHT"):
-            # Handle right movement based on the focused UI
             if ui.getFocused(constants.winName["Mixer"]):
                 ui.right(1) if ui.isInPopupMenu() else jog(8)
+                
             elif ui.getFocused(constants.winName["Channel Rack"]):
                 ui.right(1) if ui.isInPopupMenu() else ui.left(1)
+                
             elif ui.getFocused(constants.winName["Plugin"]):
                 ui.right(1)
+                
             elif ui.getFocused(constants.winName["Playlist"]):
                 arrange.jumpToMarker(1, 0)
+                
             elif ui.getFocused(constants.winName["Browser"]):
                 ui.right()
+                
             elif ui.getFocused(constants.winName["Piano Roll"]):
                 ui.right() if ui.isInPopupMenu() else ui.jog(1)
             else:
                 ui.right(1)
+                
 
         elif event.data2 == nihia.buttons.button_list.get("LEFT"):
-            # Handle left movement based on the focused UI
             if ui.getFocused(constants.winName["Mixer"]):
                 ui.left(1) if ui.isInPopupMenu() else jog(-8)
+                
             elif ui.getFocused(constants.winName["Channel Rack"]):
                 ui.left(1) if ui.isInPopupMenu() else ui.right(1)
+                
             elif ui.getFocused(constants.winName["Plugin"]):
                 ui.left(1)
+                
             elif ui.getFocused(constants.winName["Playlist"]):
                 arrange.jumpToMarker(-1, 0)
+                
             elif ui.getFocused(constants.winName["Browser"]):
                 ui.left()
+                
             elif ui.getFocused(constants.winName["Piano Roll"]):
                 ui.left() if ui.isInPopupMenu() else ui.jog(-1)
+                
             else:
                 ui.left(1)
 
     if event.data1 == yAxis:
         event.handled = True
         if event.data2 == nihia.buttons.button_list.get("UP"):
-            # Handle upward movement based on the focused UI
             if ui.getFocused(constants.winName["Mixer"]):
                 ui.up(1) if ui.isInPopupMenu() else None
             elif ui.getFocused(constants.winName["Channel Rack"]):
@@ -258,7 +269,7 @@ def encoder(self, event):
                 ) in ui.getFocusedFormCaption() else ui.up()
             elif ui.getFocused(constants.winName["Browser"]):
                 ui.up() if ui.isInPopupMenu() else ui.previous()
-                if config.up_down_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
+                if config.upDown_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
                     ui.previewBrowserMenuItem()
                 elif device.getName() != "Komplete Kontrol DAW - 1":
                     oled.OnIdle(self)
@@ -268,7 +279,6 @@ def encoder(self, event):
                 ui.up()
 
         elif event.data2 == nihia.buttons.button_list.get("DOWN"):
-            # Handle downward movement based on the focused UI
             if ui.getFocused(constants.winName["Mixer"]):
                 ui.down(1) if ui.isInPopupMenu() else None
             elif ui.getFocused(constants.winName["Channel Rack"]):
@@ -280,7 +290,7 @@ def encoder(self, event):
                 ) in ui.getFocusedFormCaption() else ui.up()
             elif ui.getFocused(constants.winName["Browser"]):
                 ui.down() if ui.isInPopupMenu() else ui.next()
-                if config.up_down_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
+                if config.upDown_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
                     ui.previewBrowserMenuItem()
                 elif device.getName() != "Komplete Kontrol DAW - 1":
                     oled.OnIdle(self)
