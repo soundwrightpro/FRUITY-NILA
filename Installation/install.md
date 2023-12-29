@@ -25,6 +25,10 @@
       <img SRC="install_Fruity_NILA.gif"> 
 </p>
 
+<p align="center">
+      <img SRC="General_Settings.jpg"> 
+</p>
+
 
 ### Need help? Find it on the **[Fruity NI](https://discord.gg/GeTTWBV "FL Studio NI on Discord")** Discord 
 
