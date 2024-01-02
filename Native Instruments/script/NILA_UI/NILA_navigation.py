@@ -1,6 +1,6 @@
 # Import necessary modules and components
 import nihia
-from script.device_setup import config, constants as c
+from script.device_setup import NILA_core, config, constants as c
 from script.screen_writer import NILA_OLED
 import arrangement as arrange
 import channels
@@ -11,14 +11,20 @@ import transport
 import plugins
 import ui
 import time
+import math
+
+
 
 # Initialize variables for encoder movement on X and Y axes
 xAxis, yAxis = 0, 0
 windowCycle = 0
 last_click_time = 0
+current_track_plugin_id = None  # Variable to store the current track_plugin_id
 
 def onButtonClick(button):
     global last_click_time
+
+    
 
     # Get the current time
     current_time = time.time()
@@ -39,6 +45,11 @@ def onButtonClick(button):
 # Define the encoder function that handles various events
 def encoder(self, event):
     global windowCycle
+
+    global current_track_plugin_id  # Declare current_track_plugin_id as a global variable
+    global_index = False
+
+
     
     """
     Handle encoder events for a specific controller.
@@ -81,6 +92,7 @@ def encoder(self, event):
         Returns:
             None
         """
+        
         if ui.isInPopupMenu():
             ui.down() if action == "next" else ui.up()
         else:
@@ -97,18 +109,53 @@ def encoder(self, event):
         nihia.buttons.button_list.get("ENCODER_GENERAL"),
         nihia.buttons.button_list.get("ENCODER_VOLUME_SELECTED")
     ):
+        if not NILA_core.seriesCheck():
+            plugin_skip = 1
+        else:
+            plugin_skip = 7   
+        
         if event.data2 in (
             nihia.buttons.button_list.get("RIGHT"),
             c.mixer_right, 
         ):
             event.handled = True
             
+            
             if ui.getFocused(c.winName["Mixer"]):
                 jog(1)
             elif ui.getFocused(c.winName["Channel Rack"]):
                 jog(1)
             elif ui.getFocused(c.winName["Plugin"]):
-                ui.down(1)
+                 
+                if ui.getFocused(c.winName["Effect Plugin"]):
+                    mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    if plugins.isValid(mix_track_index, mixer_slot):
+                        track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+                        event_id = midi.REC_Plug_MixLevel + track_plugin_id
+                        param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
+                        param_count_adjusted = math.ceil(param_count/c.knobs_available)
+                        if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
+                            ui.down(1)
+                        else:
+                            if track_plugin_id != current_track_plugin_id:
+                                c.lead_param = 0  # Reset page number
+                                current_track_plugin_id = track_plugin_id
+                            else:
+                                c.lead_param = min(c.lead_param + plugin_skip, param_count_adjusted)  # Increment and clamp
+                                NILA_OLED.OnRefresh(self, event)
+
+                elif ui.getFocused(c.winName["Generator Plugin"]): 
+                    chan_track_index = channels.selectedChannel()
+
+                    if channels.getChannelType() in (1, 2): 
+                        if plugins.getPluginName(chan_track_index, -plugin_skip, global_index) in c.unsupported_plugins:
+                            ui.down(1)
+                        else:
+                            pass
+                    else:
+                        pass
+ 
+                
             elif ui.getFocused(c.winName["Playlist"]):
                 ui.jog(1)
             elif ui.getFocused(c.winName["Piano Roll"]):
@@ -129,7 +176,35 @@ def encoder(self, event):
             elif ui.getFocused(c.winName["Channel Rack"]):
                 jog(-1)
             elif ui.getFocused(c.winName["Plugin"]):
-                ui.up(1)
+                 
+                if ui.getFocused(c.winName["Effect Plugin"]):
+                    mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    if plugins.isValid(mix_track_index, mixer_slot):
+                        track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+                        event_id = midi.REC_Plug_MixLevel + track_plugin_id
+                        param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
+
+                        if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
+                            ui.up(1)
+                        else:
+                            if track_plugin_id != current_track_plugin_id:
+                                c.lead_param = 0  # Reset page number
+                                current_track_plugin_id = track_plugin_id
+                            else:
+                                c.lead_param = max(c.lead_param - plugin_skip, 0)  # Decrement and clamp
+                                NILA_OLED.OnRefresh(self, event)
+                    
+                elif ui.getFocused(c.winName["Generator Plugin"]): 
+                    chan_track_index = channels.selectedChannel()
+                    if channels.getChannelType == 1 or 2:
+                        if plugins.getPluginName(chan_track_index, - plugin_skip, global_index) in c.unsupported_plugins:
+                            ui.up(1)
+                        else:
+                            pass
+                    else:
+                        pass
+        
+                        
             elif ui.getFocused(c.winName["Playlist"]):
                 ui.jog(-1)
             elif ui.getFocused(c.winName["Piano Roll"]):

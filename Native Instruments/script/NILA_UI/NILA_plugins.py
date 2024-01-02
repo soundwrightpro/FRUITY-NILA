@@ -1,11 +1,13 @@
 import nihia
-from script.device_setup import NILA_core, constants, config
+from script.device_setup import NILA_core, constants as c, config
+from script.screen_writer import NILA_OLED
 import channels
 import mixer
 import midi
 import general
 import time
 import ui
+import plugins
 
 # Function to handle plugin control events for the NILA system
 def plugin(self, event):
@@ -16,17 +18,89 @@ def plugin(self, event):
         self (object): The instance of the NILA system.
         event (object): The event triggered by the user's input.
     """
-    
-
-    if ui.getFocused(constants.winName["Plugin"]):
+    if ui.getFocused(c.winName["Plugin"]):
         event.handled = True
-        if ui.getFocused(constants.winName["Generator Plugin"]):
+        if ui.getFocused(c.winName["Generator Plugin"]):
             handle_channel_rack_controls(self, event)
         else:
             handle_mixer_effect(self, event)
+            
+        plugin_set_param(self, event)
 
 
+def plugin_set_param(self, event, mixer_slot=-1):
+    """
+    Sets plugin parameters based on the received event.
 
+    Args:
+        self (object): The instance of the NILA system.
+        event (object): The event triggered by the user's input.
+        mixer_slot (int, optional): Mixer slot index (default is -1).
+    """
+    useGlobalIndex = False
+
+    if ui.getFocused(c.winName["Effect Plugin"]):
+        mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+        track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+        event_id = midi.REC_Plug_MixLevel + track_plugin_id
+        param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
+
+        if param_count > 0:
+            for knob_number in range(1, min(param_count + 1, 8)):
+                param_index = knob_number - 1 + c.lead_param
+                param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+
+                if param_name != "":
+                    param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+
+                knob_data = nihia.mixer.knobs[0][knob_number]
+                volume_increment = config.increment
+
+                if event.data1 == knob_data:
+                    adjusted_increment = knob_time_check(self, volume_increment)
+                    handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, event.data2, adjusted_increment)
+
+    elif ui.getFocused(c.winName["Generator Plugin"]):
+        chan_track_index = channels.selectedChannel()
+        plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)
+
+
+def handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, data2, volume_increment):
+    """
+    Handles the adjustment of a specific parameter of a plugin based on the user's input event.
+
+    Args:
+        self (object): The instance of the NILA system.
+        event (object): The event triggered by the user's input.
+        param_index (int): Index of the parameter to be controlled.
+        mix_track_index (int): Mixer track index.
+        mixer_slot (int): Mixer slot index.
+        useGlobalIndex (bool): Flag indicating whether to use a global index.
+        data2 (int): Data value from the event.
+        volume_increment (float): Increment value for parameter change.
+    """
+    pickupMode = 0
+    param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+    percentage = param_value * 100
+
+    if NILA_core.seriesCheck():
+        if 65 <= data2 < 95:
+            plugins.setParamValue(max(param_value - volume_increment, 0), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+        elif 96 <= data2 < 128:
+            plugins.setParamValue(max(param_value - volume_increment, 0), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+        elif 0 <= data2 < 31:
+            plugins.setParamValue(min(param_value + volume_increment, 1), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+        elif 32 <= data2 < 64:
+            plugins.setParamValue(min(param_value + volume_increment, 1), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+    else:
+        if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+            plugins.setParamValue(max(param_value - volume_increment, 0), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+        elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+            plugins.setParamValue(min(param_value + volume_increment, 1), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+
+    NILA_OLED.OnRefresh(self, event)
+
+            
 # Function to handle control events for the active mixer effect slot mix level for focused plugin on the mixer
 def handle_mixer_effect(self, event):
     """
@@ -41,7 +115,7 @@ def handle_mixer_effect(self, event):
     mix_slot_volume = general.processRECEvent(event_id, 0, midi.REC_GetValue)
 
     # Convert mix_slot_volume to the percentage scale [0, 100]
-    converted_volume = round((mix_slot_volume / constants.midi_CC_max) * 100)
+    converted_volume = round((mix_slot_volume / c.midi_CC_max) * 100)
 
     if event.data1 == nihia.mixer.knobs[0][0]:
         handle_mixer_effect_mix(self, event, converted_volume, event_id)
@@ -123,7 +197,7 @@ def update_and_record_volume(self, event_id, converted_volume):
         converted_volume (float): Current volume converted to the percentage scale.
     """
 
-    mix_slot_volume = round((converted_volume / 100) * constants.midi_CC_max)
+    mix_slot_volume = round((converted_volume / 100) * c.midi_CC_max)
     general.processRECEvent(event_id, mix_slot_volume, midi.REC_UpdateValue | midi.REC_UpdateControl)
     
 
@@ -246,9 +320,9 @@ def knob_time_check(self, adjusted_increment):
      
     
     time_difference = current_time - getattr(self, f'last_signal_time_', current_time)
-    #setattr(self, f'last_signal_time_', current_time)
+    setattr(self, f'last_signal_time_', current_time)
     
-    adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference <= constants.speed_increase_wait else config.increment
+    adjusted_increment = config.increment * c.knob_rotation_speed if time_difference <= c.speed_increase_wait else config.increment
         
     return adjusted_increment
 

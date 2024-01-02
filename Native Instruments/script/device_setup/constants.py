@@ -30,6 +30,16 @@ supported_plugins = {
     "Sakura": 12
 }
 
+unsupported_plugins = [
+    "FLEX",
+    "FLEX"
+]
+
+#plugin parameter position 
+lead_param = 0 
+
+knobs_available = 7
+
 # Window names and IDs
 widTitle = ["Mixer", "Channel Rack", "Playlist", "Piano Roll", "Browser", "Plugin Window", "Effect Plugin", "Generator Plugin"]
 winName = {"Mixer": 0, "Channel Rack": 1, "Playlist": 2, "Piano Roll": 3, "Browser": 4, "Plugin": 5, "Effect Plugin": 6, "Generator Plugin": 7}
@@ -46,6 +56,7 @@ off, on = 0, 1
 
 # MIDI Script Version
 MIDI_Script_Version = 23
+
 
 # Time delay
 timedelay = 0.35

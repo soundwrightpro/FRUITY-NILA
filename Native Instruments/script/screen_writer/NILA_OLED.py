@@ -14,14 +14,14 @@ Supporting Functions:
 
 Dependencies:
 - nihia.mixer as mix: Provides access to mixer-related functions.
-- script.device_setup.NILA_core, constants, NILA_transform: Handles device setup and constants.
+- script.device_setup.NILA_core, constants, NILA_transform: Handles device setup and c.
 - channels, mixer, plugins, transport, ui, device: FL Studio API modules for channel, mixer, plugin, transport, UI, and device interactions.
 - math: Python math module for mathematical operations.
 """
 
 from nihia import mixer as mix
 
-from script.device_setup import NILA_core, constants, NILA_transform
+from script.device_setup import NILA_core, constants as c, NILA_transform
 
 import channels
 import mixer
@@ -30,6 +30,9 @@ import transport
 import ui
 import device
 import math
+import midi
+
+
 
 def OnRefresh(self, event):
     """
@@ -50,79 +53,132 @@ def OnRefresh(self, event):
             self.kompleteInstance = ""
             mix.setTrackKompleteInstance(0, "")
 
-    if ui.getFocused(constants.winName["Mixer"]) == True:
-        for x in range(8):
-            trackNumber = mixer.trackNumber() + x
-            if mixer.trackNumber() <= constants.currentUtility - x and trackNumber != constants.currentUtility:
-                mix.setTrackExist(x, 1)
-                mix.setTrackName(x, mixer.getTrackName(trackNumber))
-                mix.setTrackVol(x, str(NILA_transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + x))) + " dB")
-                mix.setTrackVolGraph(x, mixer.getTrackVolume(trackNumber))
-                NILA_transform.updatePanMix(trackNumber, x)
-                mix.setTrackSel(0, 1 if trackNumber == constants.currentUtility else 0)
+    if ui.getFocused(c.winName["Mixer"]) == True:
+        for knob_number in range(8):
+            trackNumber = mixer.trackNumber() + knob_number
+            if mixer.trackNumber() <= c.currentUtility - knob_number and trackNumber != c.currentUtility:
+                mix.setTrackExist(knob_number, 1)
+                mix.setTrackName(knob_number, mixer.getTrackName(trackNumber))
+                mix.setTrackVol(knob_number, str(NILA_transform.VolTodB(mixer.getTrackVolume(mixer.trackNumber() + knob_number))) + " dB")
+                mix.setTrackVolGraph(knob_number, mixer.getTrackVolume(trackNumber))
+                NILA_transform.updatePanMix(trackNumber, knob_number)
+                mix.setTrackSel(0, 1 if trackNumber == c.currentUtility else 0)
             else:
-                mix.setTrackExist(x, 0)
+                mix.setTrackExist(knob_number, 0)
 
-    if ui.getFocused(constants.winName["Channel Rack"]) == True:
-        for x in range(8):
-            selectedChannel = channels.selectedChannel() + x
-            if channels.channelCount() > x and selectedChannel < channels.channelCount():
-                mix.setTrackExist(x, 1)
-                mix.setTrackName(x, channels.getChannelName(selectedChannel))
-                mix.setTrackVol(x, f"{round(channels.getChannelVolume(selectedChannel, 1), 1)} dB")
-                mix.setTrackVolGraph(x, channels.getChannelVolume(selectedChannel) / 1.0 * 0.86)
-                NILA_transform.updatePanChannel(selectedChannel, x)
+    if ui.getFocused(c.winName["Channel Rack"]) == True:
+        for knob_number in range(8):
+            selectedChannel = channels.selectedChannel() + knob_number
+            if channels.channelCount() > knob_number and selectedChannel < channels.channelCount():
+                mix.setTrackExist(knob_number, 1)
+                mix.setTrackName(knob_number, channels.getChannelName(selectedChannel))
+                mix.setTrackVol(knob_number, f"{round(channels.getChannelVolume(selectedChannel, 1), 1)} dB")
+                mix.setTrackVolGraph(knob_number, channels.getChannelVolume(selectedChannel) / 1.0 * 0.86)
+                NILA_transform.updatePanChannel(selectedChannel, knob_number)
                 mix.setTrackSel(0, 0)
             else:
-                mix.setTrackExist(x, 0)
+                mix.setTrackExist(knob_number, 0)
 
-    if ui.getFocused(constants.winName["Plugin"]) == True:
-            if not mixer.getActiveEffectIndex(): 
-                clear_part()
-                remove_part()
-                mix.setTrackExist(0, 1)
-                mix.setTrackName(0, f"P| {channels.getChannelName(channels.selectedChannel())}")
-                mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
-                mix.setTrackVolGraph(0, channels.getChannelVolume(channels.selectedChannel()) / 1.0 * 0.86)
-                NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
-                mix.setTrackSel(0, 0)
-            else:
-                if device.getName() == "Komplete Kontrol DAW - 1":
-                    track_index, mixer_slot = mixer.getActiveEffectIndex()
-                    full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
-                    
-                    if "Fruity" in full_plugin_name:
-                        # Remove the word "Fruity"
-                        full_plugin_name = full_plugin_name.replace("Fruity", "")
-                        
-                    shortened_plugin_name = full_plugin_name[:9]
-                    clear_part()
-                    remove_part()
-                    mix.setTrackExist(0, 1)
-                    mix.setTrackName(0, shortened_plugin_name)
+    if ui.getFocused(c.winName["Plugin"]) == True:
+        if not mixer.getActiveEffectIndex(): 
+            clear_part()
+            remove_part()
+            mix.setTrackExist(0, 1)
+            mix.setTrackName(0, f"P| {channels.getChannelName(channels.selectedChannel())}")
+            mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
+            mix.setTrackVolGraph(0, channels.getChannelVolume(channels.selectedChannel()) / 1.0 * 0.86)
+            NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
+            mix.setTrackSel(0, 0)
+        else:
+            if device.getName() == "Komplete Kontrol DAW - 1":
+                track_index, mixer_slot = mixer.getActiveEffectIndex()
+                full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+                
+                if "Fruity" in full_plugin_name:
+                    # Remove the word "Fruity"
+                    full_plugin_name = full_plugin_name.replace("Fruity", "")
+                 
+                if not NILA_core.seriesCheck():    
+                    plugin_name = full_plugin_name[:9]
                 else:
-                    track_index, mixer_slot = mixer.getActiveEffectIndex()
-                    full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+                    plugin_name = full_plugin_name
                     
-                    if "Fruity" in full_plugin_name:
-                        # Remove the word "Fruity"
-                        full_plugin_name = full_plugin_name.replace("Fruity", "")
-                        
-                    clear_part()
-                    remove_part()
-                    mix.setTrackExist(0, 1)
-                    mix.setTrackName(0, f"P| Insert: {track_index}")
-                    mix.setTrackVol(0,full_plugin_name)
+                
+                    
+                #clear_part()
+                #remove_part()
+                mix.setTrackExist(0, 1)
+                mix.setTrackName(0, plugin_name)
+            else:
+                track_index, mixer_slot = mixer.getActiveEffectIndex()
+                full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+                
+                if "Fruity" in full_plugin_name:
+                    # Remove the word "Fruity"
+                    full_plugin_name = full_plugin_name.replace("Fruity", "")
+                    
+                #clear_part()
+                #remove_part()
+                mix.setTrackExist(0, 1)
+                mix.setTrackName(0, f"P| Insert: {track_index}")
+                mix.setTrackVol(0,full_plugin_name)
+                
+            useGlobalIndex = False
+                    
+            if ui.getFocused(c.winName["Effect Plugin"]):
+                mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+                event_id = midi.REC_Plug_MixLevel + track_plugin_id
+                param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
+
+                if param_count > 0:
+                    for knob_number in range(1, min(param_count + 1, 8)):  # Ensure we don't go beyond the available parameters or knobs
+                        param_index = knob_number - 1 + c.lead_param
+                        param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+                                                
+                        if param_name != "":
+                            param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+                            percentage = param_value * 100
+                            
+                            if not NILA_core.seriesCheck(): 
+                                formatted_param_name = param_name
+                            else:
+                                formatted_param_name = ""
+
+                                for i, char in enumerate(param_name):
+                                    if i > 0 and (
+                                        (char.isnumeric() and param_name[i - 1].islower()) or
+                                        (char.isupper() and param_name[i - 1].islower()) or
+                                        (char.isupper() and param_name[i - 1].isnumeric())
+                                    ):
+                                        formatted_param_name += " "  # Insert space
+                                    formatted_param_name += char
+                                    
+                            mix.setTrackExist(knob_number, 2)
+                            mix.setTrackSel(0, 1)
+                            mix.setTrackName(knob_number, formatted_param_name)
+                            mix.setTrackVol(knob_number, "{}%".format(int(percentage)))
+                            
+                    # If there are fewer parameters than knobs, set remaining knobs to non-existent
+                    for knob_number in range(param_count + 1, 8 + 1):
+                        #clear_part()
+                        #remove_part()
+                        mix.setTrackExist(knob_number, 0)
+         
+            elif ui.getFocused(c.winName["Generator Plugin"]):
+                chan_track_index = channels.selectedChannel()
+                plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)
+                
                     
 
-    if ui.getFocused(constants.winName["Piano Roll"]) == True:
+    if ui.getFocused(c.winName["Piano Roll"]) == True:
         remove_part()
         clear_part()
         mix.setTrackName(0, str(channels.getChannelName(channels.selectedChannel())))
         NILA_core.setTrackVolConvert(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
         NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
 
-    if ui.getFocused(constants.winName["Playlist"]) == True:
+    if ui.getFocused(c.winName["Playlist"]) == True:
         mix.setTrackName(0, "Playlist")
         mix.setTrackVolGraph(0, mixer.getTrackVolume(0))
 
@@ -134,8 +190,8 @@ def OnUpdateBeatIndicator(self, Value):
     - self: The instance of the script.
     - Value: The value associated with the beat indicator event.
     """
-    if ui.getFocused(constants.winName["Playlist"]) == True:
-        timeDisp, currentTime = NILA_core.timeConvert(constants.itemDisp, constants.itemTime)
+    if ui.getFocused(c.winName["Playlist"]) == True:
+        timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
         mix.setTrackName(0, "Playlist")
         split_message = ui.getHintMsg()
         split_point1 = ' - '
@@ -160,11 +216,11 @@ def OnIdle(self):
     Parameters:
     - self: The instance of the script.
     """
-    if ui.getFocused(constants.winName["Playlist"]) == True:
+    if ui.getFocused(c.winName["Playlist"]) == True:
         remove_part()
         clear_part()
         mix.setTrackVolGraph(0, mixer.getTrackVolume(0))
-        timeDisp, currentTime = NILA_core.timeConvert(constants.itemDisp, constants.itemTime)
+        timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
         split_message = ui.getHintMsg()
         split_point1 = ' - '
         split_point2 = ' to '
@@ -174,14 +230,14 @@ def OnIdle(self):
         if not transport.isPlaying() and "Volume" not in split_hint[:7]:
             mix.setTrackVol(0, f"{split_hint[:7]}|{currentTime}")
 
-    if ui.getFocused(constants.winName["Browser"]) == True:
+    if ui.getFocused(c.winName["Browser"]) == True:
         fileType = ui.getFocusedNodeFileType()
         remove_part()
 
         if ui.getFocusedNodeFileType() <= -100:
             fileType = "Browser"
         else:
-            for key, value in constants.FL_node.items():
+            for key, value in c.FL_node.items():
                 fileType = key if ui.getFocusedNodeFileType() == value else fileType
 
         mix.setTrackName(0, str(fileType))
@@ -214,9 +270,9 @@ def clear_part():
         mix.setTrackArm(y, 0)
         mix.setTrackSolo(y, 0)
         mix.setTrackMute(y, 0)
-        mix.setTrackName(y, constants.blankEvent)
-        mix.setTrackPan(y, constants.blankEvent)
-        mix.setTrackVol(y, constants.blankEvent)
+        mix.setTrackName(y, c.blankEvent)
+        mix.setTrackPan(y, c.blankEvent)
+        mix.setTrackVol(y, c.blankEvent)
 
 def clear_all():
     """
@@ -229,6 +285,6 @@ def clear_all():
         mix.setTrackArm(y, 0)
         mix.setTrackSolo(y, 0)
         mix.setTrackMute(y, 0)
-        mix.setTrackName(y, constants.blankEvent)
-        mix.setTrackPan(y, constants.blankEvent)
-        mix.setTrackVol(y, constants.blankEvent)
+        mix.setTrackName(y, c.blankEvent)
+        mix.setTrackPan(y, c.blankEvent)
+        mix.setTrackVol(y, c.blankEvent)

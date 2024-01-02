@@ -3,7 +3,7 @@ from nihia import *
 from script.device_setup.NILA_core import seriesCheck
 
 from script.device_setup import config
-from script.device_setup import constants
+from script.device_setup import constants as c
 from script.screen_writer import NILA_OLED as oled
 import channels
 import ui
@@ -45,7 +45,7 @@ def OnMidiMsg(self, event):
     """
     knob_speed = 0
     
-    if ui.getFocused(constants.winName["Channel Rack"]):
+    if ui.getFocused(c.winName["Channel Rack"]):
         
         # VOLUME AND PAN CONTROL
         #s_series = False
@@ -73,7 +73,7 @@ def OnMidiMsg(self, event):
                         time_difference = current_time - getattr(self, f'last_signal_time_{z}', current_time)
                         setattr(self, f'last_signal_time_{z}', current_time)
 
-                        adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference <= constants.speed_increase_wait else config.increment
+                        adjusted_increment = config.increment * c.knob_rotation_speed if time_difference <= c.speed_increase_wait else config.increment
 
                         new_value = adjust_channel_value(current_value, event.data2, adjusted_increment, knob_speed)
                         
