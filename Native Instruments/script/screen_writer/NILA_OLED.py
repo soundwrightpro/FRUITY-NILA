@@ -169,16 +169,34 @@ def OnRefresh(self, event):
                             mix.setTrackName(knob_number, formatted_param_name)
                             mix.setTrackVol(knob_number, "{}%".format(int(percentage)))
                             
+
+                    actual_non_blank_param_count = 0
+                    
+                    if param_count == 4240:  # Check if the total parameters equal 4240
+    
+                        for param_index in range(param_count):
+                            param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+
+                            if param_name != "":
+                                actual_non_blank_param_count += 1
+
+                        # Subtract 128 and 16 from the total
+                        c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
+                    else:
+                        c.actual_param_count = param_count
+
                     # If there are fewer parameters than knobs, set remaining knobs to non-existent
-                    for knob_number in range(param_count + 1, 8 + 1):
+                    for knob_number in range(c.actual_param_count + 1, 8 + 1):
                         #purge_tracks(1, 7, clear_info=True)
                         #purge_tracks(1, 7)
                         mix.setTrackExist(knob_number, 0)
+                    
+                    
+
          
             elif ui.getFocused(c.winName["Generator Plugin"]):
                 chan_track_index = channels.selectedChannel()
                 plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)
-                
 
     if ui.getFocused(c.winName["Piano Roll"]) == True:
         purge_tracks(1, 7)

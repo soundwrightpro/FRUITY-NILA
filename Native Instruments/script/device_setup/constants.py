@@ -41,6 +41,7 @@ lead_param = 0
 knobs_available = 7
 last_plugin_name = None
 unused_midi_cc = 144
+actual_param_count = 0
 
 # Window names and IDs
 widTitle = ["Mixer", "Channel Rack", "Playlist", "Piano Roll", "Browser", "Plugin Window", "Effect Plugin", "Generator Plugin"]

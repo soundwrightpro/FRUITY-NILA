@@ -112,7 +112,7 @@ def encoder(self, event):
         if not NILA_core.seriesCheck():
             plugin_skip = 1
         else:
-            plugin_skip = 7   
+            plugin_skip = 1 # normally 7   
         
         if event.data2 in (
             nihia.buttons.button_list.get("RIGHT"),
@@ -127,7 +127,6 @@ def encoder(self, event):
                 jog(1)
             elif ui.getFocused(c.winName["Plugin"]):
                 
-                 
                 if ui.getFocused(c.winName["Effect Plugin"]):
                     mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
                     track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
@@ -137,9 +136,13 @@ def encoder(self, event):
                         c.last_plugin_name = track_plugin_id
                                         
                     if plugins.isValid(mix_track_index, mixer_slot):
-                        event_id = midi.REC_Plug_MixLevel + track_plugin_id
                         param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
-                        param_count_adjusted = math.ceil(param_count/c.knobs_available)
+                        
+                        if param_count == 4240:
+                            param_count = c.actual_param_count
+                                                
+                        #param_count_adjusted = math.ceil(param_count/c.knobs_available)
+                        
                         if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
                             ui.down(1)
                         else:
@@ -147,7 +150,7 @@ def encoder(self, event):
                                 c.lead_param = 0  # Reset page number
                                 current_track_plugin_id = track_plugin_id
                             else:
-                                c.lead_param = min(c.lead_param + plugin_skip, param_count_adjusted)  # Increment and clamp
+                                c.lead_param = min(c.lead_param + plugin_skip, param_count)  # Increment and clamp
                                 NILA_OLED.OnRefresh(self, event)
 
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
@@ -187,9 +190,8 @@ def encoder(self, event):
                     mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
                     if plugins.isValid(mix_track_index, mixer_slot):
                         track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
-                        event_id = midi.REC_Plug_MixLevel + track_plugin_id
                         param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
-
+                        
                         if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
                             ui.up(1)
                         else:
