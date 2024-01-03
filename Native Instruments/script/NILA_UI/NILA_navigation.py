@@ -126,11 +126,17 @@ def encoder(self, event):
             elif ui.getFocused(c.winName["Channel Rack"]):
                 jog(1)
             elif ui.getFocused(c.winName["Plugin"]):
+                
                  
                 if ui.getFocused(c.winName["Effect Plugin"]):
                     mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+                    
+                    if not track_plugin_id == c.last_plugin_name:
+                        c.lead_param = 0
+                        c.last_plugin_name = track_plugin_id
+                                        
                     if plugins.isValid(mix_track_index, mixer_slot):
-                        track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
                         event_id = midi.REC_Plug_MixLevel + track_plugin_id
                         param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
                         param_count_adjusted = math.ceil(param_count/c.knobs_available)

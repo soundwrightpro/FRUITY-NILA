@@ -134,7 +134,12 @@ def OnRefresh(self, event):
                     
             if ui.getFocused(c.winName["Effect Plugin"]):
                 mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
                 param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
+                
+                if not track_plugin_id == c.last_plugin_name:
+                        c.lead_param = 0
+                        c.last_plugin_name = track_plugin_id
 
                 if param_count > 0:
                     for knob_number in range(1, min(param_count + 1, 8)):  # Ensure we don't go beyond the available parameters or knobs
@@ -174,7 +179,6 @@ def OnRefresh(self, event):
                 chan_track_index = channels.selectedChannel()
                 plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)
                 
-                    
 
     if ui.getFocused(c.winName["Piano Roll"]) == True:
         purge_tracks(1, 7)
