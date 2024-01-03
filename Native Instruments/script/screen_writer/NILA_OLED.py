@@ -7,10 +7,18 @@ Functions:
 - OnIdle(self): Performs idle tasks based on the currently focused window.
 
 Supporting Functions:
-- remove_part(): Removes tracks 1 to 7.
-- remove_all(): Removes all tracks (0 to 7).
-- clear_part(): Clears information from tracks 1 to 7.
-- clear_all(): Clears information from all tracks (0 to 7).
+
+purge_tracks(1, 7) 
+ - Remove tracks 1 to 7 (excluding Track 0)
+
+purge_tracks(1, 7, clear_info=True) 
+ - Clear information from tracks 1 to 7 (excluding Track 0)
+ 
+purge_tracks(0, 7) 
+ - Remove all tracks (0 to 7)
+
+purge_tracks(0, 7, clear_info=True) 
+ - Clear information from all tracks (0 to 7)
 
 Dependencies:
 - nihia.mixer as mix: Provides access to mixer-related functions.
@@ -81,8 +89,8 @@ def OnRefresh(self, event):
 
     if ui.getFocused(c.winName["Plugin"]) == True:
         if not mixer.getActiveEffectIndex(): 
-            clear_part()
-            remove_part()
+            purge_tracks(1, 7, clear_info=True)
+            purge_tracks(1, 7)
             mix.setTrackExist(0, 1)
             mix.setTrackName(0, f"P| {channels.getChannelName(channels.selectedChannel())}")
             mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
@@ -96,17 +104,16 @@ def OnRefresh(self, event):
                 
                 if "Fruity" in full_plugin_name:
                     # Remove the word "Fruity"
-                    full_plugin_name = full_plugin_name.replace("Fruity", "")
+                    full_plugin_name = full_plugin_name.replace("Fruity ", "")
                  
                 if not NILA_core.seriesCheck():    
                     plugin_name = full_plugin_name[:9]
                 else:
                     plugin_name = full_plugin_name
                     
+                #purge_tracks(1, 7, clear_info=True)
+                #purge_tracks(1, 7)
                 
-                    
-                #clear_part()
-                #remove_part()
                 mix.setTrackExist(0, 1)
                 mix.setTrackName(0, plugin_name)
             else:
@@ -115,10 +122,10 @@ def OnRefresh(self, event):
                 
                 if "Fruity" in full_plugin_name:
                     # Remove the word "Fruity"
-                    full_plugin_name = full_plugin_name.replace("Fruity", "")
+                    full_plugin_name = full_plugin_name.replace("Fruity ", "")
                     
-                #clear_part()
-                #remove_part()
+                #purge_tracks(1, 7, clear_info=True)
+                #purge_tracks(1, 7)
                 mix.setTrackExist(0, 1)
                 mix.setTrackName(0, f"P| Insert: {track_index}")
                 mix.setTrackVol(0,full_plugin_name)
@@ -127,8 +134,6 @@ def OnRefresh(self, event):
                     
             if ui.getFocused(c.winName["Effect Plugin"]):
                 mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
-                track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
-                event_id = midi.REC_Plug_MixLevel + track_plugin_id
                 param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
 
                 if param_count > 0:
@@ -153,7 +158,7 @@ def OnRefresh(self, event):
                                     ):
                                         formatted_param_name += " "  # Insert space
                                     formatted_param_name += char
-                                    
+
                             mix.setTrackExist(knob_number, 2)
                             mix.setTrackSel(0, 1)
                             mix.setTrackName(knob_number, formatted_param_name)
@@ -161,8 +166,8 @@ def OnRefresh(self, event):
                             
                     # If there are fewer parameters than knobs, set remaining knobs to non-existent
                     for knob_number in range(param_count + 1, 8 + 1):
-                        #clear_part()
-                        #remove_part()
+                        #purge_tracks(1, 7, clear_info=True)
+                        #purge_tracks(1, 7)
                         mix.setTrackExist(knob_number, 0)
          
             elif ui.getFocused(c.winName["Generator Plugin"]):
@@ -172,8 +177,8 @@ def OnRefresh(self, event):
                     
 
     if ui.getFocused(c.winName["Piano Roll"]) == True:
-        remove_part()
-        clear_part()
+        purge_tracks(1, 7)
+        purge_tracks(1, 7, clear_info=True)
         mix.setTrackName(0, str(channels.getChannelName(channels.selectedChannel())))
         NILA_core.setTrackVolConvert(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
         NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
@@ -217,8 +222,8 @@ def OnIdle(self):
     - self: The instance of the script.
     """
     if ui.getFocused(c.winName["Playlist"]) == True:
-        remove_part()
-        clear_part()
+        purge_tracks(1, 7)
+        purge_tracks(1, 7, clear_info=True)
         mix.setTrackVolGraph(0, mixer.getTrackVolume(0))
         timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
         split_message = ui.getHintMsg()
@@ -232,7 +237,7 @@ def OnIdle(self):
 
     if ui.getFocused(c.winName["Browser"]) == True:
         fileType = ui.getFocusedNodeFileType()
-        remove_part()
+        purge_tracks(1, 7)
 
         if ui.getFocusedNodeFileType() <= -100:
             fileType = "Browser"
@@ -243,48 +248,26 @@ def OnIdle(self):
         mix.setTrackName(0, str(fileType))
         mix.setTrackVol(0, ui.getFocusedNodeCaption()[:15])
 
-def remove_part():
+def purge_tracks(start, end, clear_info=False):
     """
-    Removes tracks 1 to 7, excluding Track 0
+    Removes or clears tracks based on the specified range.
+
+    Parameters:
+    - start: The starting track number.
+    - end: The ending track number.
+    - clear_info: If True, clears information; otherwise, removes tracks.
     """
-    for y in range(1, 8):
-        mix.setTrackExist(y, 0)
+    for track_index in range(start, end + 1):
+        if clear_info:
+            mix.setTrackPanGraph(track_index, 0)
+            mix.setTrackVolGraph(track_index, 0)
+            mix.setTrackSel(0, 0)
+            mix.setTrackArm(track_index, 0)
+            mix.setTrackSolo(track_index, 0)
+            mix.setTrackMute(track_index, 0)
+            mix.setTrackName(track_index, c.blankEvent)
+            mix.setTrackPan(track_index, c.blankEvent)
+            mix.setTrackVol(track_index, c.blankEvent)
+        else:
+            mix.setTrackExist(track_index, 0)
     mix.setTrackSel(0, 0)
-
-def remove_all():
-    """
-    Removes all tracks (0 to 7).
-    """
-    for y in range(8):
-        mix.setTrackExist(y, 0)
-    mix.setTrackSel(0, 0)
-
-def clear_part():
-    """
-    Clears information from tracks 1 to 7, excluding Track 0
-    """
-    for y in range(1, 8):
-        mix.setTrackPanGraph(y, 0)
-        mix.setTrackVolGraph(y, 0)
-        mix.setTrackSel(0, 0)
-        mix.setTrackArm(y, 0)
-        mix.setTrackSolo(y, 0)
-        mix.setTrackMute(y, 0)
-        mix.setTrackName(y, c.blankEvent)
-        mix.setTrackPan(y, c.blankEvent)
-        mix.setTrackVol(y, c.blankEvent)
-
-def clear_all():
-    """
-    Clears information from all tracks 0 to 7.
-    """
-    for y in range(8):
-        mix.setTrackPanGraph(y, 0)
-        mix.setTrackVolGraph(y, 0)
-        mix.setTrackSel(0, 0)
-        mix.setTrackArm(y, 0)
-        mix.setTrackSolo(y, 0)
-        mix.setTrackMute(y, 0)
-        mix.setTrackName(y, c.blankEvent)
-        mix.setTrackPan(y, c.blankEvent)
-        mix.setTrackVol(y, c.blankEvent)
