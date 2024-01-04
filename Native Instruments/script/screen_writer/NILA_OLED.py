@@ -193,7 +193,10 @@ def OnRefresh(self, event):
                         c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
                     else:
                         c.actual_param_count = param_count
-
+                else:
+                    purge_tracks(1, 7)
+                    purge_tracks(1, 7, clear_info=True)
+                    
 
                     
             elif ui.getFocused(c.winName["Generator Plugin"]):
