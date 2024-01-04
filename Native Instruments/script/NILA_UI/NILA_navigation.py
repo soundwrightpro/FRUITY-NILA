@@ -20,6 +20,7 @@ xAxis, yAxis = 0, 0
 windowCycle = 0
 last_click_time = 0
 current_track_plugin_id = None  # Variable to store the current track_plugin_id
+native_plugin = None
 
 def onButtonClick(button):
     global last_click_time
@@ -48,6 +49,7 @@ def encoder(self, event):
 
     global current_track_plugin_id  # Declare current_track_plugin_id as a global variable
     global_index = False
+
 
 
     
@@ -139,7 +141,10 @@ def encoder(self, event):
                         param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
                         
                         if param_count == 4240:
+                            native_plugin == False
                             param_count = c.actual_param_count
+                        else:
+                            native_plugin == True
                                                 
                         #param_count_adjusted = math.ceil(param_count/c.knobs_available)
                         
@@ -150,9 +155,9 @@ def encoder(self, event):
                                 c.lead_param = 0  # Reset page number
                                 current_track_plugin_id = track_plugin_id
                             else:
-                                c.lead_param = min(c.lead_param + plugin_skip, param_count-8)  # Increment and clamp
-                                
-                                NILA_OLED.OnRefresh(self, event)
+                                if c.actual_param_count > 7:
+                                    c.lead_param = min(c.lead_param + plugin_skip, param_count-8)  # Increment and clamp
+                                    NILA_OLED.OnRefresh(self, event)
 
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
                     chan_track_index = channels.selectedChannel()
@@ -200,8 +205,9 @@ def encoder(self, event):
                                 c.lead_param = 0  # Reset page number
                                 current_track_plugin_id = track_plugin_id
                             else:
-                                c.lead_param = max(c.lead_param - plugin_skip, 0)  # Decrement and clamp
-                                NILA_OLED.OnRefresh(self, event)
+                                if c.actual_param_count > 7:
+                                    c.lead_param = max(c.lead_param - plugin_skip, 0)  # Decrement and clamp
+                                    NILA_OLED.OnRefresh(self, event)
                     
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
                     chan_track_index = channels.selectedChannel()
@@ -372,8 +378,19 @@ def encoder(self, event):
                 ui.up(1)
                 ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, config.rectChannel)
             elif ui.getFocused(c.winName["Plugin"]):
-                plugins.prevPreset(channels.channelNumber(channels.selectedChannel())) if channels.getChannelName(
-                    channels.selectedChannel()
+                if ui.getFocused(c.winName["Effect Plugin"]): 
+                    mix_track_index, mixer_slot = mixer.getActiveEffectIndex() 
+                    param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
+                        
+                    if param_count == 4240:
+                        native_plugin == False
+                    else:
+                        native_plugin == True
+                        plugins.prevPreset(mix_track_index, mixer_slot, global_index)
+                        
+                elif ui.getFocused(c.winName["Generator Plugin"]): 
+                    plugins.prevPreset(channels.channelNumber(channels.selectedChannel())) if channels.getChannelName(
+                        channels.selectedChannel()
                 ) in ui.getFocusedFormCaption() else ui.up()
             elif ui.getFocused(c.winName["Browser"]):
                 ui.up() if ui.isInPopupMenu() else ui.previous()
@@ -393,8 +410,19 @@ def encoder(self, event):
                 ui.down(1)
                 ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, config.rectChannel)
             elif ui.getFocused(c.winName["Plugin"]):
-                plugins.nextPreset(channels.channelNumber(channels.selectedChannel())) if channels.getChannelName(
-                    channels.selectedChannel()
+                if ui.getFocused(c.winName["Effect Plugin"]): 
+                    mix_track_index, mixer_slot = mixer.getActiveEffectIndex() 
+                    param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
+
+                    if param_count == 4240:
+                        native_plugin == False
+                    else:
+                        native_plugin == True
+                        plugins.nextPreset(mix_track_index, mixer_slot, global_index)
+                        
+                elif ui.getFocused(c.winName["Generator Plugin"]): 
+                    plugins.nextPreset(channels.channelNumber(channels.selectedChannel())) if channels.getChannelName(
+                        channels.selectedChannel()
                 ) in ui.getFocusedFormCaption() else ui.up()
             elif ui.getFocused(c.winName["Browser"]):
                 ui.down() if ui.isInPopupMenu() else ui.next()
