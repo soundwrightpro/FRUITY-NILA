@@ -193,9 +193,6 @@ def OnRefresh(self, event):
                         purge_tracks(1, 7)
                         mix.setTrackExist(knob_number, 0)
                     
-                    
-
-         
             elif ui.getFocused(c.winName["Generator Plugin"]):
                 chan_track_index = channels.selectedChannel()
                 plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)
