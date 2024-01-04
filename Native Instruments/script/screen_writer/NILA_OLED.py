@@ -145,7 +145,7 @@ def OnRefresh(self, event):
                             
                     actual_non_blank_param_count = 0
                     
-                    if param_count == 4240:  # Check if the total parameters equal 4240
+                    if param_count == c.unused_param: 
     
                         for param_index in range(param_count):
                             param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
