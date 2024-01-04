@@ -49,7 +49,6 @@ def plugin_set_param(self, event, mixer_slot=-1):
             for knob_number in range(1, min(param_count + 1, 8)):
                 param_index = knob_number - 1 + c.lead_param
                                 
-                
                 param_index = max(param_index, 0)
                 param_index = min(param_index, param_count - 1)
                                 
@@ -188,7 +187,6 @@ def handle_series_knob_event(self, event, converted_volume, event_id, volume_inc
         if converted_volume + 1 <= 100:
             converted_volume += volume_increment
 
-
     update_and_record_volume(self, event_id, converted_volume)
 
 
@@ -202,8 +200,14 @@ def update_and_record_volume(self, event_id, converted_volume):
         converted_volume (float): Current volume converted to the percentage scale.
     """
 
+    # Calculate mix_slot_volume based on the converted_volume
     mix_slot_volume = round((converted_volume / 100) * c.midi_CC_max)
-    general.processRECEvent(event_id, mix_slot_volume, midi.REC_UpdateValue | midi.REC_UpdateControl)
+
+    # Ensure mix_slot_volume is within the desired range [0, 12800]
+    mix_slot_volume = max(0, min(12800, mix_slot_volume))
+    print(mix_slot_volume)
+    
+    general.processRECEvent(event_id, mix_slot_volume, midi.REC_Control | midi.REC_UpdateValue | midi.REC_UpdateControl)
     
 
 # Function to handle controls specific to the Channel Rack

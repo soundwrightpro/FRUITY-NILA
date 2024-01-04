@@ -32,7 +32,11 @@ supported_plugins = {
 
 unsupported_plugins = [
     "FLEX",
-    "FLEX"
+    "FLEX",
+    "Edison",
+    "Patcher",
+    "Wave Candy",
+    "ZGameEditor Visualizer"
 ]
 
 #plugin parameter position 
@@ -96,7 +100,16 @@ mixer_right, mixer_left = 63, 65
 knob_rotation_speed = 3.5
 speed_increase_wait = 0.05  # in milliseconds
 
+
 # FL Constants
+
+CT_Sampler = 0  # Internal sampler
+CT_Hybrid = 1   # Generator plugin feeding internal sampler
+CT_GenPlug = 2  # Generator plugin
+CT_Layer = 3    # Layer
+CT_AudioClip = 4  # Audio clip
+CT_AutoClip = 5   # Automation clip
+
 # FL project file types and their associated constants
 PL_Start, PL_LoadOk, PL_LoadError = 0, 100, 101
 SBN_FLP, SBN_ZIP, SBN_FLM, SBN_FST, SBN_DS, SBN_SS, SBN_WAV, SBN_XI, SBN_FPR, SBN_FSC, SBN_SF2, SBN_Speech, \

@@ -19,6 +19,7 @@ def OnRefresh(self, event):
     - event: The event triggering the refresh.
     """
     self.kompleteInstance = None
+    useGlobalIndex = False
 
     if plugins.isValid(channels.selectedChannel()) and plugins.getPluginName(channels.selectedChannel()) == "Komplete Kontrol":
         if self.kompleteInstance != plugins.getParamName(0, channels.selectedChannel()):
@@ -60,7 +61,33 @@ def OnRefresh(self, event):
             purge_tracks(1, 7, clear_info=True)
             purge_tracks(1, 7)
             mix.setTrackExist(0, 1)
-            mix.setTrackName(0, f"P| {channels.getChannelName(channels.selectedChannel())}")
+                        
+            # Get the channel type
+            channel_type = channels.getChannelType(channels.selectedChannel())
+
+            # Print the channel type detected
+            if channel_type == c.CT_Sampler:
+                short_form_type = f"S| {channels.getChannelName(channels.selectedChannel())}"
+            elif channel_type == c.CT_Hybrid:
+                short_form_type = f"P| {channels.getChannelName(channels.selectedChannel())}"
+            elif channel_type == c.CT_GenPlug:
+                short_form_type = f"P| {channels.getChannelName(channels.selectedChannel())}"
+            elif channel_type == c.CT_Layer:
+                short_form_type = f"L| {channels.getChannelName(channels.selectedChannel())}"
+            elif channel_type == c.CT_AudioClip:
+                short_form_type = f"AC| {channels.getChannelName(channels.selectedChannel())}"
+            elif channel_type == c.CT_AutoClip:
+                short_form_type = f"Auto| {channels.getChannelName(channels.selectedChannel())}"
+            else:
+                short_form_type = f"S| {channels.getChannelName(channels.selectedChannel())}"
+                
+            if not NILA_core.seriesCheck():    
+                short_form_type = short_form_type[:9]
+            else:
+                short_form_type = short_form_type
+            
+                
+            mix.setTrackName(0, f"{short_form_type}")
             mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
             mix.setTrackVolGraph(0, channels.getChannelVolume(channels.selectedChannel()) / 1.0 * 0.86)
             NILA_transform.updatePanChannel(channels.selectedChannel(), 0)
@@ -93,69 +120,75 @@ def OnRefresh(self, event):
                 mix.setTrackName(0, f"P| Insert: {track_index}")
                 mix.setTrackVol(0, full_plugin_name)
                 
-            useGlobalIndex = False
                     
             if ui.getFocused(c.winName["Effect Plugin"]):
-                mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
-                track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
-                param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
+                full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
                 
-                if not track_plugin_id == c.last_plugin_name:
-                        c.lead_param = 0
-                        c.last_plugin_name = track_plugin_id
-                        
-                # If there are fewer parameters than knobs, set remaining knobs to non-existent
-                for knob_number in range(c.actual_param_count + 1, 8 + 1):
+                if not full_plugin_name in c.unsupported_plugins:
                     
-                    if c.actual_param_count < 7:
-                        purge_tracks(c.actual_param_count + 1, 7)
-                        purge_tracks(c.actual_param_count + 1, 7, clear_info=True)
+                    mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+                    param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
                     
-                if param_count > 0:
-                    for knob_number in range(1, min(param_count + c.knob_offset, 8)):  # Ensure we don't go beyond the available parameters or knobs
-                        
-                        param_index = knob_number - c.knob_offset + c.lead_param                        
-                        param_index = min(param_index, param_count - 1)
-                        param_index = max(param_index, 0)
-                                                
-                        param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-                                                
-                        if param_name != "":
-                            param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-                            percentage = param_value * 100
+                    if not track_plugin_id == c.last_plugin_name:
+                            c.lead_param = 0
+                            c.last_plugin_name = track_plugin_id
                             
-                            if not NILA_core.seriesCheck(): 
-                                formatted_param_name = param_name
-                            else:
-                                formatted_param_name = ""
-
-                                for i, char in enumerate(param_name):
-                                    if i > 0 and (
-                                        (char.isnumeric() and param_name[i - 1].islower()) or
-                                        (char.isupper() and param_name[i - 1].islower()) or
-                                        (char.isupper() and param_name[i - 1].isnumeric())
-                                    ):
-                                        formatted_param_name += " "  # Insert space
-                                    formatted_param_name += char
-
-                            mix.setTrackExist(knob_number, 2)
-                            mix.setTrackSel(0, 1)
-                            mix.setTrackName(knob_number, formatted_param_name)
-                            mix.setTrackVol(knob_number, "{}%".format(int(percentage)))
+                    # If there are fewer parameters than knobs, set remaining knobs to non-existent
+                    for knob_number in range(c.actual_param_count + 1, 8 + 1):
+                        
+                        if c.actual_param_count < 7:
+                            purge_tracks(c.actual_param_count + 1, 7)
+                            purge_tracks(c.actual_param_count + 1, 7, clear_info=True)
+                        
+                    if param_count > 0:
+                        for knob_number in range(1, min(param_count + c.knob_offset, 8)):  # Ensure we don't go beyond the available parameters or knobs
                             
-                    actual_non_blank_param_count = 0
-                    
-                    if param_count == c.unused_param: 
-    
-                        for param_index in range(param_count):
+                            param_index = knob_number - c.knob_offset + c.lead_param                        
+                            param_index = min(param_index, param_count - 1)
+                            param_index = max(param_index, 0)
+                                                    
                             param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-
+                                                    
                             if param_name != "":
-                                actual_non_blank_param_count += 1
+                                param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+                                percentage = param_value * 100
+                                
+                                if not NILA_core.seriesCheck(): 
+                                    formatted_param_name = param_name
+                                else:
+                                    formatted_param_name = ""
 
-                        c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
+                                    for i, char in enumerate(param_name):
+                                        if i > 0 and (
+                                            (char.isnumeric() and param_name[i - 1].islower()) or
+                                            (char.isupper() and param_name[i - 1].islower()) or
+                                            (char.isupper() and param_name[i - 1].isnumeric())
+                                        ):
+                                            formatted_param_name += " "  # Insert space
+                                        formatted_param_name += char
+
+                                mix.setTrackExist(knob_number, 2)
+                                mix.setTrackSel(0, 1)
+                                mix.setTrackName(knob_number, formatted_param_name)
+                                mix.setTrackVol(knob_number, "{}%".format(int(percentage)))
+                                
+                        actual_non_blank_param_count = 0
+                        
+                        if param_count == c.unused_param: 
+
+                            for param_index in range(param_count):
+                                param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+
+                                if param_name != "":
+                                    actual_non_blank_param_count += 1
+
+                            c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
+                        else:
+                            c.actual_param_count = param_count
                     else:
-                        c.actual_param_count = param_count
+                        purge_tracks(1, 7)
+                        purge_tracks(1, 7, clear_info=True)
                 else:
                     purge_tracks(1, 7)
                     purge_tracks(1, 7, clear_info=True)

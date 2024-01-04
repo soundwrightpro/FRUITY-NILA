@@ -32,15 +32,8 @@ import sys
 
 exc_type, exc_value, exc_traceback = sys.exc_info()
 
-
-class Core(): 
-    """
-    Core class for Fruity NILA script. Handles various events and interactions.
-    """
+class Core():
     def OnInit(self):
-        """
-        Initialization method. Checks compatibility and initializes the core.
-        """
         try:
             compatibility = False
             if NILA_version_check.VersionCheck(compatibility):
@@ -48,10 +41,7 @@ class Core():
         except Exception as e:
             self.handle_exception("OnInit", e)
 
-    def OnMidiMsg(self, event): 
-        """
-        MIDI message handling method. Routes MIDI events to corresponding functions.
-        """
+    def OnMidiMsg(self, event):
         try:
             if event.midiChan == constants.controls:
                 NILA_navigation.encoder(self, event)
@@ -67,29 +57,20 @@ class Core():
             self.handle_exception("OnMidiMsg", e)
 
     def OnRefresh(self, flags):
-        """
-        Refresh method for updating UI components.
-        """
         try:
             NILA_LED.OnRefresh(self, flags)
             NILA_OLED.OnRefresh(self, flags)
         except Exception as e:
-            self.handle_exception("OnRefresh", e)     
+            self.handle_exception("OnRefresh", e)
 
     def OnUpdateBeatIndicator(self, Value):
-        """
-        Update method for beat indicator.
-        """
         try:
             NILA_LED.OnUpdateBeatIndicator(self, Value)
             NILA_OLED.OnUpdateBeatIndicator(self, Value)
         except Exception as e:
-            self.handle_exception("OnUpdateBeatIndicator", e) 
+            self.handle_exception("OnUpdateBeatIndicator", e)
 
     def OnWaitingForInput(self):
-        """
-        Method for handling waiting input state.
-        """
         try:
             setTrackName(0, constants.wait_input_1)
             setTrackVol(0, constants.wait_input_2)
@@ -97,38 +78,37 @@ class Core():
             self.handle_exception("OnWaitingForInput", e)
 
     def OnProjectLoad(self, status):
-        """
-        Method called on project load.
-        """
         try:
             NILA_core.OnProjectLoad(self, status)
         except Exception as e:
             self.handle_exception("OnProjectLoad", e)
 
     def OnIdle(self):
-        """
-        Idle method for handling idle state.
-        """
         try:
             NILA_OLED.OnIdle(self)
         except Exception as e:
             self.handle_exception("OnIdle", e)
 
     def OnUpdateMeters(self):
-        """
-        Method for updating volume meters.
-        """
         try:
             NILA_transform.sendPeakInfo()
         except Exception as e:
             self.handle_exception("OnUpdateMeters", e)
-            
+
     def handle_exception(self, method_name, exception):
         """
-        Handles exceptions and prints error details.
+        Handles exceptions and prints detailed error information.
         """
-        print(f"{method_name} error: {exception}")
-        print(f"Line number: {sys.exc_info()[2].tb_lineno}\n\n")
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        
+
+        formatted_exception = f"{method_name} error: {exception}"
+        formatted_exception += f"\nException Type: {type(exception).__name__}"
+        formatted_exception += f"\nException Value: {exception}"
+        formatted_exception += f"\nLine number: {getattr(exception, 'tb_lineno', 'N/A')}\n\n"
+
+        print(formatted_exception)
+
 
 n_Core = Core()
 
@@ -158,10 +138,8 @@ def OnUpdateMeters():
 
 def OnDeInit():
     try:
-        if ui.isClosing() == True:
-            nihia.goodBye()
-        else:
+        if ui.isClosing():
+            n_Core.handle_exception("OnDeInit", "Closing UI")
             nihia.goodBye()
     except Exception as e:
-        print(f"OnDeInit error: {e}\n")
-        print(f"Line number: {exc_traceback.tb_lineno}\n\n")
+        n_Core.handle_exception("OnDeInit", e)
