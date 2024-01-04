@@ -43,7 +43,7 @@ last_plugin_name = None
 unused_midi_cc = 144
 actual_param_count = 0
 knob_offset = 1
-unused_param = 4240 #4096 VST parameters, 128 CCs and 16 channels of aftertouch, and you get 
+unused_param = 4240 #4096 VST parameters, 128 CCs and 16 channels of aftertouch not in use
 
 # Window names and IDs
 widTitle = ["Mixer", "Channel Rack", "Playlist", "Piano Roll", "Browser", "Plugin Window", "Effect Plugin", "Generator Plugin"]
