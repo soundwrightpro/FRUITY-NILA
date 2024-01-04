@@ -150,14 +150,15 @@ def encoder(self, event):
                                 c.lead_param = 0  # Reset page number
                                 current_track_plugin_id = track_plugin_id
                             else:
-                                c.lead_param = min(c.lead_param + plugin_skip, param_count)  # Increment and clamp
+                                c.lead_param = min(c.lead_param + plugin_skip, param_count-8)  # Increment and clamp
+                                
                                 NILA_OLED.OnRefresh(self, event)
 
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
                     chan_track_index = channels.selectedChannel()
 
                     if channels.getChannelType() in (1, 2): 
-                        if plugins.getPluginName(chan_track_index, -plugin_skip, global_index) in c.unsupported_plugins:
+                        if plugins.getPluginName(chan_track_index, + plugin_skip, global_index) in c.unsupported_plugins:
                             ui.down(1)
                         else:
                             pass

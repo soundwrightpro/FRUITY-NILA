@@ -142,8 +142,12 @@ def OnRefresh(self, event):
                         c.last_plugin_name = track_plugin_id
 
                 if param_count > 0:
-                    for knob_number in range(1, min(param_count + 1, 8)):  # Ensure we don't go beyond the available parameters or knobs
-                        param_index = knob_number - 1 + c.lead_param
+                    for knob_number in range(1, min(param_count + c.knob_offset, 8)):  # Ensure we don't go beyond the available parameters or knobs
+                        
+                        param_index = knob_number - c.knob_offset + c.lead_param                        
+                        param_index = min(param_index, param_count - 1)
+                        param_index = max(param_index, 0)
+                                                
                         param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
                                                 
                         if param_name != "":
@@ -169,7 +173,6 @@ def OnRefresh(self, event):
                             mix.setTrackName(knob_number, formatted_param_name)
                             mix.setTrackVol(knob_number, "{}%".format(int(percentage)))
                             
-
                     actual_non_blank_param_count = 0
                     
                     if param_count == 4240:  # Check if the total parameters equal 4240
@@ -180,15 +183,14 @@ def OnRefresh(self, event):
                             if param_name != "":
                                 actual_non_blank_param_count += 1
 
-                        # Subtract 128 and 16 from the total
                         c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
                     else:
                         c.actual_param_count = param_count
 
                     # If there are fewer parameters than knobs, set remaining knobs to non-existent
                     for knob_number in range(c.actual_param_count + 1, 8 + 1):
-                        #purge_tracks(1, 7, clear_info=True)
-                        #purge_tracks(1, 7)
+                        purge_tracks(1, 7, clear_info=True)
+                        purge_tracks(1, 7)
                         mix.setTrackExist(knob_number, 0)
                     
                     

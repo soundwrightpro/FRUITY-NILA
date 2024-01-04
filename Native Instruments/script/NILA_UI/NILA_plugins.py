@@ -48,6 +48,9 @@ def plugin_set_param(self, event, mixer_slot=-1):
         if param_count > 0:
             for knob_number in range(1, min(param_count + 1, 8)):
                 param_index = knob_number - 1 + c.lead_param
+                
+                param_index = min(param_index, param_count - 1)
+                
                 param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
 
                 if param_name != "":
