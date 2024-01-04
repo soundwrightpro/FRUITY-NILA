@@ -47,22 +47,14 @@ def plugin_set_param(self, event, mixer_slot=-1):
 
         if param_count > 0:
             for knob_number in range(1, min(param_count + 1, 8)):
-                param_index = knob_number - 1 + c.lead_param
-                                
-                param_index = max(param_index, 0)
-                param_index = min(param_index, param_count - 1)
-                                
-                param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-
-                if param_name != "":
-                    param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-
+                param_index = min(max(knob_number - 1 + c.lead_param, 0), param_count - 1)
                 knob_data = nihia.mixer.knobs[0][knob_number]
                 volume_increment = config.increment
 
                 if event.data1 == knob_data:
                     adjusted_increment = knob_time_check(self, volume_increment)
                     handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, event.data2, adjusted_increment)
+
 
     elif ui.getFocused(c.winName["Generator Plugin"]):
         chan_track_index = channels.selectedChannel()
@@ -88,19 +80,18 @@ def handle_param_control(self, event, param_index, mix_track_index, mixer_slot, 
     percentage = param_value * 100
 
     if NILA_core.seriesCheck():
-        if 65 <= data2 < 95:
-            plugins.setParamValue(max(param_value - volume_increment, 0), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
-        elif 96 <= data2 < 128:
-            plugins.setParamValue(max(param_value - volume_increment, 0), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
-        elif 0 <= data2 < 31:
-            plugins.setParamValue(min(param_value + volume_increment, 1), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
-        elif 32 <= data2 < 64:
-            plugins.setParamValue(min(param_value + volume_increment, 1), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+        if 65 <= data2 < 95 or 96 <= data2 < 128:
+            new_param_value = max(param_value - volume_increment, 0)
+        elif 0 <= data2 < 31 or 32 <= data2 < 64:
+            new_param_value = min(param_value + volume_increment, 1)
     else:
         if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-            plugins.setParamValue(max(param_value - volume_increment, 0), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+            new_param_value = max(param_value - volume_increment, 0)
         elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-            plugins.setParamValue(min(param_value + volume_increment, 1), param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+            new_param_value = min(param_value + volume_increment, 1)
+
+        plugins.setParamValue(new_param_value, param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
+
 
     NILA_OLED.OnRefresh(self, event)
 
@@ -205,7 +196,6 @@ def update_and_record_volume(self, event_id, converted_volume):
 
     # Ensure mix_slot_volume is within the desired range [0, 12800]
     mix_slot_volume = max(0, min(12800, mix_slot_volume))
-    print(mix_slot_volume)
     
     general.processRECEvent(event_id, mix_slot_volume, midi.REC_Control | midi.REC_UpdateValue | midi.REC_UpdateControl)
     
