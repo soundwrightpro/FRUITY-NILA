@@ -2,7 +2,7 @@
 # url=https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
 # supportedDevices=Komplete Kontrol M DAW, Komplete Kontrol A DAW, KOMPLETE KONTROL M32, Komplete Kontrol DAW 1
 # receiveFrom=Forward Device
-
+# supportedHardwareIds= 00 33 09 96 24 32, 00 21 09 60 18 20
 """
 FRUITY NILA is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, 
 including the M-Series, A-Series, and S-Series within FL STUDIO. Harnessing the Native Instruments Host Integration protocol, 
@@ -18,12 +18,12 @@ Compatibility Notes:
 Developer: Duwayne 
 Copyright (c) 2023 
 """
-
 import nihia
 from script.NILA_UI import *
 from script.device_setup import *
 from script.led_writer import NILA_LED
 from script.screen_writer import NILA_OLED
+import device 
 
 from nihia.mixer import setTrackVol, setTrackName
 
@@ -35,6 +35,7 @@ exc_type, exc_value, exc_traceback = sys.exc_info()
 class Core():
     def OnInit(self):
         try:
+            device.getDeviceID()
             compatibility = False
             if NILA_version_check.VersionCheck(compatibility):
                 NILA_core.OnInit(self)
@@ -58,6 +59,7 @@ class Core():
 
     def OnRefresh(self, flags):
         try:
+            device.getDeviceID()
             NILA_LED.OnRefresh(self, flags)
             NILA_OLED.OnRefresh(self, flags)
         except Exception as e:
@@ -85,6 +87,7 @@ class Core():
 
     def OnIdle(self):
         try:
+            device.getDeviceID()
             NILA_OLED.OnIdle(self)
         except Exception as e:
             self.handle_exception("OnIdle", e)
@@ -108,7 +111,6 @@ class Core():
         formatted_exception += f"\nLine number: {getattr(exception, 'tb_lineno', 'N/A')}\n\n"
 
         print(formatted_exception)
-
 
 n_Core = Core()
 

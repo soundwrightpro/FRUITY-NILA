@@ -40,28 +40,61 @@ def plugin_set_param(self, event, mixer_slot=-1):
     useGlobalIndex = False
 
     if ui.getFocused(c.winName["Effect Plugin"]):
-        mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
-        track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
-        event_id = midi.REC_Plug_MixLevel + track_plugin_id
-        param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
+        track_index, mixer_slot = mixer.getActiveEffectIndex()
+        full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
 
-        if param_count > 0:
-            for knob_number in range(1, min(param_count + 1, 8)):
-                param_index = min(max(knob_number - 1 + c.lead_param, 0), param_count - 1)
-                knob_data = nihia.mixer.knobs[0][knob_number]
-                volume_increment = config.increment
+        if not full_plugin_name in c.unsupported_plugins:
+            
+            mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+            param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
+                
+            param_count = min(param_count, c.actual_param_count)
+            
+            if c.skip_back > 0: 
+                c.param_offset = c.skip_back
+            else:
+                c.param_offset = 0
+                                
+            if param_count > 0:
+                for knob_number in range(1, min(param_count + 1, 8 + c.param_offset)):
+                    
+                    param_index = min(max(knob_number - 1 + c.lead_param, 0), param_count - 1)
+                    param_index = max(param_index, 0)
+                    
+                    param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+                                
+                    if param_name not in c.unsupported_param:
+                        
+                        knob_number = max(1, min(knob_number - c.skip_back, 8))
+                        
+                        knob_data = nihia.mixer.knobs[0][knob_number]
+                        volume_increment = config.increment
 
-                if event.data1 == knob_data:
-                    adjusted_increment = knob_time_check(self, volume_increment)
-                    handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, event.data2, adjusted_increment)
+                        if event.data1 == knob_data:
+                            adjusted_increment = knob_time_check(self, volume_increment)
+                            handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, adjusted_increment, param_name)
+                            
 
 
     elif ui.getFocused(c.winName["Generator Plugin"]):
         chan_track_index = channels.selectedChannel()
         plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)
+        
+def send_hint_message(parameter_name):
+    
+    result = parameter_name[0]  # Keep the first character as is
+    for i in range(1, len(parameter_name)):
+        if parameter_name[i].isupper() and parameter_name[i - 1] != ' ':
+            result += ' ' + parameter_name[i]
+        elif parameter_name[i] == '/' and i < len(parameter_name) - 1 and parameter_name[i + 1] != ' ':
+            result += ' /'
+        else:
+            result += parameter_name[i]
+
+    ui.setHintMsg(result)
 
 
-def handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, data2, volume_increment):
+def handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, volume_increment, param_name):
     """
     Handles the adjustment of a specific parameter of a plugin based on the user's input event.
 
@@ -78,21 +111,23 @@ def handle_param_control(self, event, param_index, mix_track_index, mixer_slot, 
     pickupMode = 0
     param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
     percentage = param_value * 100
+    new_param_value = 0
+    
 
     if NILA_core.seriesCheck():
-        if 65 <= data2 < 95 or 96 <= data2 < 128:
+        if 65 <= event.data2 < 95 or 96 <= event.data2 < 128:
             new_param_value = max(param_value - volume_increment, 0)
-        elif 0 <= data2 < 31 or 32 <= data2 < 64:
+        elif 0 <= event.data2 < 31 or 32 <= event.data2 < 64:
             new_param_value = min(param_value + volume_increment, 1)
+            
     else:
-        if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+        if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
             new_param_value = max(param_value - volume_increment, 0)
-        elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+        elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
             new_param_value = min(param_value + volume_increment, 1)
 
-        plugins.setParamValue(new_param_value, param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
-
-
+    send_hint_message(param_name)
+    plugins.setParamValue(new_param_value, param_index, mix_track_index, mixer_slot, pickupMode, useGlobalIndex)
     NILA_OLED.OnRefresh(self, event)
 
             
@@ -155,7 +190,7 @@ def handle_non_series_knob_event(self, event, converted_volume, event_id, volume
     elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED and converted_volume + 1 <= 100:
         converted_volume += volume_increment
 
-    update_and_record_volume(self, event_id, converted_volume)
+    update_and_record_volume(self, event, event_id, converted_volume)
 
 
 # Function to handle knob events in series devices
@@ -178,11 +213,11 @@ def handle_series_knob_event(self, event, converted_volume, event_id, volume_inc
         if converted_volume + 1 <= 100:
             converted_volume += volume_increment
 
-    update_and_record_volume(self, event_id, converted_volume)
+    update_and_record_volume(self, event, event_id, converted_volume)
 
 
 # Function to update the volume of the mix level on the focused plugin
-def update_and_record_volume(self, event_id, converted_volume):
+def update_and_record_volume(self, event, event_id, converted_volume):
     """
     Update the volume of the mix level on the focused plugin.
 
@@ -198,6 +233,7 @@ def update_and_record_volume(self, event_id, converted_volume):
     mix_slot_volume = max(0, min(12800, mix_slot_volume))
     
     general.processRECEvent(event_id, mix_slot_volume, midi.REC_Control | midi.REC_UpdateValue | midi.REC_UpdateControl)
+    NILA_OLED.OnRefresh(self, event)
     
 
 # Function to handle controls specific to the Channel Rack

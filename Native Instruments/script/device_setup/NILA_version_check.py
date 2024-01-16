@@ -2,6 +2,7 @@ from script.device_setup import NILA_detect_device
 from script.device_setup import constants
 
 from sys import flags, platform
+import device
 import general
 import ui
 
@@ -58,5 +59,6 @@ def VersionCheck(compatibility):
         # Print compatibility error message if the series is not compatible
         print(f"The {seriesDevice} is not compatible with this script. Only the {', '.join(compatible_series)} are compatible with FRUITY NILA\n\n")
         compatibility = False
+        
 
     return compatibility

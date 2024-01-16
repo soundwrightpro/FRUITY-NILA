@@ -46,12 +46,8 @@ def onButtonClick(button):
 # Define the encoder function that handles various events
 def encoder(self, event):
     global windowCycle
-
     global current_track_plugin_id  # Declare current_track_plugin_id as a global variable
     global_index = False
-
-
-
     
     """
     Handle encoder events for a specific controller.
@@ -145,9 +141,7 @@ def encoder(self, event):
                             param_count = c.actual_param_count
                         else:
                             native_plugin == True
-                                                
-                        #param_count_adjusted = math.ceil(param_count/c.knobs_available)
-                        
+                                                                        
                         if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
                             ui.down(1)
                         else:
@@ -156,8 +150,12 @@ def encoder(self, event):
                                 current_track_plugin_id = track_plugin_id
                             else:
                                 if c.actual_param_count > 7:
-                                    c.lead_param = min(c.lead_param + plugin_skip, param_count-8)  # Increment and clamp
-                                    NILA_OLED.OnRefresh(self, event)
+                                    if c.lead_param + 7 != c.actual_param_count:
+                                        c.lead_param = c.lead_param + plugin_skip
+                                        c.lead_param = min(c.lead_param, c.actual_param_count)
+                                        NILA_OLED.OnRefresh(self, event)
+                                    else:
+                                        pass
 
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
                     chan_track_index = channels.selectedChannel()
@@ -206,8 +204,12 @@ def encoder(self, event):
                                 current_track_plugin_id = track_plugin_id
                             else:
                                 if c.actual_param_count > 7:
-                                    c.lead_param = max(c.lead_param - plugin_skip, 0)  # Decrement and clamp
-                                    NILA_OLED.OnRefresh(self, event)
+                                    if c.lead_param != 1:
+                                        c.lead_param = c.lead_param - plugin_skip
+                                        c.lead_param = max(c.lead_param, 1)
+                                        NILA_OLED.OnRefresh(self, event)
+                                    else:
+                                        pass
                     
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
                     chan_track_index = channels.selectedChannel()

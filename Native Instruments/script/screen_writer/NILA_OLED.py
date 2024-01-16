@@ -9,6 +9,7 @@ import ui
 import device
 import math
 import midi
+import general
 
 def OnRefresh(self, event):
     """
@@ -57,6 +58,7 @@ def OnRefresh(self, event):
                 mix.setTrackExist(knobNumber, 0)
 
     if ui.getFocused(c.winName["Plugin"]):
+        mix.setTrackVolGraph(0, 0)
         if not mixer.getActiveEffectIndex():
             purge_tracks(1, 7, clear_info=True)
             purge_tracks(1, 7)
@@ -85,8 +87,7 @@ def OnRefresh(self, event):
                 short_form_type = short_form_type[:9]
             else:
                 short_form_type = short_form_type
-            
-                
+
             mix.setTrackName(0, f"{short_form_type}")
             mix.setTrackVol(0, f"{round(channels.getChannelVolume(channels.selectedChannel(), 1), 1)} dB")
             mix.setTrackVolGraph(0, channels.getChannelVolume(channels.selectedChannel()) / 1.0 * 0.86)
@@ -104,10 +105,20 @@ def OnRefresh(self, event):
                 if not NILA_core.seriesCheck():    
                     plugin_name = full_plugin_name[:9]
                 else:
-                    plugin_name = full_plugin_name
+                    plugin_name = full_plugin_name + " Mix Level"
+                    
+                track_index, mixer_slot = mixer.getActiveEffectIndex()
+                track_plugin_id = mixer.getTrackPluginId(track_index, mixer_slot)
+                event_id = midi.REC_Plug_MixLevel + track_plugin_id
+                
+                
+                effect_mix_level = general.processRECEvent(event_id, 0, midi.REC_Chan_FXTrack | midi.REC_GetValue)
+                converted_mix_level = round((effect_mix_level / c.midi_CC_max) * 100)
                     
                 mix.setTrackExist(0, 1)
                 mix.setTrackName(0, plugin_name)
+                mix.setTrackVol(0, "{}%".format(int(converted_mix_level)))
+                
             else:
                 track_index, mixer_slot = mixer.getActiveEffectIndex()
                 full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
@@ -119,9 +130,9 @@ def OnRefresh(self, event):
                 mix.setTrackExist(0, 1)
                 mix.setTrackName(0, f"P| Insert: {track_index}")
                 mix.setTrackVol(0, full_plugin_name)
-                
-                    
+             
             if ui.getFocused(c.winName["Effect Plugin"]):
+                c.skip_back = 0
                 full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
                 
                 if not full_plugin_name in c.unsupported_plugins:
@@ -142,15 +153,13 @@ def OnRefresh(self, event):
                             purge_tracks(c.actual_param_count + 1, 7, clear_info=True)
                         
                     if param_count > 0:
-                        for knob_number in range(1, min(param_count + c.knob_offset, 8)):  # Ensure we don't go beyond the available parameters or knobs
-                            
-                            param_index = knob_number - c.knob_offset + c.lead_param                        
-                            param_index = min(param_index, param_count - 1)
-                            param_index = max(param_index, 0)
-                                                    
+                        for knob_number in range(1, min(param_count + c.knob_offset, 8 + c.param_offset)):  # Ensure we don't go beyond the available parameters or knobs
+
+                            param_index = max(min(knob_number - c.knob_offset + c.lead_param, param_count - 1), 0)
+                                              
                             param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-                                                    
-                            if param_name != "":
+                                                     
+                            if param_name not in c.unsupported_param:
                                 param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
                                 percentage = param_value * 100
                                 
@@ -167,14 +176,19 @@ def OnRefresh(self, event):
                                         ):
                                             formatted_param_name += " "  # Insert space
                                         formatted_param_name += char
+                                
+                                knob_number = max(1, knob_number - c.skip_back)
 
                                 mix.setTrackExist(knob_number, 2)
                                 mix.setTrackSel(0, 1)
                                 mix.setTrackName(knob_number, formatted_param_name)
                                 mix.setTrackVol(knob_number, "{}%".format(int(percentage)))
-                                
+                                mix.setTrackVolGraph(knob_number, 0)
+                            else: 
+                                c.skip_back = c.skip_back + 1
+                                  
                         actual_non_blank_param_count = 0
-                        
+                                                
                         if param_count == c.unused_param: 
 
                             for param_index in range(param_count):
@@ -186,15 +200,14 @@ def OnRefresh(self, event):
                             c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
                         else:
                             c.actual_param_count = param_count
+                           
                     else:
                         purge_tracks(1, 7)
                         purge_tracks(1, 7, clear_info=True)
                 else:
                     purge_tracks(1, 7)
                     purge_tracks(1, 7, clear_info=True)
-                    
 
-                    
             elif ui.getFocused(c.winName["Generator Plugin"]):
                 chan_track_index = channels.selectedChannel()
                 plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)

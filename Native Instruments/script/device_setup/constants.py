@@ -36,11 +36,29 @@ unsupported_plugins = [
     "Edison",
     "Patcher",
     "Wave Candy",
-    "ZGameEditor Visualizer"
+    "ZGameEditor Visualizer",
+    "Distructor",
+    "Flatter",
+    "Fruity Squeeze",
+    "Chorus DEMENSION-D",
+    "iZotope Trash 2"
 ]
+
+unsupported_param = [
+    "Bypass",
+    "",
+    "On/Off",
+    "System Bypass",
+    None
+]
+
 
 #plugin parameter position 
 lead_param = 0 
+param_skip = 0
+param_offset = 0
+skip_back = 0
+
 
 knobs_available = 7
 last_plugin_name = None
