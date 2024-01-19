@@ -32,7 +32,6 @@ supported_plugins = {
 
 unsupported_plugins = [
     "FLEX",
-    "FLEX",
     "Edison",
     "Patcher",
     "Wave Candy",
@@ -44,8 +43,33 @@ unsupported_plugins = [
     "HalfTime",
     "iZotope Trash 2",
     "Insight",
-    "Insight 2"
+    "Insight 2",
+    "FabFilter Pro-G",
+    "Effector",
+    "Freezr",
+    "Fruity Scratcher",
+    "Gatelab",
+    "Grossbeat",
+    "Ohmygod!",
+    "Retronaut",
+    "SNESVerb",
+    "Bitjuggler",
+    "Unfilterted Audio's G8",
+    "Lo-Fi-Af",
+    "Silo",
+    "Izotope's Vinyl",
+    "Plogue's Chipcrusher2",
+    "Graindad",
+    "Stutter Edit",
+    "Hardcore",
+    "Glitch2",
+    "QuadFrohmage",
+    "BYOME",
+    "Guitar Rig 6",
+    "Ampcraft 1992",
+    "Archetype Gojira"
 ]
+
 
 unsupported_param = [
     "Bypass",
