@@ -234,25 +234,9 @@ def OnMidiMsg(self, event):
                 handle_mixer_action(event, mixer.armTrack, target_track, "Armed Disk Recording")
                                         
     if ui.getFocused(c.winName["Effect Plugin"]):
-        plugin_skip = 1
-        
         if event.data1 == buttons.button_list.get("TRACK_SELECT") and event.data2 in range(8):
             event.handled = True 
-            knob_number = event.data2
-            plugin_skip = 7
-                        
-            if c.actual_param_count > 7:
-                
-                if knob_number in [7]:
-                    if c.lead_param + 6 != c.actual_param_count:
-                        c.lead_param = min(c.lead_param + plugin_skip, c.actual_param_count - 7)
-                         
-                elif knob_number in [1]:
-                    if c.lead_param >= 0:
-                        c.lead_param = max(c.lead_param - plugin_skip, 0)
-                        
 
-            NILA_OLED.OnRefresh(self, event)
 
     win_channel_rack = ui.getFocused(c.winName["Channel Rack"])
 

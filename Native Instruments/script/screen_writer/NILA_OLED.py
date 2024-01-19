@@ -43,7 +43,14 @@ def OnRefresh(self, event):
                 mix.setTrackSel(0, 1 if trackNumber == c.currentUtility else 0)
             else:
                 mix.setTrackExist(knobNumber, 0)
-
+                
+            if mixer.trackNumber() >= c.currentUtility:
+                purge_tracks(1, 7, clear_info=True)
+                purge_tracks(1, 7)
+                
+            if mixer.trackNumber() == 0:
+                mix.setTrackSel(0, 1)
+            
     if ui.getFocused(c.winName["Channel Rack"]):
         for knobNumber in range(8):
             selectedChannel = channels.selectedChannel() + knobNumber

@@ -103,11 +103,8 @@ def encoder(self, event):
         nihia.buttons.button_list.get("ENCODER_GENERAL"),
         nihia.buttons.button_list.get("ENCODER_VOLUME_SELECTED")
     ):
-        if not NILA_core.seriesCheck():
-            plugin_skip = 1
-        else:
-            plugin_skip = 1 # normally 7   
-        
+        plugin_skip = 1
+
         if event.data2 in (
             nihia.buttons.button_list.get("RIGHT"),
             c.mixer_right, 
@@ -316,7 +313,32 @@ def encoder(self, event):
                 ui.right(1) if ui.isInPopupMenu() else ui.left(1)
                 
             elif ui.getFocused(c.winName["Plugin"]):
-                ui.right(1)
+                if ui.getFocused(c.winName["Effect Plugin"]):
+                    plugin_skip = 7
+                    mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+                    
+                    if not track_plugin_id == c.last_plugin_name:
+                        c.lead_param = 0
+                        c.last_plugin_name = track_plugin_id
+                                        
+                    if plugins.isValid(mix_track_index, mixer_slot):
+                        param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
+                        
+                        if param_count == 4240:
+                            param_count = c.actual_param_count
+                                                                        
+                        if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
+                            ui.down(1)
+                        else:
+                            if c.actual_param_count > 7:
+                                if c.lead_param + 6 != c.actual_param_count:                                        
+                                    c.lead_param = min(c.lead_param + plugin_skip, c.actual_param_count - 7)
+                                    NILA_OLED.OnRefresh(self, event)
+                                else:
+                                    pass
+                else:
+                    ui.right(1)
                 
             elif ui.getFocused(c.winName["Playlist"]):
                 arrange.jumpToMarker(1, 0)
@@ -338,7 +360,26 @@ def encoder(self, event):
                 ui.left(1) if ui.isInPopupMenu() else ui.right(1)
                 
             elif ui.getFocused(c.winName["Plugin"]):
-                ui.left(1)
+                if ui.getFocused(c.winName["Effect Plugin"]):
+                    plugin_skip = 7
+                    mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+                    if plugins.isValid(mix_track_index, mixer_slot):
+                        track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
+                        param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
+                        
+                        if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
+                            ui.up(1)
+                        else:
+                            if track_plugin_id != current_track_plugin_id:
+                                c.lead_param = 0  # Reset page number
+                                current_track_plugin_id = track_plugin_id
+                            else:
+                                if c.actual_param_count > 7:
+                                    if c.lead_param >= 0:
+                                        c.lead_param = max(c.lead_param - plugin_skip, 0)
+                                        NILA_OLED.OnRefresh(self, event)
+                else:
+                    ui.left(1)
                 
             elif ui.getFocused(c.winName["Playlist"]):
                 arrange.jumpToMarker(-1, 0)
