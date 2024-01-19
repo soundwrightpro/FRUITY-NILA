@@ -62,7 +62,6 @@ param_skip = 0
 param_offset = 0
 skip_over = 0
 
-
 knobs_available = 7
 last_plugin_name = None
 unused_midi_cc = 144
