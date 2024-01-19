@@ -1,6 +1,28 @@
+# name=Fruity NILA
+# url=https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
+# supportedDevices=Komplete Kontrol M DAW, Komplete Kontrol A DAW, KOMPLETE KONTROL M32, Komplete Kontrol DAW 1
+# receiveFrom=Forward Device
+# supportedHardwareIds= 00 33 09 96 24 32, 00 21 09 60 18 20
+"""
+FRUITY NILA is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, 
+including the M-Series, A-Series, and S-Series within FL STUDIO. Harnessing the Native Instruments Host Integration protocol, 
+FRUITY NILA elevates your controller's functionality, simulating a seamless connection like with Ableton or Logic Pro X. 
+Crucially, this script operates independently of the Komplete Kontrol App or Plugin, 
+ensuring it doesn't disrupt their regular operation..
+
+For more information, visit: https://github.com/soundwrightpro/FRUITY-NILA
+
+Compatibility Notes:
+- Surface: Komplete Kontrol S-Series MKII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
+
+Developer: Duwayne 
+Copyright (c) 2023 
+"""
+
 from nihia import buttons
 from nihia.mixer import setTrackVol, setTrackName, setTrackPan
-from script.device_setup import constants
+from script.device_setup import constants as c
+from script.screen_writer import NILA_OLED
 import channels
 import device
 import general
@@ -60,14 +82,14 @@ def handle_mixer_action(event, action_function, track_number, hint_message):
         hint_message (str): Hint message for UI.
     """
     event.handled = True
-    if track_number <= constants.currentUtility - 1:
+    if track_number <= c.currentUtility - 1:
         action_function(track_number)
         ui.setHintMsg(hint_message)
     else:
         pass
 
 
-def OnMidiMsg(event):
+def OnMidiMsg(self, event):
     """
     Handle MIDI messages.
 
@@ -175,7 +197,7 @@ def OnMidiMsg(event):
 
         if device.getName() != "Komplete Kontrol DAW - 1":
             set_track_info(0, "Main Snap", snap_mode_name, snap_mode_name)
-            time.sleep(constants.timedelay)
+            time.sleep(c.timedelay)
 
 
     button_id = event.data1
@@ -187,7 +209,7 @@ def OnMidiMsg(event):
         event.handled = True
 
         if focused_index == 0:
-            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= constants.currentUtility:
+            if mixer.getTrackName(mixer.trackNumber()) == "Current" and mixer.trackNumber() >= c.currentUtility:
                 pass
             else:
                 mixer_function = mixer.enableTrack if is_mute_button else mixer.soloTrack
@@ -198,50 +220,68 @@ def OnMidiMsg(event):
             channel_function(channels.channelNumber())
             ui.setHintMsg("Mute" if is_mute_button else "Solo")
 
-    if ui.getFocused(constants.winName["Mixer"]):
+    if ui.getFocused(c.winName["Mixer"]):
         button_id = event.data1
 
         # s-series mixer actions
-        for x in range(8):
-            target_track = mixer.trackNumber() + x
-            if button_id == buttons.button_list["MUTE"] and event.data2 == x:
+        for knob_number in range(8):
+            target_track = mixer.trackNumber() + knob_number
+            if button_id == buttons.button_list["MUTE"] and event.data2 == knob_number:
                 handle_mixer_action(event, mixer.enableTrack, target_track, "Mute")
-            elif button_id == buttons.button_list["SOLO"] and event.data2 == x:
+            elif button_id == buttons.button_list["SOLO"] and event.data2 == knob_number:
                 handle_mixer_action(event, mixer.soloTrack, target_track, "Solo")
-            elif button_id == constants.select and event.data2 == x:
+            elif button_id == buttons.button_list["TRACK_SELECT"] and event.data2 == knob_number:
                 handle_mixer_action(event, mixer.armTrack, target_track, "Armed Disk Recording")
+                                        
+    if ui.getFocused(c.winName["Effect Plugin"]):
+        plugin_skip = 1
+        
+        if event.data1 == buttons.button_list.get("TRACK_SELECT") and event.data2 in range(8):
+            event.handled = True 
+            knob_number = event.data2
+            plugin_skip = 7
+                        
+            if c.actual_param_count > 7:
+                
+                if knob_number in [7]:
+                    if c.lead_param + 6 != c.actual_param_count:
+                        c.lead_param = min(c.lead_param + plugin_skip, c.actual_param_count - 7)
+                         
+                elif knob_number in [1]:
+                    if c.lead_param >= 0:
+                        c.lead_param = max(c.lead_param - plugin_skip, 0)
+                        
 
-    win_channel_rack = ui.getFocused(constants.winName["Channel Rack"])
+            NILA_OLED.OnRefresh(self, event)
+
+    win_channel_rack = ui.getFocused(c.winName["Channel Rack"])
 
     if win_channel_rack:
         button_list = buttons.button_list
         channel_count = channels.channelCount()
         selected_channel = channels.selectedChannel()
 
-        for x in range(8):
-            if channel_count > x and selected_channel < (channel_count - x):
-                if event.data1 == button_list.get("MUTE") and event.data2 == x:
+        for knob_number in range(8):
+            if channel_count > knob_number and selected_channel < (channel_count - knob_number):
+                if event.data1 == button_list.get("MUTE") and event.data2 == knob_number:
                     event.handled = True
-                    channels.muteChannel(selected_channel + x)
+                    channels.muteChannel(selected_channel + knob_number)
                     ui.setHintMsg("Mute")
 
-                if event.data1 == button_list.get("SOLO") and event.data2 == x and not (
-                        channels.isChannelMuted(selected_channel + x) and channel_count == 1):
+                if event.data1 == button_list.get("SOLO") and event.data2 == knob_number and not (
+                        channels.isChannelMuted(selected_channel + knob_number) and channel_count == 1):
                     event.handled = True
-                    channels.soloChannel(selected_channel + x)
+                    channels.soloChannel(selected_channel + knob_number)
                     ui.setHintMsg("Solo")
 
-                if event.data1 == constants.select and event.data2 == x:
+                if event.data1 == buttons.button_list["TRACK_SELECT"] and event.data2 == knob_number:
                     event.handled = True
-                    channels.selectOneChannel(selected_channel + x)
+                    channels.selectOneChannel(selected_channel + knob_number)
                     ui.setHintMsg("Track selected")
 
-    win_playlist = ui.getFocused(constants.winName["Playlist"])
+    win_playlist = ui.getFocused(c.winName["Playlist"])
 
     if win_playlist:
-        for x in range(8):
-            if event.data1 == constants.select and event.data2 == x:
+        for knob_number in range(8):
+            if event.data1 == buttons.button_list.get["TRACK_SELECT"] and event.data2 == knob_number:
                 event.handled = True
-                playlist.selectTrack()
-                ui.setHintMsg("")
-                break  # Exit the loop since the track has been selected

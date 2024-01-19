@@ -46,27 +46,25 @@ def plugin_set_param(self, event, mixer_slot=-1):
         if not full_plugin_name in c.unsupported_plugins:
             
             mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
-            param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
+            #param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
                 
-            param_count = min(param_count, c.actual_param_count)
+            #param_count = min(param_count, c.actual_param_count)
             
-            if c.skip_back > 0: 
-                c.param_offset = c.skip_back
+            if c.skip_over > 0: 
+                c.param_offset = c.skip_over
             else:
                 c.param_offset = 0
                                 
-            if param_count > 0:
-                for knob_number in range(1, min(param_count + 1, 8 + c.param_offset)):
+            if c.actual_param_count  > 0:
+                for knob_number in range(1, min(c.actual_param_count , 8 + c.param_offset)):
                     
-                    param_index = min(max(knob_number - 1 + c.lead_param, 0), param_count - 1)
+                    param_index = min(max(knob_number - 1 + c.lead_param, 0), c.actual_param_count  - 1)
                     param_index = max(param_index, 0)
                     
                     param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-                                
-                    if param_name not in c.unsupported_param:
-                        
-                        knob_number = max(1, min(knob_number - c.skip_back, 8))
-                        
+                                                
+                    if param_name not in c.unsupported_param:                
+                        knob_number = max(1, min(knob_number - c.skip_over, 7))                    
                         knob_data = nihia.mixer.knobs[0][knob_number]
                         volume_increment = config.increment
 
@@ -74,8 +72,6 @@ def plugin_set_param(self, event, mixer_slot=-1):
                             adjusted_increment = knob_time_check(self, volume_increment)
                             handle_param_control(self, event, param_index, mix_track_index, mixer_slot, useGlobalIndex, adjusted_increment, param_name)
                             
-
-
     elif ui.getFocused(c.winName["Generator Plugin"]):
         chan_track_index = channels.selectedChannel()
         plugins.getParamCount(chan_track_index, mixer_slot, useGlobalIndex)

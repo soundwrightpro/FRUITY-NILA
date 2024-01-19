@@ -82,6 +82,5 @@ def OnMidiMsg(self, event):
                             oled.OnRefresh(self, event)
                         else:
                             channels.setChannelPan(current_channel, new_value)
-    
                 else:
                     event.handled = True

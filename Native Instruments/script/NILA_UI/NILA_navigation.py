@@ -20,13 +20,10 @@ xAxis, yAxis = 0, 0
 windowCycle = 0
 last_click_time = 0
 current_track_plugin_id = None  # Variable to store the current track_plugin_id
-native_plugin = None
 
 def onButtonClick(button):
     global last_click_time
-
     
-
     # Get the current time
     current_time = time.time()
 
@@ -40,7 +37,6 @@ def onButtonClick(button):
     last_click_time = current_time
 
     return double_click_status
-
 
 
 # Define the encoder function that handles various events
@@ -118,7 +114,6 @@ def encoder(self, event):
         ):
             event.handled = True
             
-            
             if ui.getFocused(c.winName["Mixer"]):
                 jog(1)
             elif ui.getFocused(c.winName["Channel Rack"]):
@@ -137,26 +132,18 @@ def encoder(self, event):
                         param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
                         
                         if param_count == 4240:
-                            native_plugin == False
                             param_count = c.actual_param_count
-                        else:
-                            native_plugin == True
                                                                         
                         if plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index) in c.unsupported_plugins:
                             ui.down(1)
                         else:
-                            if track_plugin_id != current_track_plugin_id:
-                                c.lead_param = 0  # Reset page number
-                                current_track_plugin_id = track_plugin_id
-                            else:
-                                if c.actual_param_count > 7:
-                                    if c.lead_param + 7 != c.actual_param_count:
-                                        c.lead_param = c.lead_param + plugin_skip
-                                        c.lead_param = min(c.lead_param, c.actual_param_count)
-                                        NILA_OLED.OnRefresh(self, event)
-                                    else:
-                                        pass
-
+                            if c.actual_param_count > 7:
+                                if c.lead_param + 6 != c.actual_param_count:                                        
+                                    c.lead_param = min(c.lead_param + plugin_skip, c.actual_param_count - 7)
+                                    NILA_OLED.OnRefresh(self, event)
+                                else:
+                                    pass
+                                                        
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
                     chan_track_index = channels.selectedChannel()
 
@@ -168,7 +155,6 @@ def encoder(self, event):
                     else:
                         pass
  
-                
             elif ui.getFocused(c.winName["Playlist"]):
                 ui.jog(1)
             elif ui.getFocused(c.winName["Piano Roll"]):
@@ -178,7 +164,6 @@ def encoder(self, event):
             else:
                 ui.down(1)
                 
-
         elif event.data2 in (
             nihia.buttons.button_list.get("LEFT"),
             c.mixer_left,
@@ -204,13 +189,10 @@ def encoder(self, event):
                                 current_track_plugin_id = track_plugin_id
                             else:
                                 if c.actual_param_count > 7:
-                                    if c.lead_param != 1:
-                                        c.lead_param = c.lead_param - plugin_skip
-                                        c.lead_param = max(c.lead_param, 1)
+                                    if c.lead_param >= 0:
+                                        c.lead_param = max(c.lead_param - plugin_skip, 0)
                                         NILA_OLED.OnRefresh(self, event)
-                                    else:
-                                        pass
-                    
+ 
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
                     chan_track_index = channels.selectedChannel()
                     if channels.getChannelType == 1 or 2:
@@ -220,8 +202,7 @@ def encoder(self, event):
                             pass
                     else:
                         pass
-        
-                        
+                 
             elif ui.getFocused(c.winName["Playlist"]):
                 ui.jog(-1)
             elif ui.getFocused(c.winName["Piano Roll"]):
@@ -384,10 +365,7 @@ def encoder(self, event):
                     mix_track_index, mixer_slot = mixer.getActiveEffectIndex() 
                     param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
                         
-                    if param_count == 4240:
-                        native_plugin == False
-                    else:
-                        native_plugin == True
+                    if param_count != 4240:
                         plugins.prevPreset(mix_track_index, mixer_slot, global_index)
                         
                 elif ui.getFocused(c.winName["Generator Plugin"]): 
@@ -416,10 +394,7 @@ def encoder(self, event):
                     mix_track_index, mixer_slot = mixer.getActiveEffectIndex() 
                     param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
 
-                    if param_count == 4240:
-                        native_plugin == False
-                    else:
-                        native_plugin == True
+                    if param_count != 4240:
                         plugins.nextPreset(mix_track_index, mixer_slot, global_index)
                         
                 elif ui.getFocused(c.winName["Generator Plugin"]): 

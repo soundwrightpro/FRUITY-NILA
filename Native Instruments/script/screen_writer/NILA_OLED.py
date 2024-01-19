@@ -130,40 +130,61 @@ def OnRefresh(self, event):
                 mix.setTrackExist(0, 1)
                 mix.setTrackName(0, f"P| Insert: {track_index}")
                 mix.setTrackVol(0, full_plugin_name)
-             
-            if ui.getFocused(c.winName["Effect Plugin"]):
-                c.skip_back = 0
-                full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
                 
-                if not full_plugin_name in c.unsupported_plugins:
-                    
+                
+            if ui.getFocused(c.winName["Effect Plugin"]):
+                c.skip_over = 0
+                full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+
+                if full_plugin_name not in c.unsupported_plugins:
                     mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
                     track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
                     param_count = plugins.getParamCount(mix_track_index, mixer_slot, useGlobalIndex)
-                    
-                    if not track_plugin_id == c.last_plugin_name:
-                            c.lead_param = 0
-                            c.last_plugin_name = track_plugin_id
-                            
-                    # If there are fewer parameters than knobs, set remaining knobs to non-existent
-                    for knob_number in range(c.actual_param_count + 1, 8 + 1):
-                        
-                        if c.actual_param_count < 7:
-                            purge_tracks(c.actual_param_count + 1, 7)
-                            purge_tracks(c.actual_param_count + 1, 7, clear_info=True)
-                        
-                    if param_count > 0:
-                        for knob_number in range(1, min(param_count + c.knob_offset, 8 + c.param_offset)):  # Ensure we don't go beyond the available parameters or knobs
 
+                    if track_plugin_id != c.last_plugin_name:
+                        c.lead_param = 0
+                        c.last_plugin_name = track_plugin_id
+
+                    if param_count > 0:
+                        for knob_number in range(1, min(param_count + c.knob_offset, 7)):
                             param_index = max(min(knob_number - c.knob_offset + c.lead_param, param_count - 1), 0)
-                                              
                             param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-                                                     
+
+                            if param_name in c.unsupported_param:
+                                c.skip_over += 1
+                                
+                        actual_non_blank_param_count = 0
+
+                        if param_count == c.unused_param:
+                            for param_index in range(param_count):
+                                param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+
+                                if param_name != "":
+                                    actual_non_blank_param_count += 1
+
+                            c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
+                        else:
+                            c.actual_param_count = param_count
+
+                    # If there are fewer parameters than knobs, set remaining knobs to non-existent
+                    for knob_number in range(c.actual_param_count, 8):
+                        if c.actual_param_count < 7:
+                            purge_tracks(c.actual_param_count, 7)
+                            purge_tracks(c.actual_param_count, 7, clear_info=True)
+
+                    c.param_offset = c.skip_over if c.skip_over > 0 else 0
+
+                    if c.actual_param_count  > 0:
+                        for knob_number in range(1, min(c.actual_param_count + c.knob_offset, 8 + c.param_offset)):
+                            
+                            param_index = max(min(knob_number - c.knob_offset + c.lead_param, c.actual_param_count  - 1), 0)
+                            param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
+
                             if param_name not in c.unsupported_param:
                                 param_value = plugins.getParamValue(param_index, mix_track_index, mixer_slot, useGlobalIndex)
                                 percentage = param_value * 100
-                                
-                                if not NILA_core.seriesCheck(): 
+
+                                if not NILA_core.seriesCheck():
                                     formatted_param_name = param_name
                                 else:
                                     formatted_param_name = ""
@@ -176,37 +197,22 @@ def OnRefresh(self, event):
                                         ):
                                             formatted_param_name += " "  # Insert space
                                         formatted_param_name += char
-                                
-                                knob_number = max(1, knob_number - c.skip_back)
+
+                                knob_number = max(1, knob_number - c.skip_over)
 
                                 mix.setTrackExist(knob_number, 2)
                                 mix.setTrackSel(0, 1)
                                 mix.setTrackName(knob_number, formatted_param_name)
                                 mix.setTrackVol(knob_number, "{}%".format(int(percentage)))
                                 mix.setTrackVolGraph(knob_number, 0)
-                            else: 
-                                c.skip_back = c.skip_back + 1
-                                  
-                        actual_non_blank_param_count = 0
-                                                
-                        if param_count == c.unused_param: 
 
-                            for param_index in range(param_count):
-                                param_name = plugins.getParamName(param_index, mix_track_index, mixer_slot, useGlobalIndex)
-
-                                if param_name != "":
-                                    actual_non_blank_param_count += 1
-
-                            c.actual_param_count = actual_non_blank_param_count - c.unused_midi_cc
-                        else:
-                            c.actual_param_count = param_count
-                           
                     else:
                         purge_tracks(1, 7)
                         purge_tracks(1, 7, clear_info=True)
                 else:
                     purge_tracks(1, 7)
                     purge_tracks(1, 7, clear_info=True)
+
 
             elif ui.getFocused(c.winName["Generator Plugin"]):
                 chan_track_index = channels.selectedChannel()

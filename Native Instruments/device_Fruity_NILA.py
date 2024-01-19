@@ -18,6 +18,7 @@ Compatibility Notes:
 Developer: Duwayne 
 Copyright (c) 2023 
 """
+
 import nihia
 from script.NILA_UI import *
 from script.device_setup import *
@@ -43,19 +44,16 @@ class Core():
             self.handle_exception("OnInit", e)
 
     def OnMidiMsg(self, event):
-        try:
-            if event.midiChan == constants.controls:
-                NILA_navigation.encoder(self, event)
-                NILA_buttons.OnMidiMsg(event)
-                NILA_mixer.OnMidiMsg(self, event)
-                NILA_playlist.OnMidiMsg(self, event)
-                NILA_channel_rack.OnMidiMsg(self, event)
-                NILA_piano_roll.OnMidiMsg(self, event)
-                NILA_plugins.plugin(self, event)
-            else:
-                NILA_touch_strips.OnMidiIn(event)
-        except Exception as e:
-            self.handle_exception("OnMidiMsg", e)
+        if event.midiChan == constants.controls:
+            NILA_navigation.encoder(self, event)
+            NILA_buttons.OnMidiMsg(self, event)
+            NILA_mixer.OnMidiMsg(self, event)
+            NILA_playlist.OnMidiMsg(self, event)
+            NILA_channel_rack.OnMidiMsg(self, event)
+            NILA_piano_roll.OnMidiMsg(self, event)
+            NILA_plugins.plugin(self, event)
+        else:
+            NILA_touch_strips.OnMidiIn(event)
 
     def OnRefresh(self, flags):
         try:
@@ -103,7 +101,6 @@ class Core():
         Handles exceptions and prints detailed error information.
         """
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        
 
         formatted_exception = f"{method_name} error: {exception}"
         formatted_exception += f"\nException Type: {type(exception).__name__}"

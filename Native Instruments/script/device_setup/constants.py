@@ -41,7 +41,10 @@ unsupported_plugins = [
     "Flatter",
     "Fruity Squeeze",
     "Chorus DEMENSION-D",
-    "iZotope Trash 2"
+    "HalfTime",
+    "iZotope Trash 2",
+    "Insight",
+    "Insight 2"
 ]
 
 unsupported_param = [
@@ -57,7 +60,7 @@ unsupported_param = [
 lead_param = 0 
 param_skip = 0
 param_offset = 0
-skip_back = 0
+skip_over = 0
 
 
 knobs_available = 7
