@@ -112,7 +112,7 @@ def OnRefresh(self, event):
                 if not NILA_core.seriesCheck():    
                     plugin_name = full_plugin_name[:9]
                 else:
-                    plugin_name = full_plugin_name + " Mix Level"
+                    plugin_name = full_plugin_name + "\n\n|Mix Level"
                     
                 track_index, mixer_slot = mixer.getActiveEffectIndex()
                 track_plugin_id = mixer.getTrackPluginId(track_index, mixer_slot)
