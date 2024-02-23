@@ -19,17 +19,7 @@ def OnRefresh(self, event):
     - self: The instance of the script.
     - event: The event triggering the refresh.
     """
-    self.kompleteInstance = None
     useGlobalIndex = False
-
-    if plugins.isValid(channels.selectedChannel()) and plugins.getPluginName(channels.selectedChannel()) == "Komplete Kontrol":
-        if self.kompleteInstance != plugins.getParamName(0, channels.selectedChannel()):
-            self.kompleteInstance = plugins.getParamName(0, channels.selectedChannel())
-            mix.setTrackKompleteInstance(0, self.kompleteInstance)
-    else:
-        if self.kompleteInstance:
-            self.kompleteInstance = ""
-            mix.setTrackKompleteInstance(0, "")
 
     if ui.getFocused(c.winName["Mixer"]):
         for knobNumber in range(8):
@@ -65,6 +55,8 @@ def OnRefresh(self, event):
                 mix.setTrackExist(knobNumber, 0)
 
     if ui.getFocused(c.winName["Plugin"]):
+        pass 
+
         mix.setTrackVolGraph(0, 0)
         if not mixer.getActiveEffectIndex():
             purge_tracks(1, 7, clear_info=True)
