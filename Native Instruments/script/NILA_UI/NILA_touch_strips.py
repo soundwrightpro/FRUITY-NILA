@@ -38,7 +38,8 @@ def handle_expression_event(event, data2_normalized):
     # Check if the channel is valid for expression control
     if plugins.isValid(channel):
         # Set the plugin parameter based on the normalized input
-        plugins.setParamValue(data2_normalized, 4096 + constants.touch_strips["EXPRESSION"], channel, -1, 2)
+        value = (data2_normalized / 127 / 10) / 0.50 / 2 * 10
+        plugins.setParamValue(value, 4096 + constants.touch_strips["EXPRESSION"], channel, -1, 2)
         ui.setHintMsg(f"Expression: {round(data2_normalized / 1.27)}")
 
 def OnMidiIn(event):
