@@ -7,10 +7,10 @@ other constants for MIDI script functionality.
 """
 
 # Version information
-VERSION_NUMBER = "v14.0.5"
+VERSION_NUMBER = "v14.0.6"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
-OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2023 Duwayne\n"
+OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2024 Duwayne\n"
 LOAD_MESSAGE = "Project Loaded"
 
 # Supported plugins dictionary
@@ -101,7 +101,7 @@ winName = {"Mixer": 0, "Channel Rack": 1, "Playlist": 2, "Piano Roll": 3, "Brows
 touch_strips = {"PITCH": 0, "MOD": 1, "EXPRESSION": 11}
 
 # Constants for MAX and MIN
-MAX_Major, MAX_Minor, MAX_Release = 21, 0, 0
+MAX_Major, MAX_Minor, MAX_Release = 24, 1, 0
 MIN_Major, MIN_Minor, MIN_Release = 21, 0, 0
 
 # On and Off constants

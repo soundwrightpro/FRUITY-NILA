@@ -16,7 +16,7 @@ Compatibility Notes:
 - Surface: Komplete Kontrol S-Series MKII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
 
 Developer: Duwayne 
-Copyright (c) 2023 
+Copyright (c) 2024 
 """
 
 from nihia import buttons
