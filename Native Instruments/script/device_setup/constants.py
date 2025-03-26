@@ -7,7 +7,7 @@ other constants for MIDI script functionality.
 """
 
 # Version information
-VERSION_NUMBER = "v15.0.0"
+VERSION_NUMBER = "v15.0.2"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2024 Duwayne\n"
