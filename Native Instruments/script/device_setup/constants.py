@@ -7,7 +7,7 @@ other constants for MIDI script functionality.
 """
 
 # Version information
-VERSION_NUMBER = "v14.0.6"
+VERSION_NUMBER = "v15.0.0"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: Duwayne"
 OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2024 Duwayne\n"
@@ -15,68 +15,68 @@ LOAD_MESSAGE = "Project Loaded"
 
 # Supported plugins dictionary
 supported_plugins = {
-    "FL Keys": 0,
-    "FLEX": 1,
-    "Sytrus": 2,
-    "GMS": 3,
-    "Harmless": 4,
-    "Harmor": 5,
-    "Morphine": 6,
-    "3x Osc": 7,
-    "Fruity DX10": 8,
-    "BassDrum": 9,
-    "MiniSynth": 10,
-    "PoiZone": 11,
-    "Sakura": 12
+	"FL Keys": 0,
+	"FLEX": 1,
+	"Sytrus": 2,
+	"GMS": 3,
+	"Harmless": 4,
+	"Harmor": 5,
+	"Morphine": 6,
+	"3x Osc": 7,
+	"Fruity DX10": 8,
+	"BassDrum": 9,
+	"MiniSynth": 10,
+	"PoiZone": 11,
+	"Sakura": 12
 }
 
 unsupported_plugins = [
-    "FLEX",
-    "Edison",
-    "Patcher",
-    "Wave Candy",
-    "ZGameEditor Visualizer",
-    "Distructor",
-    "Flatter",
-    "Fruity Squeeze",
-    "Chorus DEMENSION-D",
-    "HalfTime",
-    "iZotope Trash 2",
-    "Insight",
-    "Insight 2",
-    "FabFilter Pro-G",
-    "Effector",
-    "Freezr",
-    "Fruity Scratcher",
-    "Gatelab",
-    "Grossbeat",
-    "Ohmygod!",
-    "Retronaut",
-    "SNESVerb",
-    "Bitjuggler",
-    "Unfilterted Audio's G8",
-    "Lo-Fi-Af",
-    "Silo",
-    "Izotope's Vinyl",
-    "Plogue's Chipcrusher2",
-    "Graindad",
-    "Stutter Edit",
-    "Hardcore",
-    "Glitch2",
-    "QuadFrohmage",
-    "BYOME",
-    "Guitar Rig 6",
-    "Ampcraft 1992",
-    "Archetype Gojira"
+	"FLEX",
+	"Edison",
+	"Patcher",
+	"Wave Candy",
+	"ZGameEditor Visualizer",
+	"Distructor",
+	"Flatter",
+	"Fruity Squeeze",
+	"Chorus DEMENSION-D",
+	"HalfTime",
+	"iZotope Trash 2",
+	"Insight",
+	"Insight 2",
+	"FabFilter Pro-G",
+	"Effector",
+	"Freezr",
+	"Fruity Scratcher",
+	"Gatelab",
+	"Grossbeat",
+	"Ohmygod!",
+	"Retronaut",
+	"SNESVerb",
+	"Bitjuggler",
+	"Unfilterted Audio's G8",
+	"Lo-Fi-Af",
+	"Silo",
+	"Izotope's Vinyl",
+	"Plogue's Chipcrusher2",
+	"Graindad",
+	"Stutter Edit",
+	"Hardcore",
+	"Glitch2",
+	"QuadFrohmage",
+	"BYOME",
+	"Guitar Rig 6",
+	"Ampcraft 1992",
+	"Archetype Gojira"
 ]
 
 
 unsupported_param = [
-    "Bypass",
-    "",
-    "On/Off",
-    "System Bypass",
-    None
+	"Bypass",
+	"",
+	"On/Off",
+	"System Bypass",
+	None
 ]
 
 
@@ -85,6 +85,7 @@ lead_param = 0
 param_skip = 0
 param_offset = 0
 skip_over = 0
+gen_plugin = -1
 
 knobs_available = 7
 last_plugin_name = None
@@ -126,9 +127,6 @@ wait_input_1, wait_input_2 = "Waiting", "for input...     "
 #stereo separation constant
 stereo_sep = 0.25
 
-# Current utility constant
-currentUtility = 126
-
 # Blank and not used events
 blankEvent, nuText = "   ", "Not Used"
 
@@ -163,6 +161,6 @@ SBN_M4A = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 
 # Dictionary mapping file extensions to FL node constants
 FL_node = {'B| .FLP': 1, 'B| .ZIP': 2, 'B| FL Proj.': 3, 'B| FL Preset': 4, 'B| .WAV': 7, 'B| .SF2': 11, 'B| .SPEECH': 12,
-           'B| .MP3': 13, 'B| .OGG': 14, 'B| .FLAC': 15, 'B| .FNV': 19, 'B| .AIFF': 21, 'B| .TXT': 22,
-           'B| IMAGE File': 23, 'B| .WV': 24, 'B| .MIDI': 27, 'B| FLEX PACK': 28, 'B| .MP4': 35, 'B| .INI': 37,
-           'B| .FSC': 10}
+		   'B| .MP3': 13, 'B| .OGG': 14, 'B| .FLAC': 15, 'B| .FNV': 19, 'B| .AIFF': 21, 'B| .TXT': 22,
+		   'B| IMAGE File': 23, 'B| .WV': 24, 'B| .MIDI': 27, 'B| FLEX PACK': 28, 'B| .MP4': 35, 'B| .INI': 37,
+		   'B| .FSC': 10}

@@ -5,76 +5,82 @@ import channels
 import ui
 
 def OnMidiMsg(self, event):
-    """
-    Handles MIDI messages for the Piano Roll window.
+	"""
+	Handles MIDI messages for the Piano Roll window.
 
-    Args:
-        self: The instance of the NILA system.
-        event: The MIDI event triggered by the MIDI controller.
-    """
-    if ui.getFocused(constants.winName["Piano Roll"]):
-        handle_knob_0(event)
-        handle_knob_1(event)
+	Args:
+		self: The instance of the NILA system.
+		event: The MIDI event triggered by the MIDI controller.
+	"""
+	if ui.getFocused(constants.winName["Piano Roll"]):
+		if event.data1 in (nihia.mixer.knobs[0][0], nihia.mixer.knobs[1][0]):
+			event.handled = True
+			handle_knob(event)
 
-def handle_knob_0(event):
-    """
-    Handles events for the first knob.
+def handle_knob(event):
+	"""
+	Handles knob events for adjusting volume or pan in the Piano Roll.
 
-    Args:
-        event: The MIDI event triggered by the first knob.
-    """
-    if event.data1 == nihia.mixer.knobs[0][0]:
-        event.handled = True
+	Args:
+		event: The MIDI event triggered by a knob.
+	"""
+	channel_index = 0
+	selected_channel = channels.selectedChannel() + channel_index
+	
+	# Determine whether the event is for volume (knob 0) or pan (knob 1)
+	if event.data1 == nihia.mixer.knobs[0][0]:  # Volume control
+		current_value = channels.getChannelVolume(selected_channel)
+		update_function = adjust_channel_volume
+	elif event.data1 == nihia.mixer.knobs[1][0]:  # Pan control
+		current_value = channels.getChannelPan(selected_channel)
+		update_function = adjust_channel_pan
+	else:
+		return  # Ignore other events
 
-        channel_index = 0
-        channel_volume = channels.getChannelVolume(channels.selectedChannel() + channel_index)
+	# Adjust value based on MIDI input
+	increment = get_knob_increment(event)
+	if increment is not None:
+		update_function(selected_channel, current_value, increment)
 
-        if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-            adjust_channel_volume(channel_index, channel_volume, -config.increment)
-        elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-            adjust_channel_volume(channel_index, channel_volume, config.increment)
+def get_knob_increment(event):
+	"""
+	Determines the increment value based on MIDI data.
 
-def handle_knob_1(event):
-    """
-    Handles events for the second knob.
+	Args:
+		event: The MIDI event.
 
-    Args:
-        event: The MIDI event triggered by the second knob.
-    """
-    if event.data1 == nihia.mixer.knobs[1][0]:
-        event.handled = True
-
-        channel_index = 0
-        channel_pan = channels.getChannelPan(channels.selectedChannel() + channel_index)
-
-        if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-            adjust_channel_pan(channel_index, channel_pan, -config.increment)
-        elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-            adjust_channel_pan(channel_index, channel_pan, config.increment)
+	Returns:
+		float: The calculated increment value, or None if the event is not valid.
+	"""
+	if nihia.mixer.KNOB_DECREASE_MAX_SPEED <= event.data2 <= nihia.mixer.KNOB_DECREASE_MIN_SPEED:
+		return -config.increment
+	elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+		return config.increment
+	return None  # Ignore if outside valid range
 
 def adjust_channel_volume(channel_index, current_volume, increment):
-    """
-    Adjusts the volume of a channel based on the provided increment.
+	"""
+	Adjusts the volume of a channel.
 
-    Args:
-        channel_index: Index of the channel to adjust.
-        current_volume: Current volume of the channel.
-        increment: Amount to adjust the volume.
-    """
-    updated_volume = round(current_volume + increment, 2)
-    channels.setChannelVolume(channels.selectedChannel() + channel_index, updated_volume)
-    NILA_core.setTrackVolConvert(channel_index, f"{updated_volume:.1f} dB")
-    mix.setTrackName(channel_index, channels.getChannelName(channels.selectedChannel() + channel_index))
+	Args:
+		channel_index: Index of the channel.
+		current_volume: Current volume level.
+		increment: Amount to adjust.
+	"""
+	updated_volume = round(current_volume + increment, 2)
+	channels.setChannelVolume(channel_index, updated_volume)
+	NILA_core.setTrackVolConvert(channel_index, f"{updated_volume:.1f} dB")
+	mix.setTrackName(channel_index, channels.getChannelName(channel_index))
 
 def adjust_channel_pan(channel_index, current_pan, increment):
-    """
-    Adjusts the pan of a channel based on the provided increment.
+	"""
+	Adjusts the pan of a channel.
 
-    Args:
-        channel_index: Index of the channel to adjust.
-        current_pan: Current pan of the channel.
-        increment: Amount to adjust the pan.
-    """
-    updated_pan = current_pan + increment
-    channels.setChannelPan(channels.selectedChannel() + channel_index, updated_pan)
-    NILA_transform.updatePanChannel(channels.selectedChannel() + channel_index, 0)
+	Args:
+		channel_index: Index of the channel.
+		current_pan: Current pan value.
+		increment: Amount to adjust.
+	"""
+	updated_pan = round(current_pan + increment, 2)
+	channels.setChannelPan(channel_index, updated_pan)
+	NILA_transform.updatePanChannel(channel_index, 0)

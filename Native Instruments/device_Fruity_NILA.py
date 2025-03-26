@@ -2,143 +2,165 @@
 # url=https://forum.image-line.com/viewtopic.php?p=1497550#p1497550
 # supportedDevices=Komplete Kontrol M DAW, Komplete Kontrol A DAW, KOMPLETE KONTROL M32, Komplete Kontrol DAW 1
 # receiveFrom=Forward Device
-# supportedHardwareIds= 00 33 09 96 24 32, 00 21 09 60 18 20
-"""
-FRUITY NILA is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, 
-including the M-Series, A-Series, and S-Series within FL STUDIO. Harnessing the Native Instruments Host Integration protocol, 
-FRUITY NILA elevates your controller's functionality, simulating a seamless connection like with Ableton or Logic Pro X. 
-Crucially, this script operates independently of the Komplete Kontrol App or Plugin, 
-ensuring it doesn't disrupt their regular operation..
-
-For more information, visit: https://github.com/soundwrightpro/FRUITY-NILA
-
-Compatibility Notes:
-- Surface: Komplete Kontrol S-Series MKII, Komplete Kontrol A-Series, and Komplete Kontrol M-Series
-
-Developer: Duwayne 
-Copyright (c) 2024 
-"""
+# supportedHardwareIds=00 33 09 96 24 32, 00 21 09 60 18 20
 
 import nihia
 from script.NILA_UI import *
 from script.device_setup import *
 from script.led_writer import NILA_LED
 from script.screen_writer import NILA_OLED
-import device 
-
+import device
 from nihia.mixer import setTrackVol, setTrackName
-
 import ui
 import sys
 
-exc_type, exc_value, exc_traceback = sys.exc_info()
+class Core:
+	"""
+	Core class to manage MIDI interactions with FL Studio.
+	Handles device initialization, MIDI events, UI updates, and error handling.
+	"""
 
-class Core():
-    def OnInit(self):
-        try:
-            device.getDeviceID()
-            compatibility = False
-            if NILA_version_check.VersionCheck(compatibility):
-                NILA_core.OnInit(self)
-        except Exception as e:
-            self.handle_exception("OnInit", e)
+	def OnInit(self):
+		"""
+		Initializes the script and verifies device compatibility.
+		Required by FL Studio's MIDI scripting API.
+		"""
+		try:
+			if NILA_version_check.VersionCheck(False):
+				NILA_core.OnInit(self)
+		except Exception as e:
+			self.handle_exception("OnInit", e)
 
-    def OnMidiMsg(self, event):
-        if event.midiChan == constants.controls:
-            NILA_navigation.encoder(self, event)
-            NILA_buttons.OnMidiMsg(self, event)
-            NILA_mixer.OnMidiMsg(self, event)
-            NILA_playlist.OnMidiMsg(self, event)
-            NILA_channel_rack.OnMidiMsg(self, event)
-            NILA_piano_roll.OnMidiMsg(self, event)
-            NILA_plugins.plugin(self, event)
-        else:
-            NILA_touch_strips.OnMidiIn(event)
+	def OnMidiMsg(self, event):
+		"""
+		Processes incoming MIDI messages and delegates them to the appropriate handler.
+		FL Studio will call this function when a MIDI event is received.
 
-    def OnRefresh(self, flags):
-        try:
-            device.getDeviceID()
-            NILA_LED.OnRefresh(self, flags)
-            NILA_OLED.OnRefresh(self, flags)
-        except Exception as e:
-            self.handle_exception("OnRefresh", e)
+		Parameters:
+			event (MidiEvent): The incoming MIDI event.
+		"""
+		try:
+			if event.midiChan == constants.controls:
+				for handler in (
+					NILA_navigation.encoder,
+					NILA_buttons.OnMidiMsg,
+					NILA_mixer.OnMidiMsg,
+					NILA_playlist.OnMidiMsg,
+					NILA_channel_rack.OnMidiMsg,
+					NILA_piano_roll.OnMidiMsg,
+					NILA_plugins.plugin,
+				):
+					handler(self, event)
+			else:
+				NILA_touch_strips.OnMidiIn(event)
+		except Exception as e:
+			self.handle_exception("OnMidiMsg", e)
 
-    def OnUpdateBeatIndicator(self, Value):
-        try:
-            NILA_LED.OnUpdateBeatIndicator(self, Value)
-            NILA_OLED.OnUpdateBeatIndicator(self, Value)
-        except Exception as e:
-            self.handle_exception("OnUpdateBeatIndicator", e)
+	def OnRefresh(self, flags):
+		"""
+		Refreshes the LED and OLED displays based on FL Studio's state.
+		FL Studio calls this function to update the hardware UI.
 
-    def OnWaitingForInput(self):
-        try:
-            setTrackName(0, constants.wait_input_1)
-            setTrackVol(0, constants.wait_input_2)
-        except Exception as e:
-            self.handle_exception("OnWaitingForInput", e)
+		Parameters:
+			flags (int): Flags indicating what needs to be refreshed.
+		"""
+		try:
+			for handler in (NILA_LED.OnRefresh, NILA_OLED.OnRefresh, NILA_navigation.OnRefresh):
+				handler(self, flags)
+		except Exception as e:
+			self.handle_exception("OnRefresh", e)
 
-    def OnProjectLoad(self, status):
-        try:
-            NILA_core.OnProjectLoad(self, status)
-        except Exception as e:
-            self.handle_exception("OnProjectLoad", e)
+	def OnUpdateBeatIndicator(self, value):
+		"""
+		Updates beat indicators for LED and OLED displays.
+		FL Studio calls this function to sync beat indicators with the DAW.
 
-    def OnIdle(self):
-        try:
-            device.getDeviceID()
-            NILA_OLED.OnIdle(self)
-        except Exception as e:
-            self.handle_exception("OnIdle", e)
+		Parameters:
+			value (int): The current beat indicator value.
+		"""
+		try:
+			for handler in (NILA_LED.OnUpdateBeatIndicator, NILA_OLED.OnUpdateBeatIndicator):
+				handler(self, value)
+		except Exception as e:
+			self.handle_exception("OnUpdateBeatIndicator", e)
 
-    def OnUpdateMeters(self):
-        try:
-            NILA_transform.sendPeakInfo()
-        except Exception as e:
-            self.handle_exception("OnUpdateMeters", e)
+	def OnWaitingForInput(self):
+		"""
+		Handles UI feedback while waiting for user input.
+		Used by FL Studio to indicate a waiting state.
+		"""
+		try:
+			setTrackName(0, constants.wait_input_1)
+			setTrackVol(0, constants.wait_input_2)
+		except Exception as e:
+			self.handle_exception("OnWaitingForInput", e)
 
-    def handle_exception(self, method_name, exception):
-        """
-        Handles exceptions and prints detailed error information.
-        """
-        exc_type, exc_value, exc_traceback = sys.exc_info()
+	def OnProjectLoad(self, status):
+		"""
+		Handles project loading events.
+		Called when an FL Studio project is opened.
 
-        formatted_exception = f"{method_name} error: {exception}"
-        formatted_exception += f"\nException Type: {type(exception).__name__}"
-        formatted_exception += f"\nException Value: {exception}"
-        formatted_exception += f"\nLine number: {getattr(exception, 'tb_lineno', 'N/A')}\n\n"
+		Parameters:
+			status (int): Status of the project load event.
+		"""
+		try:
+			NILA_core.OnProjectLoad(self, status)
+		except Exception as e:
+			self.handle_exception("OnProjectLoad", e)
 
-        print(formatted_exception)
+	def OnIdle(self):
+		"""
+		Handles idle state updates for the OLED display.
+		Ensures UI feedback remains responsive during inactivity.
+		"""
+		try:
+			NILA_OLED.OnIdle(self)
+		except Exception as e:
+			self.handle_exception("OnIdle", e)
 
+	def OnUpdateMeters(self):
+		"""
+		Sends peak meter information for real-time visual feedback.
+		FL Studio calls this function to update level meters.
+		"""
+		try:
+			NILA_transform.sendPeakInfo()
+		except Exception as e:
+			self.handle_exception("OnUpdateMeters", e)
+
+	def handle_exception(self, method_name, exception):
+		"""
+		Handles and logs exceptions, ensuring stability of the script.
+		This prevents crashes and provides debugging information.
+
+		Parameters:
+			method_name (str): Name of the method where the exception occurred.
+			exception (Exception): The exception object.
+		"""
+		print(f"{method_name} error: {exception}\nException Type: {type(exception).__name__}\n")
+
+# Instantiate Core object
 n_Core = Core()
 
-def OnInit():
-    n_Core.OnInit()
-
-def OnMidiMsg(event):
-    n_Core.OnMidiMsg(event)
-
-def OnRefresh(flags):
-    n_Core.OnRefresh(flags)
-
-def OnUpdateBeatIndicator(Value):
-    n_Core.OnUpdateBeatIndicator(Value)
-
-def OnWaitingForInput():
-    n_Core.OnWaitingForInput()
-
-def OnProjectLoad(status):
-    n_Core.OnProjectLoad(status)
-
-def OnIdle():
-    n_Core.OnIdle()
-
-def OnUpdateMeters():
-    n_Core.OnUpdateMeters()
+# Entry point functions for FL Studio MIDI scripting engine
+def OnInit(): n_Core.OnInit()
+def OnMidiMsg(event): n_Core.OnMidiMsg(event)
+def OnRefresh(flags): n_Core.OnRefresh(flags)
+def OnUpdateBeatIndicator(value): n_Core.OnUpdateBeatIndicator(value)
+def OnWaitingForInput(): n_Core.OnWaitingForInput()
+def OnProjectLoad(status): n_Core.OnProjectLoad(status)
+def OnIdle(): n_Core.OnIdle()
+def OnUpdateMeters(): n_Core.OnUpdateMeters()
 
 def OnDeInit():
-    try:
-        if ui.isClosing():
-            n_Core.handle_exception("OnDeInit", "Closing UI")
-            nihia.goodBye()
-    except Exception as e:
-        n_Core.handle_exception("OnDeInit", e)
+	"""
+	Handles cleanup and UI closure events.
+	Ensures a smooth shutdown of the script.
+	FL Studio calls this function when closing the script.
+	"""
+	try:
+		if ui.isClosing():
+			n_Core.handle_exception("OnDeInit", "Closing UI")
+			nihia.goodBye()
+	except Exception as e:
+		n_Core.handle_exception("OnDeInit", e)

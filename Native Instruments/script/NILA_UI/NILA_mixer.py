@@ -6,79 +6,85 @@ import mixer
 import ui
 import time
 
+# Cache ordered mixer tracks to reduce unnecessary recalculations
+ordered_tracks_cache = []
+last_updated_track = None
 
+def update_mixer_order(force=False):
+	"""
+	Updates and caches the mixer track order, sorted visually.
+	Only updates when necessary unless forced.
+	"""
+	global ordered_tracks_cache, last_updated_track
+	current_track = mixer.trackNumber()
+	
+	# Prevent redundant updates
+	if not force and ordered_tracks_cache and current_track == last_updated_track:
+		return
+
+	last_updated_track = current_track
+	track_count = mixer.trackCount() - 1  # Exclude Utility track
+	tracks = sorted([(mixer.getTrackDockSide(i), i) for i in range(track_count)])  # Sort by dock position
+	ordered_tracks_cache = [t[1] for t in tracks]
+
+def get_adjacent_tracks(current_track):
+	"""
+	Returns up to 8 visually adjacent mixer tracks.
+	"""
+	if current_track not in ordered_tracks_cache:
+		update_mixer_order()
+
+	start_index = ordered_tracks_cache.index(current_track) if current_track in ordered_tracks_cache else 0
+	return ordered_tracks_cache[start_index : start_index + 8]  # Slice up to 8 tracks
 
 def OnMidiMsg(self, event):
-    """
-    Handles MIDI messages received in FL Studio.
+	"""
+	Handles MIDI messages in FL Studio for mixer control.
+	"""
+	if ui.getFocused(constants.winName["Mixer"]):
+		last_valid_track = mixer.trackCount() - 2  # Last non-Utility track
+		current_track = mixer.trackNumber()
 
-    Parameters:
-    - self: The instance of the script.
-    - event: The MIDI event object containing information about the received MIDI message.
-    """
+		update_mixer_order()  # Ensure track order is up-to-date
+		adjacent_tracks = get_adjacent_tracks(current_track)
 
-    if ui.getFocused(constants.winName["Mixer"]):
-        for z in range(8):
-            if mixer.trackNumber() <= constants.currentUtility - z:
-                track_number = mixer.trackNumber() + z
-                track_name = mixer.getTrackName(track_number)
+		for z, track_number in enumerate(adjacent_tracks):
+			if mixer.getTrackName(track_number) != "Current":
+				event.handled = True
+				
+				# Track time difference for responsiveness
+				current_time = time.time()
+				time_diff = current_time - getattr(self, f'last_signal_time_{track_number}', current_time)
+				setattr(self, f'last_signal_time_{track_number}', current_time)
 
-                if track_number <= constants.currentUtility - z and track_name != "Current":
-                    event.handled = True
-                    
-                    # Check the time between consecutive signals
-                    current_time = time.time()  
-                    time_difference = current_time - getattr(self, f'last_signal_time_{z}', current_time)
-                    setattr(self, f'last_signal_time_{z}', current_time)
-                    
-                    adjusted_increment = config.increment * constants.knob_rotation_speed if time_difference <= constants.speed_increase_wait else config.increment
-                    
-                    if event.data1 == nihia.mixer.knobs[0][z]:  # VOLUME CONTROL
-                        handle_volume_control(track_number, event.data2, adjusted_increment)
+				# Adjust increment speed dynamically
+				adjusted_increment = config.increment * constants.knob_rotation_speed if time_diff <= constants.speed_increase_wait else config.increment
 
-                    elif event.data1 == nihia.mixer.knobs[1][z]:  # PAN CONTROL
-                        handle_pan_control(track_number, event.data2, adjusted_increment)
+				# Handle volume and pan controls
+				if event.data1 == nihia.mixer.knobs[0][z]:  # Volume Control
+					adjust_mixer_parameter(track_number, event.data2, adjusted_increment, "volume")
 
+				elif event.data1 == nihia.mixer.knobs[1][z]:  # Pan Control
+					adjust_mixer_parameter(track_number, event.data2, adjusted_increment, "pan")
 
-def handle_volume_control(track_number, data2, volume_increment):
-    """
-    Handles volume control for a specific mixer track.
+def adjust_mixer_parameter(track_number, data2, increment, param_type="volume"):
+	"""
+	Handles dynamic volume or pan control for a mixer track.
+	"""
+	value = 0
+	if core.seriesCheck():
+		if 65 <= data2 < 95 or 96 <= data2 < 128:
+			value = -increment
+		elif 0 <= data2 < 31 or 32 <= data2 < 64:
+			value = increment
+	else:
+		if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+			value = -increment
+		elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+			value = increment
 
-    Parameters:
-    - track_number: The number of the mixer track to control.
-    - data2: The MIDI event data representing the movement of the MIDI knob.
-    """
-    if core.seriesCheck():
-        if 65 <= data2 < 95:
-            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) - volume_increment)
-        elif 96 <= data2 < 128:
-            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) - volume_increment)
-        elif 0 <= data2 < 31:
-            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + volume_increment)
-        elif 32 <= data2 < 64:
-            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + volume_increment)
-    else:
-        if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) - volume_increment)
-        elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-            mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + volume_increment)
-
-
-def handle_pan_control(track_number, data2, pan_increment):
-    """
-    Handles pan control for a specific mixer track.
-
-    Parameters:
-    - track_number: The number of the mixer track to control.
-    - data2: The MIDI event data representing the movement of the MIDI knob.
-    """
-    if core.seriesCheck():
-        if nihia.mixer.KNOB_INCREASE_MAX_SPEED <= data2:
-            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) - pan_increment)
-        elif nihia.mixer.KNOB_DECREASE_MAX_SPEED >= data2:
-            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + pan_increment)
-    else:
-        if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) - pan_increment)
-        elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-            mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + pan_increment)
+	if value:
+		if param_type == "volume":
+			mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + value)
+		else:
+			mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + value)
