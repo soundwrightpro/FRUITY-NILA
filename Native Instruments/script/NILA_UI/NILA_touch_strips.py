@@ -7,6 +7,7 @@ import plugins
 import ui
 
 def handle_modulation_event(event, data2_normalized):
+	"""Handles modulation input from the modulation touch strip and sets the plugin modulation parameter."""
 	event.handled = True
 	channel = channels.selectedChannel()
 	if plugins.isValid(channel):
@@ -15,6 +16,7 @@ def handle_modulation_event(event, data2_normalized):
 		ui.setHintMsg(f"Modulation: {round(data2_normalized / 1.27)}")
 
 def handle_expression_event(event, data2_normalized):
+	"""Handles expression input from the expression touch strip and sets the plugin expression parameter."""
 	event.handled = True
 	channel = channels.selectedChannel()
 	if plugins.isValid(channel):
@@ -23,6 +25,7 @@ def handle_expression_event(event, data2_normalized):
 		ui.setHintMsg(f"Expression: {round(data2_normalized / 1.27)}")
 
 def handle_pitch_expression(event):
+	"""Handles pitch bend messages and applies pitch changes to the selected channel."""
 	lsb = event.data1
 	msb = event.data2
 	raw = (msb << 7) | lsb         # 0–16383
@@ -34,6 +37,7 @@ def handle_pitch_expression(event):
 	event.handled = True
 
 def OnMidiIn(event):
+	"""Main MIDI input handler. Routes incoming MIDI events to pitch, modulation, or expression handlers."""
 	status = event.status & 0xF0
 	data1 = event.data1
 	data2 = event.data2
