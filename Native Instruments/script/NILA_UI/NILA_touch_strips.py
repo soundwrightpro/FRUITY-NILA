@@ -4,66 +4,55 @@ from script.device_setup import constants
 
 import channels
 import plugins
-import ui 
+import ui
 
 def handle_modulation_event(event, data2_normalized):
-    """
-    Handles modulation events for a MIDI controller.
-
-    Args:
-        event: The event triggered by the modulation input.
-        data2_normalized: The normalized value of the modulation input (0 to 1).
-    """
-    event.handled = True
-    channel = channels.selectedChannel()
-
-    # Check if the channel is valid for modulation
-    if plugins.isValid(channel):
-        # Calculate the value based on the normalized input and set the plugin parameter
-        value = (data2_normalized / 127 / 10) / 0.50 / 2 * 10
-        plugins.setParamValue(value, 4097, channel, -1, 2)
-        ui.setHintMsg(f"Modulation: {round(data2_normalized / 1.27)}")
+	event.handled = True
+	channel = channels.selectedChannel()
+	if plugins.isValid(channel):
+		value = (data2_normalized / 127 / 10) / 0.50 / 2 * 10
+		plugins.setParamValue(value, 4097, channel, -1, 2)
+		ui.setHintMsg(f"Modulation: {round(data2_normalized / 1.27)}")
 
 def handle_expression_event(event, data2_normalized):
-    """
-    Handles expression events for a MIDI controller.
+	event.handled = True
+	channel = channels.selectedChannel()
+	if plugins.isValid(channel):
+		value = (data2_normalized / 127 / 10) / 0.50 / 2 * 10
+		plugins.setParamValue(value, 4096 + constants.touch_strips["EXPRESSION"], channel, -1, 2)
+		ui.setHintMsg(f"Expression: {round(data2_normalized / 1.27)}")
 
-    Args:
-        event: The event triggered by the expression input.
-        data2_normalized: The normalized value of the expression input (0 to 1).
-    """
-    event.handled = True
-    channel = channels.selectedChannel()
-
-    # Check if the channel is valid for expression control
-    if plugins.isValid(channel):
-        # Set the plugin parameter based on the normalized input
-        value = (data2_normalized / 127 / 10) / 0.50 / 2 * 10
-        plugins.setParamValue(value, 4096 + constants.touch_strips["EXPRESSION"], channel, -1, 2)
-        ui.setHintMsg(f"Expression: {round(data2_normalized / 1.27)}")
+def handle_pitch_expression(event):
+	lsb = event.data1
+	msb = event.data2
+	raw = (msb << 7) | lsb         # 0–16383
+	normalized = (raw - 8192) / 8192  # -1.0 to +1.0
+	channel = channels.selectedChannel()
+	if channel >= 0:
+		channels.setChannelPitch(channel, normalized)
+		ui.setHintMsg(f"Pitch Bend: {round(normalized * 100)}%")
+	event.handled = True
 
 def OnMidiIn(event):
-    """
-    Handles MIDI input events for the NILA system.
+	status = event.status & 0xF0
+	data1 = event.data1
+	data2 = event.data2
 
-    Args:
-        event: The MIDI input event triggered by the MIDI controller.
-    """
-    data1 = event.data1
-    data2_normalized = event.data2 
+	mod_touch_strip = constants.touch_strips["MOD"]
+	exp_touch_strip = constants.touch_strips["EXPRESSION"]
+	plugin_win_name = constants.winName["Plugin"]
 
-    mod_touch_strip = constants.touch_strips["MOD"]
-    exp_touch_strip = constants.touch_strips["EXPRESSION"]
-    plugin_win_name = constants.winName["Plugin"]
+	# Handle pitch bend messages separately
+	if status == 0xE0:
+		handle_pitch_expression(event)
+		return
 
-    # Check if the MIDI input is related to modulation or expression
-    if data1 == mod_touch_strip or data1 == exp_touch_strip:
-        event.handled = True
+	# Handle CC messages
+	if data1 == mod_touch_strip or data1 == exp_touch_strip:
+		event.handled = True
 
-    # Check if the Plugin window is in focus
-    if ui.getFocused(plugin_win_name):
-        # Route the MIDI input to the appropriate handling function
-        if data1 == mod_touch_strip:
-            handle_modulation_event(event, data2_normalized)
-        elif data1 == exp_touch_strip:
-            handle_expression_event(event, data2_normalized)
+	if ui.getFocused(plugin_win_name):
+		if data1 == mod_touch_strip:
+			handle_modulation_event(event, data2)
+		elif data1 == exp_touch_strip:
+			handle_expression_event(event, data2)
