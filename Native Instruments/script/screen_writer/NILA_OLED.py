@@ -10,6 +10,7 @@ import math
 import midi
 import general
 
+
 def get_utility_track():
 	""" Returns the last track (Utility) dynamically. """
 	return mixer.trackCount() - 1
@@ -355,14 +356,11 @@ def OnRefresh(self, event):
 def OnUpdateBeatIndicator(self, Value):
 	"""
 	Updates the beat indicator based on the focused window (e.g., Playlist).
-
-	Parameters:
-	- self: The instance of the script.
-	- Value: The value associated with the beat indicator event.
 	"""
 	if ui.getFocused(c.winName["Playlist"]):
 		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
 		mix.setTrackName(0, "Playlist")
+
 		split_message = ui.getHintMsg()
 		split_point1 = ' - '
 		split_point2 = ' to '
@@ -372,12 +370,18 @@ def OnUpdateBeatIndicator(self, Value):
 			mix.setTrackVol(0, f"|{currentTime}")
 		else:
 			if transport.isPlaying():
-				timeDisp = "B:B" if timeDisp == "Beats:Bar" and len(currentTime) >= 5 else timeDisp
-				timeDisp = "M:S" if timeDisp == "Min:Sec" and len(currentTime) > 5 else timeDisp
-				mix.setTrackVol(0, f"{timeDisp}|{currentTime}")
+				if timeDisp == "Beats:Bar":
+					displayLabel = "B:B" if len(currentTime) >= 5 else "Beats:Bar"
+				elif timeDisp == "Min:Sec":
+					displayLabel = "M:S" if len(currentTime) > 5 else "Min:Sec"
+				else:
+					displayLabel = timeDisp  # fallback for other formats
+
+				mix.setTrackVol(0, f"{displayLabel}|{currentTime}")
 			else:
 				mix.setTrackVol(0, f"{split_hint[:7]}|{currentTime}")
 				mix.setTrackVolGraph(0, mixer.getTrackVolume(0))
+
 			
 def OnIdle(self):
 	""" Performs idle tasks based on the currently focused window. """
