@@ -7,11 +7,13 @@ other constants for MIDI script functionality.
 """
 
 # Version information
-VERSION_NUMBER = "v15.1.1"
+VERSION_NUMBER = "v2024.1"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: sound"
-OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\nCopyright © 2024\n"
+OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\n"
 LOAD_MESSAGE = "Project Loaded"
+DISCORD = "https://discord.com/invite/GeTTWBV"
+
 
 # Supported plugins dictionary
 supported_plugins = {
@@ -164,3 +166,5 @@ FL_node = {'B| .FLP': 1, 'B| .ZIP': 2, 'B| FL Proj.': 3, 'B| FL Preset': 4, 'B| 
 		   'B| .MP3': 13, 'B| .OGG': 14, 'B| .FLAC': 15, 'B| .FNV': 19, 'B| .AIFF': 21, 'B| .TXT': 22,
 		   'B| IMAGE File': 23, 'B| .WV': 24, 'B| .MIDI': 27, 'B| FLEX PACK': 28, 'B| .MP4': 35, 'B| .INI': 37,
 		   'B| .FSC': 10}
+
+HANDSHAKE_SYSEX = bytes([240, 0, 33, 9, 0, 0, 68, 67, 1, 0, 64, 1, 0, 247])  # 'mute' & 'solo' button lights
