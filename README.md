@@ -16,7 +16,6 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 
 - DAW integration mode for a seamless workflow
 - Control playback and access nearly full functionality of the mixer, channel rack, browser, piano roll, and select stock & 3rd party plugins
-- Watch detailed feature videos by [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto)
 
 ## Compatible Devices
 
