@@ -61,8 +61,7 @@ def plugin_set_param(self, event):
 					adjusted_increment = knob_time_check(self, volume_increment)
 					handle_param_control(self, event, param_index, track_index, mixer_slot, use_global_index, adjusted_increment, param_name)
 
-		if NILA_OLED:
-			NILA_OLED.OnRefresh(self, event)
+		NILA_OLED.OnRefresh(self, event)
 
 def handle_channel_generator(self, event):
 	"""Sets parameters for the selected generator plugin in the Channel Rack."""
@@ -105,8 +104,7 @@ def handle_channel_generator(self, event):
 						param_name=param_name
 					)
 
-		if NILA_OLED:
-			NILA_OLED.OnRefresh(self, event)
+		NILA_OLED.OnRefresh(self, event)
 
 def send_hint_message(parameter_name):
 	"""Formats and sends a hint message."""

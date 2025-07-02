@@ -82,6 +82,10 @@ def OnRefresh(self, event):
 		purge_tracks(len(tracks_to_control), 7)
 
 	if ui.getFocused(c.winName["Channel Rack"]):
+
+		purge_tracks(1, 7, clear_info=True)
+		purge_tracks(1, 7)
+
 		for knobNumber in range(8):
 			selectedChannel = channels.selectedChannel() + knobNumber
 			if channels.channelCount() > knobNumber and selectedChannel < channels.channelCount():
@@ -98,8 +102,7 @@ def OnRefresh(self, event):
 		mix.setTrackVolGraph(0, 0)
 
 		if not mixer.getActiveEffectIndex():
-			purge_tracks(1, 7, clear_info=True)
-			purge_tracks(1, 7)
+
 			mix.setTrackExist(0, 1)
 						
 			# Get the channel type
