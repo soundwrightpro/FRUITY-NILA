@@ -5,18 +5,13 @@
 
 **FRUITY NILA** is a robust MIDI script tailored to provide comprehensive support for Native Instruments controllers, including the [M-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-m32/), [A-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-a25-a49-a61), and [S-Series](https://www.native-instruments.com/en/products/komplete/keyboards/komplete-kontrol-s88/) within [FL STUDIO](https://www.image-line.com/). Harnessing the Native Instruments Host Integration protocol, FRUITY NILA elevates your controller's functionality, simulating a seamless connection like with Ableton or Logic Pro X. Crucially, this script operates independently of the Komplete Kontrol App or Plugin, ensuring it doesn't disrupt their regular operation.
 
-**Minimum Requirements:**
-- Komplete Kontrol v2.3.0 or higher: [link](https://www.native-instruments.com/en/products/komplete/bundles/komplete-kontrol/)
-- Firmware 0.3.9 or higher
-- FL Studio 21 or higher
 
 ## Quick Start
 
 1. [Download the latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest) of FRUITY NILA.
 2. Follow the [installation guide](Installation/install.md) to copy the script to the correct FL Studio folder.
-3. Connect your Native Instruments controller and start FL Studio.
-4. The script will auto-detect your device—no extra setup required!
-5. Enjoy seamless hands-on control with your Komplete Kontrol keyboard.
+3. Connect your Native Instruments controller and start FL Studio, open setting and once again reference [installation guide](Installation/install.md).
+4. Enjoy seamless hands-on control with your Komplete Kontrol keyboard.
 
 ## Key Features
 
@@ -32,7 +27,7 @@
 ## Installation & Requirements  
 
 ### Minimum Requirements  
-- **FL Studio 21+**  
+- **FL Studio 2025+**  
 - **Komplete Kontrol v2.3.0+** — [Download](https://www.native-instruments.com/en/products/komplete/bundles/komplete-kontrol/)  
 - **Firmware 0.3.9+**  
 

@@ -5,7 +5,7 @@
 Make sure you have:
 - **Komplete Kontrol v2.3.0 or higher** ([Download](https://www.native-instruments.com/en/products/komplete/bundles/komplete-kontrol/))
 - **Device Firmware 0.3.9 or higher** (Get updates from the [drivers page](https://www.native-instruments.com/en/support/downloads/drivers-other-files/))
-- **FL Studio 21 or higher**
+- **FL Studio 2025 or higher**
 
 ## 1. Download and Unpack
 
@@ -21,7 +21,7 @@ Make sure you have:
   `Documents\Image-Line\FL Studio\Settings\Hardware\`
 
 - **macOS:**  
-  `~/Library/Preferences/Image-Line/FL Studio/Settings/Hardware/`
+  `~/Documents/Image-Line/FL Studio/Settings/Hardware`
 
   > **Tip:** If you have a previous Fruity NILA install, delete the old `Native Instruments` or `FRUITY-NILA` folder first.
 
@@ -62,7 +62,7 @@ Edit the script’s behavior via `config.py`:
 - **Windows:**  
   `Documents\Image-Line\FL Studio\Settings\Hardware\FRUITY-NILA\script\device_setup\config.py`
 - **macOS:**  
-  `~/Library/Preferences/Image-Line/FL Studio/Settings/Hardware/FRUITY-NILA/script/device_setup/config.py`
+  `~/Documents/Image-Line/FL Studio/Settings/Hardware/FRUITY-NILA/script/device_setup/config.py`
 
 (See “User Adjustable Settings” in the [User Manual](../Fruity%20NILA%20User%20Manual.pdf) for options and details.)
 
