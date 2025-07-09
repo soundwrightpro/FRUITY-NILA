@@ -1,30 +1,24 @@
 """
-Fruity NILA Script
+Fruity NILA Script package.
 
-This module provides a collection of components and utilities for the Fruity NILA script.
+This module collects all Fruity NILA components and utilities for easy access.
 
 Components:
-- NILA_core: Core class for Fruity NILA script, handling various events and interactions.
-- NILA_detect_device: Module for detecting and setting up devices for Fruity NILA.
-- NILA_transform: Module for transforming data or handling transformations in Fruity NILA.
-- NILA_version_check: Module for checking the version compatibility of Fruity NILA.
-- config: Configuration module for Fruity NILA.
-- constants: Module containing constants used throughout Fruity NILA.
+- config: Configuration settings for Fruity NILA.
+- constants: Global constants.
+- NILA_core: Core event handler and interface.
+- NILA_detect_device: Device detection utilities.
+- NILA_transform: Data transformation utilities.
+- NILA_version_check: Version compatibility checking.
 
-Usage:
-The '__all__' list is used to specify the components that are intended to be publicly
-accessible when someone imports this module using the '*' wildcard import statement.
+Usage Example:
+    from script.device_setup import constants, NILA_core
 
-Example:
-    from script import *
+    # Access a constant:
+    x = constants.VERSION_NUMBER
 
-    # Now, you can access the components listed in '__all__' directly.
-
-    # Accessing the NILA_core class:
-    my_core_instance = NILA_core.Core()
-
-    # Accessing the constants module:
-    my_constant_value = constants.some_constant_value
+    # Instantiate the core handler:
+    my_core = NILA_core.Core()
 """
 
 __all__ = [
@@ -35,3 +29,6 @@ __all__ = [
     "NILA_transform",
     "NILA_version_check",
 ]
+
+# Optional: import all for direct access (optional and not strictly required)
+# from . import config, constants, NILA_core, NILA_detect_device, NILA_transform, NILA_version_check

@@ -1,5 +1,5 @@
 import nihia
-from script.device_setup import config, constants, NILA_transform
+from script.device_setup import config, constants as c, NILA_transform
 from script.screen_writer import NILA_OLED as oled
 import mixer
 import ui 
@@ -7,25 +7,17 @@ import ui
 def OnMidiMsg(self, event): 
     """
     Handles MIDI messages for the Playlist window.
-
-    Args:
-        self: The instance of the NILA system.
-        event: The MIDI event triggered by the MIDI controller.
     """
-    if ui.getFocused(constants.winName["Playlist"]):
+    if ui.getFocused(c.winName["Playlist"]):
         handle_volume_control(event)
-
 
 def handle_volume_control(event):
     """
     Handles volume control events.
-
-    Args:
-        event: The MIDI event triggered by the volume control knob.
     """
     if event.data1 == nihia.mixer.knobs[0][0]:
         event.handled = True
-        track_index = 0
+        track_index = c.playlist_track_index
 
         if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
             adjust_track_volume(track_index, -config.increment)
@@ -35,11 +27,11 @@ def handle_volume_control(event):
 def adjust_track_volume(track_index, increment):
     """
     Adjusts the volume of a track based on the provided increment.
-
-    Args:
-        track_index: Index of the track to adjust.
-        increment: Amount to adjust the volume.
     """
     current_volume = mixer.getTrackVolume(track_index)
-    new_volume = NILA_transform.clamp(current_volume + increment, 0.0, 1.0)
+    new_volume = NILA_transform.clamp(
+        current_volume + increment, 
+        c.track_volume_min, 
+        c.track_volume_max
+    )
     mixer.setTrackVolume(track_index, new_volume)

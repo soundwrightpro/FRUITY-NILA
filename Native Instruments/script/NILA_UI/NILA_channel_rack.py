@@ -25,13 +25,13 @@ def adjust_channel_value(channel_value, data2, increment, speed=0):
 	Returns:
 	- float: The adjusted channel value.
 	"""
-	if data2 >= 96:  # Large decrement
+	if c.encoder_cc_dec_fast_min <= data2 <= c.encoder_cc_dec_fast_max:  # Fast decrement
 		return round(channel_value - increment, 2)
-	elif data2 >= 65:  # Small decrement
+	elif c.encoder_cc_dec_slow_min <= data2 <= c.encoder_cc_dec_slow_max:  # Slow decrement
 		return round(channel_value - increment, 2)
-	elif data2 >= 32:  # Small increment
+	elif c.encoder_cc_inc_slow_min <= data2 <= c.encoder_cc_inc_slow_max:  # Slow increment
 		return round(channel_value + increment, 2)
-	elif data2 >= 0:   # Large increment
+	elif c.encoder_cc_inc_fast_min <= data2 <= c.encoder_cc_inc_fast_max:  # Fast increment
 		return round(channel_value + increment, 2)
 	elif speed != 0:
 		return round(channel_value + speed, 2)
@@ -53,7 +53,7 @@ def OnMidiMsg(self, event):
 	is_s_series = seriesCheck()  # Avoid redundant calls
 
 	for control_type in (0, 1):  # 0 for volume, 1 for pan
-		for z in range(8):
+		for z in range(c.max_knobs):
 			if channels.channelCount() <= z or channels.selectedChannel() >= (channels.channelCount() - z):
 				continue  # Skip if out of range
 

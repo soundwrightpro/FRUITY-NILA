@@ -13,6 +13,7 @@ import device
 from nihia.mixer import setTrackVol, setTrackName
 import ui
 import sys
+from script.device_setup import constants as c
 
 class Core:
 	"""
@@ -21,10 +22,7 @@ class Core:
 	"""
 
 	def OnInit(self):
-		"""
-		Initializes the script and verifies device compatibility.
-		Required by FL Studio's MIDI scripting API.
-		"""
+		"""Initializes the script and verifies device compatibility."""
 		try:
 			if NILA_version_check.VersionCheck(False):
 				NILA_core.OnInit(self)
@@ -35,12 +33,11 @@ class Core:
 		"""
 		Processes incoming MIDI messages and delegates them to the appropriate handler.
 		FL Studio will call this function when a MIDI event is received.
-
 		Parameters:
 			event (MidiEvent): The incoming MIDI event.
 		"""
 		try:
-			if event.midiChan == constants.controls:
+			if event.midiChan == c.controls:
 				for handler in (
 					NILA_navigation.encoder,
 					NILA_buttons.OnMidiMsg,
@@ -60,12 +57,13 @@ class Core:
 		"""
 		Refreshes the LED and OLED displays based on FL Studio's state.
 		FL Studio calls this function to update the hardware UI.
-
 		Parameters:
 			flags (int): Flags indicating what needs to be refreshed.
 		"""
 		try:
-			for handler in (NILA_LED.OnRefresh, NILA_OLED.OnRefresh, NILA_navigation.OnRefresh):
+			# Cache handlers list, avoid redundant tuple creation
+			handlers = (NILA_LED.OnRefresh, NILA_OLED.OnRefresh, NILA_navigation.OnRefresh)
+			for handler in handlers:
 				handler(self, flags)
 		except Exception as e:
 			self.handle_exception("OnRefresh", e)
@@ -74,7 +72,6 @@ class Core:
 		"""
 		Updates beat indicators for LED and OLED displays.
 		FL Studio calls this function to sync beat indicators with the DAW.
-
 		Parameters:
 			value (int): The current beat indicator value.
 		"""
@@ -90,8 +87,9 @@ class Core:
 		Used by FL Studio to indicate a waiting state.
 		"""
 		try:
-			setTrackName(0, constants.wait_input_1)
-			setTrackVol(0, constants.wait_input_2)
+			# Use display_track_index from constants for clarity/consistency
+			setTrackName(c.display_track_index, c.wait_input_1)
+			setTrackVol(c.display_track_index, c.wait_input_2)
 		except Exception as e:
 			self.handle_exception("OnWaitingForInput", e)
 
@@ -99,7 +97,6 @@ class Core:
 		"""
 		Handles project loading events.
 		Called when an FL Studio project is opened.
-
 		Parameters:
 			status (int): Status of the project load event.
 		"""
@@ -132,7 +129,6 @@ class Core:
 		"""
 		Handles and logs exceptions, ensuring stability of the script.
 		This prevents crashes and provides debugging information.
-
 		Parameters:
 			method_name (str): Name of the method where the exception occurred.
 			exception (Exception): The exception object.

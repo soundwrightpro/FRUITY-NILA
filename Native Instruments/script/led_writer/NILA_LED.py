@@ -85,7 +85,7 @@ def OnRefresh(self, flags):
 
 		# Update PLAY button light when not playing or recording
 		if not transport.isPlaying() and not transport.isRecording():
-			set_light("PLAY", on)
+			set_light("PLAY", off)
 		elif not transport.isPlaying() and transport.isRecording():
 			set_light("PLAY", off)
 

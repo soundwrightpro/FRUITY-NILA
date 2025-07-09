@@ -1,31 +1,29 @@
 import device
 
-def detectDevice(NILA_Name):
-    """
-    Gets the MIDI device name from FL Studio and sets `DEVICE_SERIES` to the right value for the script to work properly.
+DEVICE_MAPPING = {
+	"komplete kontrol a daw": "Komplete Kontrol Series A",
+	"komplete kontrol m daw": "Komplete Kontrol Series M",
+	"komplete kontrol daw - 1": "Komplete Kontrol Series S",
+	"komplete kontrol m32": "Komplete Kontrol Series M",
+	"komplete kontrol m32 midi": "Komplete Kontrol Series M",
+	"komplete kontrol s88 mk2 port 1": "Komplete Kontrol Series S",
+	"komplete kontrol - 1": "Komplete Kontrol Series S",
+}
 
-    Parameters:
-    - NILA_Name (str): The name of the detected device series.
+DEFAULT_SERIES = "Unknown Komplete Kontrol Series"
 
-    Returns:
-    - str: The updated NILA_Name based on the detected MIDI device.
-    """
+def detect_device(NILA_Name=None) -> str:
+	"""
+	Detects the current MIDI device and returns the appropriate Komplete Kontrol series name.
 
-    # Get the current MIDI device name from FL Studio
-    deviceName = device.getName()
+	Args:
+	    NILA_Name (optional): Ignored. Present for backward compatibility.
 
-    # Map FL Studio MIDI device names to corresponding NATIVE INSTRUMENTS device series names
-    device_mapping = {
-        "Komplete Kontrol A DAW": "Komplete Kontrol Series A",
-        "Komplete Kontrol M DAW": "Komplete Kontrol Series M",
-        "Komplete Kontrol DAW - 1": "Komplete Kontrol Series S",
-        "KOMPLETE KONTROL M32": "Komplete Kontrol Series M",
-        "KOMPLETE KONTROL M32 MIDI": "Komplete Kontrol Series M",
-        "KOMPLETE KONTROL S88 MK2 Port 1": "Komplete Kontrol Series S",
-        "KOMPLETE KONTROL - 1": "Komplete Kontrol Series S",
-    }
+	Returns:
+	    str: The detected Komplete Kontrol Series name (or fallback if unknown).
+	"""
+	device_name = device.getName().strip().lower()
+	return DEVICE_MAPPING.get(device_name, DEFAULT_SERIES)
 
-    # Update NILA_Name based on the detected MIDI device
-    NILA_Name = device_mapping.get(deviceName, device.getName())
-
-    return NILA_Name
+# Backward compatibility alias
+detectDevice = detect_device

@@ -10,7 +10,13 @@
 - Firmware 0.3.9 or higher
 - FL Studio 21 or higher
 
-Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest) of FRUITY NILA and refer to the installation guide [here](Installation/install.md).
+## Quick Start
+
+1. [Download the latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest) of FRUITY NILA.
+2. Follow the [installation guide](Installation/install.md) to copy the script to the correct FL Studio folder.
+3. Connect your Native Instruments controller and start FL Studio.
+4. The script will auto-detect your device—no extra setup required!
+5. Enjoy seamless hands-on control with your Komplete Kontrol keyboard.
 
 ## Key Features
 
@@ -30,8 +36,6 @@ Download the [latest release](https://github.com/soundwrightpro/FLNI_KK/releases
 - **Komplete Kontrol v2.3.0+** — [Download](https://www.native-instruments.com/en/products/komplete/bundles/komplete-kontrol/)  
 - **Firmware 0.3.9+**  
 
-[Download the latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest)  
-[Read the installation guide](Installation/install.md)  
 
 ## Need Help? Have a Request? Found a Bug?  
 

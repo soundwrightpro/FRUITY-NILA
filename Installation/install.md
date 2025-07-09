@@ -1,49 +1,77 @@
-# FRUITY NILA - How to Install
-<sup>(Fruity Native Instruments Language Agent - MIDI script for FL Studio)</sup>
+# FRUITY NILA – Installation & Setup
+<sup>(Fruity Native Instruments Language Agent – MIDI script for FL Studio)</sup>
 
-**You must have Komplete Kontrol v2.3.0 or higher, Firmware 0.3.9 or higher** and FL Studio 21 or higher. Download the latest firmware for your device on the [drivers](https://www.native-instruments.com/en/support/downloads/drivers-other-files/) page.
+**Before You Begin:**  
+Make sure you have:
+- **Komplete Kontrol v2.3.0 or higher** ([Download](https://www.native-instruments.com/en/products/komplete/bundles/komplete-kontrol/))
+- **Device Firmware 0.3.9 or higher** (Get updates from the [drivers page](https://www.native-instruments.com/en/support/downloads/drivers-other-files/))
+- **FL Studio 21 or higher**
 
-1. unzip FRUITY-NILA
+## 1. Download and Unpack
 
-2. place "Native Instruments" folder in... (delete previous installation if you have installed Furity NILA before)
+- Download the latest release from:  
+  [github.com/soundwrightpro/FRUITY-NILA/releases/latest](https://github.com/soundwrightpro/FRUITY-NILA/releases/latest)
+- Unzip the downloaded file to reveal the `FRUITY-NILA` folder.
 
-   - for Windows: Documents\Image-Line\FL Studio\Settings\Hardware\
-   - for macOS: Documents/Image-Line/FL Studio/Settings/Hardware/
+## 2. Install the Script
 
-3. Open FL Studio, Open Settings and go to MIDI tab (or press F10)
+**Copy the entire `FRUITY-NILA` folder to:**
 
-4. Follow the GIF to activate
+- **Windows:**  
+  `Documents\Image-Line\FL Studio\Settings\Hardware\`
 
-      - you can choose any port number, as long as they're the same (per device)
-      - if you have two devices, as in the GIF instructions, each device must on different port numbers
+- **macOS:**  
+  `~/Library/Preferences/Image-Line/FL Studio/Settings/Hardware/`
 
-<p></p>
+  > **Tip:** If you have a previous Fruity NILA install, delete the old `Native Instruments` or `FRUITY-NILA` folder first.
 
-       the GIF loop ends when the SETTINGS window closes. It will then start the loop again. 
+## 3. Set Up in FL Studio
 
-<p align="center">
-      <img SRC="install_Fruity_NILA.gif"> 
-</p>
+1. **Launch FL Studio.**
+2. **Open MIDI Settings:**  
+   Go to **Options → MIDI Settings** (or press `F10`).
+3. **Assign MIDI ports:**  
+   - Select your Komplete Kontrol device under Input and Output.
+   - Assign the **same port number** to both Input and Output (the number can be anything, just not used by another device).
+   - If using multiple controllers, each must be set to its own unique port.
 
-To have an accurate knob spin 'smoothing' down to 0 %. See the image below.
+    ![FL Studio MIDI Setup Example](install_Fruity_NILA.gif)
+    <sub><sup>The GIF will loop when the setup is complete.</sup></sub>
 
-<p align="center">
-      <img SRC="General_Settings.jpg"> 
-</p>
+4. **Close MIDI Settings.**  
+   Fruity NILA will auto-load whenever the controller is connected.
 
+## 4. Recommended Settings
 
-### Need help? Find it on the **[Fruity NI](https://discord.gg/GeTTWBV "FL Studio NI on Discord")** Discord 
+- For accurate knob smoothing and parameter control, check your **General Settings** in FL Studio as shown:
 
-## Compatible devices
+    ![FL Studio General Settings](General_Settings.jpg)
 
-### Komplete Kontrol
+## 5. Quick Start: Using Fruity NILA
 
-- [x] Komplete Kontrol A25/49/61
+- The controller will instantly map to FL Studio’s mixer, channel rack, playlist, browser, plugins, and more.
+- **Knobs**: Control track volume, pan, and plugin parameters.
+- **Buttons**: Playback, undo, quantize, plugin picker, pattern/song switch, metronome, etc.
+- **Wheel**: Context-aware navigation—scroll channels, move playhead, browse files, or switch UI windows (see User Manual for full mapping).
+- **OLED Display**: Shows names, values, modes, and contextual info as you work.
 
-- [x] Komplete Kontrol M32 
+## 6. User Settings
 
-- [x] Komplete Kontrol S49/61/88 MK2
+Edit the script’s behavior via `config.py`:
 
-## Watch videos on features from [The Man from Toronto](https://www.youtube.com/@the.man.from.toronto)
+- **Windows:**  
+  `Documents\Image-Line\FL Studio\Settings\Hardware\FRUITY-NILA\script\device_setup\config.py`
+- **macOS:**  
+  `~/Library/Preferences/Image-Line/FL Studio/Settings/Hardware/FRUITY-NILA/script/device_setup/config.py`
 
-<sub>**DEVELOPMENT OF THIS SCRIPT TAKES PLACE ON A M32 & S88 MK2**</sub>
+(See “User Adjustable Settings” in the [User Manual](../Fruity%20NILA%20User%20Manual.pdf) for options and details.)
+
+## 7. Need Help?
+
+- [Join the Fruity NI Discord for support, feedback, and feature requests.](https://discord.com/invite/GeTTWBV)
+
+---
+
+**For full button/knob reference, features, and troubleshooting, see the [Fruity NILA User Manual (PDF)](../Fruity%20NILA%20User%20Manual.pdf)**
+
+---
