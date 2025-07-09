@@ -14,6 +14,9 @@ from collections import defaultdict
 # Store last signal times per knob
 last_signal_time = defaultdict(lambda: time.time())
 
+last_volume_sent_time = {}
+last_volume_sent_value = {}
+
 def plugin(self, event):
 	"""Handles plugin-related events and delegates control."""
 	if ui.getFocused(c.winName["Plugin"]):
@@ -180,25 +183,48 @@ def handle_series_knob_event(self, event, converted_volume, event_id, volume_inc
 	update_and_record_volume(self, event, event_id, converted_volume)
 
 def update_and_record_volume(self, event, event_id, converted_volume):
-	"""Updates and records volume adjustments."""
+	"""Smoothly updates and records volume adjustments with minimal UI overhead."""
 	mix_slot_volume = round((converted_volume / c.volume_percent_max) * c.mix_slot_volume_max)
 	mix_slot_volume = max(c.mix_slot_volume_min, min(c.mix_slot_volume_max, mix_slot_volume))
-	general.processRECEvent(event_id, mix_slot_volume, midi.REC_Control | midi.REC_UpdateValue | midi.REC_UpdateControl)
-	NILA_OLED.OnRefresh(self, event)
+
+	now = time.time()
+	last_time = last_volume_sent_time.get(event_id, 0)
+	last_value = last_volume_sent_value.get(event_id, -1)
+
+	if (now - last_time >= 0.015) or (mix_slot_volume != last_value):
+		flags = (
+			midi.REC_Control |
+			midi.REC_Smoothed |
+			midi.REC_InternalCtrl |
+			midi.REC_NoSaveUndo
+		)
+		general.processRECEvent(event_id, mix_slot_volume, flags)
+		last_volume_sent_time[event_id] = now
+		last_volume_sent_value[event_id] = mix_slot_volume
+
+		NILA_OLED.OnRefresh(self, event)
 
 def knob_time_check(self, adjusted_increment):
-	"""Adjusts knob sensitivity based on interaction speed."""
+	"""Gradually scales knob sensitivity based on how fast the knob is moved."""
 	current_time = time.time()
-	time_difference = current_time - getattr(self, 'last_signal_time', current_time)
+	last_time = getattr(self, 'last_signal_time', current_time)
 	setattr(self, 'last_signal_time', current_time)
-	return adjusted_increment * c.knob_sensitivity_speedup if time_difference < c.speed_increase_wait else adjusted_increment
+
+	time_diff = current_time - last_time
+	speed_factor = max(1.0, min(c.knob_sensitivity_speedup, 1.5 / (time_diff + 0.001)))
+
+	return adjusted_increment * speed_factor
 
 def knob_time_check_mixer(self, adjusted_increment):
-	"""Adjusts knob sensitivity for mixer controls."""
+	"""Gradually scales mixer knob sensitivity based on how fast the knob is moved."""
 	current_time = time.time()
-	time_difference = current_time - getattr(self, 'last_signal_time_mixer', current_time)
+	last_time = getattr(self, 'last_signal_time_mixer', current_time)
 	setattr(self, 'last_signal_time_mixer', current_time)
-	return adjusted_increment * c.knob_sensitivity_speedup if time_difference < c.knob_sensitivity_wait else adjusted_increment
+
+	time_diff = current_time - last_time
+	speed_factor = max(1.0, min(c.knob_sensitivity_speedup, 1.5 / (time_diff + 0.001)))
+
+	return adjusted_increment * speed_factor
 
 def setGenPluginVolumePan(self, event):
 	knob_speed = 0
