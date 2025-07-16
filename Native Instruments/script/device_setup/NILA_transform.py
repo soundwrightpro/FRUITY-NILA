@@ -171,18 +171,21 @@ def timeConvert(timeDisp, currentTime):
 	currentBar = str(playlist.getVisTimeBar())
 	currentStep = str(playlist.getVisTimeStep())
 
-	if 0 <= int(currentStep) <= 9:
-		currentTime = f"{currentBar}:0{currentStep}"
-	elif int(currentStep) >= 0:
-		currentTime = f"{currentBar}:{currentStep}"
+	try:
+		step_int = int(currentStep)
+	except (ValueError, TypeError):
+		step_int = -1
+
+	if 0 <= step_int <= 9:
+		currentTime = f"{currentBar}:0{step_int}"
+	elif step_int >= 0:
+		currentTime = f"{currentBar}:{step_int}"
 	else:
 		currentTime = str(currentStep)
 
-	if ui.getTimeDispMin() and int(currentStep) >= 0:
-		timeDisp = "Min:Sec"
-	elif not ui.getTimeDispMin() and int(currentStep) >= 0:
-		timeDisp = "Beats:Bar"
-	elif int(currentStep) <= 0:
+	if step_int >= 0:
+		timeDisp = "Min:Sec" if ui.getTimeDispMin() else "Beats:Bar"
+	else:
 		timeDisp = "REC in..."
 
 	return timeDisp, currentTime
