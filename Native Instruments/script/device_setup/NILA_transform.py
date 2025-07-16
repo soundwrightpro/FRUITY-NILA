@@ -9,7 +9,7 @@ import transport
 import mixer 
 
 def get_utility_track():
-	"""Returns the last track in the mixer, used as a utility track."""
+	"""Returns the last track (Utility) dynamically."""
 	return mixer.trackCount() - 1
 
 def get_mixer_order():
@@ -78,9 +78,6 @@ def VolTodB(value: float) -> float:
 		dB = (math.exp(value * 1.25 * math.log(11)) - 1) * 0.1
 		return round(math.log10(dB) * 20, 1)
 
-def get_utility_track():
-    """Returns the last track (Utility) dynamically."""
-    return mixer.trackCount() - 1
 
 def updatePanMix(self, track):
     """
