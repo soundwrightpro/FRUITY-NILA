@@ -152,7 +152,8 @@ stereo_sep = 0.25
 oled_vol_bar_scaling = 0.86
 
 # ==== MIDI, ENCODER, AND KNOB VALUES ====
-MIDI_Script_Version = 23
+# MIDI_Script_Version is defined near the start of this file with value 38.
+# Remove the duplicate definition that previously overwrote that value.
 midi_cc_max = 127
 midi_pitch_bend_center = 8192
 midi_pitch_bend_max = 16383
