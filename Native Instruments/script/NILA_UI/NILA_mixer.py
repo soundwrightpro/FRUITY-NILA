@@ -27,10 +27,10 @@ def update_mixer_order(force=False):
 	ordered_tracks_cache = [t[1] for t in tracks]
 
 def get_adjacent_tracks(current_track):
-        """
-        Returns the visually adjacent mixer tracks.
-        The number of tracks returned equals c.max_knobs.
-        """
+	"""
+	Returns the visually adjacent mixer tracks.
+	The number of tracks returned equals c.max_knobs.
+	"""
 	if current_track not in ordered_tracks_cache:
 		update_mixer_order()
 
