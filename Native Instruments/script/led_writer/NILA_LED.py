@@ -1,6 +1,6 @@
 import nihia
 from nihia import buttons
-from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm, setTrackMutedBySolo
+from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm
 from script.device_setup import constants
 import device
 import channels
