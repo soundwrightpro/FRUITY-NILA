@@ -18,19 +18,45 @@ last_click_time = 0
 current_track_plugin_id = None
 
 def OnRefresh(self, flags):
-	global ordered_tracks
+        """Refresh navigation state.
+
+        Args:
+                self: Script instance.
+                flags: Refresh flags from FL Studio.
+
+        Returns:
+                None.
+        """
+        global ordered_tracks
 
 def onButtonClick(button):
-	global last_click_time
-	now = time.time()
-	double_click_status = (now - last_click_time) < config.double_click_speed
-	last_click_time = now
-	return double_click_status
+        """Return True if the button was double-clicked.
+
+        Args:
+                button: Button identifier.
+
+        Returns:
+                True if a double click occurred.
+        """
+        global last_click_time
+        now = time.time()
+        double_click_status = (now - last_click_time) < config.double_click_speed
+        last_click_time = now
+        return double_click_status
 
 def encoder(self, event):
-	global windowCycle
-	global current_track_plugin_id
-	global_index = False
+        """Handle navigation encoder events.
+
+        Args:
+                self: Script instance.
+                event: MIDI event from the encoder.
+
+        Returns:
+                None.
+        """
+        global windowCycle
+        global current_track_plugin_id
+        global_index = False
 
 	def get_mixer_order():
 		tc = mixer.trackCount() - 1

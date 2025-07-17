@@ -13,18 +13,17 @@ from collections import defaultdict
 last_signal_time = defaultdict(lambda: time.time())
 
 def adjust_channel_value(channel_value, data2, increment, speed=0):
-	"""
-	Adjusts the channel value based on MIDI input.
+        """Calculate a new channel value from MIDI input.
 
-	Parameters:
-	- channel_value (float): The current value of the channel parameter (volume or pan).
-	- data2 (int): The MIDI data2 value indicating the direction of adjustment.
-	- increment (float): The base increment value for adjustment.
-	- speed (float): The speed of adjustment.
+        Args:
+                channel_value: Current value of the parameter.
+                data2: MIDI data controlling the adjustment direction.
+                increment: Base increment to apply.
+                speed: Optional direct speed amount.
 
-	Returns:
-	- float: The adjusted channel value.
-	"""
+        Returns:
+                The adjusted channel value.
+        """
 	if c.encoder_cc_dec_fast_min <= data2 <= c.encoder_cc_dec_fast_max:  # Fast decrement
 		return round(channel_value - increment, 2)
 	elif c.encoder_cc_dec_slow_min <= data2 <= c.encoder_cc_dec_slow_max:  # Slow decrement
@@ -39,15 +38,17 @@ def adjust_channel_value(channel_value, data2, increment, speed=0):
 		return channel_value
 
 def OnMidiMsg(self, event):
-	"""
-	Handles MIDI messages for channel adjustment in the Channel Rack.
+        """Handle channel rack knob messages.
 
-	Parameters:
-	- self: The instance of the script.
-	- event: The MIDI event.
-	"""
-	if not ui.getFocused(c.winName["Channel Rack"]):
-		return  # Exit early if Channel Rack is not focused
+        Args:
+                self: Script instance.
+                event: Incoming MIDI event.
+
+        Returns:
+                None.
+        """
+        if not ui.getFocused(c.winName["Channel Rack"]):
+                return  # Exit early if Channel Rack is not focused
 
 	knob_speed = 0
 	is_s_series = seriesCheck()  # Avoid redundant calls

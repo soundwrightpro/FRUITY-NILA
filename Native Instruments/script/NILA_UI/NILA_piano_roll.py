@@ -5,13 +5,15 @@ import channels
 import ui
 
 def OnMidiMsg(self, event):
-	"""
-	Handles MIDI messages for the Piano Roll window.
+        """Handle MIDI messages for the Piano Roll window.
 
-	Args:
-		self: The instance of the NILA system.
-		event: The MIDI event triggered by the MIDI controller.
-	"""
+        Args:
+                self: Script instance.
+                event: Incoming MIDI event.
+
+        Returns:
+                None.
+        """
 	if not ui.getFocused(c.winName["Piano Roll"]):
 		return
 
@@ -27,8 +29,16 @@ def OnMidiMsg(self, event):
 		action(event)
 
 def handle_volume_knob(event):
-	channel_index = channels.selectedChannel()
-	current_volume = channels.getChannelVolume(channel_index)
+        """Adjust channel volume from the assigned knob.
+
+        Args:
+                event: MIDI event containing the knob value.
+
+        Returns:
+                None.
+        """
+        channel_index = channels.selectedChannel()
+        current_volume = channels.getChannelVolume(channel_index)
 	increment = get_knob_increment(event)
 	if increment is not None:
 		updated_volume = NILA_transform.clamp(
@@ -41,7 +51,15 @@ def handle_volume_knob(event):
 		mix.setTrackName(channel_index, channels.getChannelName(channel_index))
 
 def handle_pan_knob(event):
-	channel_index = channels.selectedChannel()
+        """Adjust channel pan from the assigned knob.
+
+        Args:
+                event: MIDI event containing the knob value.
+
+        Returns:
+                None.
+        """
+        channel_index = channels.selectedChannel()
 	current_pan = channels.getChannelPan(channel_index)
 	increment = get_knob_increment(event)
 	if increment is not None:
@@ -54,11 +72,16 @@ def handle_pan_knob(event):
 		NILA_transform.updatePanChannel(channel_index, 0)
 
 def get_knob_increment(event):
-	"""
-	Determines the increment value based on MIDI data.
-	"""
-	if nihia.mixer.KNOB_DECREASE_MAX_SPEED <= event.data2 <= nihia.mixer.KNOB_DECREASE_MIN_SPEED:
-		return -config.increment
-	elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-		return config.increment
+        """Return the knob increment derived from MIDI data.
+
+        Args:
+                event: Incoming MIDI event.
+
+        Returns:
+                The increment value or ``None`` when idle.
+        """
+        if nihia.mixer.KNOB_DECREASE_MAX_SPEED <= event.data2 <= nihia.mixer.KNOB_DECREASE_MIN_SPEED:
+                return -config.increment
+        elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+                return config.increment
 	return None

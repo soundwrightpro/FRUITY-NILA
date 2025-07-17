@@ -5,7 +5,16 @@ import plugins
 import ui
 
 def handle_modulation_event(event, data2_normalized: int):
-	event.handled = True
+        """Send modulation value to the focused plugin.
+
+        Args:
+                event: MIDI event instance.
+                data2_normalized: Raw CC value from the touch strip.
+
+        Returns:
+                None.
+        """
+        event.handled = True
 	channel = channels.selectedChannel()
 	if plugins.isValid(channel):
 		value = data2_normalized / c.midi_cc_max
@@ -19,7 +28,16 @@ def handle_modulation_event(event, data2_normalized: int):
 		ui.setHintMsg(f"Modulation: {round(value * 100)}%")
 
 def handle_expression_event(event, data2_normalized: int):
-	event.handled = True
+        """Send expression value to the focused plugin.
+
+        Args:
+                event: MIDI event instance.
+                data2_normalized: Raw CC value from the touch strip.
+
+        Returns:
+                None.
+        """
+        event.handled = True
 	channel = channels.selectedChannel()
 	if plugins.isValid(channel):
 		value = data2_normalized / c.midi_cc_max
@@ -34,8 +52,16 @@ def handle_expression_event(event, data2_normalized: int):
 		ui.setHintMsg(f"Expression: {round(value * 100)}%")
 
 def handle_pitch_expression(event):
-	lsb = event.data1
-	msb = event.data2
+        """Convert pitch bend data to channel pitch.
+
+        Args:
+                event: MIDI pitch-bend event.
+
+        Returns:
+                None.
+        """
+        lsb = event.data1
+        msb = event.data2
 	raw = (msb << 7) | lsb
 	normalized = (raw - c.midi_pitch_bend_center) / c.midi_pitch_bend_center  # -1.0 to +1.0
 	channel = channels.selectedChannel()
@@ -45,7 +71,15 @@ def handle_pitch_expression(event):
 	event.handled = True
 
 def OnMidiIn(event):
-	status = event.status & c.midi_status_mask
+        """Process touch strip MIDI events.
+
+        Args:
+                event: Incoming MIDI event.
+
+        Returns:
+                None.
+        """
+        status = event.status & c.midi_status_mask
 	data1 = event.data1
 	data2 = event.data2
 	mod_touch = c.touch_strips["MOD"]

@@ -11,10 +11,14 @@ ordered_tracks_cache = []
 last_updated_track = None
 
 def update_mixer_order(force=False):
-	"""
-	Updates and caches the mixer track order, sorted visually.
-	Only updates when necessary unless forced.
-	"""
+        """Cache the visually sorted mixer track order.
+
+        Args:
+                force: Force recalculation even when cached.
+
+        Returns:
+                None.
+        """
 	global ordered_tracks_cache, last_updated_track
 	current_track = mixer.trackNumber()
 	
@@ -27,10 +31,14 @@ def update_mixer_order(force=False):
 	ordered_tracks_cache = [t[1] for t in tracks]
 
 def get_adjacent_tracks(current_track):
-	"""
-	Returns the visually adjacent mixer tracks.
-	The number of tracks returned equals c.max_knobs.
-	"""
+        """Return mixer tracks adjacent to the current one.
+
+        Args:
+                current_track: Track index used as the starting point.
+
+        Returns:
+                A list of track indices no longer than ``c.max_knobs``.
+        """
 	if current_track not in ordered_tracks_cache:
 		update_mixer_order()
 
@@ -38,9 +46,15 @@ def get_adjacent_tracks(current_track):
 	return ordered_tracks_cache[start_index : start_index + c.max_knobs]  # Uses max_knobs constant
 
 def OnMidiMsg(self, event):
-	"""
-	Handles MIDI messages in FL Studio for mixer control.
-	"""
+        """Handle mixer knob MIDI messages.
+
+        Args:
+                self: Script instance.
+                event: MIDI event from the controller.
+
+        Returns:
+                None.
+        """
 	if ui.getFocused(c.winName["Mixer"]):
 		last_valid_track = mixer.trackCount() - 2  # Last non-Utility track
 		current_track = mixer.trackNumber()
@@ -67,9 +81,17 @@ def OnMidiMsg(self, event):
 					adjust_mixer_parameter(track_number, event.data2, adjusted_increment, c.pan_param_type)
 
 def adjust_mixer_parameter(track_number, data2, increment, param_type=c.volume_param_type):
-	"""
-	Handles dynamic volume or pan control for a mixer track.
-	"""
+        """Modify mixer volume or pan from knob input.
+
+        Args:
+                track_number: Index of the mixer track.
+                data2: MIDI value representing rotation.
+                increment: Increment step size.
+                param_type: Parameter type constant.
+
+        Returns:
+                None.
+        """
 	value = 0
 	if core.seriesCheck():
 		if c.encoder_cc_dec_slow_min <= data2 <= c.encoder_cc_dec_slow_max or c.encoder_cc_dec_fast_min <= data2 <= c.encoder_cc_dec_fast_max:

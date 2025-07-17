@@ -4,16 +4,27 @@ from script.screen_writer import NILA_OLED as oled
 import mixer
 import ui 
 
-def OnMidiMsg(self, event): 
-    """
-    Handles MIDI messages for the Playlist window.
+def OnMidiMsg(self, event):
+    """Handle MIDI messages for the Playlist window.
+
+    Args:
+        self: Script instance.
+        event: Incoming MIDI event.
+
+    Returns:
+        None.
     """
     if ui.getFocused(c.winName["Playlist"]):
         handle_volume_control(event)
 
 def handle_volume_control(event):
-    """
-    Handles volume control events.
+    """Respond to volume control events.
+
+    Args:
+        event: MIDI event from the controller.
+
+    Returns:
+        None.
     """
     if event.data1 == nihia.mixer.knobs[0][0]:
         event.handled = True
@@ -25,8 +36,14 @@ def handle_volume_control(event):
             adjust_track_volume(track_index, config.increment)
 
 def adjust_track_volume(track_index, increment):
-    """
-    Adjusts the volume of a track based on the provided increment.
+    """Change the volume of a playlist track.
+
+    Args:
+        track_index: Index of the playlist track.
+        increment: Amount to adjust by.
+
+    Returns:
+        None.
     """
     current_volume = mixer.getTrackVolume(track_index)
     new_volume = NILA_transform.clamp(

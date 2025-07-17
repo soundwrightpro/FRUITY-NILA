@@ -16,34 +16,66 @@ import ui
 on, off = 1, 0
 
 def get_utility_track():
-	""" Returns the last track (Utility) dynamically. """
-	return mixer.trackCount() - 1  
+        """Return the index of the Utility track.
+
+        Returns:
+                The index of the last mixer track.
+        """
+        return mixer.trackCount() - 1
 
 def get_mixer_order():
-	""" Get mixer tracks sorted by docked position & order of appearance. """
-	tracks = [(mixer.getTrackDockSide(i), i) for i in range(mixer.trackCount() - 1)]
-	tracks.sort()
-	return [track[1] for track in tracks]  # Return sorted track indices
+        """Return mixer tracks sorted by docked position and appearance.
+
+        Returns:
+                A list of track indices ordered visually.
+        """
+        tracks = [(mixer.getTrackDockSide(i), i) for i in range(mixer.trackCount() - 1)]
+        tracks.sort()
+        return [track[1] for track in tracks]
 
 def set_track_info(track_index, name, vol, pan=None):
-	""" Sets name, volume, and optionally pan for a track. """
-	if device.getName() != "Komplete Kontrol DAW - 1":
-		setTrackName(track_index, name)
-		setTrackVol(track_index, vol)
-		if pan is not None:
-			setTrackPan(track_index, pan)
+        """Set name, volume and optionally pan for a track.
+
+        Args:
+                track_index: Index of the track to modify.
+                name: New track name.
+                vol: New track volume.
+                pan: Pan amount if provided.
+
+        Returns:
+                None.
+        """
+        if device.getName() != "Komplete Kontrol DAW - 1":
+                setTrackName(track_index, name)
+                setTrackVol(track_index, vol)
+                if pan is not None:
+                        setTrackPan(track_index, pan)
 
 def handle_mixer_action(event, action_function, track_number, hint_message):
-	""" Handles mixer actions while ensuring the track is valid. """
-	event.handled = True
-	if track_number < get_utility_track():
-		action_function(track_number)
-		ui.setHintMsg(hint_message)
+        """Execute a mixer action if the target track is valid.
+
+        Args:
+                event: Incoming MIDI event.
+                action_function: Function to call on the track.
+                track_number: Index of the target track.
+                hint_message: Hint to display in FL Studio.
+
+        Returns:
+                None.
+        """
+        event.handled = True
+        if track_number < get_utility_track():
+                action_function(track_number)
+                ui.setHintMsg(hint_message)
 
 def get_correct_tracks():
-	""" Determines the correct 8 tracks for knob control while skipping docked tracks. """
-	tracks_order = get_mixer_order()
-	current_track = mixer.trackNumber()
+        """Return up to eight valid tracks for knob control.
+
+        Returns:
+                A list of mixer track indices.
+        """
+        tracks_order = get_mixer_order()
+        current_track = mixer.trackNumber()
 
 	# Ensure current track exists in order list
 	if current_track not in tracks_order:
@@ -64,11 +96,19 @@ def get_correct_tracks():
 	while len(selected_tracks) < 8 and selected_tracks[-1] != tracks_order[-1]:
 		selected_tracks.append(tracks_order[tracks_order.index(selected_tracks[-1]) + 1])
 
-	return selected_tracks
+        return selected_tracks
 
 def OnMidiMsg(self, event):
-	""" Handles incoming MIDI events. """
-	event.handled = True
+        """Handle button related MIDI messages.
+
+        Args:
+                self: Script instance.
+                event: MIDI event from the controller.
+
+        Returns:
+                None.
+        """
+        event.handled = True
 	utility_track = get_utility_track()
 
 	if event.data1 == buttons.button_list.get("PLAY") and not ui.isInPopupMenu():
