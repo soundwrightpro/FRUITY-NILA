@@ -105,7 +105,10 @@ def encoder(self, event):
 			plugin_valid = plugins.isValid(mix_track_index, mixer_slot)
 			if not plugin_valid:
 				return
-			plugin_name_cache = plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index)
+                        try:
+                                plugin_name_cache = plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index)
+                        except Exception:
+                                return
 			track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
 			if track_plugin_id != c.last_plugin_name:
 				c.lead_param = 0
@@ -124,12 +127,18 @@ def encoder(self, event):
 			channel_index = channels.selectedChannel()
 			if not plugins.isValid(channel_index, c.gen_plugin):
 				return
-			plugin_name_cache = plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index)
+                        try:
+                                plugin_name_cache = plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index)
+                        except Exception:
+                                return
 			if channels.getChannelType(channel_index) in (0, 3, 4, 5):
 				if plugin_name_cache in c.unsupported_plugins:
 					ui.down(1) if direction > 0 else ui.up(1)
 			else:
-				track_plugin_id = plugins.getPluginName(channel_index, c.gen_plugin)
+                                try:
+                                        track_plugin_id = plugins.getPluginName(channel_index, c.gen_plugin)
+                                except Exception:
+                                        return
 				if track_plugin_id != c.last_plugin_name:
 					c.lead_param = 0
 					c.last_plugin_name = track_plugin_id
@@ -344,8 +353,12 @@ def encoder(self, event):
 					if not plugins.isValid(channel_index, c.gen_plugin):
 						ui.up()
 						return
-					if plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index) in c.unsupported_plugins:
-						ui.up(1)
+                                        try:
+                                                plugin_name = plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index)
+                                        except Exception:
+                                                return
+                                        if plugin_name in c.unsupported_plugins:
+                                                ui.up(1)
 					if channels.getChannelName(channel_index) in ui.getFocusedFormCaption():
 						plugins.prevPreset(channel_index)
 					else:
@@ -377,8 +390,12 @@ def encoder(self, event):
 					if not plugins.isValid(channel_index, c.gen_plugin):
 						ui.down()
 						return
-					if plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index) in c.unsupported_plugins:
-						ui.down(1)
+                                        try:
+                                                plugin_name = plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index)
+                                        except Exception:
+                                                return
+                                        if plugin_name in c.unsupported_plugins:
+                                                ui.down(1)
 					if channels.getChannelName(channel_index) in ui.getFocusedFormCaption():
 						plugins.nextPreset(channel_index)
 					else:
