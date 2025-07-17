@@ -88,26 +88,4 @@ def setTrackVolConvert(trackID: int, value: str):
 	"""
 	if value == "-inf dB":
 		value = "- oo dB"
-	mix.setTrackVol(trackID, value)
 
-def get_correct_tracks():
-	# Returns the correct 8 tracks, dock order, for the current mixer view
-	track_count = mixer.trackCount() - 1  # Exclude utility track
-	tracks = []
-	for i in range(track_count):
-		dock_side = mixer.getTrackDockSide(i)
-		tracks.append((dock_side, i))
-	tracks.sort()
-	tracks_order = [t[1] for t in tracks]
-	current_track = mixer.trackNumber()
-	if current_track in tracks_order:
-		start_idx = tracks_order.index(current_track)
-	else:
-		start_idx = 0
-	return tracks_order[start_idx:start_idx + c.max_knobs]
-
-def handle_mixer_action(event, action_function, track_number, hint_message):
-	event.handled = True
-	if track_number < mixer.trackCount() - 1:  # Don't include utility
-		action_function(track_number)
-		ui.setHintMsg(hint_message)
