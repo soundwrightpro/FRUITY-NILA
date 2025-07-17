@@ -7,9 +7,7 @@ import device
 import general
 import midi
 import mixer
-import time
 import transport
-import playlist
 import ui
 
 # Constants for on and off states

@@ -90,10 +90,6 @@ def setTrackVolConvert(trackID: int, value: str):
 		value = "- oo dB"
 	mix.setTrackVol(trackID, value)
 
-import mixer
-from nihia import buttons
-from script.device_setup import constants as c
-
 def get_correct_tracks():
 	# Returns the correct 8 tracks, dock order, for the current mixer view
 	track_count = mixer.trackCount() - 1  # Exclude utility track

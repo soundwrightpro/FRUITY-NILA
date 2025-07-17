@@ -6,7 +6,6 @@ import plugins
 import transport
 import ui
 import device
-import math
 import midi
 import general
 

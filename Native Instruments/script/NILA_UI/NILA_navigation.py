@@ -10,7 +10,6 @@ import transport
 import plugins
 import ui
 import time
-import math
 
 xAxis, yAxis = 0, 0
 windowCycle = 0
