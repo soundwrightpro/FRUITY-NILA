@@ -40,8 +40,15 @@ def plugin_set_param(self, event):
 	if effect_info is None or effect_info == (c.plugin_effect_none, c.plugin_effect_none):
 		return  # No effect is focused
 
-	track_index, mixer_slot = effect_info
-	full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+        track_index, mixer_slot = effect_info
+
+        if not plugins.isValid(track_index, mixer_slot):
+                return
+
+        try:
+                full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+        except Exception:
+                return
 
 	if full_plugin_name not in c.unsupported_plugins:
 		c.param_offset = max(c.skip_over, 0)
@@ -49,9 +56,12 @@ def plugin_set_param(self, event):
 		if c.actual_param_count <= 0:
 			return  # No available parameters
 
-		for knob_number in range(c.knob_offset, min(c.actual_param_count + c.knob_offset, c.max_knobs + c.param_offset)):
-			param_index = max(min(knob_number - c.knob_offset + c.lead_param, c.actual_param_count - 1), 0)
-			param_name = plugins.getParamName(param_index, track_index, mixer_slot, use_global_index)
+                for knob_number in range(c.knob_offset, min(c.actual_param_count + c.knob_offset, c.max_knobs + c.param_offset)):
+                        param_index = max(min(knob_number - c.knob_offset + c.lead_param, c.actual_param_count - 1), 0)
+                        try:
+                                param_name = plugins.getParamName(param_index, track_index, mixer_slot, use_global_index)
+                        except Exception:
+                                continue
 
 			if not param_name:
 				param_name = c.unnamed_param  # Fallback
@@ -70,11 +80,15 @@ def plugin_set_param(self, event):
 def handle_channel_generator(self, event):
 	"""Sets parameters for the selected generator plugin in the Channel Rack."""
 	use_global_index = False
-	channel_index = channels.selectedChannel()
-	full_plugin_name = plugins.getPluginName(channel_index, c.gen_plugin)
+        channel_index = channels.selectedChannel()
 
-	if not plugins.isValid(channel_index, c.gen_plugin):
-		return  # No valid plugin loaded
+        if not plugins.isValid(channel_index, c.gen_plugin):
+                return  # No valid plugin loaded
+
+        try:
+                full_plugin_name = plugins.getPluginName(channel_index, c.gen_plugin)
+        except Exception:
+                return
 	
 	if full_plugin_name not in c.unsupported_plugins:
 		param_count = plugins.getParamCount(channel_index, c.gen_plugin, use_global_index)
@@ -84,9 +98,12 @@ def handle_channel_generator(self, event):
 
 		c.param_offset = max(c.skip_over, 0)
 
-		for knob_number in range(c.knob_offset, min(param_count + c.knob_offset, c.max_knobs + c.param_offset)):
-			param_index = max(min(knob_number - c.knob_offset + c.lead_param, param_count - 1), 0)
-			param_name = plugins.getParamName(param_index, channel_index, c.gen_plugin, use_global_index)
+                for knob_number in range(c.knob_offset, min(param_count + c.knob_offset, c.max_knobs + c.param_offset)):
+                        param_index = max(min(knob_number - c.knob_offset + c.lead_param, param_count - 1), 0)
+                        try:
+                                param_name = plugins.getParamName(param_index, channel_index, c.gen_plugin, use_global_index)
+                        except Exception:
+                                continue
 
 			if not param_name:
 				param_name = c.unnamed_param
@@ -120,10 +137,17 @@ def send_hint_message(parameter_name):
 	ui.setHintMsg(formatted_name)
 
 def handle_param_control(self, event, param_index, track_index, mixer_slot, use_global_index, volume_increment, param_name):
-	"""Handles parameter control events for plugins."""
-	pickup_mode = 0
-	param_value = plugins.getParamValue(param_index, track_index, mixer_slot, use_global_index)
-	new_param_value = param_value
+        """Handles parameter control events for plugins."""
+        pickup_mode = 0
+
+        if not plugins.isValid(track_index, mixer_slot):
+                return
+
+        try:
+                param_value = plugins.getParamValue(param_index, track_index, mixer_slot, use_global_index)
+        except Exception:
+                return
+        new_param_value = param_value
 
 	if NILA_core.seriesCheck():
 		if c.encoder_cc_dec_slow_min <= event.data2 < c.encoder_cc_dec_fast_max:  # All decrement values
