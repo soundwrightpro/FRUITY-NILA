@@ -65,130 +65,133 @@ def get_correct_tracks():
 	return selected_tracks
 
 def OnMidiMsg(self, event):
-	""" Handles incoming MIDI events. """
-	event.handled = True
-	utility_track = get_utility_track()
-
-	if event.data1 == buttons.button_list.get("PLAY") and not ui.isInPopupMenu():
-		transport.start()
-		ui.setHintMsg("Play/Pause")
-
-	elif event.data1 == buttons.button_list.get("RESTART"):
-		transport.stop()
-		transport.start()
-		set_track_info(0, "Metronome:", "Enabled")
-		ui.setHintMsg("Restart")
-
-	elif event.data1 == buttons.button_list.get("REC"):
-		transport.record()
-		ui.setHintMsg("Record")
-
-	elif event.data1 == buttons.button_list.get("STOP"):
-		transport.stop()
-		ui.setHintMsg("Stop")
-
-	elif event.data1 == buttons.button_list.get("LOOP"):
-		transport.setLoopMode()
-		ui.setHintMsg("Song / pattern mode")
-		mode = "Enabled" if transport.getLoopMode() == off else "Disabled"
-		set_track_info(0, "Pattern:", mode)
-
-	elif event.data1 == buttons.button_list.get("METRO"):
-		transport.globalTransport(midi.FPT_Metronome, 110)
-		ui.setHintMsg("Metronome")
-
-	elif event.data1 == buttons.button_list.get("TEMPO"):
-		transport.stop()
-		transport.globalTransport(midi.FPT_TapTempo, 106)
-
-	elif event.data1 == buttons.button_list.get("QUANTIZE"):
-		channels.quickQuantize(channels.channelNumber(), 0)
-		ui.setHintMsg("Quick Quantize")
-		set_track_info(0, "Piano Roll", "Quick Quantize")
-
-	elif event.data1 == buttons.button_list.get("COUNT_IN"):
-		transport.globalTransport(midi.FPT_CountDown, 115)
-		ui.setHintMsg("Countdown before recording")
-
-	elif event.data1 == buttons.button_list.get("CLEAR"):
-		double_click_status = device.isDoubleClick(buttons.button_list.get("CLEAR"))
-		if double_click_status:
-			transport.globalTransport(midi.FPT_F12, 2, 15)
-			ui.setHintMsg("Clear All Windows")
-			set_track_info(0, "Clear All", "")
-		else:
-			ui.escape()
-			ui.setHintMsg("Close")
-
-	elif event.data1 == buttons.button_list.get("UNDO"):
-		undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
-		general.undoUp()
-		ui.setHintMsg(ui.getHintMsg())
-		set_track_info(0, "History", f"Undo @ {undo_level}")
-
-	elif event.data1 == buttons.button_list.get("REDO"):
-		undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
-		general.undo()
-		ui.setHintMsg(ui.getHintMsg())
-		set_track_info(0, "History", f"Redo @ {undo_level}")
-
-	if event.data1 == buttons.button_list.get("AUTO"):
+	try:
+		""" Handles incoming MIDI events. """
 		event.handled = True
-		ui.snapMode(1)
-		snapmode_mapping = {
-			0: "Line", 1: "Cell", 3: "(none)", 4: "1/6 step", 5: "1/4 step",
-			6: "1/3 step", 7: "1/2 step", 8: "Step", 9: "1/6 beat", 10: "1/4 beat",
-			11: "1/3 beat", 12: "1/2 beat", 13: "Beat", 14: "Bar"
-		}
-		snap_mode_name = snapmode_mapping.get(ui.getSnapMode(), "Unknown")
-		ui.setHintMsg(f"Snap: {snap_mode_name}")
+		utility_track = get_utility_track()
 
-	button_id = event.data1
-	is_mute_button = button_id == buttons.button_list["MUTE_SELECTED"]
-	is_solo_button = button_id == buttons.button_list["SOLO_SELECTED"]
+		if event.data1 == buttons.button_list.get("PLAY") and not ui.isInPopupMenu():
+			transport.start()
+			ui.setHintMsg("Play/Pause")
 
-	if is_mute_button or is_solo_button:
-		event.handled = True
-		if mixer.getTrackName(mixer.trackNumber()) != "Current" and mixer.trackNumber() < utility_track:
-			mixer_function = mixer.enableTrack if is_mute_button else mixer.soloTrack
-			mixer_function(mixer.trackNumber())
-			ui.setHintMsg("Mute" if is_mute_button else "Solo")
+		elif event.data1 == buttons.button_list.get("RESTART"):
+			transport.stop()
+			transport.start()
+			set_track_info(0, "Metronome:", "Enabled")
+			ui.setHintMsg("Restart")
 
-	if ui.getFocused(c.winName["Mixer"]):
+		elif event.data1 == buttons.button_list.get("REC"):
+			transport.record()
+			ui.setHintMsg("Record")
+
+		elif event.data1 == buttons.button_list.get("STOP"):
+			transport.stop()
+			ui.setHintMsg("Stop")
+
+		elif event.data1 == buttons.button_list.get("LOOP"):
+			transport.setLoopMode()
+			ui.setHintMsg("Song / pattern mode")
+			mode = "Enabled" if transport.getLoopMode() == off else "Disabled"
+			set_track_info(0, "Pattern:", mode)
+
+		elif event.data1 == buttons.button_list.get("METRO"):
+			transport.globalTransport(midi.FPT_Metronome, 110)
+			ui.setHintMsg("Metronome")
+
+		elif event.data1 == buttons.button_list.get("TEMPO"):
+			transport.stop()
+			transport.globalTransport(midi.FPT_TapTempo, 106)
+
+		elif event.data1 == buttons.button_list.get("QUANTIZE"):
+			channels.quickQuantize(channels.channelNumber(), 0)
+			ui.setHintMsg("Quick Quantize")
+			set_track_info(0, "Piano Roll", "Quick Quantize")
+
+		elif event.data1 == buttons.button_list.get("COUNT_IN"):
+			transport.globalTransport(midi.FPT_CountDown, 115)
+			ui.setHintMsg("Countdown before recording")
+
+		elif event.data1 == buttons.button_list.get("CLEAR"):
+			double_click_status = device.isDoubleClick(buttons.button_list.get("CLEAR"))
+			if double_click_status:
+				transport.globalTransport(midi.FPT_F12, 2, 15)
+				ui.setHintMsg("Clear All Windows")
+				set_track_info(0, "Clear All", "")
+			else:
+				ui.escape()
+				ui.setHintMsg("Close")
+
+		elif event.data1 == buttons.button_list.get("UNDO"):
+			undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
+			general.undoUp()
+			ui.setHintMsg(ui.getHintMsg())
+			set_track_info(0, "History", f"Undo @ {undo_level}")
+
+		elif event.data1 == buttons.button_list.get("REDO"):
+			undo_level = str(general.getUndoHistoryCount() - general.getUndoHistoryLast())
+			general.undo()
+			ui.setHintMsg(ui.getHintMsg())
+			set_track_info(0, "History", f"Redo @ {undo_level}")
+
+		if event.data1 == buttons.button_list.get("AUTO"):
+			event.handled = True
+			ui.snapMode(1)
+			snapmode_mapping = {
+				0: "Line", 1: "Cell", 3: "(none)", 4: "1/6 step", 5: "1/4 step",
+				6: "1/3 step", 7: "1/2 step", 8: "Step", 9: "1/6 beat", 10: "1/4 beat",
+				11: "1/3 beat", 12: "1/2 beat", 13: "Beat", 14: "Bar"
+			}
+			snap_mode_name = snapmode_mapping.get(ui.getSnapMode(), "Unknown")
+			ui.setHintMsg(f"Snap: {snap_mode_name}")
+
 		button_id = event.data1
-		tracks_to_control = get_correct_tracks()
+		is_mute_button = button_id == buttons.button_list["MUTE_SELECTED"]
+		is_solo_button = button_id == buttons.button_list["SOLO_SELECTED"]
 
-		for knob_number, target_track in enumerate(tracks_to_control):
-			if button_id == buttons.button_list["MUTE"] and event.data2 == knob_number:
-				handle_mixer_action(event, mixer.enableTrack, target_track, "Mute")
-			elif button_id == buttons.button_list["SOLO"] and event.data2 == knob_number:
-				handle_mixer_action(event, mixer.soloTrack, target_track, "Solo")
-			elif button_id == buttons.button_list["TRACK_SELECT"] and event.data2 == knob_number:
-				handle_mixer_action(event, mixer.armTrack, target_track, "Armed Disk Recording")
+		if is_mute_button or is_solo_button:
+			event.handled = True
+			if mixer.getTrackName(mixer.trackNumber()) != "Current" and mixer.trackNumber() < utility_track:
+				mixer_function = mixer.enableTrack if is_mute_button else mixer.soloTrack
+				mixer_function(mixer.trackNumber())
+				ui.setHintMsg("Mute" if is_mute_button else "Solo")
 
-	if ui.getFocused(c.winName["Effect Plugin"]):
-		if event.data1 == buttons.button_list.get("TRACK_SELECT") and event.data2 in range(8):
-			event.handled = True 
+		if ui.getFocused(c.winName["Mixer"]):
+			button_id = event.data1
+			tracks_to_control = get_correct_tracks()
 
-	win_channel_rack = ui.getFocused(c.winName["Channel Rack"])
-	if win_channel_rack:
-		button_list = buttons.button_list
-		channel_count = channels.channelCount()
-		selected_channel = channels.selectedChannel()
+			for knob_number, target_track in enumerate(tracks_to_control):
+				if button_id == buttons.button_list["MUTE"] and event.data2 == knob_number:
+					handle_mixer_action(event, mixer.enableTrack, target_track, "Mute")
+				elif button_id == buttons.button_list["SOLO"] and event.data2 == knob_number:
+					handle_mixer_action(event, mixer.soloTrack, target_track, "Solo")
+				elif button_id == buttons.button_list["TRACK_SELECT"] and event.data2 == knob_number:
+					handle_mixer_action(event, mixer.armTrack, target_track, "Armed Disk Recording")
 
-		for knob_number in range(8):
-			if channel_count > knob_number and selected_channel < (channel_count - knob_number):
-				if event.data1 == button_list.get("MUTE") and event.data2 == knob_number:
-					event.handled = True
-					channels.muteChannel(selected_channel + knob_number)
-					ui.setHintMsg("Mute")
+		if ui.getFocused(c.winName["Effect Plugin"]):
+			if event.data1 == buttons.button_list.get("TRACK_SELECT") and event.data2 in range(8):
+				event.handled = True 
 
-				if event.data1 == button_list.get("SOLO") and event.data2 == knob_number:
-					event.handled = True
-					channels.soloChannel(selected_channel + knob_number)
-					ui.setHintMsg("Solo")
+		win_channel_rack = ui.getFocused(c.winName["Channel Rack"])
+		if win_channel_rack:
+			button_list = buttons.button_list
+			channel_count = channels.channelCount()
+			selected_channel = channels.selectedChannel()
 
-				if event.data1 == buttons.button_list["TRACK_SELECT"] and event.data2 == knob_number:
-					event.handled = True
-					channels.selectOneChannel(selected_channel + knob_number)
-					ui.setHintMsg("Track selected")
+			for knob_number in range(8):
+				if channel_count > knob_number and selected_channel < (channel_count - knob_number):
+					if event.data1 == button_list.get("MUTE") and event.data2 == knob_number:
+						event.handled = True
+						channels.muteChannel(selected_channel + knob_number)
+						ui.setHintMsg("Mute")
+
+					if event.data1 == button_list.get("SOLO") and event.data2 == knob_number:
+						event.handled = True
+						channels.soloChannel(selected_channel + knob_number)
+						ui.setHintMsg("Solo")
+
+					if event.data1 == buttons.button_list["TRACK_SELECT"] and event.data2 == knob_number:
+						event.handled = True
+						channels.selectOneChannel(selected_channel + knob_number)
+						ui.setHintMsg("Track selected")
+	except RuntimeError:
+		return

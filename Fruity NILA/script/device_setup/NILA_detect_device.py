@@ -1,13 +1,25 @@
 import device
 
 DEVICE_MAPPING = {
+	"komplete kontrol daw - 1": "Komplete Kontrol Series S",
 	"komplete kontrol a daw": "Komplete Kontrol Series A",
 	"komplete kontrol m daw": "Komplete Kontrol Series M",
-	"komplete kontrol daw - 1": "Komplete Kontrol Series S",
+	"komplete kontrol s daw": "Komplete Kontrol Series S",
 	"komplete kontrol m32": "Komplete Kontrol Series M",
 	"komplete kontrol m32 midi": "Komplete Kontrol Series M",
-	"komplete kontrol s88 mk2 port 1": "Komplete Kontrol Series S",
 	"komplete kontrol - 1": "Komplete Kontrol Series S",
+	"komplete kontrol s49 mk2": "Komplete Kontrol Series S",
+	"komplete kontrol s61 mk2": "Komplete Kontrol Series S",
+	"komplete kontrol s88 mk2": "Komplete Kontrol Series S",
+	"komplete kontrol s49 mk2 port 1": "Komplete Kontrol Series S",
+	"komplete kontrol s61 mk2 port 1": "Komplete Kontrol Series S",
+	"komplete kontrol s88 mk2 port 1": "Komplete Kontrol Series S",
+	"komplete kontrol a25": "Komplete Kontrol Series A",
+	"komplete kontrol a49": "Komplete Kontrol Series A",
+	"komplete kontrol a61": "Komplete Kontrol Series A",
+	"komplete kontrol a25 midi": "Komplete Kontrol Series A",
+	"komplete kontrol a49 midi": "Komplete Kontrol Series A",
+	"komplete kontrol a61 midi": "Komplete Kontrol Series A"
 }
 
 DEFAULT_SERIES = "Unknown Komplete Kontrol Series"
