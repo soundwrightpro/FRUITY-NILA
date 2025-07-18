@@ -22,7 +22,7 @@
 
 - **Komplete Kontrol A-Series** (A25, A49, A61)  
 - **Komplete Kontrol M-Series** (M32)  
-- **Komplete Kontrol S-Series GEN 2** (S49, S61, S88 MK2)  
+- **Komplete Kontrol S-Series MK 2** (S49, S61, S88)  
 
 ## Installation & Requirements  
 
