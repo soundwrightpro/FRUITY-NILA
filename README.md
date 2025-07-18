@@ -9,7 +9,7 @@
 ## Quick Start
 
 1. [Download the latest release](https://github.com/soundwrightpro/FLNI_KK/releases/latest) of FRUITY NILA.
-2. Follow the [installation guide](Installation/install.md) to copy the script [Fruit NILA Folder] to the correct FL Studio folder.
+2. Follow the [installation guide](/Fruity NILA User Manual v2025.0.4.pdf) to copy the script [Fruit NILA Folder] to the correct FL Studio folder.
 3. Connect your Native Instruments controller and start FL Studio, open setting and once again reference [installation guide](Installation/install.md).
 4. Enjoy seamless hands-on control with your Komplete Kontrol keyboard.
 
