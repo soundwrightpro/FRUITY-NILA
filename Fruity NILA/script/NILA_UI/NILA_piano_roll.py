@@ -58,7 +58,7 @@ def get_knob_increment(event):
 	Determines the increment value based on MIDI data.
 	"""
 	if nihia.mixer.KNOB_DECREASE_MAX_SPEED <= event.data2 <= nihia.mixer.KNOB_DECREASE_MIN_SPEED:
-		return -config.increment
+		return -config.channel_increment
 	elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-		return config.increment
+		return config.channel_increment
 	return None

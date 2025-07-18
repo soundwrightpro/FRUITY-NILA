@@ -72,7 +72,7 @@ def OnMidiMsg(self, event):
 				time_difference = current_time - last_signal_time[z]
 				last_signal_time[z] = current_time
 
-				adjusted_increment = config.increment * c.knob_rotation_speed if time_difference <= c.speed_increase_wait else config.increment
+				adjusted_increment = config.channel_increment * c.knob_rotation_speed if time_difference <= c.speed_increase_wait else config.channel_increment
 
 				new_value = adjust_channel_value(current_value, event.data2, adjusted_increment, knob_speed)
 

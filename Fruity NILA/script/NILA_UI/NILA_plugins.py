@@ -59,7 +59,7 @@ def plugin_set_param(self, event):
 			if param_name not in c.unsupported_param:
 				knob_number_display = max(c.knob_offset, min(knob_number - c.skip_over, c.max_knob_number))
 				knob_data = nihia.mixer.knobs[0][knob_number_display]
-				volume_increment = config.increment
+				volume_increment = config.mixer_increment
 
 				if event.data1 == knob_data:
 					adjusted_increment = knob_time_check(self, volume_increment)
@@ -94,7 +94,7 @@ def handle_channel_generator(self, event):
 			if param_name not in c.unsupported_param:
 				knob_number_display = max(c.knob_offset, min(knob_number - c.skip_over, c.max_knob_number))
 				knob_data = nihia.mixer.knobs[0][knob_number_display]
-				volume_increment = config.increment
+				volume_increment = config.channel_increment
 
 				if event.data1 == knob_data:
 					adjusted_increment = knob_time_check(self, volume_increment)
@@ -156,7 +156,7 @@ def handle_mixer_effect(self, event):
 
 def handle_mixer_effect_mix(self, event, converted_volume, event_id):
 	"""Handles mix level adjustment."""
-	volume_increment = config.increment * c.volume_percent_max
+	volume_increment = config.mixer_increment * c.volume_percent_max
 	adjusted_increment = knob_time_check_mixer(self, volume_increment)
 
 	if not NILA_core.seriesCheck():
@@ -244,7 +244,7 @@ def setGenPluginVolumePan(self, event):
 			time_difference = current_time - last_signal_time[0]
 			last_signal_time[0] = current_time
 
-			adjusted_increment = config.increment * c.knob_rotation_speed if time_difference <= c.speed_increase_wait else config.increment
+			adjusted_increment = config.channel_increment * c.knob_rotation_speed if time_difference <= c.speed_increase_wait else config.channel_increment
 
 			new_value = NILA_channel_rack.adjust_channel_value(current_value, event.data2, adjusted_increment, knob_speed)
 

@@ -58,7 +58,7 @@ def OnMidiMsg(self, event):
 				time_diff = current_time - getattr(self, last_time_attr, current_time)
 				setattr(self, last_time_attr, current_time)
 
-				adjusted_increment = config.increment * c.knob_rotation_speed if time_diff <= c.speed_increase_wait else config.increment
+				adjusted_increment = config.mixer_increment * c.knob_rotation_speed if time_diff <= c.speed_increase_wait else config.mixer_increment
 
 				# Handle volume and pan controls
 				if event.data1 == nihia.mixer.knobs[0][z]:  # Volume Control

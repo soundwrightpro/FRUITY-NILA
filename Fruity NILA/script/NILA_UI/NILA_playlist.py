@@ -20,9 +20,9 @@ def handle_volume_control(event):
         track_index = c.playlist_track_index
 
         if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
-            adjust_track_volume(track_index, -config.increment)
+            adjust_track_volume(track_index, -config.mixer_increment)
         elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
-            adjust_track_volume(track_index, config.increment)
+            adjust_track_volume(track_index, config.mixer_increment)
 
 def adjust_track_volume(track_index, increment):
     """

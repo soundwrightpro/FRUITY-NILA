@@ -18,19 +18,24 @@ This section of the script allows users to customize the behavior of the script 
     - If set to a positive value, the red rectangle will be displayed for the specified duration in milliseconds.
     - Default is 2000 for both `rectChannel` and `rectMixer`.
 
-- `increment`: Controls the knob increments.
-    - This value sets the amount of increments for each message your keyboard sends to FL Studio
-      when twisting the knobs on your device to change track volume and pan on the mixer.
-    - Choose a value between 0.01 (1%) and 1.00 (100%).
+- `mixer_increment`: Controls the knob increment for mixer volume and pan.
+    - This sets how much the mixer volume or pan changes with each knob turn.
+    - Choose a value between 0.001 (0.1%) and 1.00 (100%).
+    - Default is 0.005.
+
+- `channel_increment`: Controls the knob increment for channel rack volume and pan.
+    - Channel volume and pan are more sensitive, so avoid very small values.
+    - Choose a value between 0.005 and 1.00.
     - Default is 0.01.
 
 Note: Users can modify these settings to tailor the script behavior according to their preferences.
-
 """
+
 # Configuration Settings
 jog_preview_sound = 0
 upDown_preview_sound = 1
 rectChannel = 2000
 rectMixer = 2000
-increment = 0.01
+mixer_increment = 0.005
+channel_increment = 0.01
 double_click_speed = 0.500 #ms
