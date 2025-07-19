@@ -1,5 +1,5 @@
-from script.NILA_engine import NILA_core, constants as c
-from script.NILA_visuals import NILA_OLED
+from NILA.NILA_engine import NILA_core, constants as c
+from NILA.NILA_visuals import NILA_OLED
 import channels
 import plugins
 import ui

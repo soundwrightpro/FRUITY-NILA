@@ -1,9 +1,9 @@
 import nihia
 from nihia import *
-from script.NILA_engine.NILA_core import seriesCheck
-from script.NILA_engine import config
-from script.NILA_engine import constants as c
-from script.NILA_visuals import NILA_OLED as oled
+from NILA.NILA_engine.NILA_core import seriesCheck
+from NILA.NILA_engine import config
+from NILA.NILA_engine import constants as c
+from NILA.NILA_visuals import NILA_OLED as oled
 import channels
 import ui
 import time

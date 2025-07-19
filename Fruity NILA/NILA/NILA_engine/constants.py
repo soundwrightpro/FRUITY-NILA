@@ -140,6 +140,22 @@ winName = {
 	"Plugin": 5, "Effect Plugin": 6, "Generator Plugin": 7
 }
 
+# ===== BROWSER FILE TYPE NODES =====
+FL_node = {
+	'B| .FLP': 1, 'B| .ZIP': 2, 'B| FL Proj.': 3, 'B| FL Preset': 4, 'B| .WAV': 7, 
+	'B| .SF2': 11, 'B| .SPEECH': 12, 'B| .MP3': 13, 'B| .OGG': 14, 'B| .FLAC': 15, 'B| .FNV': 19, 
+	'B| .AIFF': 21, 'B| .TXT': 22, 'B| IMAGE File': 23, 'B| .WV': 24, 'B| .MIDI': 27, 'B| FLEX PACK': 28, 
+	'B| .MP4': 35, 'B| .INI': 37, 'B| .FSC': 10
+}
+
+# ===== FL PROJECT / NODE CONSTANTS =====
+PL_Start, PL_LoadOk, PL_LoadError = 0, 100, 101
+SBN_FLP, SBN_ZIP, SBN_FLM, SBN_FST, SBN_DS, SBN_SS, SBN_WAV, SBN_XI, SBN_FPR, SBN_FSC, SBN_SF2, SBN_Speech, \
+SBN_MP3, SBN_OGG, SBN_FLAC, SBN_OSM, SBN_REX, SBN_DWP, SBN_FNV, SBN_FXB, SBN_AIFF, SBN_TXT, SBN_BMP, SBN_WV, \
+SBN_TS, SBN_RBS, SBN_MID, SBN_FLEXPack, SBN_NEWS, SBN_SHOP, SBN_LIB, SBN_LIBOWNED, SBN_NOTIFICATION, SBN_DOWNLOAD, \
+SBN_M4A = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+
+
 # ===== TOUCH STRIP / MIDI MAPPING =====
 touch_strips = {"PITCH": 0, "MOD": 1, "EXPRESSION": 11}
 
@@ -214,3 +230,22 @@ HANDSHAKE_SYSEX = bytes([
 ])
 
 last_form_id = -999  # Init to impossible value
+
+# ===== MIDI CONSTANTS (NOT EXPOSED BY FL API) =====
+midi_cc_max = 127
+midi_pitch_bend_center = 8192
+midi_pitch_bend_max = 16383
+midi_status_pitch_bend = 0xE0
+midi_status_mask = 0xF0
+
+# ===== PLUGIN PARAMETER OFFSETS =====
+plugin_param_expression_base = 4096
+plugin_param_modulation = 4097
+plugin_param_mode = 2
+
+# ===== BROWSER AND JOGGING THRESHOLDS =====
+marker_jump_forward = 1
+browser_menu_threshold = -100
+
+# ===== VIEWPORT / ZOOM =====
+zoom_step_small = 1

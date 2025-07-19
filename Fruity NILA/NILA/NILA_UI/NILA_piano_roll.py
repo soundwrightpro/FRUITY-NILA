@@ -1,6 +1,6 @@
 import nihia
 from nihia import mixer as mix
-from script.NILA_engine import config, constants as c, NILA_transform, NILA_core
+from NILA.NILA_engine import config, constants as c, NILA_transform, NILA_core
 import channels
 import ui
 

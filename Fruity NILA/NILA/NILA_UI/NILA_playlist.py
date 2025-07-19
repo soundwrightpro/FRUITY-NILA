@@ -1,6 +1,6 @@
 import nihia
-from script.NILA_engine import config, constants as c, NILA_transform
-from script.NILA_visuals import NILA_OLED as oled
+from NILA.NILA_engine import config, constants as c, NILA_transform
+from NILA.NILA_visuals import NILA_OLED as oled
 import mixer
 import ui 
 

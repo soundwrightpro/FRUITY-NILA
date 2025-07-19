@@ -4,16 +4,19 @@
 # receiveFrom=Forward Device
 # supportedHardwareIds=00 33 09 96 24 32, 00 21 09 60 18 20
 
-import nihia
-from script.NILA_UI import *
-from script.NILA_engine import *
-from script.NILA_visuals import NILA_LED 
-from script.NILA_visuals import NILA_OLED 
-import device
-from nihia.mixer import setTrackVol, setTrackName
-import ui
 import sys
-from script.NILA_engine import constants as c
+
+import nihia
+import device
+import ui
+from nihia.mixer import setTrackVol, setTrackName
+
+from NILA.NILA_engine import *
+from NILA.NILA_engine import constants as c
+
+from NILA.NILA_UI import *
+from NILA.NILA_visuals import *
+
 
 class Core:
 	"""
@@ -127,7 +130,7 @@ class Core:
 
 	def handle_exception(self, method_name, exception):
 		"""
-		Handles and logs exceptions, ensuring stability of the script.
+		Handles and logs exceptions, ensuring stability of the NILA.
 		This prevents crashes and provides debugging information.
 		Parameters:
 			method_name (str): Name of the method where the exception occurred.
@@ -151,8 +154,8 @@ def OnUpdateMeters(): n_Core.OnUpdateMeters()
 def OnDeInit():
 	"""
 	Handles cleanup and UI closure events.
-	Ensures a smooth shutdown of the script.
-	FL Studio calls this function when closing the script.
+	Ensures a smooth shutdown of the NILA.
+	FL Studio calls this function when closing the NILA.
 	"""
 	try:
 		if ui.isClosing():

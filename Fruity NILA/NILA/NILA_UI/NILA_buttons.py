@@ -1,7 +1,7 @@
 from nihia import buttons
 from nihia.mixer import setTrackVol, setTrackName, setTrackPan
-from script.NILA_engine import constants as c
-from script.NILA_visuals import NILA_OLED
+from NILA.NILA_engine import constants as c
+from NILA.NILA_visuals import NILA_OLED
 import channels
 import device
 import general

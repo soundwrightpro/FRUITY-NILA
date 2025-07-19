@@ -1,5 +1,5 @@
-from script.NILA_engine import NILA_detect_device
-from script.NILA_engine import constants as c
+from NILA.NILA_engine import NILA_detect_device
+from NILA.NILA_engine import constants as c
 
 from sys import platform
 import device

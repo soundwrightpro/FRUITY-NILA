@@ -1,7 +1,7 @@
 import nihia
 from nihia import buttons
 from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm
-from script.NILA_engine import constants
+from NILA.NILA_engine import constants
 import device
 import channels
 import mixer
@@ -70,7 +70,7 @@ def OnRefresh(self, flags):
 	Handles the refresh event and updates button lights based on the DAW state.
 
 	Parameters:
-	- self: The instance of the script.
+	- self: The instance of the NILA.
 	- flags: Flags indicating the refresh event details.
 	"""
 	if device.isAssigned():
@@ -128,7 +128,7 @@ def OnUpdateBeatIndicator(self, Value):
 	Handles the beat indicator update event and updates PLAY and REC button lights.
 
 	Parameters:
-	- self: The instance of the script.
+	- self: The instance of the NILA.
 	- Value: The current beat indicator value.
 	"""
 	if not transport.isRecording():

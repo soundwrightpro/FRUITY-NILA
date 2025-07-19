@@ -1,7 +1,7 @@
 import nihia
-from script.NILA_engine import NILA_core, constants as c, config
-from script.NILA_visuals import NILA_OLED
-from script.NILA_UI import NILA_channel_rack
+from NILA.NILA_engine import NILA_core, constants as c, config
+from NILA.NILA_visuals import NILA_OLED
+from NILA.NILA_UI import NILA_channel_rack
 import channels
 import mixer
 import midi

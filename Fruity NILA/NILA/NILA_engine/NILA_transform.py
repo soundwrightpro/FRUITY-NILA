@@ -1,5 +1,5 @@
 from nihia import mixer as nihia_mixer
-from script.NILA_engine import constants
+from NILA.NILA_engine import constants
 import channels
 import playlist
 import math
