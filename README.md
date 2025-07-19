@@ -64,5 +64,4 @@ Join the FRUITY NI
 
 ## License
 
-This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).  
-See the [LICENSE.txt](./LICENSE.txt) file for details.
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).  See the [LICENSE.txt](./LICENSE.txt) file for details.
