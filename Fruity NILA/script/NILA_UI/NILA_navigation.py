@@ -1,6 +1,6 @@
 import nihia
-from script.device_setup import NILA_core, config, constants as c
-from script.screen_writer import NILA_OLED
+from script.NILA_engine import NILA_core, config, constants as c
+from script.NILA_visuals import NILA_OLED
 import arrangement as arrange
 import channels
 import device

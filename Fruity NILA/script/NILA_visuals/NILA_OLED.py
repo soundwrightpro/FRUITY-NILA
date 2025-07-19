@@ -1,5 +1,5 @@
 from nihia import mixer as mix
-from script.device_setup import NILA_core, constants as c, NILA_transform
+from script.NILA_engine import NILA_core, constants as c, NILA_transform
 import channels
 import mixer
 import plugins

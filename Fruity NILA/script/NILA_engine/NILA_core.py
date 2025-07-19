@@ -1,7 +1,7 @@
 import nihia
 import nihia.mixer as mix
 from nihia import buttons
-from script.device_setup import constants as c
+from script.NILA_engine import constants as c
 import device
 import mixer
 import playlist

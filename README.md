@@ -22,7 +22,7 @@
 
 - **Komplete Kontrol A-Series** (A25, A49, A61)  
 - **Komplete Kontrol M-Series** (M32)  
-- **Komplete Kontrol S-Series MK 2** (S49, S61, S88)  
+- **Komplete Kontrol S-Series MK 2 and MK3** (S49, S61, S88)  
 
 ## Installation & Requirements  
 
@@ -41,5 +41,3 @@ Join the FRUITY NILA community! Get support, request features, or chat with fell
 
 - [Hobyst](https://github.com/hobyst) for pioneering NI Host Integration API for FL Studio.  
 - FL Studio & NI Communities for feedback, testing, and feature requests.  
-
-Development of this script takes place on a Komplete Kontrol M32 and Komplete Kontrol S-Series Gen 2.  

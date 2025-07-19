@@ -1,6 +1,6 @@
 import nihia
-from script.device_setup import config, constants as c, NILA_transform
-from script.screen_writer import NILA_OLED as oled
+from script.NILA_engine import config, constants as c, NILA_transform
+from script.NILA_visuals import NILA_OLED as oled
 import mixer
 import ui 
 

@@ -6,14 +6,14 @@
 
 import nihia
 from script.NILA_UI import *
-from script.device_setup import *
-from script.led_writer import NILA_LED
-from script.screen_writer import NILA_OLED
+from script.NILA_engine import *
+from script.NILA_visuals import NILA_LED 
+from script.NILA_visuals import NILA_OLED 
 import device
 from nihia.mixer import setTrackVol, setTrackName
 import ui
 import sys
-from script.device_setup import constants as c
+from script.NILA_engine import constants as c
 
 class Core:
 	"""

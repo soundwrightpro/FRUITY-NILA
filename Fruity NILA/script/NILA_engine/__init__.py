@@ -12,7 +12,7 @@ Components:
 - NILA_version_check: Version compatibility checking.
 
 Usage Example:
-    from script.device_setup import constants, NILA_core
+    from script.NILA_engine import constants, NILA_core
 
     # Access a constant:
     x = constants.VERSION_NUMBER

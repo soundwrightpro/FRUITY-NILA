@@ -1,7 +1,7 @@
 import nihia
-from script.device_setup import NILA_core as core
-from script.device_setup import config
-from script.device_setup import constants as c
+from script.NILA_engine import NILA_core as core
+from script.NILA_engine import config
+from script.NILA_engine import constants as c
 import mixer
 import ui
 import time
