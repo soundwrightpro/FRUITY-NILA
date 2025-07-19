@@ -4,7 +4,7 @@
 # receiveFrom=Forward Device
 # supportedHardwareIds=00 33 09 96 24 32, 00 21 09 60 18 20
 
-import sys
+import logging
 
 import nihia
 import device
@@ -16,6 +16,8 @@ from NILA.NILA_engine import constants as c
 
 from NILA.NILA_UI import *
 from NILA.NILA_visuals import *
+
+logging.basicConfig(level=logging.ERROR)
 
 
 class Core:
@@ -136,7 +138,7 @@ class Core:
 			method_name (str): Name of the method where the exception occurred.
 			exception (Exception): The exception object.
 		"""
-		print(f"{method_name} error: {exception}\nException Type: {type(exception).__name__}\n")
+		logging.error(f"{method_name} error: {exception}\nException Type: {type(exception).__name__}\n")
 
 # Instantiate Core object
 n_Core = Core()

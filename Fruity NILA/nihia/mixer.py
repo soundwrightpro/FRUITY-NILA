@@ -74,7 +74,7 @@ mixerinfo_types = {
     # This one makes more sense on DAWs that create more tracks as the user requests it, as there might be projects (for example) on Ableton Live
     # with only two tracks
     # However, since FL Studio has all playlist and mixer tracks created, it has no use at all (maybe on the channel rack) and all tracks should have
-    # their existance reported as 1 (which means the track exists) in order to light on the Mute and Solo buttons on the device
+    # their existence reported as 1 (which means the track exists) in order to light on the Mute and Solo buttons on the device
     "EXIST": 64,
     "SELECTED": 66,
 
@@ -113,7 +113,7 @@ mixerinfo_types = {
 }
 
 # Track types dictionary
-# Used when reporting existance of tracks
+# Used when reporting existence of tracks
 track_types = {
     "EMPTY": 0,
     "GENERIC": 1,

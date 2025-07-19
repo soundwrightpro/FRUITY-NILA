@@ -198,7 +198,7 @@ def OnRefresh(self, event):
 					purge_all_tracks()
 		else:
 			track_index, mixer_slot = active_fx
-			full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
+			full_plugin_name = plugins.getPluginName(track_index, mixer_slot) or "Unknown"
 			if "Fruity" in full_plugin_name:
 				full_plugin_name = full_plugin_name.replace("Fruity ", "")
 			plugin_name = (full_plugin_name[:9] if not NILA_core.seriesCheck() else full_plugin_name + "\n\n|Mix Level") \
