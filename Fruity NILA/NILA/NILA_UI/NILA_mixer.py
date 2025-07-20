@@ -1,10 +1,11 @@
-import nihia
-from NILA.NILA_engine import NILA_core as core
-from NILA.NILA_engine import config
-from NILA.NILA_engine import constants as c
+import time
 import mixer
 import ui
-import time
+
+import nihia
+
+from NILA.NILA_engine import NILA_core as core, config, constants as c
+
 
 # Cache for visually ordered mixer tracks
 ordered_tracks_cache = []

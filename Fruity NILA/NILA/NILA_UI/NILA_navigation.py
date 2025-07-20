@@ -1,15 +1,18 @@
-import nihia
-from NILA.NILA_engine import NILA_core, config, constants as c
-from NILA.NILA_visuals import NILA_OLED
+import time
 import arrangement as arrange
 import channels
 import device
 import midi
 import mixer
-import transport
 import plugins
+import transport
 import ui
-import time
+
+import nihia
+
+from NILA.NILA_engine import NILA_core, config, constants as c
+from NILA.NILA_visuals import NILA_OLED
+
 
 xAxis, yAxis = 0, 0
 windowCycle = 0

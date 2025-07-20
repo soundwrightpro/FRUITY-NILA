@@ -1,14 +1,17 @@
-from nihia import buttons
-from nihia.mixer import setTrackVol, setTrackName, setTrackPan
-from NILA.NILA_engine import constants as c
-from NILA.NILA_visuals import NILA_OLED
-import channels
-import device
 import general
 import midi
+import channels
+import device
 import mixer
 import transport
 import ui
+
+from nihia import buttons
+from nihia.mixer import setTrackVol, setTrackName, setTrackPan
+
+from NILA.NILA_engine import constants as c
+from NILA.NILA_visuals import NILA_OLED
+
 
 # Constants for on and off states
 on, off = 1, 0

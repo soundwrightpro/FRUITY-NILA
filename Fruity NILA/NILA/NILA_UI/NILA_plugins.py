@@ -1,15 +1,19 @@
-import nihia
-from NILA.NILA_engine import NILA_core, constants as c, config
-from NILA.NILA_visuals import NILA_OLED
-from NILA.NILA_UI import NILA_channel_rack
+import time
+from collections import defaultdict
+
+import general
+import midi
 import channels
 import mixer
-import midi
-import general
-import time
-import ui
 import plugins
-from collections import defaultdict
+import ui
+
+import nihia
+
+from NILA.NILA_engine import NILA_core, constants as c, config
+from NILA.NILA_UI import NILA_channel_rack
+from NILA.NILA_visuals import NILA_OLED
+
 
 # Store last signal times per knob
 last_signal_time = defaultdict(lambda: time.time())

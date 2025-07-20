@@ -1,14 +1,15 @@
-from nihia import mixer as mix
-from NILA.NILA_engine import NILA_core, constants as c, NILA_transform
+import device
 import channels
 import mixer
 import plugins
 import transport
-import ui
-import device
 import midi
 import general
+import ui
 
+from nihia import mixer as mix
+
+from NILA.NILA_engine import NILA_core, NILA_transform, constants as c
 
 
 def get_utility_track():
@@ -74,8 +75,6 @@ def OnRefresh(self, event):
 		purge_all_tracks()
 		c.last_form_id = form_id
 
-
-
 	if ui.getFocused(c.winName["Mixer"]):
 		tracks_to_control = get_correct_tracks()
 		for i in range(c.max_knobs):
@@ -90,7 +89,6 @@ def OnRefresh(self, event):
 				mix.setTrackVolGraph(knobNumber, mixer.getTrackVolume(trackNumber))
 				NILA_transform.updatePanMix(trackNumber, knobNumber)
 				last_track_state[knobNumber] = track_id
-
 
 	elif ui.getFocused(c.winName["Channel Rack"]):
 		sel_channel = channels.selectedChannel()

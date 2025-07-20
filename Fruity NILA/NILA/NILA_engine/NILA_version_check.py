@@ -1,10 +1,11 @@
-from NILA.NILA_engine import NILA_detect_device
-from NILA.NILA_engine import constants as c
-
 from sys import platform
-import device
+
 import general
+import device
 import ui
+
+from NILA.NILA_engine import NILA_detect_device, constants as c
+
 
 # Get FL Studio version information
 VER_Major = ui.getVersion(0)

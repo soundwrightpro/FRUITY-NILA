@@ -1,13 +1,15 @@
-import nihia
-from nihia import *
-from NILA.NILA_engine.NILA_core import seriesCheck
-from NILA.NILA_engine import config
-from NILA.NILA_engine import constants as c
-from NILA.NILA_visuals import NILA_OLED as oled
-import channels
-import ui
 import time
 from collections import defaultdict
+
+import channels
+import ui
+
+import nihia
+
+from NILA.NILA_engine import config, constants as c
+from NILA.NILA_engine.NILA_core import seriesCheck
+from NILA.NILA_visuals import NILA_OLED as oled
+
 
 # Store last signal times per knob
 last_signal_time = defaultdict(lambda: time.time())

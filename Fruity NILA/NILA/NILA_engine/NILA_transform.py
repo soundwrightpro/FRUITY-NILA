@@ -1,12 +1,15 @@
-from nihia import mixer as nihia_mixer
-from NILA.NILA_engine import constants
+import math
 import channels
 import playlist
-import math
-import ui
 import midi
+import mixer
 import transport
-import mixer 
+import ui
+
+from nihia import mixer as nihia_mixer
+
+from NILA.NILA_engine import constants
+
 
 def get_utility_track():
 	"""Returns the last track (Utility) dynamically."""

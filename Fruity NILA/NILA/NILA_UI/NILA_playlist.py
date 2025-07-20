@@ -1,8 +1,11 @@
+import mixer
+import ui
+
 import nihia
+
 from NILA.NILA_engine import config, constants as c, NILA_transform
 from NILA.NILA_visuals import NILA_OLED as oled
-import mixer
-import ui 
+
 
 def OnMidiMsg(self, event): 
     """

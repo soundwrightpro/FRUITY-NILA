@@ -1,12 +1,15 @@
-import nihia
-from nihia import buttons
-from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm
-from NILA.NILA_engine import constants
 import device
 import channels
 import mixer
 import transport
 import ui
+
+import nihia
+from nihia import buttons
+from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm
+
+from NILA.NILA_engine import constants
+
 
 # Constants for button light states
 on, off = 1, 0

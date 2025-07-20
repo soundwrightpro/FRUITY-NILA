@@ -1,12 +1,14 @@
-import nihia
-import nihia.mixer as mix
-from nihia import buttons
-from NILA.NILA_engine import constants as c
+import time
 import device
 import mixer
 import playlist
-import time
 import ui
+
+import nihia
+import nihia.mixer as mix
+
+from NILA.NILA_engine import constants as c
+
 
 def OnInit(self):
 	"""

@@ -1,8 +1,11 @@
-import nihia
-from nihia import mixer as mix
-from NILA.NILA_engine import config, constants as c, NILA_transform, NILA_core
 import channels
 import ui
+
+import nihia
+from nihia import mixer as mix
+
+from NILA.NILA_engine import config, constants as c, NILA_transform, NILA_core
+
 
 def OnMidiMsg(self, event):
 	"""
