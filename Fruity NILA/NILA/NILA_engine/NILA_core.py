@@ -90,4 +90,3 @@ def setTrackVolConvert(trackID: int, value: str):
 	"""
 	if value == "-inf dB":
 		value = "- oo dB"
-

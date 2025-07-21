@@ -1,3 +1,5 @@
+import os
+
 import device
 import channels
 import mixer
@@ -303,15 +305,24 @@ def OnIdle(self):
 			mix.setTrackVol(c.display_track_index, f"{split_hint[:7]}|{currentTime}")
 
 	elif ui.getFocused(c.winName["Browser"]):
-		file_type = ui.getFocusedNodeFileType()
+
 		purge_all_tracks()
-		if file_type <= -100:
-			file_type = "Browser"
-		else:
+		
+		file_type_id = ui.getFocusedNodeFileType()
+		file_type = "Browser"
+
+		if file_type_id > -100:
 			for key, value in c.FL_node.items():
-				file_type = key if ui.getFocusedNodeFileType() == value else file_type
+				if file_type_id == value:
+					file_type = key
+					break
+
+		filename = ui.getFocusedNodeCaption()
+		name_no_ext = os.path.splitext(filename)[0][:15]
+
 		mix.setTrackName(c.display_track_index, str(file_type))
-		mix.setTrackVol(c.display_track_index, ui.getFocusedNodeCaption()[:15])
+		mix.setTrackVol(c.display_track_index, name_no_ext)
+
 
 def purge_tracks(start, end, clear_info=False):
 	for track_index in range(start, end + 1):
