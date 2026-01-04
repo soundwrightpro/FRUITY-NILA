@@ -13,6 +13,8 @@ from nihia import mixer as mix
 
 from NILA.NILA_engine import NILA_core, NILA_transform, constants as c
 
+# Persist across refresh calls so we can detect when a slot really changed
+last_track_state = {}
 
 def get_utility_track():
 	"""Returns the last track (Utility) dynamically."""
@@ -70,8 +72,6 @@ def OnRefresh(self, event):
 	"""Handles track updates based on the focused FL Studio window."""
 	useGlobalIndex = False
 
-	last_track_state = {}
-
 	form_id = ui.getFocusedFormID()
 	if form_id != c.last_form_id:
 		purge_all_tracks()
@@ -91,6 +91,24 @@ def OnRefresh(self, event):
 				mix.setTrackVolGraph(knobNumber, mixer.getTrackVolume(trackNumber))
 				NILA_transform.updatePanMix(trackNumber, knobNumber)
 				last_track_state[knobNumber] = track_id
+
+		# Blank any remaining OLED slots so old names (ex: "Extra") do not stick at the end
+		for knobNumber in range(len(tracks_to_control), c.max_knobs):
+			mix.setTrackExist(knobNumber, 0)
+			mix.setTrackName(knobNumber, c.blankEvent)
+			mix.setTrackVol(knobNumber, c.blankEvent)
+			mix.setTrackVolGraph(knobNumber, 0)
+			mix.setTrackPan(knobNumber, c.blankEvent)
+			mix.setTrackPanGraph(knobNumber, 0)
+			mix.setTrackSel(knobNumber, 0)
+			mix.setTrackArm(knobNumber, 0)
+			mix.setTrackSolo(knobNumber, 0)
+			mix.setTrackMute(knobNumber, 0)
+
+		# Also clear cached state for the slots we just blanked
+		for knobNumber in range(len(tracks_to_control), c.max_knobs):
+			if knobNumber in last_track_state:
+				del last_track_state[knobNumber]
 
 	elif ui.getFocused(c.winName["Channel Rack"]):
 		sel_channel = channels.selectedChannel()

@@ -15,6 +15,13 @@ from NILA.NILA_UI import *
 from NILA.NILA_visuals import *
 
 
+# Cache constants locally to reduce attribute lookups on hot paths
+CONTROLS_CHAN = c.controls
+DISPLAY_TRACK_INDEX = c.display_track_index
+WAIT_INPUT_1 = c.wait_input_1
+WAIT_INPUT_2 = c.wait_input_2
+
+
 class Core:
 	"""
 	Core class to manage MIDI interactions with FL Studio.
@@ -22,6 +29,7 @@ class Core:
 	"""
 
 	def __init__(self):
+		# Prebind handler tuples so they are looked up only once
 		self._control_handlers = (
 			NILA_navigation.encoder,
 			NILA_buttons.OnMidiMsg,
@@ -41,6 +49,10 @@ class Core:
 			NILA_OLED.OnUpdateBeatIndicator,
 		)
 
+		# Prebind frequently used functions to avoid repeated module lookups
+		self._on_idle_oled = NILA_OLED.OnIdle
+		self._send_peak_info = NILA_transform.sendPeakInfo
+
 	def OnInit(self):
 		"""Initializes the script and verifies device compatibility."""
 		try:
@@ -52,16 +64,15 @@ class Core:
 	def OnMidiMsg(self, event):
 		"""
 		Processes incoming MIDI messages and delegates them to the appropriate handler.
-		
+
 		Parameters:
 			event (MidiEvent): The incoming MIDI event.
-		
-		Returns:
-			None
 		"""
+		chan = event.midiChan
 		try:
-			if event.midiChan == c.controls:
-				for handler in self._control_handlers:
+			if chan == CONTROLS_CHAN:
+				handlers = self._control_handlers
+				for handler in handlers:
 					handler(self, event)
 			else:
 				NILA_touch_strips.OnMidiIn(event)
@@ -71,15 +82,13 @@ class Core:
 	def OnRefresh(self, flags):
 		"""
 		Refreshes the LED and OLED displays based on FL Studio's state.
-		
+
 		Parameters:
 			flags (int): Flags indicating what needs to be refreshed.
-		
-		Returns:
-			None
 		"""
 		try:
-			for handler in self._refresh_handlers:
+			handlers = self._refresh_handlers
+			for handler in handlers:
 				handler(self, flags)
 		except Exception as e:
 			self.handle_exception("OnRefresh", e)
@@ -87,41 +96,31 @@ class Core:
 	def OnUpdateBeatIndicator(self, value):
 		"""
 		Updates beat indicators for LED and OLED displays.
-		
+
 		Parameters:
 			value (int): The current beat indicator value.
-		
-		Returns:
-			None
 		"""
 		try:
-			for handler in self._beat_handlers:
+			handlers = self._beat_handlers
+			for handler in handlers:
 				handler(self, value)
 		except Exception as e:
 			self.handle_exception("OnUpdateBeatIndicator", e)
 
 	def OnWaitingForInput(self):
-		"""
-		Handles UI feedback while waiting for user input.
-		
-		Returns:
-			None
-		"""
+		"""Handles UI feedback while waiting for user input."""
 		try:
-			setTrackName(c.display_track_index, c.wait_input_1)
-			setTrackVol(c.display_track_index, c.wait_input_2)
+			setTrackName(DISPLAY_TRACK_INDEX, WAIT_INPUT_1)
+			setTrackVol(DISPLAY_TRACK_INDEX, WAIT_INPUT_2)
 		except Exception as e:
 			self.handle_exception("OnWaitingForInput", e)
 
 	def OnProjectLoad(self, status):
 		"""
 		Handles project loading events.
-		
+
 		Parameters:
 			status (int): Status of the project load event.
-		
-		Returns:
-			None
 		"""
 		try:
 			NILA_core.OnProjectLoad(self, status)
@@ -129,41 +128,29 @@ class Core:
 			self.handle_exception("OnProjectLoad", e)
 
 	def OnIdle(self):
-		"""
-		Handles idle state updates for the OLED display.
-		
-		Returns:
-			None
-		"""
+		"""Handles idle state updates for the OLED display."""
 		try:
-			NILA_OLED.OnIdle(self)
+			self._on_idle_oled(self)
 		except Exception as e:
 			self.handle_exception("OnIdle", e)
 
 	def OnUpdateMeters(self):
-		"""
-		Sends peak meter information for real-time visual feedback.
-		
-		Returns:
-			None
-		"""
+		"""Sends peak meter information for real-time visual feedback."""
 		try:
-			NILA_transform.sendPeakInfo()
+			self._send_peak_info()
 		except Exception as e:
 			self.handle_exception("OnUpdateMeters", e)
 
 	def handle_exception(self, method_name, exception):
 		"""
 		Handles and logs exceptions, ensuring stability of the NILA.
-		
+
 		Parameters:
 			method_name (str): Name of the method where the exception occurred.
 			exception (Exception): The exception object.
-		
-		Returns:
-			None
 		"""
-		print(f"{method_name} error: {exception}\nException Type: {type(exception).__name__}\n")
+		# Keep logging simple and fast to avoid stalling time critical callbacks
+		print(f"{method_name} error: {exception} ({type(exception).__name__})")
 
 
 # Instantiate Core object
@@ -183,9 +170,6 @@ def OnDeInit():
 	"""
 	Handles cleanup and UI closure events.
 	Ensures a smooth shutdown of the NILA.
-	
-	Returns:
-		None
 	"""
 	try:
 		if ui.isClosing():

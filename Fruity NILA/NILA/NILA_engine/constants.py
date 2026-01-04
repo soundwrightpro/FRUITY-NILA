@@ -159,9 +159,7 @@ SBN_M4A = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 # ===== TOUCH STRIP / MIDI MAPPING =====
 touch_strips = {"PITCH": 0, "MOD": 1, "EXPRESSION": 11}
 
-# ===== ON/OFF, GENERIC, AND UI MESSAGES =====
-off = 0
-on = 1
+# ===== GENERIC, AND UI MESSAGES =====
 wait_input_1 = "Waiting"
 wait_input_2 = "for input...     "
 blankEvent = "   "
