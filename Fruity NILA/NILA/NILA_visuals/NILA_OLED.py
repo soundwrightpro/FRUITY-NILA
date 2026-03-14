@@ -83,7 +83,8 @@ def OnRefresh(self, event):
 			mix.setTrackSel(i, 0)
 
 		for knobNumber, trackNumber in enumerate(tracks_to_control):
-			track_id = f"{trackNumber}_{mixer.getTrackVolume(trackNumber)}"
+			# Cache includes pan so OLED updates immediately when pan changes
+			track_id = f"{trackNumber}_{mixer.getTrackVolume(trackNumber)}_{mixer.getTrackPan(trackNumber)}"
 			if last_track_state.get(knobNumber) != track_id:
 				mix.setTrackExist(knobNumber, 1)
 				mix.setTrackName(knobNumber, mixer.getTrackName(trackNumber))

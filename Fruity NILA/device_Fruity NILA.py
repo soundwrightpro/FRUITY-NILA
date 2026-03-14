@@ -4,7 +4,6 @@
 # receiveFrom=Forward Device
 
 import nihia
-import device
 import ui
 from nihia.mixer import setTrackVol, setTrackName
 
@@ -135,11 +134,34 @@ class Core:
 			self.handle_exception("OnIdle", e)
 
 	def OnUpdateMeters(self):
-		"""Sends peak meter information for real-time visual feedback."""
+		"""Sends peak meter information for real time visual feedback."""
 		try:
 			self._send_peak_info()
 		except Exception as e:
 			self.handle_exception("OnUpdateMeters", e)
+
+	def OnDeInit(self):
+		"""
+		Handles cleanup and exits NI deep integration mode.
+		"""
+		try:
+			if ui.isClosing():
+				try:
+					NILA_LED.clearAll()
+				except Exception as e:
+					self.handle_exception("OnDeInit.clearLED", e)
+
+				try:
+					NILA_OLED.clearAll()
+				except Exception as e:
+					self.handle_exception("OnDeInit.clearOLED", e)
+
+				try:
+					nihia.goodBye()
+				except Exception as e:
+					self.handle_exception("OnDeInit.goodBye", e)
+		except Exception as e:
+			self.handle_exception("OnDeInit", e)
 
 	def handle_exception(self, method_name, exception):
 		"""
@@ -165,17 +187,4 @@ def OnWaitingForInput(): n_Core.OnWaitingForInput()
 def OnProjectLoad(status): n_Core.OnProjectLoad(status)
 def OnIdle(): n_Core.OnIdle()
 def OnUpdateMeters(): n_Core.OnUpdateMeters()
-
-def OnDeInit():
-	"""
-	Handles cleanup and UI closure events.
-	Ensures a smooth shutdown of the NILA.
-	"""
-	try:
-		if ui.isClosing():
-			NILA_LED.clearAll()
-			NILA_OLED.clearAll()
-			n_Core.handle_exception("OnDeInit", "Closing UI")
-			nihia.goodBye()
-	except Exception as e:
-		n_Core.handle_exception("OnDeInit", e)
+def OnDeInit(): n_Core.OnDeInit()

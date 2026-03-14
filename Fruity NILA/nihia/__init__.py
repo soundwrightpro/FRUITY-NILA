@@ -20,56 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-""" 
-Python package for the FL Studio MIDI API to take advantage of the MIDI mode of the Native Instruments Host 
+"""
+Python package for the FL Studio MIDI API to take advantage of the MIDI mode of the Native Instruments Host
 Integration Agent protocol and use the DAW integration mode of Komplete Kontrol keyboards.
 """
 
-# List of submodules
 __all__ = ["buttons", "mixer"]
 
 import device
 
-###########################################################################################################################################
-# Dictionaries and constants
-###########################################################################################################################################
-
-# List of bytes that every SysEx message for the keyboard begins with
 SYSEX_HEADER = [240, 0, 33, 9, 0, 0, 68, 67, 1, 0]
 
-###########################################################################################################################################
-# Methods and functions
-###########################################################################################################################################
+def dataOut(data1, data2):
+	"""Send a normal MIDI message in the form BF data1 data2."""
+	data1 = int(data1) & 0x7F
+	data2 = int(data2) & 0x7F
+	message = 0xBF | (data1 << 8) | (data2 << 16)
 
-# Method to make talking to the device less annoying
-# All the messages the device is expecting have a structure of "BF XX XX"
-# The STATUS byte always stays the same and only the DATA1 and DATA2 vary
-def dataOut(data1: int or hex, data2: int or hex):
-    """ Function for easing the communication with the device. By just entering the DATA1 and DATA2 bytes of the MIDI message that has to be sent to the device, it 
-    composes the full message in order to satisfy the syntax required by the midiOutSysex method, 
-    as well as setting the STATUS of the message to BF as expected and sends the message. 
-    
-    data1, data2 -- Corresponding bytes of the MIDI message."""
-    
-    # Composes the MIDI message and sends it
-    device.midiOutSysex(bytes([240, 191, data1, data2, 247]))
+	if device.isAssigned():
+		device.midiOutMsg(message)
 
-# Method to enable the deep integration features on the device
 def handShake():
-    """ Acknowledges the device that a compatible host has been launched, wakes it up from MIDI mode and activates the deep
-    integration features of the device. TODO: Then waits for the answer of the device in order to confirm if the handshake 
-    was successful and returns True if affirmative."""
+	"""Wake the device from MIDI mode and activate deep integration."""
+	dataOut(1, 3)
 
-    # Sends the MIDI message that initiates the handshake: BF 01 01
-    dataOut(1, 3)
-
-    # TODO: Waits and reads the handshake confirmation message
-   
-
-# Method to deactivate the deep integration mode. Intended to be executed on close.
 def goodBye():
-    """ Sends the goodbye message to the device and exits it from deep integration mode. 
-    Intended to be executed before FL Studio closes."""
-
-    # Sends the goodbye message: BF 02 01
-    dataOut(2, 1)
+	"""Exit deep integration mode before FL Studio closes."""
+	dataOut(2, 1)
