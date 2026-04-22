@@ -4,7 +4,6 @@ import mixer
 import transport
 import ui
 
-import nihia
 from nihia import buttons
 from nihia.mixer import setTrackSolo, setTrackMute, setTrackArm
 
@@ -12,7 +11,7 @@ from NILA.NILA_engine import constants
 
 
 # Constants for button light states
-on, off = 1, 0
+on, off = True, False
 
 def set_light(button_name, state):
 	"""
@@ -22,7 +21,7 @@ def set_light(button_name, state):
 	- button_name (str): The name of the button.
 	- state (int): The state of the light (0 for off, 1 for on).
 	"""
-	nihia.buttons.setLight(button_name, state)
+	buttons.setLight(button_name, state)
 
 def get_utility_track():
 	""" Returns the last track (Utility) dynamically. """
@@ -45,10 +44,10 @@ def get_correct_tracks():
 	tracks_order = get_mixer_order()
 	current_track = mixer.trackNumber()
 
-	if current_track in tracks_order:
-		start_idx = tracks_order.index(current_track)
-	else:
-		start_idx = 0
+	if current_track not in tracks_order:
+		return []
+
+	start_idx = tracks_order.index(current_track)
 
 	selected_tracks = [current_track]
 	for i in range(start_idx + 1, len(tracks_order)):

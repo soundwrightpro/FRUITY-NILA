@@ -17,6 +17,8 @@ Usage Example:
     # Display text on OLED:
     NILA_OLED.update_oled_text("Hello from NILA")
 """
+from . import NILA_LED
+from . import NILA_OLED
 
 __all__ = [
     "NILA_LED",

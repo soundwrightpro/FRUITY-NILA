@@ -16,13 +16,13 @@ Sections:
 - Miscellaneous UI values
 - FL Studio/NI integration specifics
 
-Last updated: July 2025
+Last updated: April 2026
 """
 
 import midi
 
 # ===== VERSION & GENERAL INFO =====
-VERSION_NUMBER = "v2025.1.5"
+VERSION_NUMBER = "v2026.0.1"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: sound"
 OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\n"
@@ -62,7 +62,7 @@ widChannelRack = midi.widChannelRack
 widPlaylist = midi.widPlaylist
 widPianoRoll = midi.widPianoRoll
 widBrowser = midi.widBrowser
-widPlugin = midi.widPlugin
+widPlugin = midi.widPlugin # type: ignore[attr-defined]
 widPluginEffect = midi.widPluginEffect
 widPluginGenerator = midi.widPluginGenerator
 
@@ -149,7 +149,6 @@ FL_node = {
 }
 
 # ===== FL PROJECT / NODE CONSTANTS =====
-PL_Start, PL_LoadOk, PL_LoadError = 0, 100, 101
 SBN_FLP, SBN_ZIP, SBN_FLM, SBN_FST, SBN_DS, SBN_SS, SBN_WAV, SBN_XI, SBN_FPR, SBN_FSC, SBN_SF2, SBN_Speech, \
 SBN_MP3, SBN_OGG, SBN_FLAC, SBN_OSM, SBN_REX, SBN_DWP, SBN_FNV, SBN_FXB, SBN_AIFF, SBN_TXT, SBN_BMP, SBN_WV, \
 SBN_TS, SBN_RBS, SBN_MID, SBN_FLEXPack, SBN_NEWS, SBN_SHOP, SBN_LIB, SBN_LIBOWNED, SBN_NOTIFICATION, SBN_DOWNLOAD, \

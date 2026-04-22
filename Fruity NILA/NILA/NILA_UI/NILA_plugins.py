@@ -8,7 +8,7 @@ import mixer
 import plugins
 import ui
 
-import nihia
+import nihia.mixer as mix
 
 from NILA.NILA_engine import NILA_core, constants as c, config
 from NILA.NILA_UI import NILA_channel_rack
@@ -62,7 +62,7 @@ def plugin_set_param(self, event):
 
 			if param_name not in c.unsupported_param:
 				knob_number_display = max(c.knob_offset, min(knob_number - c.skip_over, c.max_knob_number))
-				knob_data = nihia.mixer.knobs[0][knob_number_display]
+				knob_data = mix.knobs[0][knob_number_display]
 				volume_increment = config.mixer_increment
 
 				if event.data1 == knob_data:
@@ -97,7 +97,7 @@ def handle_channel_generator(self, event):
 
 			if param_name not in c.unsupported_param:
 				knob_number_display = max(c.knob_offset, min(knob_number - c.skip_over, c.max_knob_number))
-				knob_data = nihia.mixer.knobs[0][knob_number_display]
+				knob_data = mix.knobs[0][knob_number_display]
 				volume_increment = config.channel_increment
 
 				if event.data1 == knob_data:
@@ -135,9 +135,9 @@ def handle_param_control(self, event, param_index, track_index, mixer_slot, use_
 		elif c.encoder_cc_inc_fast_min <= event.data2 < c.encoder_cc_inc_slow_max:  # All increment values
 			new_param_value = min(param_value + volume_increment, c.plugin_param_max)
 	else:
-		if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+		if event.data2 == mix.KNOB_DECREASE_MAX_SPEED:
 			new_param_value = max(param_value - volume_increment, c.plugin_param_min)
-		elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+		elif event.data2 == mix.KNOB_INCREASE_MAX_SPEED:
 			new_param_value = min(param_value + volume_increment, c.plugin_param_max)
 
 	plugins.setParamValue(new_param_value, param_index, track_index, mixer_slot, pickup_mode, use_global_index)
@@ -151,11 +151,11 @@ def handle_mixer_effect(self, event):
 
 	track_index, mixer_slot = effect_info
 	track_plugin_id = mixer.getTrackPluginId(track_index, mixer_slot)
-	event_id = midi.REC_Plug_MixLevel + track_plugin_id
+	event_id = midi.REC_Plug_MixLevel + track_plugin_id # type: ignore
 	mix_slot_volume = general.processRECEvent(event_id, 0, midi.REC_GetValue)
 	converted_volume = round((mix_slot_volume / c.mix_slot_volume_max) * c.volume_percent_max)
 
-	if event.data1 == nihia.mixer.knobs[0][0]:
+	if event.data1 == mix.knobs[0][0]:
 		handle_mixer_effect_mix(self, event, converted_volume, event_id)
 
 def handle_mixer_effect_mix(self, event, converted_volume, event_id):
@@ -170,9 +170,9 @@ def handle_mixer_effect_mix(self, event, converted_volume, event_id):
 
 def handle_non_series_knob_event(self, event, converted_volume, event_id, volume_increment):
 	"""Handles mix level changes for non-series controllers."""
-	if event.data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED and converted_volume > c.volume_percent_min:
+	if event.data2 == mix.KNOB_DECREASE_MAX_SPEED and converted_volume > c.volume_percent_min:
 		converted_volume -= volume_increment
-	elif event.data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED and converted_volume < c.volume_percent_max:
+	elif event.data2 == mix.KNOB_INCREASE_MAX_SPEED and converted_volume < c.volume_percent_max:
 		converted_volume += volume_increment
 
 	update_and_record_volume(self, event, event_id, converted_volume)
@@ -234,7 +234,7 @@ def setGenPluginVolumePan(self, event):
 	knob_speed = 0
 
 	for control_type in (0, 1):  # 0 for volume, 1 for pan
-		knob_data = nihia.mixer.knobs[control_type][0]
+		knob_data = mix.knobs[control_type][0]
 		current_channel = channels.selectedChannel()
 		current_value = (
 			channels.getChannelVolume(current_channel) if control_type == 0

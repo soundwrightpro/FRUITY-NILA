@@ -51,12 +51,16 @@ class Core:
 		# Prebind frequently used functions to avoid repeated module lookups
 		self._on_idle_oled = NILA_OLED.OnIdle
 		self._send_peak_info = NILA_transform.sendPeakInfo
+		self._version_check = NILA_version_check.VersionCheck
+		self._core_on_init = NILA_core.OnInit
+		self._core_on_project_load = NILA_core.OnProjectLoad
+		self._goodbye = nihia.goodBye
 
 	def OnInit(self):
 		"""Initializes the script and verifies device compatibility."""
 		try:
-			if NILA_version_check.VersionCheck(False):
-				NILA_core.OnInit(self)
+			if self._version_check(False):
+				self._core_on_init(self)
 		except Exception as e:
 			self.handle_exception("OnInit", e)
 
@@ -122,7 +126,7 @@ class Core:
 			status (int): Status of the project load event.
 		"""
 		try:
-			NILA_core.OnProjectLoad(self, status)
+			self._core_on_project_load(self, status)
 		except Exception as e:
 			self.handle_exception("OnProjectLoad", e)
 
@@ -147,17 +151,7 @@ class Core:
 		try:
 			if ui.isClosing():
 				try:
-					NILA_LED.clearAll()
-				except Exception as e:
-					self.handle_exception("OnDeInit.clearLED", e)
-
-				try:
-					NILA_OLED.clearAll()
-				except Exception as e:
-					self.handle_exception("OnDeInit.clearOLED", e)
-
-				try:
-					nihia.goodBye()
+					self._goodbye()
 				except Exception as e:
 					self.handle_exception("OnDeInit.goodBye", e)
 		except Exception as e:

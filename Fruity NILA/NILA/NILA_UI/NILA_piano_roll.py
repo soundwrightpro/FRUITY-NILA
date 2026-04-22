@@ -1,10 +1,12 @@
 import channels
 import ui
 
-import nihia
 from nihia import mixer as mix
+from NILA.NILA_engine import config, constants as c, NILA_transform
+from NILA.NILA_visuals import NILA_OLED
 
-from NILA.NILA_engine import config, constants as c, NILA_transform, NILA_core
+PIANO_ROLL_KNOB_VOLUME = getattr(c, "piano_roll_knob_volume", 0)
+PIANO_ROLL_KNOB_PAN = getattr(c, "piano_roll_knob_pan", 1)
 
 
 def OnMidiMsg(self, event):
@@ -20,14 +22,19 @@ def OnMidiMsg(self, event):
 
 	# Map knob numbers to actions using constants
 	knob_actions = {
-		nihia.mixer.knobs[0][c.piano_roll_knob_volume]: handle_volume_knob,
-		nihia.mixer.knobs[1][c.piano_roll_knob_pan]: handle_pan_knob,
+		mix.knobs[0][PIANO_ROLL_KNOB_VOLUME]: handle_volume_knob,
+		mix.knobs[1][PIANO_ROLL_KNOB_PAN]: handle_pan_knob,
 	}
 
 	action = knob_actions.get(event.data1)
 	if action:
 		event.handled = True
 		action(event)
+
+def refresh_piano_roll_display(channel_index):
+	"""Delegate Piano Roll display refresh to the OLED module."""
+	if hasattr(NILA_OLED, "refresh_piano_roll_display"):
+		NILA_OLED.refresh_piano_roll_display(channel_index)
 
 def handle_volume_knob(event):
 	channel_index = channels.selectedChannel()
@@ -40,8 +47,7 @@ def handle_volume_knob(event):
 			c.track_volume_max
 		)
 		channels.setChannelVolume(channel_index, updated_volume)
-		NILA_core.setTrackVolConvert(channel_index, f"{updated_volume:.1f} dB")
-		mix.setTrackName(channel_index, channels.getChannelName(channel_index))
+		refresh_piano_roll_display(channel_index)
 
 def handle_pan_knob(event):
 	channel_index = channels.selectedChannel()
@@ -54,14 +60,14 @@ def handle_pan_knob(event):
 			c.plugin_param_max
 		)
 		channels.setChannelPan(channel_index, updated_pan)
-		NILA_transform.updatePanChannel(channel_index, 0)
+		refresh_piano_roll_display(channel_index)
 
 def get_knob_increment(event):
 	"""
 	Determines the increment value based on MIDI data.
 	"""
-	if nihia.mixer.KNOB_DECREASE_MAX_SPEED <= event.data2 <= nihia.mixer.KNOB_DECREASE_MIN_SPEED:
+	if mix.KNOB_DECREASE_MAX_SPEED <= event.data2 <= mix.KNOB_DECREASE_MIN_SPEED:
 		return -config.channel_increment
-	elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+	elif mix.KNOB_INCREASE_MIN_SPEED <= event.data2 <= mix.KNOB_INCREASE_MAX_SPEED:
 		return config.channel_increment
 	return None

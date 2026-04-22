@@ -1,11 +1,11 @@
 import time
 import device
-import mixer
 import playlist
 import ui
 
 import nihia
 import nihia.mixer as mix
+import nihia.buttons as buttons
 
 from NILA.NILA_engine import constants as c
 
@@ -24,7 +24,7 @@ def OnInit(self):
 	device.setHasMeters()
 
 	for button in ("UNDO", "REDO", "TEMPO", "CLEAR", "QUANTIZE"):
-		nihia.buttons.setLight(button, 1)
+		buttons.setLight(button, 1)
 
 	device.midiOutSysex(c.HANDSHAKE_SYSEX)
 

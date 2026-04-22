@@ -10,8 +10,6 @@ from nihia import buttons
 from nihia.mixer import setTrackVol, setTrackName, setTrackPan
 
 from NILA.NILA_engine import constants as c
-from NILA.NILA_visuals import NILA_OLED
-
 
 # Constants for on and off states
 on, off = 1, 0
@@ -115,7 +113,7 @@ def OnMidiMsg(self, event):
 			ui.setHintMsg("Countdown before recording")
 
 		elif event.data1 == buttons.button_list.get("CLEAR"):
-			double_click_status = device.isDoubleClick(buttons.button_list.get("CLEAR"))
+			double_click_status = device.isDoubleClick(buttons.button_list["CLEAR"])
 			if double_click_status:
 				transport.globalTransport(midi.FPT_F12, 2, 15)
 				ui.setHintMsg("Clear All Windows")

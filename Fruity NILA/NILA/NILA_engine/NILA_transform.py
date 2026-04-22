@@ -3,7 +3,6 @@ import channels
 import playlist
 import midi
 import mixer
-import transport
 import ui
 
 from nihia import mixer as nihia_mixer
@@ -65,7 +64,7 @@ def get_correct_tracks():
 
 	return selected_tracks
 
-def VolTodB(value: float) -> float:
+def VolTodB(value: float) -> float | str:
 	"""
 	Converts a linear volume value to decibels.
 

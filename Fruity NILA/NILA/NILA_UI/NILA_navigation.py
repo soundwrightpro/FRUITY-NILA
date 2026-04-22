@@ -8,9 +8,9 @@ import plugins
 import transport
 import ui
 
-import nihia
+import nihia.buttons as buttons
 
-from NILA.NILA_engine import NILA_core, config, constants as c
+from NILA.NILA_engine import config, constants as c
 from NILA.NILA_visuals import NILA_OLED
 
 
@@ -18,6 +18,39 @@ xAxis, yAxis = 0, 0
 windowCycle = 0
 last_click_time = 0
 current_track_plugin_id = None
+
+BUTTONS = buttons.button_list
+UNSUPPORTED_PLUGINS = tuple(c.unsupported_plugins or ())
+
+
+def _button(name):
+	return BUTTONS[name]
+
+
+ENCODER_GENERAL = _button("ENCODER_GENERAL")
+ENCODER_VOLUME_SELECTED = _button("ENCODER_VOLUME_SELECTED")
+ENCODER_PAN_SELECTED = _button("ENCODER_PAN_SELECTED")
+ENCODER_BUTTON = _button("ENCODER_BUTTON")
+ENCODER_BUTTON_SHIFTED = _button("ENCODER_BUTTON_SHIFTED")
+RIGHT_BUTTON = _button("RIGHT")
+LEFT_BUTTON = _button("LEFT")
+UP_BUTTON = _button("UP")
+DOWN_BUTTON = _button("DOWN")
+ENCODER_Y_S = _button("ENCODER_Y_S")
+ENCODER_X_S = _button("ENCODER_X_S")
+ENCODER_Y_A = _button("ENCODER_Y_A")
+ENCODER_X_A = _button("ENCODER_X_A")
+
+
+def _popup_enter_or_open_menu(menu_transport, menu_hint):
+	if ui.isInPopupMenu():
+		ui.enter()
+		ui.setHintMsg("Enter")
+	else:
+		transport.globalTransport(menu_transport, menu_hint)
+		ui.setHintMsg("Open Menu")
+		mixer.deselectAll()
+		mixer.selectTrack(mixer.trackNumber())
 
 def OnRefresh(self, flags):
 	global ordered_tracks
@@ -104,18 +137,21 @@ def encoder(self, event):
 			global current_track_plugin_id
 			plugin_name_cache = None
 			if winFocused["Effect Plugin"]:
-				mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+				idx = mixer.getActiveEffectIndex()
+				if not idx:
+					return
+				mix_track_index, mixer_slot = idx
 				plugin_valid = plugins.isValid(mix_track_index, mixer_slot)
 				if not plugin_valid:
 					return
-				plugin_name_cache = plugins.getPluginName(mix_track_index, mixer_slot, 0, global_index)
+				plugin_name_cache = plugins.getPluginName(mix_track_index, mixer_slot, False, global_index)
 				track_plugin_id = mixer.getTrackPluginId(mix_track_index, mixer_slot)
 				if track_plugin_id != c.last_plugin_name:
 					c.lead_param = 0
 					c.last_plugin_name = track_plugin_id
 				param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
 				param_count = c.actual_param_count if param_count == 4240 else param_count
-				if plugin_name_cache in c.unsupported_plugins:
+				if plugin_name_cache in UNSUPPORTED_PLUGINS:
 					ui.down(1) if direction > 0 else ui.up(1)
 				elif c.actual_param_count > 7:
 					target = min if direction > 0 else max
@@ -127,9 +163,9 @@ def encoder(self, event):
 				channel_index = channels.selectedChannel()
 				if not plugins.isValid(channel_index, c.gen_plugin):
 					return
-				plugin_name_cache = plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index)
+				plugin_name_cache = plugins.getPluginName(channel_index, c.gen_plugin, False, global_index)
 				if channels.getChannelType(channel_index) in (0, 3, 4, 5):
-					if plugin_name_cache in c.unsupported_plugins:
+					if plugin_name_cache in UNSUPPORTED_PLUGINS:
 						ui.down(1) if direction > 0 else ui.up(1)
 				else:
 					track_plugin_id = plugins.getPluginName(channel_index, c.gen_plugin)
@@ -138,7 +174,7 @@ def encoder(self, event):
 						c.last_plugin_name = track_plugin_id
 					param_count = plugins.getParamCount(channel_index, c.gen_plugin, global_index)
 					param_count = c.actual_param_count if param_count == 4240 else param_count
-					if plugin_name_cache in c.unsupported_plugins:
+					if plugin_name_cache in UNSUPPORTED_PLUGINS:
 						ui.down(1) if direction > 0 else ui.up(1)
 					elif c.actual_param_count > 7:
 						target = min if direction > 0 else max
@@ -149,38 +185,16 @@ def encoder(self, event):
 
 		def handle_encoder_button(button_id):
 			if winFocused["Mixer"]:
-				# Only respond to double-click
 				if onButtonClick(button_id):
-					if ui.isInPopupMenu():
-						ui.enter()
-						ui.setHintMsg("Enter")
-					else:
-						transport.globalTransport(midi.FPT_Menu, midi.GT_Menu)
-						ui.setHintMsg("Open Menu")
-						mixer.deselectAll()
-						mixer.selectTrack(mixer.trackNumber())
+					_popup_enter_or_open_menu(midi.FPT_Menu, midi.GT_Menu)
 				return
 			elif winFocused["Plugin"] or winFocused["Piano Roll"]:
 				ui.enter()
 				if onButtonClick(button_id):
-					if ui.isInPopupMenu():
-						ui.enter()
-						ui.setHintMsg("Enter")
-					else:
-						transport.globalTransport(midi.FPT_Menu, midi.GT_Menu)
-						ui.setHintMsg("Open Menu")
-						mixer.deselectAll()
-						mixer.selectTrack(mixer.trackNumber())
+					_popup_enter_or_open_menu(midi.FPT_Menu, midi.GT_Menu)
 			elif winFocused["Channel Rack"]:
 				if onButtonClick(button_id):
-					if ui.isInPopupMenu():
-						ui.enter()
-						ui.setHintMsg("Enter")
-					else:
-						transport.globalTransport(midi.FPT_ItemMenu, 4)
-						ui.setHintMsg("Open Menu")
-						mixer.deselectAll()
-						mixer.selectTrack(mixer.trackNumber())
+					_popup_enter_or_open_menu(midi.FPT_ItemMenu, 4)
 			elif winFocused["Playlist"]:
 				if onButtonClick(button_id) and not ui.isInPopupMenu():
 					arrange.addAutoTimeMarker(mixer.getSongTickPos(), str("Mark"))
@@ -197,46 +211,58 @@ def encoder(self, event):
 
 		# --- ENCODER HANDLING ---
 		if event.data1 in (
-			nihia.buttons.button_list.get("ENCODER_GENERAL"),
-			nihia.buttons.button_list.get("ENCODER_VOLUME_SELECTED")
+			ENCODER_GENERAL,
+			ENCODER_VOLUME_SELECTED
 		):
 			plugin_skip = 1
-			if event.data2 in (nihia.buttons.button_list.get("RIGHT"), c.mixer_right):
+			if event.data2 in (RIGHT_BUTTON, c.mixer_right):
 				event.handled = True
 				if winFocused["Mixer"]: 
 					if ui.isInPopupMenu():
 						ui.down(1)
 					else:			
 						jog(1)
-				elif winFocused["Channel Rack"]: jog(1)
-				elif winFocused["Plugin"]: handle_plugin_nav(1, plugin_skip)
-				elif winFocused["Playlist"]: ui.jog(1)
-				elif winFocused["Piano Roll"]: ui.verZoom(-1)
-				elif winFocused["Browser"]: browse("next")
-				else: ui.down(1)
-			elif event.data2 in (nihia.buttons.button_list.get("LEFT"), c.mixer_left):
+				elif winFocused["Channel Rack"]: 
+					jog(1)
+				elif winFocused["Plugin"]: 
+					handle_plugin_nav(1, plugin_skip)
+				elif winFocused["Playlist"]: 
+					ui.jog(1)
+				elif winFocused["Piano Roll"]: 
+					ui.verZoom(-1)
+				elif winFocused["Browser"]: 
+					browse("next")
+				else: 
+					ui.down(1)
+			elif event.data2 in (LEFT_BUTTON, c.mixer_left):
 				event.handled = True
 				if winFocused["Mixer"]: 
 					if ui.isInPopupMenu():
 						ui.up(1)
 					else:			
 						jog(-1)
-				elif winFocused["Channel Rack"]: jog(-1)
-				elif winFocused["Plugin"]: handle_plugin_nav(-1, plugin_skip)
-				elif winFocused["Playlist"]: ui.jog(-1)
-				elif winFocused["Piano Roll"]: ui.verZoom(1)
-				elif winFocused["Browser"]: browse("previous")
-				else: ui.up(1)
+				elif winFocused["Channel Rack"]: 
+					jog(-1)
+				elif winFocused["Plugin"]: 
+					handle_plugin_nav(-1, plugin_skip)
+				elif winFocused["Playlist"]: 
+					ui.jog(-1)
+				elif winFocused["Piano Roll"]: 
+					ui.verZoom(1)
+				elif winFocused["Browser"]: 
+					browse("previous")
+				else: 
+					ui.up(1)
 
-		if event.data1 == nihia.buttons.button_list.get("ENCODER_PAN_SELECTED"):
-			if event.data2 in (nihia.buttons.button_list.get("RIGHT"), c.mixer_right):
+		if event.data1 == ENCODER_PAN_SELECTED:
+			if event.data2 in (RIGHT_BUTTON, c.mixer_right):
 				event.handled = True
 				if winFocused["Mixer"]:
 					t = mixer.trackNumber()
 					mixer.setTrackStereoSep(t, mixer.getTrackStereoSep(t) + c.stereo_sep)
 				if winFocused["Playlist"] or winFocused["Piano Roll"]:
 					transport.globalTransport(midi.FPT_HZoomJog, 1, midi.PME_System, midi.GT_All)
-			if event.data2 in (nihia.buttons.button_list.get("LEFT"), c.mixer_left):
+			if event.data2 in (LEFT_BUTTON, c.mixer_left):
 				event.handled = True
 				if winFocused["Mixer"]:
 					t = mixer.trackNumber()
@@ -244,13 +270,13 @@ def encoder(self, event):
 				if winFocused["Playlist"] or winFocused["Piano Roll"]:
 					transport.globalTransport(midi.FPT_HZoomJog, -1, midi.PME_System, midi.GT_All)
 
-		if event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON"):
+		if event.data1 == ENCODER_BUTTON:
 			event.handled = True
-			handle_encoder_button(nihia.buttons.button_list.get("ENCODER_BUTTON"))
+			handle_encoder_button(ENCODER_BUTTON)
 
-		if event.data1 == nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED"):
+		if event.data1 == ENCODER_BUTTON_SHIFTED:
 			event.handled = True
-			button_id = nihia.buttons.button_list.get("ENCODER_BUTTON_SHIFTED")
+			button_id = ENCODER_BUTTON_SHIFTED
 			window_mappings = {
 				0: (1, "Channel Rack"),
 				1: (0, "Mixer"),
@@ -267,78 +293,82 @@ def encoder(self, event):
 				ui.setHintMsg(hint_msg)
 
 		yAxisBtn, xAxisBtn = (
-			(nihia.buttons.button_list.get("ENCODER_Y_S"), nihia.buttons.button_list.get("ENCODER_X_S"))
+			(ENCODER_Y_S, ENCODER_X_S)
 			if device.getName() == "Komplete Kontrol DAW - 1"
-			else (nihia.buttons.button_list.get("ENCODER_Y_A"), nihia.buttons.button_list.get("ENCODER_X_A"))
+			else (ENCODER_Y_A, ENCODER_X_A)
 		)
 
 		if event.data1 == xAxisBtn:
 			event.handled = True
 			if winFocused["Mixer"]:
 				if ui.isInPopupMenu():
-					if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+					if event.data2 == RIGHT_BUTTON:
 						ui.right(1)
-					elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+					elif event.data2 == LEFT_BUTTON:
 						ui.left(1)
 				else:
-					if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+					if event.data2 == RIGHT_BUTTON:
 						jog(8)
-					elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+					elif event.data2 == LEFT_BUTTON:
 						jog(-8)
 			elif winFocused["Channel Rack"]:
 				if ui.isInPopupMenu():
-					if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+					if event.data2 == RIGHT_BUTTON:
 						ui.right(1)
-					elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+					elif event.data2 == LEFT_BUTTON:
 						ui.left(1)
 				else:
-					if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+					if event.data2 == RIGHT_BUTTON:
 						ui.left(1)
-					elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+					elif event.data2 == LEFT_BUTTON:
 						ui.right(1)
 			elif winFocused["Plugin"]:
-				if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+				if event.data2 == RIGHT_BUTTON:
 					handle_plugin_nav(1, 7)
-				elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+				elif event.data2 == LEFT_BUTTON:
 					handle_plugin_nav(-1, 7)
 			elif winFocused["Playlist"]:
-				if event.data2 == nihia.buttons.button_list.get("RIGHT"):
-					arrange.jumpToMarker(1, 0)
-				elif event.data2 == nihia.buttons.button_list.get("LEFT"):
-					arrange.jumpToMarker(-1, 0)
+				if event.data2 == RIGHT_BUTTON:
+					arrange.jumpToMarker(1, False)
+				elif event.data2 == LEFT_BUTTON:
+					arrange.jumpToMarker(-1, False)
 			elif winFocused["Browser"]:
-				if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+				if event.data2 == RIGHT_BUTTON:
 					ui.right()
-				elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+				elif event.data2 == LEFT_BUTTON:
 					ui.left()
 			elif winFocused["Piano Roll"]:
 				if ui.isInPopupMenu():
-					if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+					if event.data2 == RIGHT_BUTTON:
 						ui.right()
-					elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+					elif event.data2 == LEFT_BUTTON:
 						ui.left()
 				else:
-					if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+					if event.data2 == RIGHT_BUTTON:
 						ui.jog(1)
-					elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+					elif event.data2 == LEFT_BUTTON:
 						ui.jog(-1)
 			else:
-				if event.data2 == nihia.buttons.button_list.get("RIGHT"):
+				if event.data2 == RIGHT_BUTTON:
 					ui.right(1)
-				elif event.data2 == nihia.buttons.button_list.get("LEFT"):
+				elif event.data2 == LEFT_BUTTON:
 					ui.left(1)
 
 		if event.data1 == yAxisBtn:
 			event.handled = True
-			if event.data2 == nihia.buttons.button_list.get("UP"):
+			if event.data2 == UP_BUTTON:
 				if winFocused["Mixer"]:
-					if ui.isInPopupMenu(): ui.up(1)
+					if ui.isInPopupMenu(): 
+						ui.up(1)
 				elif winFocused["Channel Rack"]:
 					ui.up(1)
 					ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, config.rectChannel)
 				elif winFocused["Plugin"]:
 					if winFocused["Effect Plugin"]:
-						mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+						idx = mixer.getActiveEffectIndex()
+						if not idx:
+							return
+						mix_track_index, mixer_slot = idx
 						param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
 						if param_count != 4240:
 							plugins.prevPreset(mix_track_index, mixer_slot, global_index)
@@ -347,9 +377,11 @@ def encoder(self, event):
 						if not plugins.isValid(channel_index, c.gen_plugin):
 							ui.up()
 							return
-						if plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index) in c.unsupported_plugins:
+						if plugins.getPluginName(channel_index, c.gen_plugin, False, global_index) in UNSUPPORTED_PLUGINS:
 							ui.up(1)
-						if channels.getChannelName(channel_index) in ui.getFocusedFormCaption():
+						focused_caption = str(ui.getFocusedFormCaption() or "")
+						channel_name = str(channels.getChannelName(channel_index) or "")
+						if channel_name in focused_caption:
 							plugins.prevPreset(channel_index)
 						else:
 							ui.up()
@@ -363,15 +395,19 @@ def encoder(self, event):
 					ui.up()
 				elif winFocused["Piano Roll"]:
 					ui.up()
-			elif event.data2 == nihia.buttons.button_list.get("DOWN"):
+			elif event.data2 == DOWN_BUTTON:
 				if winFocused["Mixer"]:
-					if ui.isInPopupMenu(): ui.down(1)
+					if ui.isInPopupMenu(): 
+						ui.down(1)
 				elif winFocused["Channel Rack"]:
 					ui.down(1)
 					ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, config.rectChannel)
 				elif winFocused["Plugin"]:
 					if winFocused["Effect Plugin"]:
-						mix_track_index, mixer_slot = mixer.getActiveEffectIndex()
+						idx = mixer.getActiveEffectIndex()
+						if not idx:
+							return
+						mix_track_index, mixer_slot = idx
 						param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
 						if param_count != 4240:
 							plugins.nextPreset(mix_track_index, mixer_slot, global_index)
@@ -380,9 +416,11 @@ def encoder(self, event):
 						if not plugins.isValid(channel_index, c.gen_plugin):
 							ui.down()
 							return
-						if plugins.getPluginName(channel_index, c.gen_plugin, 0, global_index) in c.unsupported_plugins:
+						if plugins.getPluginName(channel_index, c.gen_plugin, False, global_index) in UNSUPPORTED_PLUGINS:
 							ui.down(1)
-						if channels.getChannelName(channel_index) in ui.getFocusedFormCaption():
+						focused_caption = str(ui.getFocusedFormCaption() or "")
+						channel_name = str(channels.getChannelName(channel_index) or "")
+						if channel_name in focused_caption:
 							plugins.nextPreset(channel_index)
 						else:
 							ui.down(1)

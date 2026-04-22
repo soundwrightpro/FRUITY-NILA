@@ -22,6 +22,15 @@ Usage:
 Note: Users should update this list based on the specific modules they want to use in their script.
 
 """
+from . import NILA_buttons
+from . import NILA_channel_rack
+from . import NILA_mixer
+from . import NILA_navigation
+from . import NILA_piano_roll
+from . import NILA_playlist
+from . import NILA_plugins
+from . import NILA_touch_strips
+
 __all__ = ["NILA_buttons", 
            "NILA_channel_rack", 
            "NILA_mixer",    

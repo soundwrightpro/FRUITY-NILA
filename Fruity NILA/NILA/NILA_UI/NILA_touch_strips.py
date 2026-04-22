@@ -2,9 +2,7 @@ import channels
 import plugins
 import ui
 
-from NILA.NILA_engine import NILA_core, constants as c
-from NILA.NILA_visuals import NILA_OLED
-
+from NILA.NILA_engine import constants as c
 
 def handle_modulation_event(event, data2_normalized: int):
 	event.handled = True

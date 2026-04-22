@@ -31,7 +31,9 @@ def get_correct_tracks():
 	"""Determines the correct tracks for knob control while skipping docked tracks."""
 	tracks_order = get_mixer_order()
 	current_track = mixer.trackNumber()
-	start_idx = tracks_order.index(current_track) if current_track in tracks_order else 0
+	if current_track not in tracks_order:
+		return []
+	start_idx = tracks_order.index(current_track)
 
 	selected_tracks = [current_track]
 	for i in range(start_idx + 1, len(tracks_order)):
@@ -68,6 +70,7 @@ def purge_all_tracks():
 	purge_tracks(c.purge_start_index, c.max_knob_number, clear_info=True)
 	purge_tracks(c.purge_start_index, c.max_knob_number)
 
+
 def OnRefresh(self, event):
 	"""Handles track updates based on the focused FL Studio window."""
 	useGlobalIndex = False
@@ -80,7 +83,7 @@ def OnRefresh(self, event):
 	if ui.getFocused(c.winName["Mixer"]):
 		tracks_to_control = get_correct_tracks()
 		for i in range(c.max_knobs):
-			mix.setTrackSel(i, 0)
+			mix.setTrackSel(i, False)
 
 		for knobNumber, trackNumber in enumerate(tracks_to_control):
 			# Cache includes pan so OLED updates immediately when pan changes
@@ -101,10 +104,10 @@ def OnRefresh(self, event):
 			mix.setTrackVolGraph(knobNumber, 0)
 			mix.setTrackPan(knobNumber, c.blankEvent)
 			mix.setTrackPanGraph(knobNumber, 0)
-			mix.setTrackSel(knobNumber, 0)
-			mix.setTrackArm(knobNumber, 0)
-			mix.setTrackSolo(knobNumber, 0)
-			mix.setTrackMute(knobNumber, 0)
+			mix.setTrackSel(knobNumber, False)
+			mix.setTrackArm(knobNumber, False)
+			mix.setTrackSolo(knobNumber, False)
+			mix.setTrackMute(knobNumber, False)
 
 		# Also clear cached state for the slots we just blanked
 		for knobNumber in range(len(tracks_to_control), c.max_knobs):
@@ -119,10 +122,10 @@ def OnRefresh(self, event):
 			if ch_count > knobNumber and selectedChannel < ch_count:
 				mix.setTrackExist(knobNumber, 1)
 				mix.setTrackName(knobNumber, channels.getChannelName(selectedChannel))
-				mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(selectedChannel, 1), 1)} dB")
+				mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(selectedChannel, True), 1)} dB")
 				mix.setTrackVolGraph(knobNumber, channels.getChannelVolume(selectedChannel) / 1.0 * c.oled_vol_bar_scaling)
 				NILA_transform.updatePanChannel(selectedChannel, knobNumber)
-				mix.setTrackSel(c.display_track_index, 0)
+				mix.setTrackSel(c.display_track_index, False)
 			else:
 				# clear/blank this knob!
 				mix.setTrackExist(knobNumber, 0)
@@ -151,7 +154,7 @@ def OnRefresh(self, event):
 			if not NILA_core.seriesCheck():
 				short_form_type = short_form_type[:9]
 			mix.setTrackName(c.display_track_index, short_form_type)
-			mix.setTrackVol(c.display_track_index, f"{round(channels.getChannelVolume(sel_channel, 1), 1)} dB")
+			mix.setTrackVol(c.display_track_index, f"{round(channels.getChannelVolume(sel_channel, True), 1)} dB")
 			mix.setTrackVolGraph(c.display_track_index, channels.getChannelVolume(sel_channel) / 1.0 * c.oled_vol_bar_scaling)
 			NILA_transform.updatePanChannel(sel_channel, c.display_track_index)
 
@@ -161,10 +164,10 @@ def OnRefresh(self, event):
 					# Use knob 0 to show and control channel volume
 					purge_all_tracks() 
 					mix.setTrackExist(knobNumber, 1)
-					mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(sel_channel, 1), 1)} dB")
+					mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(sel_channel, True), 1)} dB")
 					mix.setTrackVolGraph(knobNumber, channels.getChannelVolume(sel_channel) / 1.0 * c.oled_vol_bar_scaling)
 					NILA_transform.updatePanChannel(sel_channel, knobNumber)
-					mix.setTrackSel(c.display_track_index, 0)
+					mix.setTrackSel(c.display_track_index, False)
 					return
 
 				if not plugins.isValid(sel_channel, c.gen_plugin):
@@ -207,7 +210,7 @@ def OnRefresh(self, event):
 								formatted_param_name = format_param_name(param_name) if NILA_core.seriesCheck() else param_name
 								knob_display_idx = max(c.first_knob_index, knob_index - c.skip_over)
 								mix.setTrackExist(knob_display_idx, 2)
-								mix.setTrackSel(c.display_track_index, 1)
+								mix.setTrackSel(c.display_track_index, True)
 								mix.setTrackName(knob_display_idx, formatted_param_name)
 								mix.setTrackVol(knob_display_idx, "{}%".format(int(percentage)))
 								mix.setTrackVolGraph(knob_display_idx, 0)
@@ -223,7 +226,7 @@ def OnRefresh(self, event):
 			plugin_name = (full_plugin_name[:9] if not NILA_core.seriesCheck() else full_plugin_name + "\n\n|Mix Level") \
 				if device.getName() == "Komplete Kontrol DAW - 1" else f"P| Insert: {track_index}"
 			track_plugin_id = mixer.getTrackPluginId(track_index, mixer_slot)
-			event_id = midi.REC_Plug_MixLevel + track_plugin_id
+			event_id = midi.REC_Plug_MixLevel + track_plugin_id # type: ignore[attr-defined]
 			effect_mix_level = general.processRECEvent(event_id, 0, midi.REC_Chan_FXTrack | midi.REC_GetValue)
 			converted_mix_level = round((effect_mix_level / c.mix_slot_volume_max) * 100)
 			mix.setTrackExist(c.display_track_index, 1)
@@ -267,7 +270,7 @@ def OnRefresh(self, event):
 								formatted_param_name = format_param_name(param_name) if NILA_core.seriesCheck() else param_name
 								knob_display_idx = max(c.first_knob_index, knob_index - c.skip_over)
 								mix.setTrackExist(knob_display_idx, 2)
-								mix.setTrackSel(c.display_track_index, 1)
+								mix.setTrackSel(c.display_track_index, True)
 								mix.setTrackName(knob_display_idx, formatted_param_name)
 								mix.setTrackVol(knob_display_idx, "{}%".format(int(percentage)))
 								mix.setTrackVolGraph(knob_display_idx, 0)
@@ -279,9 +282,7 @@ def OnRefresh(self, event):
 	elif ui.getFocused(c.winName["Piano Roll"]):
 		purge_all_tracks()
 		sel_channel = channels.selectedChannel()
-		mix.setTrackName(c.display_track_index, str(channels.getChannelName(sel_channel)))
-		NILA_core.setTrackVolConvert(c.display_track_index, f"{round(channels.getChannelVolume(sel_channel, 1), 1)} dB")
-		NILA_transform.updatePanChannel(sel_channel, c.display_track_index)
+		refresh_piano_roll_display(sel_channel)
 
 	elif ui.getFocused(c.winName["Playlist"]):
 		mix.setTrackName(c.display_track_index, "Playlist")
@@ -348,12 +349,21 @@ def purge_tracks(start, end, clear_info=False):
 		if clear_info:
 			mix.setTrackPanGraph(track_index, 0)
 			mix.setTrackVolGraph(track_index, 0)
-			mix.setTrackSel(track_index, 0)
-			mix.setTrackArm(track_index, 0)
-			mix.setTrackSolo(track_index, 0)
-			mix.setTrackMute(track_index, 0)
+			mix.setTrackSel(track_index, False)
+			mix.setTrackArm(track_index, False)
+			mix.setTrackSolo(track_index, False)
+			mix.setTrackMute(track_index, False)
 			mix.setTrackName(track_index, c.blankEvent)
 			mix.setTrackPan(track_index, c.blankEvent)
 			mix.setTrackVol(track_index, c.blankEvent)
 		else:
 			mix.setTrackExist(track_index, 0)
+
+def refresh_piano_roll_display(channel_index):
+	"""Refresh the OLED display for the active Piano Roll channel on slot 0."""
+	knobNumber = c.display_track_index
+	mix.setTrackExist(knobNumber, 1)
+	mix.setTrackName(knobNumber, str(channels.getChannelName(channel_index)))
+	mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(channel_index, True), 1)} dB")
+	mix.setTrackVolGraph(knobNumber, channels.getChannelVolume(channel_index) / 1.0 * c.oled_vol_bar_scaling)
+	NILA_transform.updatePanChannel(channel_index, knobNumber)

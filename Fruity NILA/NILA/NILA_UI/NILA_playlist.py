@@ -1,11 +1,9 @@
 import mixer
 import ui
 
-import nihia
+from nihia import mixer as nihia_mixer
 
 from NILA.NILA_engine import config, constants as c, NILA_transform
-from NILA.NILA_visuals import NILA_OLED as oled
-
 
 def OnMidiMsg(self, event): 
     """
@@ -18,13 +16,13 @@ def handle_volume_control(event):
     """
     Handles volume control events.
     """
-    if event.data1 == nihia.mixer.knobs[0][0]:
+    if event.data1 == nihia_mixer.knobs[0][0]:
         event.handled = True
         track_index = c.playlist_track_index
 
-        if nihia.mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+        if nihia_mixer.KNOB_DECREASE_MIN_SPEED >= event.data2 >= nihia_mixer.KNOB_DECREASE_MAX_SPEED:
             adjust_track_volume(track_index, -config.mixer_increment)
-        elif nihia.mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+        elif nihia_mixer.KNOB_INCREASE_MIN_SPEED <= event.data2 <= nihia_mixer.KNOB_INCREASE_MAX_SPEED:
             adjust_track_volume(track_index, config.mixer_increment)
 
 def adjust_track_volume(track_index, increment):

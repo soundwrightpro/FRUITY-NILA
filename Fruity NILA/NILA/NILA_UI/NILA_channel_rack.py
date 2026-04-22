@@ -4,10 +4,9 @@ from collections import defaultdict
 import channels
 import ui
 
-import nihia
+import nihia.mixer as mix
 
 from NILA.NILA_engine import config, constants as c
-from NILA.NILA_engine.NILA_core import seriesCheck
 from NILA.NILA_visuals import NILA_OLED as oled
 
 
@@ -52,14 +51,13 @@ def OnMidiMsg(self, event):
 		return  # Exit early if Channel Rack is not focused
 
 	knob_speed = 0
-	is_s_series = seriesCheck()  # Avoid redundant calls
-
+	
 	for control_type in (0, 1):  # 0 for volume, 1 for pan
 		for z in range(c.max_knobs):
 			if channels.channelCount() <= z or channels.selectedChannel() >= (channels.channelCount() - z):
 				continue  # Skip if out of range
 
-			knob_data = nihia.mixer.knobs[control_type][z]
+			knob_data = mix.knobs[control_type][z]
 			current_channel = channels.selectedChannel() + z
 			current_value = (
 				channels.getChannelVolume(current_channel) if control_type == 0

@@ -2,8 +2,7 @@ import time
 import mixer
 import ui
 
-import nihia
-
+from nihia import mixer as nihia_mixer
 from NILA.NILA_engine import NILA_core as core, config, constants as c
 
 
@@ -35,7 +34,10 @@ def get_adjacent_tracks(current_track):
 	if current_track not in ordered_tracks_cache:
 		update_mixer_order()
 
-	start_index = ordered_tracks_cache.index(current_track) if current_track in ordered_tracks_cache else 0
+	if current_track not in ordered_tracks_cache:
+		return []
+
+	start_index = ordered_tracks_cache.index(current_track)
 	return ordered_tracks_cache[start_index : start_index + c.max_knobs]  # Uses max_knobs constant
 
 def OnMidiMsg(self, event):
@@ -43,11 +45,13 @@ def OnMidiMsg(self, event):
 	Handles MIDI messages in FL Studio for mixer control.
 	"""
 	if ui.getFocused(c.winName["Mixer"]):
-		last_valid_track = mixer.trackCount() - 2  # Last non-Utility track
 		current_track = mixer.trackNumber()
 
 		update_mixer_order()
 		adjacent_tracks = get_adjacent_tracks(current_track)
+		if not adjacent_tracks:
+			event.handled = True
+			return
 
 		for z, track_number in enumerate(adjacent_tracks):
 			if mixer.getTrackName(track_number) != c.current_track_name:  # Avoid magic string
@@ -62,9 +66,9 @@ def OnMidiMsg(self, event):
 				adjusted_increment = config.mixer_increment * c.knob_rotation_speed if time_diff <= c.speed_increase_wait else config.mixer_increment
 
 				# Handle volume and pan controls
-				if event.data1 == nihia.mixer.knobs[0][z]:  # Volume Control
+				if event.data1 == nihia_mixer.knobs[0][z]:  # Volume Control
 					adjust_mixer_parameter(track_number, event.data2, adjusted_increment, c.volume_param_type)
-				elif event.data1 == nihia.mixer.knobs[1][z]:  # Pan Control
+				elif event.data1 == nihia_mixer.knobs[1][z]:  # Pan Control
 					adjust_mixer_parameter(track_number, event.data2, adjusted_increment, c.pan_param_type)
 
 def adjust_mixer_parameter(track_number, data2, increment, param_type=c.volume_param_type):
@@ -78,9 +82,9 @@ def adjust_mixer_parameter(track_number, data2, increment, param_type=c.volume_p
 		elif c.encoder_cc_inc_fast_min <= data2 <= c.encoder_cc_inc_fast_max or c.encoder_cc_inc_slow_min <= data2 <= c.encoder_cc_inc_slow_max:
 			value = increment
 	else:
-		if data2 == nihia.mixer.KNOB_DECREASE_MAX_SPEED:
+		if data2 == nihia_mixer.KNOB_DECREASE_MAX_SPEED:
 			value = -increment
-		elif data2 == nihia.mixer.KNOB_INCREASE_MAX_SPEED:
+		elif data2 == nihia_mixer.KNOB_INCREASE_MAX_SPEED:
 			value = increment
 
 	if value:
