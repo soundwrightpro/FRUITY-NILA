@@ -18,8 +18,16 @@ from NILA.NILA_visuals import NILA_OLED
 # Store last signal times per knob
 last_signal_time = defaultdict(lambda: time.time())
 
+
 last_volume_sent_time = {}
 last_volume_sent_value = {}
+
+def _get_rec_refresh_flags():
+	"""Returns any available FL refresh flags for visible control updates."""
+	refresh_flags = 0
+	for flag_name in ("REC_UpdateValue", "REC_UpdateControl", "REC_ShowHint"):
+		refresh_flags |= getattr(midi, flag_name, 0)
+	return refresh_flags
 
 def plugin(self, event):
 	"""Handles plugin-related events and delegates control."""
@@ -42,7 +50,7 @@ def plugin_set_param(self, event):
 	effect_info = mixer.getActiveEffectIndex()
 
 	if effect_info is None or effect_info == (c.plugin_effect_none, c.plugin_effect_none):
-		return  # No effect is focused
+		return  # No effect is focusedz
 
 	track_index, mixer_slot = effect_info
 	full_plugin_name = plugins.getPluginName(track_index, mixer_slot)
@@ -198,11 +206,14 @@ def update_and_record_volume(self, event, event_id, converted_volume):
 	if (now - last_time >= 0.015) or (mix_slot_volume != last_value):
 		flags = (
 			midi.REC_Control |
-			midi.REC_Smoothed |
-			midi.REC_InternalCtrl |
-			midi.REC_NoSaveUndo
+			midi.REC_Smoothed
 		)
 		general.processRECEvent(event_id, mix_slot_volume, flags)
+
+		refresh_flags = _get_rec_refresh_flags()
+		if refresh_flags:
+			general.processRECEvent(event_id, mix_slot_volume, refresh_flags)
+
 		last_volume_sent_time[event_id] = now
 		last_volume_sent_value[event_id] = mix_slot_volume
 

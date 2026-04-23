@@ -3,7 +3,10 @@ import mixer
 import ui
 
 from nihia import mixer as nihia_mixer
+
 from NILA.NILA_engine import NILA_core as core, config, constants as c
+MIXER_MIN_VALUE = 0.0
+MIXER_MAX_VALUE = 1.0
 
 
 # Cache for visually ordered mixer tracks
@@ -40,6 +43,32 @@ def get_adjacent_tracks(current_track):
 	start_index = ordered_tracks_cache.index(current_track)
 	return ordered_tracks_cache[start_index : start_index + c.max_knobs]  # Uses max_knobs constant
 
+
+def get_mixer_raw_step(data2, increment):
+	"""Returns a raw mixer step for an encoder movement."""
+	value = 0.0
+	if core.seriesCheck():
+		if c.encoder_cc_dec_slow_min <= data2 <= c.encoder_cc_dec_slow_max or c.encoder_cc_dec_fast_min <= data2 <= c.encoder_cc_dec_fast_max:
+			value = -increment
+		elif c.encoder_cc_inc_fast_min <= data2 <= c.encoder_cc_inc_fast_max or c.encoder_cc_inc_slow_min <= data2 <= c.encoder_cc_inc_slow_max:
+			value = increment
+	else:
+		if data2 == nihia_mixer.KNOB_DECREASE_MAX_SPEED:
+			value = -increment
+		elif data2 == nihia_mixer.KNOB_INCREASE_MAX_SPEED:
+			value = increment
+	return value
+
+
+
+def get_adaptive_volume_increment(track_number, base_increment):
+	"""Uses FL's dB getter for smoother mixer movement.
+
+	Only the mixer uses dB here. Channel Rack remains unchanged elsewhere.
+	"""
+	current_db = mixer.getTrackVolume(track_number, 1)
+	return base_increment
+
 def OnMidiMsg(self, event):
 	"""
 	Handles MIDI messages in FL Studio for mixer control.
@@ -63,32 +92,36 @@ def OnMidiMsg(self, event):
 				time_diff = current_time - getattr(self, last_time_attr, current_time)
 				setattr(self, last_time_attr, current_time)
 
-				adjusted_increment = config.mixer_increment * c.knob_rotation_speed if time_diff <= c.speed_increase_wait else config.mixer_increment
+				if time_diff <= c.speed_increase_wait:
+					base_volume_increment = config.mixer_increment * c.knob_rotation_speed
+					adjusted_pan_increment = config.mixer_increment * c.knob_rotation_speed
+				else:
+					base_volume_increment = config.mixer_increment
+					adjusted_pan_increment = config.mixer_increment
+
+				adjusted_volume_increment = get_adaptive_volume_increment(track_number, base_volume_increment)
 
 				# Handle volume and pan controls
 				if event.data1 == nihia_mixer.knobs[0][z]:  # Volume Control
-					adjust_mixer_parameter(track_number, event.data2, adjusted_increment, c.volume_param_type)
+					adjust_mixer_parameter(track_number, event.data2, adjusted_volume_increment, c.volume_param_type)
 				elif event.data1 == nihia_mixer.knobs[1][z]:  # Pan Control
-					adjust_mixer_parameter(track_number, event.data2, adjusted_increment, c.pan_param_type)
+					adjust_mixer_parameter(track_number, event.data2, adjusted_pan_increment, c.pan_param_type)
 
 def adjust_mixer_parameter(track_number, data2, increment, param_type=c.volume_param_type):
 	"""
 	Handles dynamic volume or pan control for a mixer track.
-	"""
-	value = 0
-	if core.seriesCheck():
-		if c.encoder_cc_dec_slow_min <= data2 <= c.encoder_cc_dec_slow_max or c.encoder_cc_dec_fast_min <= data2 <= c.encoder_cc_dec_fast_max:
-			value = -increment
-		elif c.encoder_cc_inc_fast_min <= data2 <= c.encoder_cc_inc_fast_max or c.encoder_cc_inc_slow_min <= data2 <= c.encoder_cc_inc_slow_max:
-			value = increment
-	else:
-		if data2 == nihia_mixer.KNOB_DECREASE_MAX_SPEED:
-			value = -increment
-		elif data2 == nihia_mixer.KNOB_INCREASE_MAX_SPEED:
-			value = increment
 
-	if value:
-		if param_type == c.volume_param_type:
-			mixer.setTrackVolume(track_number, mixer.getTrackVolume(track_number) + value)
-		else:
-			mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + value)
+	Mixer movement still writes FL's normalized 0.0..1.0 value, but the step
+	size is chosen from FL's exact dB getter so movement tracks the dB display
+	more closely.
+	"""
+	value = get_mixer_raw_step(data2, increment)
+	if not value:
+		return
+
+	if param_type == c.volume_param_type:
+		current_value = mixer.getTrackVolume(track_number)
+		target_value = max(MIXER_MIN_VALUE, min(MIXER_MAX_VALUE, current_value + value))
+		mixer.setTrackVolume(track_number, target_value)
+	else:
+		mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + value)

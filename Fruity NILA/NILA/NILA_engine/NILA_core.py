@@ -1,25 +1,31 @@
 import time
+
 import device
 import playlist
 import ui
 
 import nihia
-import nihia.mixer as mix
 import nihia.buttons as buttons
+import nihia.mixer as mix
 
 from NILA.NILA_engine import constants as c
 
 
+SERIES_DEVICE_NAME = "Komplete Kontrol DAW - 1"
+
+
+def _show_startup_message(name_message, volume_message, delay):
+	"""Displays a temporary two line startup style message on non series devices."""
+	mix.setTrackName(0, name_message)
+	mix.setTrackVol(0, volume_message)
+	time.sleep(delay)
+
 def OnInit(self):
-	"""
-	Initializes the script, performs a handshake, and sets up the environment.
-	"""
+	"""Initializes the script, performs a handshake, and sets up the environment."""
 	nihia.handShake()
 
 	if not seriesCheck():
-		mix.setTrackName(0, c.HELLO_MESSAGE)
-		mix.setTrackVol(0, c.GOODBYE_MESSAGE)
-		time.sleep(2)
+		_show_startup_message(c.HELLO_MESSAGE, c.GOODBYE_MESSAGE, 2)
 
 	device.setHasMeters()
 
@@ -28,35 +34,27 @@ def OnInit(self):
 
 	device.midiOutSysex(c.HANDSHAKE_SYSEX)
 
-	for x in range(8):
-		mix.setTrackExist(x, 0)
+	for track_index in range(8):
+		mix.setTrackExist(track_index, 0)
 
 def OnWaitingForInput(status):
-	"""
-	Handles the waiting-for-input state.
-	"""
+	"""Handles the waiting for input state."""
 	mix.setTrackName(0, ". . .")
 	time.sleep(c.timedelay)
 
 def seriesCheck():
-	"""
-	Checks if the current device is in the Komplete Kontrol Series.
-	"""
-	return device.getName() == "Komplete Kontrol DAW - 1"
+	"""Checks if the current device is in the Komplete Kontrol Series."""
+	return device.getName() == SERIES_DEVICE_NAME
 
 def OnProjectLoad(self, status):
-	"""
-	Handles project loading events.
-	"""
+	"""Handles project loading events."""
 	messages = {
 		c.PL_Start: "Loading File",
 		c.PL_LoadOk: "Load Complete",
 		c.PL_LoadError: "Load Error!"
 	}
 	if status in messages and not seriesCheck():
-		mix.setTrackName(0, c.HELLO_MESSAGE)
-		mix.setTrackVol(0, messages[status])
-		time.sleep(c.timedelay)
+		_show_startup_message(c.HELLO_MESSAGE, messages[status], c.timedelay)
 
 def timeConvert(timeDisp, currentTime):
 	"""
@@ -68,7 +66,7 @@ def timeConvert(timeDisp, currentTime):
 	try:
 		step_int = int(currentStep)
 	except (ValueError, TypeError):
-		step_int = -1  # fallback for any weird values
+		step_int = -1
 
 	if 0 <= step_int <= 9:
 		currentTime = f"{currentBar}:0{step_int}"
@@ -85,8 +83,6 @@ def timeConvert(timeDisp, currentTime):
 	return timeDisp, currentTime
 
 def setTrackVolConvert(trackID: int, value: str):
-	"""
-	Converts the track volume display format and sets the track volume.
-	"""
+	"""Converts the track volume display format and sets the track volume."""
 	if value == "-inf dB":
 		value = "- oo dB"

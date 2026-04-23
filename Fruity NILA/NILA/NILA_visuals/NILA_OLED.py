@@ -87,12 +87,12 @@ def OnRefresh(self, event):
 
 		for knobNumber, trackNumber in enumerate(tracks_to_control):
 			# Cache includes pan so OLED updates immediately when pan changes
-			track_id = f"{trackNumber}_{mixer.getTrackVolume(trackNumber)}_{mixer.getTrackPan(trackNumber)}"
+			track_id = f"{trackNumber}_{round(mixer.getTrackVolume(trackNumber, 1), 1)}_{mixer.getTrackPan(trackNumber)}"
 			if last_track_state.get(knobNumber) != track_id:
 				mix.setTrackExist(knobNumber, 1)
 				mix.setTrackName(knobNumber, mixer.getTrackName(trackNumber))
-				mix.setTrackVol(knobNumber, f"{NILA_transform.VolTodB(mixer.getTrackVolume(trackNumber))} dB")
-				mix.setTrackVolGraph(knobNumber, mixer.getTrackVolume(trackNumber))
+				NILA_transform.setTrackVolFromMixer(knobNumber, trackNumber)
+				NILA_transform.setTrackVolGraphFromMixer(knobNumber, trackNumber)
 				NILA_transform.updatePanMix(trackNumber, knobNumber)
 				last_track_state[knobNumber] = track_id
 
@@ -122,8 +122,8 @@ def OnRefresh(self, event):
 			if ch_count > knobNumber and selectedChannel < ch_count:
 				mix.setTrackExist(knobNumber, 1)
 				mix.setTrackName(knobNumber, channels.getChannelName(selectedChannel))
-				mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(selectedChannel, True), 1)} dB")
-				mix.setTrackVolGraph(knobNumber, channels.getChannelVolume(selectedChannel) / 1.0 * c.oled_vol_bar_scaling)
+				NILA_transform.setTrackVolFromChannel(knobNumber, selectedChannel)
+				NILA_transform.setTrackVolGraphFromChannel(knobNumber, selectedChannel)
 				NILA_transform.updatePanChannel(selectedChannel, knobNumber)
 				mix.setTrackSel(c.display_track_index, False)
 			else:
@@ -154,8 +154,8 @@ def OnRefresh(self, event):
 			if not NILA_core.seriesCheck():
 				short_form_type = short_form_type[:9]
 			mix.setTrackName(c.display_track_index, short_form_type)
-			mix.setTrackVol(c.display_track_index, f"{round(channels.getChannelVolume(sel_channel, True), 1)} dB")
-			mix.setTrackVolGraph(c.display_track_index, channels.getChannelVolume(sel_channel) / 1.0 * c.oled_vol_bar_scaling)
+			NILA_transform.setTrackVolFromChannel(c.display_track_index, sel_channel)
+			NILA_transform.setTrackVolGraphFromChannel(c.display_track_index, sel_channel)
 			NILA_transform.updatePanChannel(sel_channel, c.display_track_index)
 
 			if ui.getFocused(c.winName["Generator Plugin"]):
@@ -164,8 +164,8 @@ def OnRefresh(self, event):
 					# Use knob 0 to show and control channel volume
 					purge_all_tracks() 
 					mix.setTrackExist(knobNumber, 1)
-					mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(sel_channel, True), 1)} dB")
-					mix.setTrackVolGraph(knobNumber, channels.getChannelVolume(sel_channel) / 1.0 * c.oled_vol_bar_scaling)
+					NILA_transform.setTrackVolFromChannel(knobNumber, sel_channel)
+					NILA_transform.setTrackVolGraphFromChannel(knobNumber, sel_channel)
 					NILA_transform.updatePanChannel(sel_channel, knobNumber)
 					mix.setTrackSel(c.display_track_index, False)
 					return
@@ -286,7 +286,7 @@ def OnRefresh(self, event):
 
 	elif ui.getFocused(c.winName["Playlist"]):
 		mix.setTrackName(c.display_track_index, "Playlist")
-		mix.setTrackVolGraph(c.display_track_index, mixer.getTrackVolume(c.display_track_index))
+		NILA_transform.setTrackVolGraphFromMixer(c.display_track_index, c.display_track_index)
 
 def OnUpdateBeatIndicator(self, Value):
 	"""Updates the beat indicator based on the focused window (e.g., Playlist)."""
@@ -310,13 +310,13 @@ def OnUpdateBeatIndicator(self, Value):
 				mix.setTrackVol(c.display_track_index, f"{displayLabel}|{currentTime}")
 			else:
 				mix.setTrackVol(c.display_track_index, f"{split_hint[:7]}|{currentTime}")
-				mix.setTrackVolGraph(c.display_track_index, mixer.getTrackVolume(c.display_track_index))
+				NILA_transform.setTrackVolGraphFromMixer(c.display_track_index, c.display_track_index)
 
 def OnIdle(self):
 	"""Performs idle tasks based on the currently focused window."""
 	if ui.getFocused(c.winName["Playlist"]):
 		purge_all_tracks()
-		mix.setTrackVolGraph(c.display_track_index, mixer.getTrackVolume(c.display_track_index))
+		NILA_transform.setTrackVolGraphFromMixer(c.display_track_index, c.display_track_index)
 		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
 		split_message = ui.getHintMsg()
 		split_hint = split_message.partition(' - ')[2] if ' - ' in split_message else split_message.partition(' to ')[2]
@@ -364,6 +364,6 @@ def refresh_piano_roll_display(channel_index):
 	knobNumber = c.display_track_index
 	mix.setTrackExist(knobNumber, 1)
 	mix.setTrackName(knobNumber, str(channels.getChannelName(channel_index)))
-	mix.setTrackVol(knobNumber, f"{round(channels.getChannelVolume(channel_index, True), 1)} dB")
-	mix.setTrackVolGraph(knobNumber, channels.getChannelVolume(channel_index) / 1.0 * c.oled_vol_bar_scaling)
+	NILA_transform.setTrackVolFromChannel(knobNumber, channel_index)
+	NILA_transform.setTrackVolGraphFromChannel(knobNumber, channel_index)
 	NILA_transform.updatePanChannel(channel_index, knobNumber)

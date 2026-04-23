@@ -51,6 +51,7 @@ class Core:
 		# Prebind frequently used functions to avoid repeated module lookups
 		self._on_idle_oled = NILA_OLED.OnIdle
 		self._send_peak_info = NILA_transform.sendPeakInfo
+		self._touch_strips_on_midi_in = NILA_touch_strips.OnMidiIn
 		self._version_check = NILA_version_check.VersionCheck
 		self._core_on_init = NILA_core.OnInit
 		self._core_on_project_load = NILA_core.OnProjectLoad
@@ -74,11 +75,10 @@ class Core:
 		chan = event.midiChan
 		try:
 			if chan == CONTROLS_CHAN:
-				handlers = self._control_handlers
-				for handler in handlers:
+				for handler in self._control_handlers:
 					handler(self, event)
 			else:
-				NILA_touch_strips.OnMidiIn(event)
+				self._touch_strips_on_midi_in(event)
 		except Exception as e:
 			self.handle_exception("OnMidiMsg", e)
 
@@ -90,8 +90,7 @@ class Core:
 			flags (int): Flags indicating what needs to be refreshed.
 		"""
 		try:
-			handlers = self._refresh_handlers
-			for handler in handlers:
+			for handler in self._refresh_handlers:
 				handler(self, flags)
 		except Exception as e:
 			self.handle_exception("OnRefresh", e)
@@ -104,8 +103,7 @@ class Core:
 			value (int): The current beat indicator value.
 		"""
 		try:
-			handlers = self._beat_handlers
-			for handler in handlers:
+			for handler in self._beat_handlers:
 				handler(self, value)
 		except Exception as e:
 			self.handle_exception("OnUpdateBeatIndicator", e)
@@ -173,12 +171,37 @@ class Core:
 n_Core = Core()
 
 # Entry point functions for FL Studio MIDI scripting engine
-def OnInit(): n_Core.OnInit()
-def OnMidiMsg(event): n_Core.OnMidiMsg(event)
-def OnRefresh(flags): n_Core.OnRefresh(flags)
-def OnUpdateBeatIndicator(value): n_Core.OnUpdateBeatIndicator(value)
-def OnWaitingForInput(): n_Core.OnWaitingForInput()
-def OnProjectLoad(status): n_Core.OnProjectLoad(status)
-def OnIdle(): n_Core.OnIdle()
-def OnUpdateMeters(): n_Core.OnUpdateMeters()
-def OnDeInit(): n_Core.OnDeInit()
+def OnInit():
+	n_Core.OnInit()
+
+
+def OnMidiMsg(event):
+	n_Core.OnMidiMsg(event)
+
+
+def OnRefresh(flags):
+	n_Core.OnRefresh(flags)
+
+
+def OnUpdateBeatIndicator(value):
+	n_Core.OnUpdateBeatIndicator(value)
+
+
+def OnWaitingForInput():
+	n_Core.OnWaitingForInput()
+
+
+def OnProjectLoad(status):
+	n_Core.OnProjectLoad(status)
+
+
+def OnIdle():
+	n_Core.OnIdle()
+
+
+def OnUpdateMeters():
+	n_Core.OnUpdateMeters()
+
+
+def OnDeInit():
+	n_Core.OnDeInit()
