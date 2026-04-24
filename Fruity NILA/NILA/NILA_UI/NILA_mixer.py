@@ -7,6 +7,9 @@ from nihia import mixer as nihia_mixer
 from NILA.NILA_engine import NILA_core as core, config, constants as c
 MIXER_MIN_VALUE = 0.0
 MIXER_MAX_VALUE = 1.0
+MIXER_ZERO_DB_VALUE = 0.8
+MIXER_ZERO_DB_SNAP_RANGE = 0.1
+MIXER_ZERO_DB_RELEASE_TIME = 0.20
 
 
 # Cache for visually ordered mixer tracks
@@ -66,8 +69,55 @@ def get_adaptive_volume_increment(track_number, base_increment):
 
 	Only the mixer uses dB here. Channel Rack remains unchanged elsewhere.
 	"""
-	current_db = mixer.getTrackVolume(track_number, 1)
 	return base_increment
+
+
+def should_hold_zero_db_snap(self, track_number, direction):
+	"""Return True when a snapped track should briefly stay at 0 dB.
+
+	The snap releases after MIXER_ZERO_DB_RELEASE_TIME seconds or when the user
+	continues turning in the same direction after the hold expires.
+	"""
+	snap_attr = f"_nila_zero_db_snap_time_{track_number}"
+	direction_attr = f"_nila_zero_db_snap_direction_{track_number}"
+	last_snap_time = getattr(self, snap_attr, 0)
+	last_direction = getattr(self, direction_attr, 0)
+
+	if not last_snap_time:
+		return False
+
+	if direction != last_direction:
+		setattr(self, snap_attr, 0)
+		setattr(self, direction_attr, 0)
+		return False
+
+	if time.time() - last_snap_time < MIXER_ZERO_DB_RELEASE_TIME:
+		return True
+
+	setattr(self, snap_attr, 0)
+	setattr(self, direction_attr, 0)
+	return False
+
+
+def snap_mixer_volume_to_zero_db(self, track_number, target_value, direction):
+	"""Snap mixer volume to exactly 0 dB when it enters the snap range."""
+	if should_hold_zero_db_snap(self, track_number, direction):
+		return MIXER_ZERO_DB_VALUE
+
+	current_db = mixer.getTrackVolume(track_number, 1)
+	mixer.setTrackVolume(track_number, target_value)
+	target_db = mixer.getTrackVolume(track_number, 1)
+	target_distance = abs(target_db)
+
+	if target_distance <= MIXER_ZERO_DB_SNAP_RANGE or (
+		current_db < 0.0 < target_db or current_db > 0.0 > target_db
+	):
+		setattr(self, f"_nila_zero_db_snap_time_{track_number}", time.time())
+		setattr(self, f"_nila_zero_db_snap_direction_{track_number}", direction)
+		mixer.setTrackVolume(track_number, MIXER_ZERO_DB_VALUE)
+		return MIXER_ZERO_DB_VALUE
+
+	return target_value
 
 def OnMidiMsg(self, event):
 	"""
@@ -103,11 +153,11 @@ def OnMidiMsg(self, event):
 
 				# Handle volume and pan controls
 				if event.data1 == nihia_mixer.knobs[0][z]:  # Volume Control
-					adjust_mixer_parameter(track_number, event.data2, adjusted_volume_increment, c.volume_param_type)
+					adjust_mixer_parameter(self, track_number, event.data2, adjusted_volume_increment, c.volume_param_type)
 				elif event.data1 == nihia_mixer.knobs[1][z]:  # Pan Control
-					adjust_mixer_parameter(track_number, event.data2, adjusted_pan_increment, c.pan_param_type)
+					adjust_mixer_parameter(self, track_number, event.data2, adjusted_pan_increment, c.pan_param_type)
 
-def adjust_mixer_parameter(track_number, data2, increment, param_type=c.volume_param_type):
+def adjust_mixer_parameter(self, track_number, data2, increment, param_type=c.volume_param_type):
 	"""
 	Handles dynamic volume or pan control for a mixer track.
 
@@ -122,6 +172,8 @@ def adjust_mixer_parameter(track_number, data2, increment, param_type=c.volume_p
 	if param_type == c.volume_param_type:
 		current_value = mixer.getTrackVolume(track_number)
 		target_value = max(MIXER_MIN_VALUE, min(MIXER_MAX_VALUE, current_value + value))
+		direction = 1 if value > 0 else -1
+		target_value = snap_mixer_volume_to_zero_db(self, track_number, target_value, direction)
 		mixer.setTrackVolume(track_number, target_value)
 	else:
 		mixer.setTrackPan(track_number, mixer.getTrackPan(track_number) + value)

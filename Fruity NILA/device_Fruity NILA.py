@@ -47,6 +47,8 @@ class Core:
 			NILA_LED.OnUpdateBeatIndicator,
 			NILA_OLED.OnUpdateBeatIndicator,
 		)
+		
+		self._on_idle_navigation = NILA_navigation.OnIdle
 
 		# Prebind frequently used functions to avoid repeated module lookups
 		self._on_idle_oled = NILA_OLED.OnIdle
@@ -129,8 +131,9 @@ class Core:
 			self.handle_exception("OnProjectLoad", e)
 
 	def OnIdle(self):
-		"""Handles idle state updates for the OLED display."""
+		"""Handles idle state updates."""
 		try:
+			self._on_idle_navigation(self)
 			self._on_idle_oled(self)
 		except Exception as e:
 			self.handle_exception("OnIdle", e)

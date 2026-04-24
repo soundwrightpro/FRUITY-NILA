@@ -18,6 +18,7 @@ xAxis, yAxis = 0, 0
 windowCycle = 0
 last_click_time = 0
 current_track_plugin_id = None
+pending_encoder_button_single = None
 
 BUTTONS = buttons.button_list
 UNSUPPORTED_PLUGINS = tuple(c.unsupported_plugins or ())
@@ -29,6 +30,8 @@ def _button(name):
 
 ENCODER_GENERAL = _button("ENCODER_GENERAL")
 ENCODER_VOLUME_SELECTED = _button("ENCODER_VOLUME_SELECTED")
+ENCODER_SELECTED_PLUS = _button("ENCODER_SELECTED_PLUS")
+ENCODER_SELECTED_MINUS = _button("ENCODER_SELECTED_MINUS")
 ENCODER_PAN_SELECTED = _button("ENCODER_PAN_SELECTED")
 ENCODER_BUTTON = _button("ENCODER_BUTTON")
 ENCODER_BUTTON_SHIFTED = _button("ENCODER_BUTTON_SHIFTED")
@@ -52,8 +55,24 @@ def _popup_enter_or_open_menu(menu_transport, menu_hint):
 		mixer.deselectAll()
 		mixer.selectTrack(mixer.trackNumber())
 
+
+def _flush_pending_encoder_button_single():
+	global pending_encoder_button_single
+
+	if pending_encoder_button_single is not None:
+		now = time.time()
+		if (now - pending_encoder_button_single["time"]) >= config.double_click_speed:
+			action = pending_encoder_button_single["action"]
+			pending_encoder_button_single = None
+			action()
+
 def OnRefresh(self, flags):
 	global ordered_tracks
+	_flush_pending_encoder_button_single()
+
+
+def OnIdle(self):
+	_flush_pending_encoder_button_single()
 
 def onButtonClick(button):
 	global last_click_time
@@ -133,6 +152,76 @@ def encoder(self, event):
 			"Mixer", "Channel Rack", "Plugin", "Effect Plugin", "Generator Plugin", "Playlist", "Browser", "Piano Roll"
 		)}
 
+		def get_window_cycle_order():
+			"""Return the main window cycle order.
+
+			Clockwise order:
+			Channel Rack -> Piano Roll (if visible) -> Mixer -> Playlist -> Browser
+			"""
+			order = ["Channel Rack"]
+			if ui.getVisible(c.winName["Piano Roll"]):
+				order.append("Piano Roll")
+			order.extend(["Mixer", "Playlist", "Browser"])
+			return order
+
+		def cycle_main_windows(direction):
+			"""Cycle main FL windows without disturbing existing spin behavior."""
+			order = get_window_cycle_order()
+			current_index = None
+			for idx, name in enumerate(order):
+				if ui.getFocused(c.winName[name]):
+					current_index = idx
+					break
+
+			if current_index is None:
+				current_index = 0 if direction > 0 else len(order) - 1
+			else:
+				current_index = (current_index + direction) % len(order)
+
+			target_name = order[current_index]
+			ui.showWindow(c.winName[target_name])
+			ui.setHintMsg(target_name)
+
+		def is_s_series_device():
+			"""Return True when running on the S-Series DAW port."""
+			return device.getName() == "Komplete Kontrol DAW - 1"
+
+		def is_shifted_selected_encoder_spin():
+			"""Return True for the S-Series shifted selected-encoder spin event.
+
+			Uses the named button constants, but also accepts the known raw values so
+			it still works if the button mapping file was reverted or not reloaded yet.
+			"""
+			return (
+				event.data1 == ENCODER_VOLUME_SELECTED
+				and event.data2 in (
+					ENCODER_SELECTED_PLUS,
+					ENCODER_SELECTED_MINUS,
+					12,
+					116,
+				)
+			)
+
+		def plugin_has_named_presets(index, slot_index=-1):
+			"""Return True only when the focused plugin exposes usable named presets."""
+			try:
+				if not plugins.isValid(index, slot_index, global_index):
+					return False
+				preset_count = plugins.getPresetCount(index, slot_index, global_index)
+				return preset_count > 1
+			except Exception:
+				return False
+
+		def change_plugin_preset(index, slot_index, direction):
+			"""Change plugin preset only when a usable preset list is available."""
+			if not plugin_has_named_presets(index, slot_index):
+				return False
+			if direction > 0:
+				plugins.nextPreset(index, slot_index, global_index)
+			else:
+				plugins.prevPreset(index, slot_index, global_index)
+			return True
+
 		def handle_plugin_nav(direction, skip):
 			global current_track_plugin_id
 			plugin_name_cache = None
@@ -193,7 +282,24 @@ def encoder(self, event):
 				if onButtonClick(button_id):
 					_popup_enter_or_open_menu(midi.FPT_Menu, midi.GT_Menu)
 			elif winFocused["Channel Rack"]:
-				if onButtonClick(button_id):
+				global pending_encoder_button_single
+				if is_s_series_device() and button_id == ENCODER_BUTTON:
+					now = time.time()
+					if (
+						pending_encoder_button_single is not None
+						and pending_encoder_button_single.get("kind") == "s_series_channel_wrapper"
+						and (now - pending_encoder_button_single["time"]) < config.double_click_speed
+					):
+						pending_encoder_button_single = None
+						_popup_enter_or_open_menu(midi.FPT_ItemMenu, 4)
+					else:
+						channel_index = channels.selectedChannel()
+						pending_encoder_button_single = {
+							"kind": "s_series_channel_wrapper",
+							"time": now,
+							"action": lambda idx=channel_index: channels.showCSForm(idx, 1)
+						}
+				elif onButtonClick(button_id):
 					_popup_enter_or_open_menu(midi.FPT_ItemMenu, 4)
 			elif winFocused["Playlist"]:
 				if onButtonClick(button_id) and not ui.isInPopupMenu():
@@ -208,6 +314,16 @@ def encoder(self, event):
 						ui.setHintMsg("Open menu")
 			else:
 				ui.enter()
+
+		# --- SHIFT + SELECTED ENCODER SPIN WINDOW CYCLE ---
+		# S-Series only: shifted selected encoder spin cycles the main windows.
+		if is_s_series_device() and is_shifted_selected_encoder_spin():
+			event.handled = True
+			if event.data2 in (ENCODER_SELECTED_PLUS, 12):
+				cycle_main_windows(1)
+			else:
+				cycle_main_windows(-1)
+			return
 
 		# --- ENCODER HANDLING ---
 		if event.data1 in (
@@ -277,20 +393,14 @@ def encoder(self, event):
 		if event.data1 == ENCODER_BUTTON_SHIFTED:
 			event.handled = True
 			button_id = ENCODER_BUTTON_SHIFTED
-			window_mappings = {
-				0: (1, "Channel Rack"),
-				1: (0, "Mixer"),
-				2: (2, "Playlist"),
-				3: (4, "Browser")
-			}
 			if onButtonClick(button_id):
 				transport.globalTransport(midi.FPT_F8, 67)
 				ui.setHintMsg("Plugin Picker")
+			elif not is_s_series_device():
+				cycle_main_windows(1)
 			else:
-				window, hint_msg = window_mappings[windowCycle]
-				ui.showWindow(window)
-				windowCycle = (windowCycle + 1) % 4
-				ui.setHintMsg(hint_msg)
+				# S-Series no longer cycles windows on Shift + Press.
+				return
 
 		yAxisBtn, xAxisBtn = (
 			(ENCODER_Y_S, ENCODER_X_S)
@@ -369,20 +479,12 @@ def encoder(self, event):
 						if not idx:
 							return
 						mix_track_index, mixer_slot = idx
-						param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
-						if param_count != 4240:
-							plugins.prevPreset(mix_track_index, mixer_slot, global_index)
+						if change_plugin_preset(mix_track_index, mixer_slot, -1):
+							ui.setHintMsg("Previous preset")
 					elif winFocused["Generator Plugin"]:
 						channel_index = channels.selectedChannel()
-						if not plugins.isValid(channel_index, c.gen_plugin):
-							ui.up()
-							return
-						if plugins.getPluginName(channel_index, c.gen_plugin, False, global_index) in UNSUPPORTED_PLUGINS:
-							ui.up(1)
-						focused_caption = str(ui.getFocusedFormCaption() or "")
-						channel_name = str(channels.getChannelName(channel_index) or "")
-						if channel_name in focused_caption:
-							plugins.prevPreset(channel_index)
+						if change_plugin_preset(channel_index, c.gen_plugin, -1):
+							ui.setHintMsg("Previous preset")
 						else:
 							ui.up()
 				elif winFocused["Browser"]:
@@ -408,20 +510,12 @@ def encoder(self, event):
 						if not idx:
 							return
 						mix_track_index, mixer_slot = idx
-						param_count = plugins.getParamCount(mix_track_index, mixer_slot, global_index)
-						if param_count != 4240:
-							plugins.nextPreset(mix_track_index, mixer_slot, global_index)
+						if change_plugin_preset(mix_track_index, mixer_slot, 1):
+							ui.setHintMsg("Next preset")
 					elif winFocused["Generator Plugin"]:
 						channel_index = channels.selectedChannel()
-						if not plugins.isValid(channel_index, c.gen_plugin):
-							ui.down()
-							return
-						if plugins.getPluginName(channel_index, c.gen_plugin, False, global_index) in UNSUPPORTED_PLUGINS:
-							ui.down(1)
-						focused_caption = str(ui.getFocusedFormCaption() or "")
-						channel_name = str(channels.getChannelName(channel_index) or "")
-						if channel_name in focused_caption:
-							plugins.nextPreset(channel_index)
+						if change_plugin_preset(channel_index, c.gen_plugin, 1):
+							ui.setHintMsg("Next preset")
 						else:
 							ui.down(1)
 				elif winFocused["Browser"]:

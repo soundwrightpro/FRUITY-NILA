@@ -76,6 +76,12 @@ button_list = {
     "ENCODER_VOLUME_SELECTED": 100,
     "ENCODER_PAN_SELECTED": 101,
 
+    # Selected encoder spin directions
+    # ENCODER_VOLUME_SELECTED is the shared DATA1 value, while these are the
+    # DATA2 values reported by the shifted encoder spin.
+    "ENCODER_SELECTED_PLUS": 12,
+    "ENCODER_SELECTED_MINUS": 116,
+
     "PLUS": 1,
     "MINUS": 127
 }

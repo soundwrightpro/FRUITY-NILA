@@ -1,8 +1,6 @@
 import time
 from collections import defaultdict
 
-import general
-import midi
 import channels
 import mixer
 import plugins
@@ -17,17 +15,6 @@ from NILA.NILA_visuals import NILA_OLED
 
 # Store last signal times per knob
 last_signal_time = defaultdict(lambda: time.time())
-
-
-last_volume_sent_time = {}
-last_volume_sent_value = {}
-
-def _get_rec_refresh_flags():
-	"""Returns any available FL refresh flags for visible control updates."""
-	refresh_flags = 0
-	for flag_name in ("REC_UpdateValue", "REC_UpdateControl", "REC_ShowHint"):
-		refresh_flags |= getattr(midi, flag_name, 0)
-	return refresh_flags
 
 def plugin(self, event):
 	"""Handles plugin-related events and delegates control."""
@@ -158,66 +145,46 @@ def handle_mixer_effect(self, event):
 		return  # No effect focused
 
 	track_index, mixer_slot = effect_info
-	track_plugin_id = mixer.getTrackPluginId(track_index, mixer_slot)
-	event_id = midi.REC_Plug_MixLevel + track_plugin_id # type: ignore
-	mix_slot_volume = general.processRECEvent(event_id, 0, midi.REC_GetValue)
-	converted_volume = round((mix_slot_volume / c.mix_slot_volume_max) * c.volume_percent_max)
+	mix_slot_volume = mixer.getPluginMixLevel(track_index, mixer_slot) #type: ignore
+	converted_volume = round(mix_slot_volume * c.volume_percent_max)
 
 	if event.data1 == mix.knobs[0][0]:
-		handle_mixer_effect_mix(self, event, converted_volume, event_id)
+		handle_mixer_effect_mix(self, event, converted_volume, track_index, mixer_slot)
 
-def handle_mixer_effect_mix(self, event, converted_volume, event_id):
+def handle_mixer_effect_mix(self, event, converted_volume, track_index, mixer_slot):
 	"""Handles mix level adjustment."""
 	volume_increment = config.mixer_increment * c.volume_percent_max
 	adjusted_increment = knob_time_check_mixer(self, volume_increment)
 
 	if not NILA_core.seriesCheck():
-		handle_non_series_knob_event(self, event, converted_volume, event_id, adjusted_increment)
+		handle_non_series_knob_event(self, event, converted_volume, track_index, mixer_slot, adjusted_increment)
 	else:
-		handle_series_knob_event(self, event, converted_volume, event_id, adjusted_increment)
+		handle_series_knob_event(self, event, converted_volume, track_index, mixer_slot, adjusted_increment)
 
-def handle_non_series_knob_event(self, event, converted_volume, event_id, volume_increment):
+def handle_non_series_knob_event(self, event, converted_volume, track_index, mixer_slot, volume_increment):
 	"""Handles mix level changes for non-series controllers."""
 	if event.data2 == mix.KNOB_DECREASE_MAX_SPEED and converted_volume > c.volume_percent_min:
 		converted_volume -= volume_increment
 	elif event.data2 == mix.KNOB_INCREASE_MAX_SPEED and converted_volume < c.volume_percent_max:
 		converted_volume += volume_increment
 
-	update_and_record_volume(self, event, event_id, converted_volume)
+	update_and_record_volume(self, event, track_index, mixer_slot, converted_volume)
 
-def handle_series_knob_event(self, event, converted_volume, event_id, volume_increment):
+def handle_series_knob_event(self, event, converted_volume, track_index, mixer_slot, volume_increment):
 	"""Handles mix level changes for series controllers."""
 	if c.encoder_cc_dec_slow_min <= event.data2 < c.encoder_cc_dec_fast_max:
 		converted_volume = max(c.volume_percent_min, converted_volume - volume_increment)
 	elif c.encoder_cc_inc_fast_min <= event.data2 < c.encoder_cc_inc_slow_max:
 		converted_volume = min(c.volume_percent_max, converted_volume + volume_increment)
 
-	update_and_record_volume(self, event, event_id, converted_volume)
+	update_and_record_volume(self, event, track_index, mixer_slot, converted_volume)
 
-def update_and_record_volume(self, event, event_id, converted_volume):
-	"""Smoothly updates and records volume adjustments with minimal UI overhead."""
-	mix_slot_volume = round((converted_volume / c.volume_percent_max) * c.mix_slot_volume_max)
-	mix_slot_volume = max(c.mix_slot_volume_min, min(c.mix_slot_volume_max, mix_slot_volume))
-
-	now = time.time()
-	last_time = last_volume_sent_time.get(event_id, 0)
-	last_value = last_volume_sent_value.get(event_id, -1)
-
-	if (now - last_time >= 0.015) or (mix_slot_volume != last_value):
-		flags = (
-			midi.REC_Control |
-			midi.REC_Smoothed
-		)
-		general.processRECEvent(event_id, mix_slot_volume, flags)
-
-		refresh_flags = _get_rec_refresh_flags()
-		if refresh_flags:
-			general.processRECEvent(event_id, mix_slot_volume, refresh_flags)
-
-		last_volume_sent_time[event_id] = now
-		last_volume_sent_value[event_id] = mix_slot_volume
-
-		NILA_OLED.OnRefresh(self, event)
+def update_and_record_volume(self, event, track_index, mixer_slot, converted_volume):
+	"""Update plugin mix using the direct mixer API."""
+	mix_slot_volume = converted_volume / c.volume_percent_max
+	mix_slot_volume = max(0.0, min(1.0, mix_slot_volume))
+	mixer.setPluginMixLevel(track_index, mixer_slot, mix_slot_volume) #type: ignore
+	NILA_OLED.OnRefresh(self, event)
 
 def knob_time_check(self, adjusted_increment):
 	"""Gradually scales knob sensitivity based on how fast the knob is moved."""
