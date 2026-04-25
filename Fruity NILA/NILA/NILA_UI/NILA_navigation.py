@@ -178,9 +178,9 @@ def encoder(self, event):
 					ui.up(1)
 			else:
 				if action == "next":
-					ui.navigateBrowser(midi.FPT_Down, 0)
+					ui.navigateBrowser(midi.FPT_Down, False)
 				else:
-					ui.navigateBrowser(midi.FPT_Up, 0)
+					ui.navigateBrowser(midi.FPT_Up, False)
 				NILA_Display.OnIdle(self)
 				if config.jog_preview_sound == 1:
 					ui.previewBrowserMenuItem()
@@ -560,7 +560,7 @@ def encoder(self, event):
 					if ui.isInPopupMenu():
 						ui.up(1)
 					else:
-						ui.navigateBrowser(midi.FPT_Up, 0)
+						ui.navigateBrowser(midi.FPT_Up, False)
 						if config.upDown_preview_sound == 1:
 							ui.previewBrowserMenuItem()
 						else:
@@ -598,7 +598,7 @@ def encoder(self, event):
 					if ui.isInPopupMenu():
 						ui.down(1)
 					else:
-						ui.navigateBrowser(midi.FPT_Down, 0)
+						ui.navigateBrowser(midi.FPT_Down, False)
 						if config.upDown_preview_sound == 1:
 							ui.previewBrowserMenuItem()
 						else:
