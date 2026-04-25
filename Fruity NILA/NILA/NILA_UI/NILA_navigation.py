@@ -173,19 +173,17 @@ def encoder(self, event):
 		def browse(action):
 			if ui.isInPopupMenu():
 				if action == "next":
-					ui.down()
+					ui.down(1)
 				else:
-					ui.up()
+					ui.up(1)
 			else:
 				if action == "next":
-					ui.next()
+					ui.navigateBrowser(midi.FPT_Down, 0)
 				else:
-					ui.previous()
+					ui.navigateBrowser(midi.FPT_Up, 0)
 				NILA_Display.OnIdle(self)
 				if config.jog_preview_sound == 1:
 					ui.previewBrowserMenuItem()
-				elif device.getName() != "Komplete Kontrol DAW - 1":
-					NILA_Display.OnIdle(self)
 
 		# --- Begin event handling ---
 		winFocused = {name: ui.getFocused(c.winName[name]) for name in (
@@ -313,6 +311,7 @@ def encoder(self, event):
 						NILA_Display.OnRefresh(self, event)
 
 		def handle_encoder_button(button_id):
+			global pending_encoder_button_single
 			if winFocused["Mixer"]:
 				if onButtonClick(button_id):
 					_popup_enter_or_open_menu(midi.FPT_Menu, midi.GT_Menu)
@@ -322,7 +321,6 @@ def encoder(self, event):
 				if onButtonClick(button_id):
 					_popup_enter_or_open_menu(midi.FPT_Menu, midi.GT_Menu)
 			elif winFocused["Channel Rack"]:
-				global pending_encoder_button_single
 				if is_s_series_device() and button_id == ENCODER_BUTTON:
 					now = time.time()
 					if (
@@ -345,13 +343,26 @@ def encoder(self, event):
 				if onButtonClick(button_id) and not ui.isInPopupMenu():
 					arrange.addAutoTimeMarker(mixer.getSongTickPos(), str("Mark"))
 			elif winFocused["Browser"]:
-				if onButtonClick(button_id):
-					if ui.getFocusedNodeFileType() <= -100:
-						ui.enter()
-						ui.setHintMsg("Enter")
-					else:
-						ui.selectBrowserMenuItem()
-						ui.setHintMsg("Open menu")
+				if ui.isInPopupMenu():
+					pending_encoder_button_single = None
+					ui.enter()
+					ui.setHintMsg("Select menu item")
+					return
+
+				now = time.time()
+				if (
+					pending_encoder_button_single is not None
+					and pending_encoder_button_single.get("kind") == "browser_toggle_node"
+					and (now - pending_encoder_button_single["time"]) < config.double_click_speed
+				):
+					pending_encoder_button_single = None
+					_popup_enter_or_open_menu(midi.FPT_ItemMenu, 4)
+				else:
+					pending_encoder_button_single = {
+						"kind": "browser_toggle_node",
+						"time": now,
+						"action": lambda: (ui.toggleBrowserNode(), ui.setHintMsg("Toggle browser node"))
+					}
 			else:
 				ui.enter()
 
@@ -491,10 +502,16 @@ def encoder(self, event):
 				elif event.data2 == LEFT_BUTTON:
 					arrange.jumpToMarker(-1, False)
 			elif winFocused["Browser"]:
-				if event.data2 == RIGHT_BUTTON:
-					ui.right()
-				elif event.data2 == LEFT_BUTTON:
-					ui.left()
+				if ui.isInPopupMenu():
+					if event.data2 == RIGHT_BUTTON:
+						ui.right(1)
+					elif event.data2 == LEFT_BUTTON:
+						ui.left(1)
+				else:
+					if event.data2 == RIGHT_BUTTON:
+						ui.navigateBrowserTabs(midi.FPT_Right)
+					elif event.data2 == LEFT_BUTTON:
+						ui.navigateBrowserTabs(midi.FPT_Left)
 			elif winFocused["Piano Roll"]:
 				if ui.isInPopupMenu():
 					if event.data2 == RIGHT_BUTTON:
@@ -540,11 +557,14 @@ def encoder(self, event):
 						else:
 							ui.up()
 				elif winFocused["Browser"]:
-					ui.up() if ui.isInPopupMenu() else ui.previous()
-					if config.upDown_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
-						ui.previewBrowserMenuItem()
-					elif device.getName() != "Komplete Kontrol DAW - 1":
-						NILA_Display.OnIdle(self)
+					if ui.isInPopupMenu():
+						ui.up(1)
+					else:
+						ui.navigateBrowser(midi.FPT_Up, 0)
+						if config.upDown_preview_sound == 1:
+							ui.previewBrowserMenuItem()
+						else:
+							NILA_Display.OnIdle(self)
 				elif winFocused["Playlist"]:
 					ui.up()
 				elif winFocused["Piano Roll"]:
@@ -575,11 +595,14 @@ def encoder(self, event):
 						else:
 							ui.down(1)
 				elif winFocused["Browser"]:
-					ui.down() if ui.isInPopupMenu() else ui.next()
-					if config.upDown_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
-						ui.previewBrowserMenuItem()
-					elif device.getName() != "Komplete Kontrol DAW - 1":
-						NILA_Display.OnIdle(self)
+					if ui.isInPopupMenu():
+						ui.down(1)
+					else:
+						ui.navigateBrowser(midi.FPT_Down, 0)
+						if config.upDown_preview_sound == 1:
+							ui.previewBrowserMenuItem()
+						else:
+							NILA_Display.OnIdle(self)
 				elif winFocused["Playlist"]:
 					ui.down()
 				elif winFocused["Piano Roll"]:
