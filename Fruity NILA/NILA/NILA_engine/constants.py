@@ -193,7 +193,7 @@ volume_percent_max = 100
 volume_param_type = "volume"
 pan_param_type = "pan"
 stereo_sep = 0.25
-oled_vol_bar_scaling = 0.86
+display_vol_bar_scaling = 0.86
 
 # ==== KNOB SPEEDUP HANDLING ====
 knob_rotation_speed = 3.5

@@ -11,13 +11,14 @@ import ui
 import nihia.buttons as buttons
 
 from NILA.NILA_engine import config, constants as c
-from NILA.NILA_visuals import NILA_OLED
+from NILA.NILA_visuals import NILA_Display
 
 
 xAxis, yAxis = 0, 0
 windowCycle = 0
 last_click_time = 0
 current_track_plugin_id = None
+current_generator_cycle_index = None
 pending_encoder_button_single = None
 
 BUTTONS = buttons.button_list
@@ -26,7 +27,6 @@ UNSUPPORTED_PLUGINS = tuple(c.unsupported_plugins or ())
 
 def _button(name):
 	return BUTTONS[name]
-
 
 ENCODER_GENERAL = _button("ENCODER_GENERAL")
 ENCODER_VOLUME_SELECTED = _button("ENCODER_VOLUME_SELECTED")
@@ -85,7 +85,39 @@ def encoder(self, event):
 	try: 
 		global windowCycle
 		global current_track_plugin_id
+		global current_generator_cycle_index
 		global_index = False
+		def cycle_channel_rack_generators(direction):
+			"""Cycle through valid Channel Rack generator plugin windows only."""
+			global current_generator_cycle_index
+			generator_targets = []
+
+			for channel_index in range(channels.channelCount()):
+				try:
+					if plugins.isValid(channel_index, c.gen_plugin):
+						generator_targets.append(channel_index)
+				except Exception:
+					pass
+
+			if not generator_targets:
+				ui.setHintMsg("No Channel Rack generators")
+				return
+
+			selected_channel = channels.selectedChannel()
+			if selected_channel in generator_targets:
+				current_index = generator_targets.index(selected_channel)
+			elif current_generator_cycle_index in generator_targets:
+				current_index = generator_targets.index(current_generator_cycle_index)
+			else:
+				current_index = -1 if direction > 0 else 0
+
+			next_index = (current_index + direction) % len(generator_targets)
+			target_channel = generator_targets[next_index]
+			current_generator_cycle_index = target_channel
+			channels.selectChannel(target_channel, 1)
+			channels.showCSForm(target_channel, 1)
+			channels.focusEditor(target_channel)
+			ui.setHintMsg("Generator plugin window")
 
 		def get_mixer_order():
 			tc = mixer.trackCount() - 1
@@ -104,6 +136,14 @@ def encoder(self, event):
 				new_idx = (current_idx + direction) % len(tracks_order)
 				newTrack = tracks_order[new_idx]
 				mixer.setTrackNumber(newTrack)
+
+				# Attempt to force mixer viewport scroll, then restore the intended track.
+				if direction > 0:
+					ui.right(1)
+				else:
+					ui.left(1)
+				mixer.setTrackNumber(newTrack)
+
 				update_mixer_selection(newTrack, tracks_order)
 			elif winChan:
 				ui.jog(direction)
@@ -141,11 +181,11 @@ def encoder(self, event):
 					ui.next()
 				else:
 					ui.previous()
-				NILA_OLED.OnIdle(self)
+				NILA_Display.OnIdle(self)
 				if config.jog_preview_sound == 1:
 					ui.previewBrowserMenuItem()
 				elif device.getName() != "Komplete Kontrol DAW - 1":
-					NILA_OLED.OnIdle(self)
+					NILA_Display.OnIdle(self)
 
 		# --- Begin event handling ---
 		winFocused = {name: ui.getFocused(c.winName[name]) for name in (
@@ -247,7 +287,7 @@ def encoder(self, event):
 					value = c.lead_param + skip if direction > 0 else c.lead_param - skip
 					bound = c.actual_param_count - 7 if direction > 0 else 0
 					c.lead_param = target(value, bound)
-					NILA_OLED.OnRefresh(self, event)
+					NILA_Display.OnRefresh(self, event)
 			elif winFocused["Generator Plugin"]:
 				channel_index = channels.selectedChannel()
 				if not plugins.isValid(channel_index, c.gen_plugin):
@@ -270,7 +310,7 @@ def encoder(self, event):
 						value = c.lead_param + skip if direction > 0 else c.lead_param - skip
 						bound = c.actual_param_count - 7 if direction > 0 else 0
 						c.lead_param = target(value, bound)
-						NILA_OLED.OnRefresh(self, event)
+						NILA_Display.OnRefresh(self, event)
 
 		def handle_encoder_button(button_id):
 			if winFocused["Mixer"]:
@@ -371,6 +411,14 @@ def encoder(self, event):
 					ui.up(1)
 
 		if event.data1 == ENCODER_PAN_SELECTED:
+			if event.data2 in (ENCODER_SELECTED_PLUS, ENCODER_SELECTED_MINUS, 12, 116):
+				event.handled = True
+				if event.data2 in (ENCODER_SELECTED_PLUS, 12):
+					cycle_channel_rack_generators(1)
+				else:
+					cycle_channel_rack_generators(-1)
+				return
+
 			if event.data2 in (RIGHT_BUTTON, c.mixer_right):
 				event.handled = True
 				if winFocused["Mixer"]:
@@ -470,6 +518,10 @@ def encoder(self, event):
 				if winFocused["Mixer"]:
 					if ui.isInPopupMenu(): 
 						ui.up(1)
+					else:
+						track_index = mixer.trackNumber()
+						mixer.revTrackPolarity(track_index)
+						ui.setHintMsg("Reverse polarity")
 				elif winFocused["Channel Rack"]:
 					ui.up(1)
 					ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, config.rectChannel)
@@ -492,7 +544,7 @@ def encoder(self, event):
 					if config.upDown_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
 						ui.previewBrowserMenuItem()
 					elif device.getName() != "Komplete Kontrol DAW - 1":
-						NILA_OLED.OnIdle(self)
+						NILA_Display.OnIdle(self)
 				elif winFocused["Playlist"]:
 					ui.up()
 				elif winFocused["Piano Roll"]:
@@ -501,6 +553,10 @@ def encoder(self, event):
 				if winFocused["Mixer"]:
 					if ui.isInPopupMenu(): 
 						ui.down(1)
+					else:
+						track_index = mixer.trackNumber()
+						mixer.swapTrackChannels(track_index)
+						ui.setHintMsg("Swap L/R channels")
 				elif winFocused["Channel Rack"]:
 					ui.down(1)
 					ui.crDisplayRect(0, channels.selectedChannel(), 256, 8, config.rectChannel)
@@ -523,7 +579,7 @@ def encoder(self, event):
 					if config.upDown_preview_sound == 1 and device.getName() != "Komplete Kontrol DAW - 1":
 						ui.previewBrowserMenuItem()
 					elif device.getName() != "Komplete Kontrol DAW - 1":
-						NILA_OLED.OnIdle(self)
+						NILA_Display.OnIdle(self)
 				elif winFocused["Playlist"]:
 					ui.down()
 				elif winFocused["Piano Roll"]:

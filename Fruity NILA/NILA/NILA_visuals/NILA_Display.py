@@ -54,7 +54,7 @@ def get_correct_tracks():
 	return selected_tracks
 
 def format_param_name(param_name):
-	"""Inserts spaces for parameter names for OLED display (for series)."""
+	"""Inserts spaces for parameter names for display (for series)."""
 	formatted = ""
 	for i, char in enumerate(param_name):
 		if i > 0 and (
@@ -86,7 +86,7 @@ def OnRefresh(self, event):
 			mix.setTrackSel(i, False)
 
 		for knobNumber, trackNumber in enumerate(tracks_to_control):
-			# Cache includes pan so OLED updates immediately when pan changes
+			# Cache includes pan so updates immediately when pan changes
 			track_id = f"{trackNumber}_{round(mixer.getTrackVolume(trackNumber, 1), 1)}_{mixer.getTrackPan(trackNumber)}"
 			if last_track_state.get(knobNumber) != track_id:
 				mix.setTrackExist(knobNumber, 1)
@@ -96,7 +96,7 @@ def OnRefresh(self, event):
 				NILA_transform.updatePanMix(trackNumber, knobNumber)
 				last_track_state[knobNumber] = track_id
 
-		# Blank any remaining OLED slots so old names (ex: "Extra") do not stick at the end
+		# Blank any remaining slots so old names (ex: "Extra") do not stick at the end
 		for knobNumber in range(len(tracks_to_control), c.max_knobs):
 			mix.setTrackExist(knobNumber, 0)
 			mix.setTrackName(knobNumber, c.blankEvent)
@@ -360,7 +360,7 @@ def purge_tracks(start, end, clear_info=False):
 			mix.setTrackExist(track_index, 0)
 
 def refresh_piano_roll_display(channel_index):
-	"""Refresh the OLED display for the active Piano Roll channel on slot 0."""
+	"""Refresh the display for the active Piano Roll channel on slot 0."""
 	knobNumber = c.display_track_index
 	mix.setTrackExist(knobNumber, 1)
 	mix.setTrackName(knobNumber, str(channels.getChannelName(channel_index)))

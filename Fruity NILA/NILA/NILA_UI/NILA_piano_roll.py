@@ -3,7 +3,7 @@ import ui
 
 from nihia import mixer as mix
 from NILA.NILA_engine import config, constants as c, NILA_transform
-from NILA.NILA_visuals import NILA_OLED
+from NILA.NILA_visuals import NILA_Display
 
 PIANO_ROLL_KNOB_VOLUME = getattr(c, "piano_roll_knob_volume", 0)
 PIANO_ROLL_KNOB_PAN = getattr(c, "piano_roll_knob_pan", 1)
@@ -32,9 +32,9 @@ def OnMidiMsg(self, event):
 		action(event)
 
 def refresh_piano_roll_display(channel_index):
-	"""Delegate Piano Roll display refresh to the OLED module."""
-	if hasattr(NILA_OLED, "refresh_piano_roll_display"):
-		NILA_OLED.refresh_piano_roll_display(channel_index)
+	"""Delegate Piano Roll display refresh to the module."""
+	if hasattr(NILA_Display, "refresh_piano_roll_display"):
+		NILA_Display.refresh_piano_roll_display(channel_index)
 
 def handle_volume_knob(event):
 	channel_index = channels.selectedChannel()

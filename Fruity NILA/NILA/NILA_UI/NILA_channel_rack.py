@@ -7,7 +7,7 @@ import ui
 import nihia.mixer as mix
 
 from NILA.NILA_engine import config, constants as c
-from NILA.NILA_visuals import NILA_OLED as oled
+from NILA.NILA_visuals import NILA_Display as display
 
 
 # Store last signal times per knob
@@ -105,5 +105,5 @@ def OnMidiMsg(self, event):
 					new_value = max(-1.0, min(1.0, new_value))
 					channels.setChannelPan(current_channel, new_value)
 
-	# Refresh OLED display once per event, not per knob
-	oled.OnRefresh(self, event)
+	# Refresh display once per event, not per knob
+	display.OnRefresh(self, event)

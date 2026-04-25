@@ -40,18 +40,18 @@ class Core:
 		)
 		self._refresh_handlers = (
 			NILA_LED.OnRefresh,
-			NILA_OLED.OnRefresh,
+			NILA_Display.OnRefresh,
 			NILA_navigation.OnRefresh,
 		)
 		self._beat_handlers = (
 			NILA_LED.OnUpdateBeatIndicator,
-			NILA_OLED.OnUpdateBeatIndicator,
+			NILA_Display.OnUpdateBeatIndicator,
 		)
 		
 		self._on_idle_navigation = NILA_navigation.OnIdle
 
 		# Prebind frequently used functions to avoid repeated module lookups
-		self._on_idle_oled = NILA_OLED.OnIdle
+		self._on_idle_display = NILA_Display.OnIdle
 		self._send_peak_info = NILA_transform.sendPeakInfo
 		self._touch_strips_on_midi_in = NILA_touch_strips.OnMidiIn
 		self._version_check = NILA_version_check.VersionCheck
@@ -86,7 +86,7 @@ class Core:
 
 	def OnRefresh(self, flags):
 		"""
-		Refreshes the LED and OLED displays based on FL Studio's state.
+		Refreshes the LED and displays based on FL Studio's state.
 
 		Parameters:
 			flags (int): Flags indicating what needs to be refreshed.
@@ -99,7 +99,7 @@ class Core:
 
 	def OnUpdateBeatIndicator(self, value):
 		"""
-		Updates beat indicators for LED and OLED displays.
+		Updates beat indicators for LED and displays.
 
 		Parameters:
 			value (int): The current beat indicator value.
@@ -134,7 +134,7 @@ class Core:
 		"""Handles idle state updates."""
 		try:
 			self._on_idle_navigation(self)
-			self._on_idle_oled(self)
+			self._on_idle_display(self)
 		except Exception as e:
 			self.handle_exception("OnIdle", e)
 

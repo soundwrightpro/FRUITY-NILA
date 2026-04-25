@@ -2,25 +2,25 @@
 Fruity NILA Visuals package.
 
 This module provides all visual feedback components for Fruity NILA, including 
-LED and OLED display rendering for Native Instruments controllers.
+LED and display rendering for Native Instruments controllers.
 
 Components:
 - NILA_LED: LED color and flashing logic.
-- NILA_OLED: OLED text display and rendering functions.
+- NILA_Display: text display and rendering functions.
 
 Usage Example:
-    from nila.NILA_visuals import NILA_LED, NILA_OLED
+    from nila.NILA_visuals import NILA_LED, NILA_Display
 
     # Update LEDs:
     NILA_LED.update_leds(track_index)
 
-    # Display text on OLED:
-    NILA_OLED.update_oled_text("Hello from NILA")
+    # Display text:
+    NILA_Display.update_text("Hello from NILA")
 """
 from . import NILA_LED
-from . import NILA_OLED
+from . import NILA_Display
 
 __all__ = [
     "NILA_LED",
-    "NILA_OLED",
+    "NILA_Display",
 ]

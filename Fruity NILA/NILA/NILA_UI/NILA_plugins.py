@@ -10,7 +10,7 @@ import nihia.mixer as mix
 
 from NILA.NILA_engine import NILA_core, constants as c, config
 from NILA.NILA_UI import NILA_channel_rack
-from NILA.NILA_visuals import NILA_OLED
+from NILA.NILA_visuals import NILA_Display
 
 
 # Store last signal times per knob
@@ -64,7 +64,7 @@ def plugin_set_param(self, event):
 					adjusted_increment = knob_time_check(self, volume_increment)
 					handle_param_control(self, event, param_index, track_index, mixer_slot, use_global_index, adjusted_increment, param_name)
 
-		NILA_OLED.OnRefresh(self, event)
+		NILA_Display.OnRefresh(self, event)
 
 def handle_channel_generator(self, event):
 	"""Sets parameters for the selected generator plugin in the Channel Rack."""
@@ -107,7 +107,7 @@ def handle_channel_generator(self, event):
 						param_name=param_name
 					)
 
-		NILA_OLED.OnRefresh(self, event)
+		NILA_Display.OnRefresh(self, event)
 
 def send_hint_message(parameter_name):
 	"""Formats and sends a hint message."""
@@ -136,7 +136,7 @@ def handle_param_control(self, event, param_index, track_index, mixer_slot, use_
 			new_param_value = min(param_value + volume_increment, c.plugin_param_max)
 
 	plugins.setParamValue(new_param_value, param_index, track_index, mixer_slot, pickup_mode, use_global_index)
-	NILA_OLED.OnRefresh(self, event)
+	NILA_Display.OnRefresh(self, event)
 
 def handle_mixer_effect(self, event):
 	"""Handles mixer effect mix level changes."""
@@ -184,7 +184,7 @@ def update_and_record_volume(self, event, track_index, mixer_slot, converted_vol
 	mix_slot_volume = converted_volume / c.volume_percent_max
 	mix_slot_volume = max(0.0, min(1.0, mix_slot_volume))
 	mixer.setPluginMixLevel(track_index, mixer_slot, mix_slot_volume) #type: ignore
-	NILA_OLED.OnRefresh(self, event)
+	NILA_Display.OnRefresh(self, event)
 
 def knob_time_check(self, adjusted_increment):
 	"""Gradually scales knob sensitivity based on how fast the knob is moved."""

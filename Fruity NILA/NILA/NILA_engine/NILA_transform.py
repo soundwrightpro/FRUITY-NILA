@@ -16,7 +16,7 @@ FL_DB_FLOOR = -100.0
 GRAPH_DB_FLOOR = -60.0
 MIXER_DB_MAX = 5.6
 CHANNEL_DB_MAX = 0.0
-ZERO_DB_ARROW_POSITION = constants.oled_vol_bar_scaling
+ZERO_DB_ARROW_POSITION = constants.display_vol_bar_scaling
 NEGATIVE_DB_ARROW_CURVE = 2.05
 POSITIVE_DB_ARROW_CURVE = 1.0
 LOW_END_SPLIT = 0.45
@@ -79,7 +79,7 @@ def get_correct_tracks():
 
 
 def _format_db_text(db_value: float) -> str:
-	"""Formats a dB value for the OLED display."""
+	"""Formats a dB value for the display."""
 	if db_value <= FL_DB_FLOOR:
 		return "- oo"
 	return f"{round(db_value, 1)}"
@@ -191,7 +191,7 @@ def setTrackVolGraphFromChannel(slot_index: int, channel: int):
 
 
 def updatePanMix(track: int, slot_index: int):
-    """Updates mixer pan text and graph values for an OLED slot."""
+    """Updates mixer pan text and graph values for an slot."""
     if track < 0 or track >= mixer.trackCount():
         return
 
@@ -213,7 +213,7 @@ def updatePanMix(track: int, slot_index: int):
 
 
 def updatePanChannel(channel: int, slot_index: int):
-    """Updates Channel Rack pan text and graph values for an OLED slot."""
+    """Updates Channel Rack pan text and graph values for an slot."""
     if channel < 0 or channel >= channels.channelCount():
         return
 
