@@ -114,6 +114,11 @@ unsupported_plugins = [
 	"Graindad", "Stutter Edit", "Hardcore", "Glitch2", "QuadFrohmage",
 	"BYOME", "Guitar Rig 6", "Ampcraft 1992", "Archetype Gojira"
 ]
+
+# Generator plugins that need direct FL UI navigation instead of parameter or preset navigation.
+direct_navigation_plugins = [
+	"FLEX"
+]
 unsupported_param = ["Bypass", "", "On/Off", "System Bypass", None]
 
 # ===== PLUGIN PARAMETER POSITIONING =====
@@ -201,9 +206,23 @@ speed_increase_wait = 0.05
 knob_sensitivity_speedup = 1.5
 knob_sensitivity_wait = 0.05
 
+piano_roll_rect_width = 256
+piano_roll_rect_height = 8
+menu_item_value = 4
+plugin_picker_value = 67
+plugin_skip_value = 1
+plugin_nav_forward = 1
+
 # ==== MISC NAVIGATION ====
 jog_step_small = 1
 jog_step_large = 8
+mixer_x_axis_step = jog_step_large
+piano_roll_rect_width = 256
+piano_roll_rect_height = 8
+menu_item_value = 4
+plugin_picker_value = 67
+plugin_skip_value = 1
+plugin_nav_forward = 1
 piano_roll_rect_width = 256
 piano_roll_rect_height = 8
 menu_item_value = 4

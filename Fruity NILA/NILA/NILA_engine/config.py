@@ -13,6 +13,11 @@ This section of the script allows users to customize the behavior of the script 
     - If set to 1, sounds will be turned on while jogging.
     - Default is 1.
 
+- `plugin_picker_row_skip`: Controls how many up/down UI steps are sent when navigating the Plugin Picker.
+    - Increase this number if one press does not move far enough to reach the next visible row.
+    - Decrease this number if one press skips too far.
+    - Default is 6.
+
 - `rectChannel` and `rectMixer`: Control the behavior of the red rectangle in the Channel Rack and Mixer, respectively.
     - If set to 0, the red rectangle won't be displayed when jogging (spinning the rightmost knob).
     - If set to a positive value, the red rectangle will be displayed for the specified duration in milliseconds.
@@ -34,6 +39,7 @@ Note: Users can modify these settings to tailor the script behavior according to
 # Configuration Settings
 jog_preview_sound = 0
 upDown_preview_sound = 1
+#todo plugin_picker_row_skip = 6 
 rectChannel = 2000
 rectMixer = 2000
 mixer_increment = 0.005

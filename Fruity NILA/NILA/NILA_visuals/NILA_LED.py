@@ -67,6 +67,64 @@ def get_correct_tracks():
 
 	return selected_tracks
 
+def update_transport_lights():
+	"""Update transport and global control lights."""
+	is_playing = transport.isPlaying()
+	is_recording = transport.isRecording()
+
+	set_light("STOP", on if not is_playing else off)
+	set_light("REC", on if is_recording else off)
+	set_light("LOOP", on if transport.getLoopMode() == off else off)
+	set_light("METRO", on if ui.isMetronomeEnabled() else off)
+	set_light("COUNT_IN", on if ui.isPrecountEnabled() else off)
+	set_light("QUANTIZE", on if ui.getSnapMode() in [1, 3] else on)
+	set_light("AUTO", off)
+
+	if not is_playing:
+		set_light("PLAY", off)
+
+
+def update_mixer_lights():
+	"""Update mixer mute, solo, and arm lights for the controlled tracks."""
+	tracks_to_control = get_correct_tracks()
+	utility_track = get_utility_track()
+
+	for x, track_number in enumerate(tracks_to_control):
+		if 0 <= track_number <= utility_track:
+			is_muted = mixer.isTrackMuted(track_number)
+			is_solo = mixer.isTrackSolo(track_number)
+
+			if is_muted and is_solo:
+				setTrackMute(x, on)
+				setTrackSolo(x, off)
+			else:
+				setTrackSolo(x, is_solo)
+				setTrackMute(x, is_muted)
+				setTrackArm(x, mixer.isTrackArmed(track_number))
+
+
+def update_channel_rack_lights():
+	"""Update Channel Rack mute and solo lights."""
+	channel_count = channels.channelCount()
+	selected_channel = channels.selectedChannel()
+
+	if channel_count >= 2:
+		for x in range(8):
+			if channel_count > x and selected_channel < (channel_count - x):
+				setTrackSolo(x, channels.isChannelSolo(selected_channel + x))
+				setTrackMute(x, channels.isChannelMuted(selected_channel + x))
+	else:
+		setTrackMute(0, on) if channels.isChannelMuted(selected_channel) else setTrackMute(0, off)
+		setTrackSolo(0, off) if channel_count == 1 and channels.isChannelSolo(selected_channel) else setTrackSolo(0, off)
+
+
+def update_encoder_lights():
+	"""Set lights for the 4D Encoder on S-Series keyboards."""
+	set_light("ENCODER_X_S", 1)
+	set_light("ENCODER_X_S", 127)
+	set_light("ENCODER_Y_S", 1)
+	set_light("ENCODER_Y_S", 127)
+
 def OnRefresh(self, flags):
 	"""
 	Handles the refresh event and updates button lights based on the DAW state.
@@ -75,55 +133,18 @@ def OnRefresh(self, flags):
 	- self: The instance of the NILA.
 	- flags: Flags indicating the refresh event details.
 	"""
-	if device.isAssigned():
-		# Update transport control lights
-		set_light("STOP", on if not transport.isPlaying() else off)
-		set_light("REC", on if transport.isRecording() else off)
-		set_light("LOOP", on if transport.getLoopMode() == off else off)
-		set_light("METRO", on if ui.isMetronomeEnabled() else off)
-		set_light("COUNT_IN", on if ui.isPrecountEnabled() else off)
-		set_light("QUANTIZE", on if ui.getSnapMode() in [1, 3] else on)
-		set_light("AUTO", off)
+	if not device.isAssigned():
+		return
 
-		# Update PLAY button light when not playing or recording
-		if not transport.isPlaying() and not transport.isRecording():
-			set_light("PLAY", off)
-		elif not transport.isPlaying() and transport.isRecording():
-			set_light("PLAY", off)
+	update_transport_lights()
 
-		# Update mixer lights if Mixer window is focused
-		if ui.getFocused(constants.winName["Mixer"]):
-			tracks_to_control = get_correct_tracks()
-			for x, track_number in enumerate(tracks_to_control):
-				if 0 <= track_number <= get_utility_track():
-					is_muted = mixer.isTrackMuted(track_number)
-					is_solo = mixer.isTrackSolo(track_number)
-					
-					if is_muted and is_solo:
-						setTrackMute(x, on)
-						setTrackSolo(x, off)
-					else:
-						setTrackSolo(x, is_solo)
-						setTrackMute(x, is_muted)
-						setTrackArm(x, mixer.isTrackArmed(track_number))
+	if ui.getFocused(constants.winName["Mixer"]):
+		update_mixer_lights()
 
-		# Update Channel Rack lights if Channel Rack window is focused
-		if ui.getFocused(constants.winName["Channel Rack"]):
-			if channels.channelCount() >= 2:
-				for x in range(8):
-					selected_channel = channels.selectedChannel()
-					if channels.channelCount() > x and selected_channel < (channels.channelCount() - x):
-						setTrackSolo(x, channels.isChannelSolo(selected_channel + x))
-						setTrackMute(x, channels.isChannelMuted(selected_channel + x))
-			else:
-				setTrackMute(0, on) if channels.isChannelMuted(channels.selectedChannel()) else setTrackMute(0, off)
-				setTrackSolo(0, off) if channels.channelCount() == 1 and channels.isChannelSolo(channels.selectedChannel()) else setTrackSolo(0, off)
+	if ui.getFocused(constants.winName["Channel Rack"]):
+		update_channel_rack_lights()
 
-		# Set lights for the 4D Encoder on S-Series keyboards
-		set_light("ENCODER_X_S", 1)
-		set_light("ENCODER_X_S", 127)
-		set_light("ENCODER_Y_S", 1)
-		set_light("ENCODER_Y_S", 127)
+	update_encoder_lights()
 
 def OnUpdateBeatIndicator(self, Value):
 	"""

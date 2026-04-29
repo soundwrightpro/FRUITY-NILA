@@ -39,6 +39,38 @@ def handle_mixer_action(event, action_function, track_number, hint_message):
 		action_function(track_number)
 		ui.setHintMsg(hint_message)
 
+
+# --- Playlist Display Button Handlers ---
+def handle_playlist_display_button(event):
+	"""Handle the first four S Series display buttons while the Playlist is focused."""
+	if not ui.getFocused(c.winName["Playlist"]):
+		return False
+
+	if event.data1 != buttons.button_list.get("TRACK_SELECT"):
+		return False
+
+	if event.data2 not in range(4):
+		return False
+
+	event.handled = True
+
+	if event.data2 == 0:
+		ui.setTimeDispMin()
+		ui.setHintMsg("Playlist time: Min/Sec")
+		return True
+
+	if event.data2 == 1:
+		transport.globalTransport(midi.FPT_ItemMenu, 1, midi.PME_System, midi.GT_All)
+		ui.setHintMsg("Playlist menu")
+		return True
+
+	if event.data2 in (2, 3):
+		return True
+
+	return False
+
+
+
 def get_correct_tracks():
 	""" Determines the correct 8 tracks for knob control while skipping docked tracks. """
 	tracks_order = get_mixer_order()
@@ -70,6 +102,9 @@ def OnMidiMsg(self, event):
 		""" Handles incoming MIDI events. """
 		event.handled = True
 		utility_track = get_utility_track()
+
+		if handle_playlist_display_button(event):
+			return
 
 		if event.data1 == buttons.button_list.get("PLAY") and not ui.isInPopupMenu():
 			transport.start()
