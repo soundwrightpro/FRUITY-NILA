@@ -77,6 +77,22 @@ class Core:
 		chan = event.midiChan
 		try:
 			if chan == CONTROLS_CHAN:
+				if ui.getFocused(c.winName["Mixer"]):
+					NILA_navigation.encoder(self, event)
+					if event.data1 in nihia.buttons.button_list.values():
+						NILA_buttons.OnMidiMsg(self, event)
+					else:
+						NILA_mixer.OnMidiMsg(self, event)
+					return
+
+				if ui.getFocused(c.winName["Channel Rack"]):
+					NILA_navigation.encoder(self, event)
+					if event.data1 in nihia.buttons.button_list.values():
+						NILA_buttons.OnMidiMsg(self, event)
+					else:
+						NILA_channel_rack.OnMidiMsg(self, event)
+					return
+
 				for handler in self._control_handlers:
 					handler(self, event)
 			else:

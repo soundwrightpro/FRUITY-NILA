@@ -206,13 +206,6 @@ speed_increase_wait = 0.05
 knob_sensitivity_speedup = 1.5
 knob_sensitivity_wait = 0.05
 
-piano_roll_rect_width = 256
-piano_roll_rect_height = 8
-menu_item_value = 4
-plugin_picker_value = 67
-plugin_skip_value = 1
-plugin_nav_forward = 1
-
 # ==== MISC NAVIGATION ====
 jog_step_small = 1
 jog_step_large = 8
@@ -223,12 +216,7 @@ menu_item_value = 4
 plugin_picker_value = 67
 plugin_skip_value = 1
 plugin_nav_forward = 1
-piano_roll_rect_width = 256
-piano_roll_rect_height = 8
-menu_item_value = 4
-plugin_picker_value = 67
-plugin_skip_value = 1
-plugin_nav_forward = 1
+plugin_nav_page = 7
 
 # ==== MIXER PLUGIN HANDLING ====
 mix_slot_volume_min = 0
@@ -265,3 +253,49 @@ browser_menu_threshold = -100
 
 # ===== VIEWPORT / ZOOM =====
 zoom_step_small = 1
+
+# ===== S SERIES DISPLAY LAYOUT =====
+s_series_slot_count = 8
+s_series_primary_slots = 4
+s_series_browser_slots = 3
+s_series_display_slot_width = 8
+s_series_text_total_width = 32
+s_series_focus_overlay_duration = 0.6
+s_series_focus_label = "Focus:"
+s_series_playlist_label = "Playlist:"
+s_series_browser_label = "Browser:"
+
+# ===== PLAYLIST DISPLAY LABELS =====
+playlist_beats_label = "Beats|"
+playlist_bars_label = "Bars:"
+playlist_minutes_label = "Minutes|"
+playlist_seconds_label = "Seconds:"
+playlist_bpm_prefix = "bpm"
+
+# ===== MIXER INERTIA SCROLLING =====
+mixer_inertia_acceleration = 1.75
+mixer_inertia_decay = 0.76
+mixer_inertia_stop_threshold = 0.25
+mixer_inertia_step_interval = 0.035
+mixer_inertia_max_velocity = 8.0
+mixer_inertia_trigger_interval = 0.055
+mixer_inertia_trigger_count = 2
+
+# ===== COMMON UI HINTS =====
+hint_no_channel_generators = "No Channel Rack generators"
+hint_generator_plugin_window = "Generator plugin window"
+hint_channel_rack_rect = "Channel Rack selection rectangle"
+hint_playlist_tool_prefix = "Playlist Tool:"
+hint_open_menu = "Open Menu"
+hint_enter = "Enter"
+hint_select_menu_item = "Select menu item"
+hint_toggle_browser_node = "Toggle browser node"
+hint_plugin_picker = "Plugin Picker"
+hint_reverse_polarity = "Reverse polarity"
+hint_swap_lr_channels = "Swap L/R channels"
+hint_previous_preset = "Previous preset"
+hint_next_preset = "Next preset"
+hint_right = "Right"
+hint_left = "Left"
+hint_up = "Up"
+hint_down = "Down"

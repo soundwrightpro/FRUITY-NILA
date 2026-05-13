@@ -19,7 +19,7 @@ last_track_state = {}
 
 focus_overlay_text = None
 focus_overlay_started = 0.0
-FOCUS_OVERLAY_DURATION = 0.6
+FOCUS_OVERLAY_DURATION = c.s_series_focus_overlay_duration
 
 
 def get_mixer_order():
@@ -92,8 +92,8 @@ def clear_display_slot(knobNumber, clear_controls=True):
 
 
 
-# --- Helper functions for S Series Browser path display ---
-def truncate_display_text(text, limit=8):
+# --- Helper functions for S Series display text ---
+def truncate_display_text(text, limit=c.s_series_display_slot_width):
 	"""Return text shortened for one S Series display slot."""
 	clean_text = str(text or c.blankEvent).strip()
 	return clean_text[:limit] if clean_text else c.blankEvent
@@ -103,7 +103,7 @@ def truncate_display_text(text, limit=8):
 def smart_truncate_32(text):
 	"""Keep start and end with separator to fit 32 chars across 4 slots."""
 	s = str(text or c.blankEvent).strip()
-	if len(s) <= 32:
+	if len(s) <= c.s_series_text_total_width:
 		return s
 	# 14 + 1 + 17 = 32
 	head = s[:14]
@@ -112,7 +112,7 @@ def smart_truncate_32(text):
 
 
 # --- Helper for splitting text into display slots, preserving words where possible ---
-def split_text_for_display_slots(text, slot_count=4, slot_width=8):
+def split_text_for_display_slots(text, slot_count=c.s_series_primary_slots, slot_width=c.s_series_display_slot_width):
 	"""Split text into display slots while preserving whole words when possible."""
 	s = smart_truncate_32(text)
 	words = s.split()
@@ -175,7 +175,7 @@ def write_focus_overlay():
 	display_text = str(focus_overlay_text or c.blankEvent)
 
 	if NILA_core.seriesCheck():
-		for i in range(c.max_knobs):
+		for i in range(c.s_series_slot_count):
 			mix.setTrackExist(i, 1 if i < 2 else 0)
 			mix.setTrackName(i, c.blankEvent)
 			mix.setTrackVol(i, c.blankEvent)
@@ -187,7 +187,7 @@ def write_focus_overlay():
 			mix.setTrackSolo(i, False)
 			mix.setTrackMute(i, False)
 
-		mix.setTrackName(0, "Focus:")
+		mix.setTrackName(0, c.s_series_focus_label)
 		mix.setTrackName(1, display_text)
 	else:
 		mix.setTrackExist(c.display_track_index, 1)
@@ -235,24 +235,24 @@ def write_series_playlist_time(time_disp, current_time, marker_name=None):
 	Track 3 = marker name, only while playing and when available
 	"""
 	if time_disp == "Beats:Bar":
-		values = ("Beats|", "Bars:", str(current_time), c.blankEvent)
+		values = (c.playlist_beats_label, c.playlist_bars_label, str(current_time), c.blankEvent)
 	elif time_disp == "Min:Sec":
-		values = ("Minutes|", "Seconds:", str(current_time), c.blankEvent)
+		values = (c.playlist_minutes_label, c.playlist_seconds_label, str(current_time), c.blankEvent)
 	else:
 		values = (str(time_disp)[:8], c.blankEvent, str(current_time), c.blankEvent)
 
 	if transport.isPlaying():
 		try:
 			bpm = round(mixer.getCurrentTempo() / 1000)
-			bpm_text = f"bpm {bpm}"
+			bpm_text = f"{c.playlist_bpm_prefix} {bpm}"
 			values = (values[0], values[1], values[2], truncate_display_text(bpm_text))
 		except Exception as e:
 			print(f"Playlist BPM display error: {e}")
 	elif marker_name:
 		values = (values[0], values[1], values[2], truncate_display_text(marker_name))
 
-	for i in range(c.max_knobs):
-		mix.setTrackExist(i, 1 if i < 4 else 0)
+	for i in range(c.s_series_slot_count):
+		mix.setTrackExist(i, 1 if i < c.s_series_primary_slots else 0)
 		mix.setTrackName(i, c.blankEvent)
 		mix.setTrackVol(i, c.blankEvent)
 		mix.setTrackVolGraph(i, 0)
@@ -263,7 +263,7 @@ def write_series_playlist_time(time_disp, current_time, marker_name=None):
 		mix.setTrackSolo(i, False)
 		mix.setTrackMute(i, False)
 
-	mix.setTrackName(0, "Playlist:")
+	mix.setTrackName(0, c.s_series_playlist_label)
 	mix.setTrackName(1, f"{values[0]} {values[1]}")
 	mix.setTrackName(2, values[2])
 	mix.setTrackName(3, values[3])
@@ -276,7 +276,7 @@ def write_series_playlist_time(time_disp, current_time, marker_name=None):
 	mix.setTrackVolGraph(2, 0)
 	mix.setTrackVolGraph(3, 0)
 
-	for i in range(4, c.max_knobs):
+	for i in range(c.s_series_primary_slots, c.s_series_slot_count):
 		clear_display_slot(i)
 
 
@@ -533,21 +533,21 @@ def OnUpdateBeatIndicator(self, Value):
 	if ui.getFocused(c.winName["Playlist"]):
 		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
 		mix.setTrackName(c.display_track_index, "Playlist")
-		split_message = ui.getHintMsg()
-		split_hint = split_message
 		if NILA_core.seriesCheck():
 			write_series_playlist_time(timeDisp, currentTime)
 		else:
-			if timeDisp == "Beats:Bar":
-				displayLabel = "B:B" if len(currentTime) >= 5 else "Beats:Bar"
-			elif timeDisp == "Min:Sec":
-				displayLabel = "M:S" if len(currentTime) > 5 else "Min:Sec"
+			if transport.isPlaying():
+				if timeDisp == "Beats:Bar":
+					displayLabel = "B:B" if len(currentTime) >= 5 else "Beats:Bar"
+				elif timeDisp == "Min:Sec":
+					displayLabel = "M:S" if len(currentTime) > 5 else "Min:Sec"
+				else:
+					displayLabel = timeDisp
+				mix.setTrackVol(c.display_track_index, f"{displayLabel}|{currentTime}")
 			else:
-				displayLabel = timeDisp
-			mix.setTrackExist(c.display_track_index, 1)
-			mix.setTrackName(c.display_track_index, "Playlist")
-			mix.setTrackVol(c.display_track_index, f"{displayLabel}|{currentTime}")
-			mix.setTrackVolGraph(c.display_track_index, 0)
+				split_hint = ui.getHintMsg()
+				mix.setTrackVol(c.display_track_index, f"{split_hint[:7]}|{currentTime}")
+				NILA_transform.setTrackVolGraphFromMixer(c.display_track_index, c.display_track_index)
 
 def OnIdle(self):
 	"""Performs idle tasks based on the currently focused window."""
@@ -562,27 +562,22 @@ def OnIdle(self):
 
 	elif ui.getFocused(c.winName["Playlist"]):
 		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
-		split_message = ui.getHintMsg()
-		split_hint = split_message
 
 		if NILA_core.seriesCheck():
+			split_hint = ui.getHintMsg()
 			marker_name = None if transport.isPlaying() else get_playlist_marker_hint(split_hint)
 			write_series_playlist_time(timeDisp, currentTime, marker_name)
 		else:
-			if timeDisp == "Beats:Bar":
-				displayLabel = "B:B" if len(currentTime) >= 5 else "Beats:Bar"
-			elif timeDisp == "Min:Sec":
-				displayLabel = "M:S" if len(currentTime) > 5 else "Min:Sec"
-			else:
-				displayLabel = timeDisp
-			mix.setTrackExist(c.display_track_index, 1)
+			purge_all_tracks()
+			NILA_transform.setTrackVolGraphFromMixer(c.display_track_index, c.display_track_index)
 			mix.setTrackName(c.display_track_index, "Playlist")
-			mix.setTrackVol(c.display_track_index, f"{displayLabel}|{currentTime}")
-			mix.setTrackVolGraph(c.display_track_index, 0)
+			split_hint = ui.getHintMsg()
+			if not transport.isPlaying() and "Volume" not in split_hint[:7]:
+				mix.setTrackVol(c.display_track_index, f"{split_hint[:7]}|{currentTime}")
 
 	elif ui.getFocused(c.winName["Browser"]):
 
-		# purge_all_tracks()  # Removed as per instruction
+		purge_all_tracks()
 
 		filename = ui.getFocusedNodeCaption()
 		name_no_ext = os.path.splitext(filename)[0]
@@ -590,29 +585,26 @@ def OnIdle(self):
 		if NILA_core.seriesCheck():
 			file_ext = os.path.splitext(filename)[1]
 
-			for i in range(c.max_knobs):
-				if i < 3:
-					mix.setTrackExist(i, 1)
-					mix.setTrackName(i, c.blankEvent)
-					mix.setTrackVol(i, c.blankEvent)
-					mix.setTrackVolGraph(i, 0)
-					mix.setTrackPan(i, c.blankEvent)
-					mix.setTrackPanGraph(i, 0)
-					mix.setTrackSel(i, False)
-					mix.setTrackArm(i, False)
-					mix.setTrackSolo(i, False)
-					mix.setTrackMute(i, False)
-				else:
-					clear_display_slot(i)
+			for i in range(c.s_series_slot_count):
+				mix.setTrackExist(i, 1 if i < c.s_series_browser_slots else 0)
+				mix.setTrackName(i, c.blankEvent)
+				mix.setTrackVol(i, c.blankEvent)
+				mix.setTrackVolGraph(i, 0)
+				mix.setTrackPan(i, c.blankEvent)
+				mix.setTrackPanGraph(i, 0)
+				mix.setTrackSel(i, False)
+				mix.setTrackArm(i, False)
+				mix.setTrackSolo(i, False)
+				mix.setTrackMute(i, False)
 
-			mix.setTrackName(0, "Browser:")
+			mix.setTrackName(0, c.s_series_browser_label)
 			mix.setTrackName(1, name_no_ext)
 			mix.setTrackName(2, file_ext if file_ext else c.blankEvent)
 		else:
-			mix.setTrackExist(c.display_track_index, 1)
-			mix.setTrackName(c.display_track_index, "Browser:")
+			file_type_id = ui.getFocusedNodeFileType()
+			file_type = map_file_type(filename, file_type_id)
+			mix.setTrackName(c.display_track_index, str(file_type))
 			mix.setTrackVol(c.display_track_index, name_no_ext[:15])
-			mix.setTrackVolGraph(c.display_track_index, 0)
 
 
 def purge_tracks(start, end, clear_info=False):
