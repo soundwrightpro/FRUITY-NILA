@@ -152,6 +152,7 @@ def show_temporary_focus_message(text):
 
 	focus_overlay_text = str(text or c.blankEvent).strip()
 	focus_overlay_started = time.time()
+	clear_focus_overlay_slots()
 
 
 def focus_overlay_is_active():
@@ -170,10 +171,10 @@ def focus_overlay_is_active():
 	return False
 
 
-def write_focus_overlay():
-	"""Write the temporary focus overlay to the controller display."""
-	display_text = str(focus_overlay_text or c.blankEvent)
 
+
+def clear_focus_overlay_slots():
+	"""Clear every display slot so the temporary focus text is the only visible content."""
 	if NILA_core.seriesCheck():
 		for i in range(c.s_series_slot_count):
 			mix.setTrackExist(i, 1 if i < 2 else 0)
@@ -186,7 +187,30 @@ def write_focus_overlay():
 			mix.setTrackArm(i, False)
 			mix.setTrackSolo(i, False)
 			mix.setTrackMute(i, False)
+	else:
+		for i in range(c.max_knobs):
+			mix.setTrackExist(i, 0)
+			mix.setTrackName(i, c.blankEvent)
+			mix.setTrackVol(i, c.blankEvent)
+			mix.setTrackVolGraph(i, 0)
+			mix.setTrackPan(i, c.blankEvent)
+			mix.setTrackPanGraph(i, 0)
+			mix.setTrackSel(i, False)
+			mix.setTrackArm(i, False)
+			mix.setTrackSolo(i, False)
+			mix.setTrackMute(i, False)
 
+		mix.setTrackExist(c.display_track_index, 1)
+
+
+
+
+def write_focus_overlay():
+	"""Write the temporary focus overlay to the controller display."""
+	display_text = str(focus_overlay_text or c.blankEvent)
+	clear_focus_overlay_slots()
+
+	if NILA_core.seriesCheck():
 		mix.setTrackName(0, c.s_series_focus_label)
 		mix.setTrackName(1, display_text)
 	else:
@@ -194,6 +218,12 @@ def write_focus_overlay():
 		mix.setTrackName(c.display_track_index, "Focus")
 		mix.setTrackVol(c.display_track_index, display_text)
 		mix.setTrackVolGraph(c.display_track_index, 0)
+		mix.setTrackPan(c.display_track_index, c.blankEvent)
+		mix.setTrackPanGraph(c.display_track_index, 0)
+		mix.setTrackSel(c.display_track_index, False)
+		mix.setTrackArm(c.display_track_index, False)
+		mix.setTrackSolo(c.display_track_index, False)
+		mix.setTrackMute(c.display_track_index, False)
 
 
 # --- Map file type to DAW-style descriptions ---
@@ -530,6 +560,10 @@ def OnRefresh(self, event):
 
 def OnUpdateBeatIndicator(self, Value):
 	"""Updates the beat indicator based on the focused window (e.g., Playlist)."""
+	if focus_overlay_is_active():
+		write_focus_overlay()
+		return
+
 	if ui.getFocused(c.winName["Playlist"]):
 		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
 		mix.setTrackName(c.display_track_index, "Playlist")

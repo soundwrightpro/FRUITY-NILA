@@ -23,6 +23,25 @@ mixer_volume_cache = {}
 # Tracks that have just snapped to 0 dB. Used only to create a short detent.
 mixer_zero_db_snap_state = {}
 
+
+def reset_mixer_state_cache():
+	"""Reset cached mixer control state after project changes."""
+	global ordered_tracks_cache, last_updated_track
+	ordered_tracks_cache = []
+	last_updated_track = None
+	mixer_volume_cache.clear()
+	mixer_zero_db_snap_state.clear()
+
+
+def sync_visible_mixer_volume_cache():
+	"""Sync cached mixer volumes when the visible mixer bank changes."""
+	for track_number in ordered_tracks_cache:
+		try:
+			mixer_volume_cache[track_number] = mixer.getTrackVolume(track_number)
+		except Exception:
+			mixer_volume_cache.pop(track_number, None)
+
+
 def update_mixer_order(force=False):
 	"""
 	Updates and caches the same mixer track slots shown on the display.
@@ -36,6 +55,7 @@ def update_mixer_order(force=False):
 
 	last_updated_track = current_track
 	ordered_tracks_cache = get_correct_tracks()
+	sync_visible_mixer_volume_cache()
 
 
 def get_mixer_order():

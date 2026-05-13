@@ -142,6 +142,7 @@ class Core:
 			status (int): Status of the project load event.
 		"""
 		try:
+			NILA_mixer.reset_mixer_state_cache()
 			self._core_on_project_load(self, status)
 		except Exception as e:
 			self.handle_exception("OnProjectLoad", e)
@@ -157,6 +158,11 @@ class Core:
 	def OnUpdateMeters(self):
 		"""Sends peak meter information for real time visual feedback."""
 		try:
+			if NILA_Display.focus_overlay_is_active():
+				NILA_Display.write_focus_overlay()
+				NILA_transform.clearPeakInfo()
+				return
+
 			self._send_peak_info()
 		except Exception as e:
 			self.handle_exception("OnUpdateMeters", e)

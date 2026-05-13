@@ -257,6 +257,12 @@ def sendPeakInfo():
 	nihia_mixer.sendPeakMeterData(TrackPeaks)
 
 
+# --- Clear live peak meter data on the hardware display ---
+def clearPeakInfo():
+	"""Clear live peak meter data on the hardware display."""
+	nihia_mixer.sendPeakMeterData([0] * 16)
+
+
 def timeConvert(timeDisp, currentTime):
 	"""
 	Converts and formats the time display.
