@@ -4,12 +4,12 @@ import ui
 
 from nihia import mixer as nihia_mixer
 
-from NILA.NILA_engine import NILA_core as core, config, constants as c
-MIXER_MIN_VALUE = 0.0
-MIXER_MAX_VALUE = 1.0
-MIXER_ZERO_DB_VALUE = 0.8
-MIXER_ZERO_DB_SNAP_RANGE = 1.0
-MIXER_ZERO_DB_HOLD_TIME = 0.15
+from NILA.NILA_engine import NILA_core as core, NILA_transform, config, constants as c
+MIXER_MIN_VALUE = c.track_volume_min
+MIXER_MAX_VALUE = c.track_volume_max
+MIXER_ZERO_DB_VALUE = c.mixer_zero_db_value
+MIXER_ZERO_DB_SNAP_RANGE = c.mixer_zero_db_snap_range
+MIXER_ZERO_DB_HOLD_TIME = c.mixer_zero_db_hold_time
 
 
 # Cache for visually ordered mixer tracks
@@ -18,6 +18,13 @@ last_updated_track = None
 
 # Cache mixer volume writes because some assigned mixer tracks can report
 # stale values immediately after mixer.setTrackVolume().
+#
+# Why this exists:
+# FL can return the previous mixer volume for assigned tracks immediately after
+# a script write. If every knob tick trusts mixer.getTrackVolume(), the next
+# target value can be calculated from stale data, which makes assigned tracks
+# move slowly, freeze, or jump. During knob movement, this cache is the source
+# of truth. It is resynced only when the visible mixer bank changes.
 mixer_volume_cache = {}
 
 # Tracks that have just snapped to 0 dB. Used only to create a short detent.
@@ -25,7 +32,12 @@ mixer_zero_db_snap_state = {}
 
 
 def reset_mixer_state_cache():
-	"""Reset cached mixer control state after project changes."""
+	"""Reset cached mixer control state after project changes.
+
+	Project loads can leave cached track numbers and volume values pointing at
+	old project data. Resetting here prevents the first mixer knob touch from
+	jumping to a stale value.
+	"""
 	global ordered_tracks_cache, last_updated_track
 	ordered_tracks_cache = []
 	last_updated_track = None
@@ -34,7 +46,13 @@ def reset_mixer_state_cache():
 
 
 def sync_visible_mixer_volume_cache():
-	"""Sync cached mixer volumes when the visible mixer bank changes."""
+	"""Sync cached mixer volumes when the visible mixer bank changes.
+
+	This must not run on every knob tick. It runs only when the selected mixer
+	track changes and the visible 8 slot bank is recalculated. That gives each
+	newly visible track a safe starting value without reintroducing stale FL
+	readback during active knob movement.
+	"""
 	for track_number in ordered_tracks_cache:
 		try:
 			mixer_volume_cache[track_number] = mixer.getTrackVolume(track_number)
@@ -45,7 +63,10 @@ def sync_visible_mixer_volume_cache():
 def update_mixer_order(force=False):
 	"""
 	Updates and caches the same mixer track slots shown on the display.
-	Only updates when necessary unless forced.
+
+	The slot order comes from NILA_transform.get_correct_tracks(), which is the
+	shared source of truth for display, knob control, pan graphs, and peak meters.
+	Keeping this shared prevents random mixer order from breaking knob targeting.
 	"""
 	global ordered_tracks_cache, last_updated_track
 	current_track = mixer.trackNumber()
@@ -54,43 +75,10 @@ def update_mixer_order(force=False):
 		return
 
 	last_updated_track = current_track
-	ordered_tracks_cache = get_correct_tracks()
+	ordered_tracks_cache = NILA_transform.get_correct_tracks()
 	sync_visible_mixer_volume_cache()
 
 
-def get_mixer_order():
-	"""Get mixer tracks sorted by docked position and order of appearance."""
-	track_count = mixer.trackCount() - 1
-	tracks = [(mixer.getTrackDockSide(i), i) for i in range(track_count)]
-	tracks.sort()
-	return [t[1] for t in tracks]
-
-
-def get_correct_tracks():
-	"""Return the same 8 mixer tracks shown by the display."""
-	tracks_order = get_mixer_order()
-	current_track = mixer.trackNumber()
-	if current_track not in tracks_order:
-		return []
-	start_idx = tracks_order.index(current_track)
-
-	selected_tracks = [current_track]
-	for i in range(start_idx + 1, len(tracks_order)):
-		track = tracks_order[i]
-		if mixer.getTrackDockSide(track) != mixer.getTrackDockSide(current_track):
-			break
-		selected_tracks.append(track)
-		if len(selected_tracks) == c.max_knobs:
-			break
-
-	while len(selected_tracks) < c.max_knobs and selected_tracks[-1] != tracks_order[-1]:
-		next_idx = tracks_order.index(selected_tracks[-1]) + 1
-		if next_idx < len(tracks_order):
-			selected_tracks.append(tracks_order[next_idx])
-		else:
-			break
-
-	return selected_tracks
 
 def get_adjacent_tracks(current_track):
 	"""
@@ -131,9 +119,12 @@ def get_adaptive_volume_increment(track_number, base_increment):
 def apply_mixer_zero_db_snap(track_number, current_value, target_value):
 	"""Snap mixer volume to 0 dB with a short timed detent.
 
-	This is mixer only. The hold happens only immediately after a snap. Once the
-	hold expires, the next knob movement is allowed through instead of being
-	re snapped, which prevents freezing at 0 dB.
+	This is mixer only. Channel Rack volume is not affected.
+
+	The snap is based on FL's dB readout, not a raw normalized value. When a knob
+	movement lands near 0 dB, the mixer fader is written to FL's normalized 0 dB
+	point. A short hold creates the detent feel. After the hold expires, the next
+	movement is allowed through so the fader does not get trapped at 0 dB.
 	"""
 	now = time.time()
 	state = mixer_zero_db_snap_state.get(track_number)

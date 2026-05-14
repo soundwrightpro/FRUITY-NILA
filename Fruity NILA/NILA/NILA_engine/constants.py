@@ -169,9 +169,18 @@ wait_input_2 = "for input...     "
 blankEvent = "   "
 nuText = "Not Used"
 unnamed_param = "Unnamed Param"
-timedelay = 0.35
+
+# Generic UI timing
+ui_time_delay = 0.35
+focus_overlay_refresh_interval = 0.05
+
+# MIDI channels
 select = 66
 controls = 15
+
+# Display labels
+focus_display_name = "Focus"
+playlist_display_name = "Playlist"
 
 # ===== MIXER / CHANNEL / KNOB / VOLUME HANDLING =====
 max_knobs = 8
@@ -199,6 +208,20 @@ volume_param_type = "volume"
 pan_param_type = "pan"
 stereo_sep = 0.25
 display_vol_bar_scaling = 0.86
+
+# Mixer 0 dB snap behavior
+mixer_zero_db_value = 0.8
+mixer_zero_db_snap_range = 1.0
+mixer_zero_db_hold_time = 0.15
+
+# NI peak meter data
+peak_meter_data_length = 16
+peak_meter_max_value = 127
+
+# Mixer display strings
+mixer_centered_pan_text = "Centered"
+mixer_pan_right_suffix = "% Right"
+mixer_pan_left_suffix = "% Left"
 
 # ==== KNOB SPEEDUP HANDLING ====
 knob_rotation_speed = 3.5

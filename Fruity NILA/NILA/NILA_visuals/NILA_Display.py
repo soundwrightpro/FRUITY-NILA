@@ -16,6 +16,7 @@ from NILA.NILA_engine import NILA_core, NILA_transform, constants as c
 
 # Persist across refresh calls so we can detect when a slot really changed
 last_track_state = {}
+last_display_context = None
 
 focus_overlay_text = None
 focus_overlay_started = 0.0
@@ -23,37 +24,12 @@ FOCUS_OVERLAY_DURATION = c.s_series_focus_overlay_duration
 
 
 def get_mixer_order():
-	"""Get mixer tracks sorted by docked position & order of appearance."""
-	track_count = mixer.trackCount() - 1
-	tracks = [(mixer.getTrackDockSide(i), i) for i in range(track_count)]
-	tracks.sort()
-	return [t[1] for t in tracks]
+	"""Get mixer tracks from the shared transform mapping."""
+	return NILA_transform.get_mixer_order()
 
 def get_correct_tracks():
-	"""Determines the correct tracks for knob control while skipping docked tracks."""
-	tracks_order = get_mixer_order()
-	current_track = mixer.trackNumber()
-	if current_track not in tracks_order:
-		return []
-	start_idx = tracks_order.index(current_track)
-
-	selected_tracks = [current_track]
-	for i in range(start_idx + 1, len(tracks_order)):
-		track = tracks_order[i]
-		if mixer.getTrackDockSide(track) != mixer.getTrackDockSide(current_track):
-			break
-		selected_tracks.append(track)
-		if len(selected_tracks) == c.max_knobs:
-			break
-
-	while len(selected_tracks) < c.max_knobs and selected_tracks[-1] != tracks_order[-1]:
-		next_idx = tracks_order.index(selected_tracks[-1]) + 1
-		if next_idx < len(tracks_order):
-			selected_tracks.append(tracks_order[next_idx])
-		else:
-			break
-
-	return selected_tracks
+	"""Get visible mixer slots from the shared transform mapping."""
+	return NILA_transform.get_correct_tracks()
 
 def format_param_name(param_name):
 	"""Inserts spaces for parameter names for display (for series)."""
@@ -72,6 +48,14 @@ def purge_all_tracks():
 	last_track_state.clear()
 	purge_tracks(c.purge_start_index, c.max_knob_number, clear_info=True)
 	purge_tracks(c.purge_start_index, c.max_knob_number)
+
+
+def enter_display_context(context_name):
+	"""Purge display slots once when entering a new display context."""
+	global last_display_context
+	if last_display_context != context_name:
+		purge_all_tracks()
+		last_display_context = context_name
 
 
 # Helper to clear a display slot
@@ -146,7 +130,12 @@ def split_text_for_display_slots(text, slot_count=c.s_series_primary_slots, slot
 
 # --- Helper for temporary focus overlay on display ---
 def show_temporary_focus_message(text):
-	"""Temporarily show focused window text on the display."""
+	"""Temporarily show focused window text on the display.
+
+	Used by Shift + encoder window cycling. The overlay intentionally clears old
+	volume, pan, graph, and meter related fields so the focus text is the only
+	visible content while cycling.
+	"""
 	global focus_overlay_text
 	global focus_overlay_started
 
@@ -156,7 +145,11 @@ def show_temporary_focus_message(text):
 
 
 def focus_overlay_is_active():
-	"""Return True while the temporary focus overlay should remain visible."""
+	"""Return True while the temporary focus overlay should remain visible.
+
+	Display refresh, beat updates, and peak meter updates check this so normal
+	mixer or Channel Rack values do not repaint over the focus overlay.
+	"""
 	global focus_overlay_text
 	global focus_overlay_started
 
@@ -203,10 +196,13 @@ def clear_focus_overlay_slots():
 		mix.setTrackExist(c.display_track_index, 1)
 
 
-
-
 def write_focus_overlay():
-	"""Write the temporary focus overlay to the controller display."""
+	"""Write the temporary focus overlay to the controller display.
+
+	This redraws the overlay after normal refresh callbacks so stale volume text,
+	volume graphs, pan text, and pan graphs do not remain visible while cycling
+	between FL Studio windows.
+	"""
 	display_text = str(focus_overlay_text or c.blankEvent)
 	clear_focus_overlay_slots()
 
@@ -215,7 +211,7 @@ def write_focus_overlay():
 		mix.setTrackName(1, display_text)
 	else:
 		mix.setTrackExist(c.display_track_index, 1)
-		mix.setTrackName(c.display_track_index, "Focus")
+		mix.setTrackName(c.display_track_index, c.focus_display_name)
 		mix.setTrackVol(c.display_track_index, display_text)
 		mix.setTrackVolGraph(c.display_track_index, 0)
 		mix.setTrackPan(c.display_track_index, c.blankEvent)
@@ -253,7 +249,6 @@ def map_file_type(filename, file_type_id):
 		return "Plugin Preset"
 
 	return "File"
-
 
 
 def write_series_playlist_time(time_disp, current_time, marker_name=None):
@@ -555,7 +550,7 @@ def OnRefresh(self, event):
 			timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
 			write_series_playlist_time(timeDisp, currentTime)
 		else:
-			mix.setTrackName(c.display_track_index, "Playlist")
+			mix.setTrackName(c.display_track_index, c.playlist_display_name)
 			NILA_transform.setTrackVolGraphFromMixer(c.display_track_index, c.display_track_index)
 
 def OnUpdateBeatIndicator(self, Value):
@@ -566,7 +561,7 @@ def OnUpdateBeatIndicator(self, Value):
 
 	if ui.getFocused(c.winName["Playlist"]):
 		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
-		mix.setTrackName(c.display_track_index, "Playlist")
+		mix.setTrackName(c.display_track_index, c.playlist_display_name)
 		if NILA_core.seriesCheck():
 			write_series_playlist_time(timeDisp, currentTime)
 		else:
@@ -595,6 +590,7 @@ def OnIdle(self):
 		refresh_channel_rack_display()
 
 	elif ui.getFocused(c.winName["Playlist"]):
+		enter_display_context("Playlist")
 		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
 
 		if NILA_core.seriesCheck():
@@ -602,9 +598,8 @@ def OnIdle(self):
 			marker_name = None if transport.isPlaying() else get_playlist_marker_hint(split_hint)
 			write_series_playlist_time(timeDisp, currentTime, marker_name)
 		else:
-			purge_all_tracks()
 			NILA_transform.setTrackVolGraphFromMixer(c.display_track_index, c.display_track_index)
-			mix.setTrackName(c.display_track_index, "Playlist")
+			mix.setTrackName(c.display_track_index, c.playlist_display_name)
 			split_hint = ui.getHintMsg()
 			if not transport.isPlaying() and "Volume" not in split_hint[:7]:
 				mix.setTrackVol(c.display_track_index, f"{split_hint[:7]}|{currentTime}")

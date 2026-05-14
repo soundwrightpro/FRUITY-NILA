@@ -6,17 +6,17 @@ import mixer
 import ui
 
 from nihia import mixer as nihia_mixer
-from NILA.NILA_engine import constants
+from NILA.NILA_engine import constants as c
 
 
-CENTERED_PAN_TEXT = "Centered"
-RIGHT_PAN_SUFFIX = "% Right"
-LEFT_PAN_SUFFIX = "% Left"
+CENTERED_PAN_TEXT = c.mixer_centered_pan_text
+RIGHT_PAN_SUFFIX = c.mixer_pan_right_suffix
+LEFT_PAN_SUFFIX = c.mixer_pan_left_suffix
 FL_DB_FLOOR = -100.0
 GRAPH_DB_FLOOR = -60.0
 MIXER_DB_MAX = 5.6
 CHANNEL_DB_MAX = 0.0
-ZERO_DB_ARROW_POSITION = constants.display_vol_bar_scaling
+ZERO_DB_ARROW_POSITION = c.display_vol_bar_scaling
 NEGATIVE_DB_ARROW_CURVE = 2.05
 POSITIVE_DB_ARROW_CURVE = 1.0
 LOW_END_SPLIT = 0.45
@@ -30,47 +30,36 @@ def get_utility_track():
 def get_mixer_order():
 	"""Get mixer tracks sorted by docked position & order of appearance."""
 	track_count = mixer.trackCount() - 1
-	tracks = []
-
-	for i in range(track_count):
-		dock_side = mixer.getTrackDockSide(i)
-		tracks.append((dock_side, i))
-
+	tracks = [(mixer.getTrackDockSide(i), i) for i in range(track_count)]
 	tracks.sort()
 	return [t[1] for t in tracks]
 
 def get_correct_tracks():
-	"""Determines the correct 8 tracks for knob control while skipping docked tracks."""
+	"""Return the shared visible mixer slots.
+
+	This is the single source of truth for the 8 mixer slots shown on the
+	controller. Display text, knob control, pan graphs, and peak meters should all
+	use this function so random mixer ordering does not make those systems drift
+	apart.
+	"""
 	tracks_order = get_mixer_order()
 	current_track = mixer.trackNumber()
-	utility_track = get_utility_track()
-
-	if current_track in tracks_order:
-		start_idx = tracks_order.index(current_track)
-	else:
-		start_idx = 0
+	if current_track not in tracks_order:
+		return []
+	start_idx = tracks_order.index(current_track)
 
 	selected_tracks = [current_track]
-
 	for i in range(start_idx + 1, len(tracks_order)):
 		track = tracks_order[i]
-
-		# Skip tracks docked on a different side
 		if mixer.getTrackDockSide(track) != mixer.getTrackDockSide(current_track):
 			break
-
-		# Stop at utility track
-		if track >= utility_track:
-			break  
-
 		selected_tracks.append(track)
-		if len(selected_tracks) == 8:
+		if len(selected_tracks) == c.max_knobs:
 			break
 
-	# Fill up the remaining slots if needed
-	while len(selected_tracks) < 8 and selected_tracks[-1] != tracks_order[-1]:
+	while len(selected_tracks) < c.max_knobs and selected_tracks[-1] != tracks_order[-1]:
 		next_idx = tracks_order.index(selected_tracks[-1]) + 1
-		if next_idx < len(tracks_order) and tracks_order[next_idx] < utility_track:
+		if next_idx < len(tracks_order):
 			selected_tracks.append(tracks_order[next_idx])
 		else:
 			break
@@ -203,11 +192,10 @@ def updatePanMix(track: int, slot_index: int):
     else:
         nihia_mixer.setTrackPan(slot_index, f"{round(abs(pan_value) * 100)}{LEFT_PAN_SUFFIX}")
 
-    utility_track = get_utility_track()
-    for x in range(8):
-        track_to_update = mixer.trackNumber() + x
-        if track_to_update < utility_track:
-            nihia_mixer.setTrackPanGraph(x, mixer.getTrackPan(track_to_update))
+    tracks_to_control = get_correct_tracks()
+    for x in range(c.max_knobs):
+        if x < len(tracks_to_control):
+            nihia_mixer.setTrackPanGraph(x, mixer.getTrackPan(tracks_to_control[x]))
         else:
             nihia_mixer.setTrackPanGraph(x, 0)
 
@@ -225,7 +213,7 @@ def updatePanChannel(channel: int, slot_index: int):
     else:
         nihia_mixer.setTrackPan(slot_index, f"{round(abs(pan_value) * 100)}{LEFT_PAN_SUFFIX}")
 
-    for x in range(8):
+    for x in range(c.max_knobs):
         track_to_update = channels.selectedChannel() + x
         if track_to_update < channels.channelCount():
             nihia_mixer.setTrackPanGraph(x, channels.getChannelPan(track_to_update))
@@ -234,33 +222,43 @@ def updatePanChannel(channel: int, slot_index: int):
 
 
 def sendPeakInfo():
-	"""Sends peak meter data to the mixer."""
-	TrackPeaks = [0] * 16
+	"""Send live peak meter data to the hardware display.
 
-	if ui.getFocused(constants.winName["Mixer"]):
-		for x in range(8):
-			if mixer.trackNumber() <= get_utility_track() - x:
-				TrackPeaks[(x * 2)] = int(mixer.getTrackPeaks(mixer.trackNumber() + x, midi.PEAK_L) * 127)
-				TrackPeaks[(x * 2) + 1] = int(mixer.getTrackPeaks(mixer.trackNumber() + x, midi.PEAK_R) * 127)
+	For Mixer focus, peak data follows get_correct_tracks() so the meters match
+	the same random order used by the display and knobs. For Channel Rack focus,
+	peak data follows each channel's target mixer insert.
+	"""
+	TrackPeaks = [0] * c.peak_meter_data_length
 
-	elif ui.getFocused(constants.winName["Channel Rack"]):
+	if ui.getFocused(c.winName["Mixer"]):
+		tracks_to_control = get_correct_tracks()
+		for x, track_number in enumerate(tracks_to_control[:c.max_knobs]):
+			TrackPeaks[(x * 2)] = int(mixer.getTrackPeaks(track_number, midi.PEAK_L) * c.peak_meter_max_value)
+			TrackPeaks[(x * 2) + 1] = int(mixer.getTrackPeaks(track_number, midi.PEAK_R) * c.peak_meter_max_value)
+
+	elif ui.getFocused(c.winName["Channel Rack"]):
 		for x in range(8):
 			if channels.channelCount() > x and channels.selectedChannel() < (channels.channelCount() - x):
 				if channels.getTargetFxTrack(channels.selectedChannel() + x) > 0:
-					TrackPeaks[(x * 2)] = int(mixer.getTrackPeaks(channels.getTargetFxTrack(channels.selectedChannel() + x), midi.PEAK_L) * 127)
-					TrackPeaks[(x * 2) + 1] = int(mixer.getTrackPeaks(channels.getTargetFxTrack(channels.selectedChannel() + x), midi.PEAK_R) * 127)
+					TrackPeaks[(x * 2)] = int(mixer.getTrackPeaks(channels.getTargetFxTrack(channels.selectedChannel() + x), midi.PEAK_L) * c.peak_meter_max_value)
+					TrackPeaks[(x * 2) + 1] = int(mixer.getTrackPeaks(channels.getTargetFxTrack(channels.selectedChannel() + x), midi.PEAK_R) * c.peak_meter_max_value)
 
-	# Ensure values are within expected range (0 to 127)
+	# Ensure values are within expected range.
 	for x in range(len(TrackPeaks)):
-		TrackPeaks[x] = max(0, min(127, TrackPeaks[x]))
+		TrackPeaks[x] = max(0, min(c.peak_meter_max_value, TrackPeaks[x]))
 
 	nihia_mixer.sendPeakMeterData(TrackPeaks)
 
 
 # --- Clear live peak meter data on the hardware display ---
 def clearPeakInfo():
-	"""Clear live peak meter data on the hardware display."""
-	nihia_mixer.sendPeakMeterData([0] * 16)
+	"""Actively clear live peak meter data on the hardware display.
+
+	Stopping normal meter updates is not enough because the hardware keeps the
+	last peak frame. During the temporary focus overlay, this sends a zero peak
+	packet so the meter area is actually blank.
+	"""
+	nihia_mixer.sendPeakMeterData([0] * c.peak_meter_data_length)
 
 
 def timeConvert(timeDisp, currentTime):
