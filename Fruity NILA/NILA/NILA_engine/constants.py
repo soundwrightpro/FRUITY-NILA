@@ -16,13 +16,13 @@ Sections:
 - Miscellaneous UI values
 - FL Studio/NI integration specifics
 
-Last updated: April 2026
+Last updated: June 2026
 """
 
 import midi
 
 # ===== VERSION & GENERAL INFO =====
-VERSION_NUMBER = "v2026.0.3"
+VERSION_NUMBER = "v2026.1.0"
 HELLO_MESSAGE = "FRUITY NILA"
 GOODBYE_MESSAGE = "by: sound"
 OUTPUT_MESSAGE = f"\nFRUITY NILA {VERSION_NUMBER}\n"
@@ -80,7 +80,7 @@ encoder_cc_dec_fast_max = 127
 MIN_Major = 25
 MIN_Minor = 1
 MIN_Release = 0
-MAX_Major = 25
+MAX_Major = 26
 MAX_Minor = 99
 MAX_Release = 999
 MIDI_Script_Version = 38
@@ -209,10 +209,8 @@ pan_param_type = "pan"
 stereo_sep = 0.25
 display_vol_bar_scaling = 0.86
 
-# Mixer 0 dB snap behavior
+# Mixer 0 dB snap fixed value
 mixer_zero_db_value = 0.8
-mixer_zero_db_snap_range = 1.0
-mixer_zero_db_hold_time = 0.15
 
 # NI peak meter data
 peak_meter_data_length = 16
@@ -224,8 +222,6 @@ mixer_pan_right_suffix = "% Right"
 mixer_pan_left_suffix = "% Left"
 
 # ==== KNOB SPEEDUP HANDLING ====
-knob_rotation_speed = 3.5
-speed_increase_wait = 0.05
 knob_sensitivity_speedup = 1.5
 knob_sensitivity_wait = 0.05
 

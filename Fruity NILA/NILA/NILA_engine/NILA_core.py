@@ -1,8 +1,5 @@
 import time
-
 import device
-import playlist
-import ui
 
 import nihia
 import nihia.buttons as buttons
@@ -40,7 +37,7 @@ def OnInit(self):
 def OnWaitingForInput(status):
 	"""Handles the waiting for input state."""
 	mix.setTrackName(0, ". . .")
-	time.sleep(c.timedelay)
+	time.sleep(c.ui_time_delay)
 
 def seriesCheck():
 	"""Checks if the current device is in the Komplete Kontrol Series."""
@@ -54,33 +51,8 @@ def OnProjectLoad(self, status):
 		c.PL_LoadError: "Load Error!"
 	}
 	if status in messages and not seriesCheck():
-		_show_startup_message(c.HELLO_MESSAGE, messages[status], c.timedelay)
+		_show_startup_message(c.HELLO_MESSAGE, messages[status], c.ui_time_delay)
 
-def timeConvert(timeDisp, currentTime):
-	"""
-	Converts the time display format based on the FL Studio settings.
-	"""
-	currentBar = str(playlist.getVisTimeBar())
-	currentStep = str(playlist.getVisTimeStep())
-
-	try:
-		step_int = int(currentStep)
-	except (ValueError, TypeError):
-		step_int = -1
-
-	if 0 <= step_int <= 9:
-		currentTime = f"{currentBar}:0{step_int}"
-	elif step_int >= 0:
-		currentTime = f"{currentBar}:{step_int}"
-	else:
-		currentTime = str(currentStep)
-
-	if step_int >= 0:
-		timeDisp = "Min:Sec" if ui.getTimeDispMin() else "Beats:Bar"
-	else:
-		timeDisp = "REC in..."
-
-	return timeDisp, currentTime
 
 def setTrackVolConvert(trackID: int, value: str):
 	"""Converts the track volume display format and sets the track volume."""

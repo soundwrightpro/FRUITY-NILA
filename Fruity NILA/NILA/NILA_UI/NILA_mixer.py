@@ -8,8 +8,6 @@ from NILA.NILA_engine import NILA_core as core, NILA_transform, config, constant
 MIXER_MIN_VALUE = c.track_volume_min
 MIXER_MAX_VALUE = c.track_volume_max
 MIXER_ZERO_DB_VALUE = c.mixer_zero_db_value
-MIXER_ZERO_DB_SNAP_RANGE = c.mixer_zero_db_snap_range
-MIXER_ZERO_DB_HOLD_TIME = c.mixer_zero_db_hold_time
 
 
 # Cache for visually ordered mixer tracks
@@ -132,7 +130,7 @@ def apply_mixer_zero_db_snap(track_number, current_value, target_value):
 
 	if state and current_is_zero_db:
 		snap_time, _snap_direction = state
-		if now - snap_time < MIXER_ZERO_DB_HOLD_TIME:
+		if now - snap_time < config.mixer_zero_db_hold_time:
 			return MIXER_ZERO_DB_VALUE
 
 		# Hold expired. Clear state and let this movement pass through so the
@@ -157,7 +155,7 @@ def apply_mixer_zero_db_snap(track_number, current_value, target_value):
 	mixer.setTrackVolume(track_number, target_value)
 	target_db = mixer.getTrackVolume(track_number, 1)
 
-	if abs(target_db) <= MIXER_ZERO_DB_SNAP_RANGE:
+	if config.mixer_zero_db_snap_enabled and abs(target_db) <= config.mixer_zero_db_snap_range:
 		mixer_zero_db_snap_state[track_number] = (now, 1 if target_value > current_value else -1)
 		return MIXER_ZERO_DB_VALUE
 
@@ -196,9 +194,9 @@ def OnMidiMsg(self, event):
 			time_diff = current_time - getattr(self, last_time_attr, current_time)
 			setattr(self, last_time_attr, current_time)
 
-			if time_diff <= c.speed_increase_wait:
-				base_volume_increment = config.mixer_increment * c.knob_rotation_speed
-				adjusted_pan_increment = config.mixer_increment * c.knob_rotation_speed
+			if time_diff <= config.mixer_speed_increase_wait:
+				base_volume_increment = config.mixer_increment * config.mixer_knob_rotation_speed
+				adjusted_pan_increment = config.mixer_increment * config.mixer_knob_rotation_speed
 			else:
 				base_volume_increment = config.mixer_increment
 				adjusted_pan_increment = config.mixer_increment

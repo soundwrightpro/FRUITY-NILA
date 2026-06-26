@@ -547,7 +547,7 @@ def OnRefresh(self, event):
 
 	elif ui.getFocused(c.winName["Playlist"]):
 		if NILA_core.seriesCheck():
-			timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
+			timeDisp, currentTime = NILA_transform.timeConvert(c.itemDisp, c.itemTime)
 			write_series_playlist_time(timeDisp, currentTime)
 		else:
 			mix.setTrackName(c.display_track_index, c.playlist_display_name)
@@ -560,7 +560,7 @@ def OnUpdateBeatIndicator(self, Value):
 		return
 
 	if ui.getFocused(c.winName["Playlist"]):
-		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
+		timeDisp, currentTime = NILA_transform.timeConvert(c.itemDisp, c.itemTime)
 		mix.setTrackName(c.display_track_index, c.playlist_display_name)
 		if NILA_core.seriesCheck():
 			write_series_playlist_time(timeDisp, currentTime)
@@ -591,7 +591,7 @@ def OnIdle(self):
 
 	elif ui.getFocused(c.winName["Playlist"]):
 		enter_display_context("Playlist")
-		timeDisp, currentTime = NILA_core.timeConvert(c.itemDisp, c.itemTime)
+		timeDisp, currentTime = NILA_transform.timeConvert(c.itemDisp, c.itemTime)
 
 		if NILA_core.seriesCheck():
 			split_hint = ui.getHintMsg()
